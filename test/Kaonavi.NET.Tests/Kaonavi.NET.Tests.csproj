@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Sample.Core/Sample.Core.csproj" />
+    <ProjectReference Include="../../src/Kaonavi.NET/Kaonavi.NET.csproj" />
   </ItemGroup>
 
 </Project>
