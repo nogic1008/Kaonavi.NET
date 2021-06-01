@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using FluentAssertions;
 using Kaonavi.Net.Services;
@@ -11,7 +12,7 @@ namespace Kaonavi.Net.Tests.Services
     /// </summary>
     public class KaonaviV2ServiceTest
     {
-        #region Constractor Test
+        #region Constractor
         private static Action Constractor(HttpClient? client, string? consumerKey, string? consumerSecret)
             => () => _ = new KaonaviV2Service(client!, consumerKey!, consumerSecret!);
 
@@ -54,6 +55,41 @@ namespace Kaonavi.Net.Tests.Services
 
             // Assert
             client.BaseAddress.Should().Be(uri);
+        }
+        #endregion
+
+        #region Property
+        [Fact]
+        public void AccessToken_Returns_ClientHeader()
+        {
+            // Arrange
+            var client = new HttpClient();
+            string headerValue = Guid.NewGuid().ToString();
+            client.DefaultRequestHeaders.Add("Kaonavi-Token", headerValue);
+
+            // Act
+            var sut = new KaonaviV2Service(client, "foo", "bar");
+
+            // Assert
+            sut.AccessToken.Should().Be(headerValue);
+        }
+
+        [Fact]
+        public void AccessToken_Sets_ClientHeader()
+        {
+            // Arrange
+            var client = new HttpClient();
+            string headerValue = Guid.NewGuid().ToString();
+
+            // Act
+            _ = new KaonaviV2Service(client, "foo", "bar")
+            {
+                AccessToken = headerValue
+            };
+
+            // Assert
+            client.DefaultRequestHeaders.TryGetValues("Kaonavi-Token", out var values).Should().BeTrue();
+            values!.First().Should().Be(headerValue);
         }
         #endregion
     }
