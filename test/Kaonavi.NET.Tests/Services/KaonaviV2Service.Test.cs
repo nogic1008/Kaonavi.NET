@@ -75,6 +75,16 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         [Fact]
+        public void AccessToken_Returns_Null()
+        {
+            // Arrange - Act
+            var sut = new KaonaviV2Service(new(), "foo", "bar");
+
+            // Assert
+            sut.AccessToken.Should().BeNull();
+        }
+
+        [Fact]
         public void AccessToken_Sets_ClientHeader()
         {
             // Arrange
