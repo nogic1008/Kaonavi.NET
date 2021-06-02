@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -154,6 +155,30 @@ namespace Kaonavi.Net.Tests.Services
                 && req.Headers.Authorization.Parameter == base64String
                 && req.Content is FormUrlEncodedContent content
                 && await content.ReadAsStringAsync().ConfigureAwait(false) == "grant_type=client_credentials";
+        }
+
+        [Theory]
+        [InlineData(401, "{{\"errors\":[\"{0}\"]}}", "consumer_keyとconsumer_secretの組み合わせが不正です。", "application/json")]
+        [InlineData(429, "{{\"errors\":[\"{0}\"]}}", "1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。", "application/json")]
+        [InlineData(500, "{0}", "Error", "plain/text")]
+        public async Task AuthenticateAsync_Throws_ApplicationException(int statusCode, string contentFormat, string message, string mediaType)
+        {
+            // Arrange
+            string key = GenerateRandomString();
+            string secret = GenerateRandomString();
+            var endpoint = new Uri(BaseUri + "/token");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse((HttpStatusCode)statusCode, string.Format(contentFormat, message), mediaType);
+
+            // Act
+            var sut = CreateSut(handler, key, secret);
+            Func<Task> act = async () => await sut.AuthenticateAsync().ConfigureAwait(false);
+
+            (await act.Should().ThrowExactlyAsync<ApplicationException>().ConfigureAwait(false))
+                .Where(ex => ex.Message == message && ex.InnerException is HttpRequestException);
         }
     }
 }

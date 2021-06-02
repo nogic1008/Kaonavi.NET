@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Kaonavi.Net.Entities;
@@ -48,11 +49,25 @@ namespace Kaonavi.Net.Services
             _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
 
             var response = await _client.PostAsync("/token", content, cancellationToken).ConfigureAwait(false);
-            var token = await response.EnsureSuccessStatusCode()
-                .Content.ReadFromJsonAsync<Token>(cancellationToken: cancellationToken)
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                string errorMessage = response.Content.Headers.ContentType.MediaType == "application/json"
+                    ? string.Join("\n", (await response.Content.ReadFromJsonAsync<ErrorResponse>().ConfigureAwait(false))!.Errors)
+                    : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                throw new ApplicationException(errorMessage, ex);
+            }
+
+            var token = await response.Content
+                .ReadFromJsonAsync<Token>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
             _client.DefaultRequestHeaders.Authorization = null;
             return token;
         }
+
+        public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
     }
 }
