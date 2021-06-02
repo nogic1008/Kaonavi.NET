@@ -1,8 +1,13 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using FluentAssertions;
+using Kaonavi.Net.Entities;
 using Kaonavi.Net.Services;
+using Moq;
+using Moq.Contrib.HttpClient;
 using Xunit;
 
 namespace Kaonavi.Net.Tests.Services
@@ -12,6 +17,10 @@ namespace Kaonavi.Net.Tests.Services
     /// </summary>
     public class KaonaviV2ServiceTest
     {
+        private const string BaseUri = "https://example.com";
+
+        private static string GenerateRandomString() => Guid.NewGuid().ToString();
+
         #region Constractor
         private static Action Constractor(HttpClient? client, string? consumerKey, string? consumerSecret)
             => () => _ = new KaonaviV2Service(client!, consumerKey!, consumerSecret!);
@@ -64,7 +73,7 @@ namespace Kaonavi.Net.Tests.Services
         {
             // Arrange
             var client = new HttpClient();
-            string headerValue = Guid.NewGuid().ToString();
+            string headerValue = GenerateRandomString();
             client.DefaultRequestHeaders.Add("Kaonavi-Token", headerValue);
 
             // Act
@@ -89,7 +98,7 @@ namespace Kaonavi.Net.Tests.Services
         {
             // Arrange
             var client = new HttpClient();
-            string headerValue = Guid.NewGuid().ToString();
+            string headerValue = GenerateRandomString();
 
             // Act
             _ = new KaonaviV2Service(client, "foo", "bar")
@@ -102,5 +111,49 @@ namespace Kaonavi.Net.Tests.Services
             values!.First().Should().Be(headerValue);
         }
         #endregion
+
+        private static KaonaviV2Service CreateSut(Mock<HttpMessageHandler> handler, string key = "Key", string secret = "Secret", string? accessToken = null)
+        {
+            var client = handler.CreateClient();
+            client.BaseAddress = new(BaseUri);
+            return new(client, key, secret)
+            {
+                AccessToken = accessToken
+            };
+        }
+
+        [Fact]
+        public async Task AuthenticateAsync_Posts_Base64String()
+        {
+            // Arrange
+            string key = GenerateRandomString();
+            string secret = GenerateRandomString();
+            var endpoint = new Uri(BaseUri + "/token");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsJson(new Token(tokenString, "Bearer", 3600));
+
+            // Act
+            var sut = CreateSut(handler, key, secret);
+            var token = await sut.AuthenticateAsync().ConfigureAwait(false);
+
+            // Assert
+            token.Should().NotBeNull();
+            token.Should().Be(new Token(tokenString, "Bearer", 3600));
+
+            byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
+            string base64String = Convert.ToBase64String(byteArray);
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            async Task<bool> IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                && req.Method == HttpMethod.Post
+                && req.Headers.Authorization!.Scheme == "Basic"
+                && req.Headers.Authorization.Parameter == base64String
+                && req.Content is FormUrlEncodedContent content
+                && await content.ReadAsStringAsync().ConfigureAwait(false) == "grant_type=client_credentials";
+        }
     }
 }

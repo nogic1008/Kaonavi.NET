@@ -45,12 +45,14 @@ namespace Kaonavi.Net.Services
             {
                 { "grant_type", "client_credentials" }
             });
-            content.Headers.Add("Authorization", $"Basic {Convert.ToBase64String(byteArray)}");
+            _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
 
             var response = await _client.PostAsync("/token", content, cancellationToken).ConfigureAwait(false);
-            return await response.EnsureSuccessStatusCode()
+            var token = await response.EnsureSuccessStatusCode()
                 .Content.ReadFromJsonAsync<Token>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
+            _client.DefaultRequestHeaders.Authorization = null;
+            return token;
         }
     }
 }
