@@ -35,10 +35,10 @@ indent_size = 4
 [*.{cs,csx,cake,vb}]
 # "this." and "Me." preferences (IDE0003 & IDE0009)
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0003-ide0009
-dotnet_style_qualification_for_field = true:warning
-dotnet_style_qualification_for_property = true:warning
-dotnet_style_qualification_for_method = true:warning
-dotnet_style_qualification_for_event = true:warning
+dotnet_style_qualification_for_field = false:warning
+dotnet_style_qualification_for_property = false:warning
+dotnet_style_qualification_for_method = false:warning
+dotnet_style_qualification_for_event = false:warning
 
 # Use language keywords instead of framework type names for type references (IDE0049)
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0049
@@ -139,7 +139,7 @@ csharp_prefer_static_local_function = true:warning
 
 # 'var' preferences (IDE0007 & IDE0008)
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0007-ide0008
-csharp_style_var_for_built_in_types = true:warning
+csharp_style_var_for_built_in_types = false:warning
 csharp_style_var_when_type_is_apparent = true:warning
 csharp_style_var_elsewhere = true:warning
 
@@ -242,7 +242,7 @@ csharp_style_conditional_delegate_call = true:warning
 ## Code block preferences ##
 # Add braces (IDE0011)
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0011
-csharp_prefer_braces = true:warning
+csharp_prefer_braces = when_multiline:warning
 
 # Use simple 'using' statement (IDE0063)
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0063
@@ -317,7 +317,7 @@ csharp_indent_case_contents_when_block = false
 # https://docs.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/formatting-rules#spacing-options
 csharp_space_after_cast = false
 csharp_space_after_keywords_in_control_flow_statements = true
-csharp_space_between_parentheses = expressions
+csharp_space_between_parentheses = false
 csharp_space_before_colon_in_inheritance_clause = true
 csharp_space_after_colon_in_inheritance_clause = true
 csharp_space_around_binary_operators = before_and_after
@@ -357,17 +357,6 @@ csharp_using_directive_placement = outside_namespace
 # constant_fields - Define constant fields
 dotnet_naming_symbols.constant_fields.applicable_kinds = field
 dotnet_naming_symbols.constant_fields.required_modifiers = const
-# non_private_readonly_fields - Define public, internal and protected readonly fields
-dotnet_naming_symbols.non_private_readonly_fields.applicable_accessibilities = public, internal, protected
-dotnet_naming_symbols.non_private_readonly_fields.applicable_kinds = field
-dotnet_naming_symbols.non_private_readonly_fields.required_modifiers = readonly
-# static_readonly_fields - Define static and readonly fields
-dotnet_naming_symbols.static_readonly_fields.applicable_kinds = field
-dotnet_naming_symbols.static_readonly_fields.required_modifiers = static, readonly
-# private_readonly_fields - Define private readonly fields
-dotnet_naming_symbols.private_readonly_fields.applicable_accessibilities = private
-dotnet_naming_symbols.private_readonly_fields.applicable_kinds = field
-dotnet_naming_symbols.private_readonly_fields.required_modifiers = readonly
 # public_internal_fields - Define public and internal fields
 dotnet_naming_symbols.public_internal_fields.applicable_accessibilities = public, internal
 dotnet_naming_symbols.public_internal_fields.applicable_kinds = field
@@ -394,32 +383,23 @@ dotnet_naming_style.first_upper.capitalization = first_word_upper
 # prefix_interface_interface_with_i - Interfaces must be PascalCase and the first character of an interface must be an 'I'
 dotnet_naming_style.prefix_interface_interface_with_i.capitalization = pascal_case
 dotnet_naming_style.prefix_interface_interface_with_i.required_prefix = I
+# under_scored - _underScored
+dotnet_naming_style.under_scored.capitalization = camel_case
+dotnet_naming_style.under_scored.required_prefix = _
 
 # Naming Rules
 # Constant fields must be PascalCase
 dotnet_naming_rule.constant_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.constant_fields_must_be_pascal_case.symbols = constant_fields
 dotnet_naming_rule.constant_fields_must_be_pascal_case.style = pascal_case
-# Public, internal and protected readonly fields must be PascalCase
-dotnet_naming_rule.non_private_readonly_fields_must_be_pascal_case.severity = warning
-dotnet_naming_rule.non_private_readonly_fields_must_be_pascal_case.symbols = non_private_readonly_fields
-dotnet_naming_rule.non_private_readonly_fields_must_be_pascal_case.style = pascal_case
-# Static readonly fields must be PascalCase
-dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.severity = warning
-dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.symbols = static_readonly_fields
-dotnet_naming_rule.static_readonly_fields_must_be_pascal_case.style = pascal_case
-# Private readonly fields must be camelCase
-dotnet_naming_rule.private_readonly_fields_must_be_camel_case.severity = warning
-dotnet_naming_rule.private_readonly_fields_must_be_camel_case.symbols = private_readonly_fields
-dotnet_naming_rule.private_readonly_fields_must_be_camel_case.style = camel_case
 # Public and internal fields must be PascalCase
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.severity = warning
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.symbols = public_internal_fields
 dotnet_naming_rule.public_internal_fields_must_be_pascal_case.style = pascal_case
-# Private and protected fields must be camelCase
+# Private and protected fields must be _underScored
 dotnet_naming_rule.private_protected_fields_must_be_camel_case.severity = warning
 dotnet_naming_rule.private_protected_fields_must_be_camel_case.symbols = private_protected_fields
-dotnet_naming_rule.private_protected_fields_must_be_camel_case.style = camel_case
+dotnet_naming_rule.private_protected_fields_must_be_camel_case.style = under_scored
 # Public members must be capitalized
 dotnet_naming_rule.public_members_must_be_capitalized.severity = warning
 dotnet_naming_rule.public_members_must_be_capitalized.symbols = public_symbols
