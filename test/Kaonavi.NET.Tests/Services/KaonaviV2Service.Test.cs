@@ -272,5 +272,52 @@ namespace Kaonavi.Net.Tests.Services
                     && req.Headers.TryGetValues("Kaonavi-Token", out var values)
                     && values.First() == tokenString;
         }
+
+        [Fact]
+        public async Task FetchSheetLayoutsAsync_Returns_SheetLayouts()
+        {
+            var endpoint = new Uri(BaseUri + "/sheet_layouts");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsJson(new KaonaviV2Service.SheetLayoutsResult(
+                    new SheetLayout[]
+                    {
+                        new SheetLayout(
+                            Id: 12,
+                            Name: "住所・連絡先",
+                            RecordType: RecordType.Multiple,
+                            CustomFields: new CustomField[]
+                            {
+                                new(1000, "住所", false, "string", 250, Array.Empty<string?>()),
+                                new(1001, "電話番号", false, "string", 50, Array.Empty<string?>())
+                            }
+                        )
+                    }
+                ));
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var layouts = await sut.FetchSheetLayoutsAsync().ConfigureAwait(false);
+
+            // Assert
+            layouts.Should().NotBeNullOrEmpty()
+                .And.HaveCount(1);
+            var layout = layouts.First();
+            layout.Id.Should().Be(12);
+            layout.Name.Should().Be("住所・連絡先");
+            layout.RecordType.Should().Be(RecordType.Multiple);
+            layout.CustomFields.Should().HaveCount(2)
+                .And.AllBeAssignableTo<CustomField>();
+
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Get
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
     }
 }

@@ -71,6 +71,21 @@ namespace Kaonavi.Net.Services
                 .ConfigureAwait(false))!;
         }
 
+        public async ValueTask<IEnumerable<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/sheet_layouts").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<SheetLayoutsResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.Sheets;
+        }
+        public record SheetLayoutsResult(
+            [property: JsonPropertyName("sheets")] IEnumerable<SheetLayout> Sheets
+        );
+
         #region Common Method
         private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
             => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
