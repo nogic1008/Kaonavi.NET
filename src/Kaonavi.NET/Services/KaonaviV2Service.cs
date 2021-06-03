@@ -50,14 +50,7 @@ namespace Kaonavi.Net.Services
             _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
 
             var response = await _client.PostAsync("/token", content, cancellationToken).ConfigureAwait(false);
-            try
-            {
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException ex)
-            {
-                throw await CreateApiExceptionAsync(ex, response.Content).ConfigureAwait(false);
-            }
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
 
             var token = await response.Content
                 .ReadFromJsonAsync<Token>(cancellationToken: cancellationToken)
@@ -71,14 +64,7 @@ namespace Kaonavi.Net.Services
             AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false))?.AccessToken;
 
             var response = await _client.GetAsync("/member_layouts").ConfigureAwait(false);
-            try
-            {
-                response.EnsureSuccessStatusCode();
-            }
-            catch (HttpRequestException ex)
-            {
-                throw await CreateApiExceptionAsync(ex, response.Content).ConfigureAwait(false);
-            }
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<MemberLayout>(cancellationToken: cancellationToken)
@@ -86,12 +72,19 @@ namespace Kaonavi.Net.Services
         }
 
         public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
-        private static async ValueTask<ApplicationException> CreateApiExceptionAsync(HttpRequestException ex, HttpContent content)
+        private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)
         {
-            string errorMessage = content.Headers.ContentType.MediaType == "application/json"
-                ? string.Join("\n", (await content.ReadFromJsonAsync<ErrorResponse>().ConfigureAwait(false))!.Errors)
-                : await content.ReadAsStringAsync().ConfigureAwait(false);
-            return new ApplicationException(errorMessage, ex);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                string errorMessage = response.Content.Headers.ContentType.MediaType == "application/json"
+                    ? string.Join("\n", (await response.Content.ReadFromJsonAsync<ErrorResponse>().ConfigureAwait(false))!.Errors)
+                    : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                throw new ApplicationException(errorMessage, ex);
+            }
         }
     }
 }
