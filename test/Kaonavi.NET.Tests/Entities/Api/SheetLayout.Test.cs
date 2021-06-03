@@ -15,7 +15,7 @@ namespace Kaonavi.Net.Tests.Entities.Api
         public void CanDeserializeJSON()
         {
             #region JSON
-            const string jsonString ="{"
+            const string jsonString = "{"
             + "\"id\": 12,"
             + "\"name\": \"住所・連絡先\","
             + "\"record_type\": 1,"
