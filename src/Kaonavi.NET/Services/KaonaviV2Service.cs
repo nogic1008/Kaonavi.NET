@@ -40,7 +40,7 @@ namespace Kaonavi.Net.Services
             _client.BaseAddress ??= new(BaseApiAddress);
         }
 
-        public async Task<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
         {
             byte[] byteArray = Encoding.UTF8.GetBytes($"{_consumerKey}:{_consumerSecret}");
             var content = new FormUrlEncodedContent(new Dictionary<string, string>()
@@ -66,7 +66,7 @@ namespace Kaonavi.Net.Services
             return token!;
         }
 
-        public async Task<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
         {
             AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false))?.AccessToken;
 
@@ -86,7 +86,7 @@ namespace Kaonavi.Net.Services
         }
 
         public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
-        private static async Task<ApplicationException> CreateApiExceptionAsync(HttpRequestException ex, HttpContent content)
+        private static async ValueTask<ApplicationException> CreateApiExceptionAsync(HttpRequestException ex, HttpContent content)
         {
             string errorMessage = content.Headers.ContentType.MediaType == "application/json"
                 ? string.Join("\n", (await content.ReadFromJsonAsync<ErrorResponse>().ConfigureAwait(false))!.Errors)
