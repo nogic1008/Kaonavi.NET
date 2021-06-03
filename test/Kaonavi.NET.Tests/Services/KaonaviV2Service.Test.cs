@@ -124,6 +124,7 @@ namespace Kaonavi.Net.Tests.Services
             };
         }
 
+        #region API Common Path
         [Theory]
         [InlineData(401, "{{\"errors\":[\"{0}\"]}}", "consumer_keyとconsumer_secretの組み合わせが不正です。", "application/json")]
         [InlineData(429, "{{\"errors\":[\"{0}\"]}}", "1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。", "application/json")]
@@ -148,6 +149,41 @@ namespace Kaonavi.Net.Tests.Services
                 .WithMessage(message)
                 .WithInnerExceptionExactly<HttpRequestException>();
         }
+
+        [Fact]
+        public async Task ApiCaller_Calls_AuthenticateAsync_When_AccessToken_IsNull()
+        {
+            var apiEndpoint = new Uri(BaseUri + "/member_layouts");
+            var tokenEndpoint = new Uri(BaseUri + "/token");
+            string tokenString = GenerateRandomString();
+            string key = GenerateRandomString();
+            string secret = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == tokenEndpoint)
+                .ReturnsResponse(HttpStatusCode.InternalServerError, "Error", "text/plain");
+
+            // Act
+            var sut = CreateSut(handler, key, secret);
+            Func<Task> act = async () => await sut.FetchMemberLayoutAsync().ConfigureAwait(false);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<ApplicationException>().ConfigureAwait(false);
+
+            byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
+            string base64String = Convert.ToBase64String(byteArray);
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(res => res.RequestUri == apiEndpoint, Times.Never());
+
+            async Task<bool> IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == tokenEndpoint
+                && req.Method == HttpMethod.Post
+                && req.Headers.Authorization!.Scheme == "Basic"
+                && req.Headers.Authorization.Parameter == base64String
+                && req.Content is FormUrlEncodedContent content
+                && await content.ReadAsStringAsync().ConfigureAwait(false) == "grant_type=client_credentials";
+        }
+        #endregion
 
         [Fact]
         public async Task AuthenticateAsync_Posts_Base64String()

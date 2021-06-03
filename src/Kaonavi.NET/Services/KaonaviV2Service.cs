@@ -61,7 +61,7 @@ namespace Kaonavi.Net.Services
 
         public async ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
         {
-            AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false))?.AccessToken;
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
             var response = await _client.GetAsync("/member_layouts").ConfigureAwait(false);
             await ValidateApiResponseAsync(response).ConfigureAwait(false);
@@ -70,6 +70,10 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<MemberLayout>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!;
         }
+
+        #region Common Method
+        private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
+            => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false))?.AccessToken;
 
         public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
         private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)
@@ -86,5 +90,6 @@ namespace Kaonavi.Net.Services
                 throw new ApplicationException(errorMessage, ex);
             }
         }
+        #endregion
     }
 }
