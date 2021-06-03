@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Entities.Api;
 
 namespace Kaonavi.Net.Services
 {
@@ -39,7 +40,7 @@ namespace Kaonavi.Net.Services
             _client.BaseAddress ??= new(BaseApiAddress);
         }
 
-        public async ValueTask<Token?> AuthenticateAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
         {
             byte[] byteArray = Encoding.UTF8.GetBytes($"{_consumerKey}:{_consumerSecret}");
             var content = new FormUrlEncodedContent(new Dictionary<string, string>()
@@ -49,6 +50,34 @@ namespace Kaonavi.Net.Services
             _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
 
             var response = await _client.PostAsync("/token", content, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            var token = await response.Content
+                .ReadFromJsonAsync<Token>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+            _client.DefaultRequestHeaders.Authorization = null;
+            return token!;
+        }
+
+        public async ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/member_layouts").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<MemberLayout>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
+        }
+
+        #region Common Method
+        private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
+            => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
+
+        public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
+        private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)
+        {
             try
             {
                 response.EnsureSuccessStatusCode();
@@ -60,14 +89,7 @@ namespace Kaonavi.Net.Services
                     : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 throw new ApplicationException(errorMessage, ex);
             }
-
-            var token = await response.Content
-                .ReadFromJsonAsync<Token>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
-            _client.DefaultRequestHeaders.Authorization = null;
-            return token;
         }
-
-        public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
+        #endregion
     }
 }
