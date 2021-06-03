@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Entities.Api;
 
 namespace Kaonavi.Net.Services
 {
@@ -39,7 +40,7 @@ namespace Kaonavi.Net.Services
             _client.BaseAddress ??= new(BaseApiAddress);
         }
 
-        public async ValueTask<Token?> AuthenticateAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
         {
             byte[] byteArray = Encoding.UTF8.GetBytes($"{_consumerKey}:{_consumerSecret}");
             var content = new FormUrlEncodedContent(new Dictionary<string, string>()
@@ -55,19 +56,42 @@ namespace Kaonavi.Net.Services
             }
             catch (HttpRequestException ex)
             {
-                string errorMessage = response.Content.Headers.ContentType.MediaType == "application/json"
-                    ? string.Join("\n", (await response.Content.ReadFromJsonAsync<ErrorResponse>().ConfigureAwait(false))!.Errors)
-                    : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                throw new ApplicationException(errorMessage, ex);
+                throw await CreateApiExceptionAsync(ex, response.Content).ConfigureAwait(false);
             }
 
             var token = await response.Content
                 .ReadFromJsonAsync<Token>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
             _client.DefaultRequestHeaders.Authorization = null;
-            return token;
+            return token!;
+        }
+
+        public async ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
+        {
+            AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false))?.AccessToken;
+
+            var response = await _client.GetAsync("/member_layouts").ConfigureAwait(false);
+            try
+            {
+                response.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException ex)
+            {
+                throw await CreateApiExceptionAsync(ex, response.Content).ConfigureAwait(false);
+            }
+
+            return (await response.Content
+                .ReadFromJsonAsync<MemberLayout>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
         }
 
         public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
+        private static async ValueTask<ApplicationException> CreateApiExceptionAsync(HttpRequestException ex, HttpContent content)
+        {
+            string errorMessage = content.Headers.ContentType.MediaType == "application/json"
+                ? string.Join("\n", (await content.ReadFromJsonAsync<ErrorResponse>().ConfigureAwait(false))!.Errors)
+                : await content.ReadAsStringAsync().ConfigureAwait(false);
+            return new ApplicationException(errorMessage, ex);
+        }
     }
 }

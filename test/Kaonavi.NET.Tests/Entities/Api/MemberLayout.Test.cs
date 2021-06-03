@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Text.Json;
 using FluentAssertions;
-using Kaonavi.Net.Entities;
 using Kaonavi.Net.Entities.Api;
 using Xunit;
 

@@ -8,7 +8,7 @@ namespace Kaonavi.Net.Entities
         [property: JsonPropertyName("required")] bool Required,
         [property: JsonPropertyName("type")] string Type,
         [property: JsonPropertyName("max_length")] int? MaxLength,
-        [property: JsonPropertyName("enum")] IEnumerable<string> Enum
+        [property: JsonPropertyName("enum")] IEnumerable<string?> Enum
     );
 
     public record CustomField(
@@ -17,6 +17,6 @@ namespace Kaonavi.Net.Entities
         bool Required,
         string Type,
         int? MaxLength,
-        IEnumerable<string> Enum
+        IEnumerable<string?> Enum
     ) : Field(Name, Required, Type, MaxLength, Enum);
 }
