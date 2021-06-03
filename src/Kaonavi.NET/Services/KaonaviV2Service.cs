@@ -73,7 +73,7 @@ namespace Kaonavi.Net.Services
 
         #region Common Method
         private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
-            => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false))?.AccessToken;
+            => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
         public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
         private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)
