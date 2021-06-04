@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Kaonavi.Net.Entities;
@@ -388,7 +389,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchDepartmentsAsync(System.Threading.CancellationToken)"/>は、"/departments"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchDepartmentsAsync(CancellationToken)"/>は、"/departments"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchDepartmentsAsync) + " > GET /departments をコールする。")]
         public async Task FetchDepartmentsAsync_Returns_DepartmentInfoList()
@@ -515,7 +516,7 @@ namespace Kaonavi.Net.Tests.Services
 
         #region User API
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchUsersAsync(System.Threading.CancellationToken)"/>は、"/users"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchUsersAsync(CancellationToken)"/>は、"/users"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUsersAsync) + " > GET /users をコールする。")]
         public async Task FetchUsersAsync_Returns_Users()
@@ -573,7 +574,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.AddUserAsync(UserPayload, System.Threading.CancellationToken)"/>は、"/users/{userId}"にPATCHリクエストを行う。
+        /// <see cref="KaonaviV2Service.AddUserAsync(UserPayload, CancellationToken)"/>は、"/users/{userId}"にPATCHリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AddUserAsync) + " > POST /users をコールする。")]
         public async Task AddUserAsync_Returns_User()
@@ -606,7 +607,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.FetchUserAsync(int, System.Threading.CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.FetchUserAsync(int, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.FetchUsersAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task FetchUserAsync_Throws_ArgumentOutOfRangeException()
@@ -628,7 +629,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchUserAsync(int, System.Threading.CancellationToken)"/>は、"/users/{userId}"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchUserAsync(int, CancellationToken)"/>は、"/users/{userId}"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUserAsync) + " > GET /users/{userId} をコールする。")]
         public async Task FetchUserAsync_Returns_User()
@@ -658,7 +659,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.UpdateUserAsync(int, UserPayload, System.Threading.CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.UpdateUserAsync(int, UserPayload, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.UpdateUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task UpdateUserAsync_Throws_ArgumentOutOfRangeException()
@@ -680,7 +681,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.UpdateUserAsync(int, UserPayload, System.Threading.CancellationToken)"/>は、"/users/{userId}"にPATCHリクエストを行う。
+        /// <see cref="KaonaviV2Service.UpdateUserAsync(int, UserPayload, CancellationToken)"/>は、"/users/{userId}"にPATCHリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateUserAsync) + " > PATCH /users/{userId} をコールする。")]
         public async Task UpdateUserAsync_Returns_User()
@@ -714,7 +715,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.DeleteUserAsync(int, System.Threading.CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.DeleteUserAsync(int, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task DeleteUserAsync_Throws_ArgumentOutOfRangeException()
@@ -736,7 +737,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.DeleteUserAsync(int, System.Threading.CancellationToken)"/>は、"/users/{userId}"にDELETEリクエストを行う。
+        /// <see cref="KaonaviV2Service.DeleteUserAsync(int, CancellationToken)"/>は、"/users/{userId}"にDELETEリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > DELETE /users/{userId} をコールする。")]
         public async Task DeleteUserAsync_Returns_User()
@@ -765,7 +766,7 @@ namespace Kaonavi.Net.Tests.Services
         #endregion
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchRolesAsync(System.Threading.CancellationToken)"/>は、"/roles"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchRolesAsync(CancellationToken)"/>は、"/roles"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchRolesAsync) + " > GET /roles をコールする。")]
         public async Task FetchRolesAsync_Returns_Roles()
