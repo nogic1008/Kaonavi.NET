@@ -83,8 +83,28 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<SheetLayoutsResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.Sheets;
         }
-        public record SheetLayoutsResult(
+        private record SheetLayoutsResult(
             [property: JsonPropertyName("sheets")] IEnumerable<SheetLayout> Sheets
+        );
+
+        /// <summary>
+        /// 所属情報の一覧を取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E/paths/~1departments/get
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        public async ValueTask<IEnumerable<DepartmentInfo>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/departments").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<DepartmentsResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.DepartmentData;
+        }
+        private record DepartmentsResult(
+            [property: JsonPropertyName("department_data")] IEnumerable<DepartmentInfo> DepartmentData
         );
 
         /// <summary>
@@ -124,8 +144,7 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<RolesResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.RoleData;
         }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public record RolesResult(
+        private record RolesResult(
             [property: JsonPropertyName("role_data")] IEnumerable<Role> RoleData
         );
 
@@ -133,7 +152,7 @@ namespace Kaonavi.Net.Services
         private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
             => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
-        public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
+        private record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
         private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)
         {
             try

@@ -277,26 +277,39 @@ namespace Kaonavi.Net.Tests.Services
         [Fact]
         public async Task FetchSheetLayoutsAsync_Returns_SheetLayouts()
         {
+            const string responseJson = "{"
+            + "\"sheets\": ["
+            + "  {"
+            + "    \"id\": 12,"
+            + "    \"name\": \"住所・連絡先\","
+            + "    \"record_type\": 1,"
+            + "    \"custom_fields\": ["
+            + "      {"
+            + "        \"id\": 1000,"
+            + "        \"name\": \"住所\","
+            + "        \"required\": false,"
+            + "        \"type\": \"string\","
+            + "        \"max_length\": 250,"
+            + "        \"enum\": []"
+            + "      },"
+            + "      {"
+            + "        \"id\": 1001,"
+            + "        \"name\": \"電話番号\","
+            + "        \"required\": false,"
+            + "        \"type\": \"string\","
+            + "        \"max_length\": 50,"
+            + "        \"enum\": []"
+            + "      }"
+            + "    ]"
+            + "  }"
+            + "]"
+            + "}";
             var endpoint = new Uri(BaseUri + "/sheet_layouts");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
             handler.SetupRequest(req => req.RequestUri == endpoint)
-                .ReturnsJson(new KaonaviV2Service.SheetLayoutsResult(
-                    new SheetLayout[]
-                    {
-                        new SheetLayout(
-                            Id: 12,
-                            Name: "住所・連絡先",
-                            RecordType: RecordType.Multiple,
-                            CustomFields: new CustomField[]
-                            {
-                                new(1000, "住所", false, "string", 250, Array.Empty<string?>()),
-                                new(1001, "電話番号", false, "string", 50, Array.Empty<string?>())
-                            }
-                        )
-                    }
-                ));
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(handler, accessToken: tokenString);
@@ -311,6 +324,79 @@ namespace Kaonavi.Net.Tests.Services
             layout.RecordType.Should().Be(RecordType.Multiple);
             layout.CustomFields.Should().HaveCount(2)
                 .And.AllBeAssignableTo<CustomField>();
+
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Get
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchDepartmentsAsync(System.Threading.CancellationToken)"/>は、"/departments"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchDepartmentsAsync) + " > GET /departments をコールする。")]
+        public async Task FetchDepartmentsAsync_Returns_DepartmentInfoList()
+        {
+            // Arrange
+            #region JSON
+            const string responseJson = "{"
+            + "\"department_data\": ["
+            + "  {"
+            + "    \"code\": \"1000\","
+            + "    \"name\": \"取締役会\","
+            + "    \"parent_code\": null,"
+            + "    \"leader_member_code\": \"A0002\","
+            + "    \"order\": 1,"
+            + "    \"memo\": \"\""
+            + "  },"
+            + "  {"
+            + "    \"code\": \"1200\","
+            + "    \"name\": \"営業本部\","
+            + "    \"parent_code\": null,"
+            + "    \"leader_member_code\": null,"
+            + "    \"order\": 2,"
+            + "    \"memo\": \"\""
+            + "  },"
+            + "  {"
+            + "    \"code\": \"1500\","
+            + "    \"name\": \"第一営業部\","
+            + "    \"parent_code\": \"1200\","
+            + "    \"leader_member_code\": null,"
+            + "    \"order\": 1,"
+            + "    \"memo\": \"\""
+            + "  },"
+            + "  {"
+            + "    \"code\": \"2000\","
+            + "    \"name\": \"ITグループ\","
+            + "    \"parent_code\": \"1500\","
+            + "    \"leader_member_code\": \"A0001\","
+            + "    \"order\": 1,"
+            + "    \"memo\": \"example\""
+            + "  }"
+            + "]"
+            + "}";
+            #endregion
+            var endpoint = new Uri(BaseUri + "/departments");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var departments = await sut.FetchDepartmentsAsync().ConfigureAwait(false);
+
+            // Assert
+            departments.Should().Equal(
+                new("1000", "取締役会", null, "A0002", 1, ""),
+                new("1200", "営業本部", null, null, 2, ""),
+                new("1500", "第一営業部", "1200", null, 1, ""),
+                new("2000", "ITグループ", "1500", "A0001", 1, "example")
+            );
 
             handler.VerifyRequest(IsExpectedRequest, Times.Once());
 
