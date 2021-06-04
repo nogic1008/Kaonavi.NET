@@ -169,8 +169,9 @@ namespace Kaonavi.Net.Services
         /// <paramref name="userId"/>と一致するログインユーザー情報を取得します。
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get
         /// </summary>
+        /// <param name="userId">ユーザーID</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
         public async ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
         {
             if (userId < 0)
@@ -184,6 +185,24 @@ namespace Kaonavi.Net.Services
             return (await response.Content
                 .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!;
+        }
+
+        /// <summary>
+        /// <paramref name="userId"/>と一致するログインユーザー情報を削除します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/delete
+        /// </summary>
+        /// <param name="userId">ユーザーID</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
+        public async ValueTask DeleteUserAsync(int userId, CancellationToken cancellationToken = default)
+        {
+            if (userId < 0)
+                throw new ArgumentOutOfRangeException(nameof(userId));
+
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.DeleteAsync($"/users/{userId:D}").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
         }
         #endregion
 

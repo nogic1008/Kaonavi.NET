@@ -623,6 +623,34 @@ namespace Kaonavi.Net.Tests.Services
                     && req.Headers.TryGetValues("Kaonavi-Token", out var values)
                     && values.First() == tokenString;
         }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.DeleteUserAsync(int, System.Threading.CancellationToken)"/>は、"/users/{userId}"にDELETEリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > DELETE /users/{userId} をコールする。")]
+        public async Task DeleteUserAsync_Returns_User()
+        {
+            const int userId = 1;
+            var endpoint = new Uri($"{BaseUri}/users/{userId}");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.NoContent);
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            await sut.DeleteUserAsync(userId).ConfigureAwait(false);
+
+            // Assert
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Delete
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
         #endregion
 
         /// <summary>
