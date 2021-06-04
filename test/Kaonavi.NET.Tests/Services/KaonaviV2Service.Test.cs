@@ -466,8 +466,7 @@ namespace Kaonavi.Net.Tests.Services
         [Fact(DisplayName = TestNameFetchTaskProgressAsync + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task FetchTaskProgressAsync_Throws_ArgumentOutOfRangeException()
         {
-            string tokenString = GenerateRandomString();
-
+            // Arrange
             var handler = new Mock<HttpMessageHandler>();
             handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
 
@@ -563,6 +562,58 @@ namespace Kaonavi.Net.Tests.Services
                 new(1, "taro@kaonavi.jp", "A0002", new(1, "システム管理者", "Adm")),
                 new(2, "hanako@kaonavi.jp", "A0001", new(2, "マネージャ", "一般"))
             );
+
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Get
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
+
+        /// <summary>
+        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.FetchUserAsync(int, System.Threading.CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// </summary>
+        [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.FetchUsersAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
+        public async Task FetchUserAsync_Throws_ArgumentOutOfRangeException()
+        {
+            // Arrange
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+
+            // Act
+            var sut = CreateSut(handler);
+            Func<Task> act = async () => _ = await sut.FetchUserAsync(-1).ConfigureAwait(false);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
+                .WithMessage("*userId*")
+                .ConfigureAwait(false);
+
+            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchUserAsync(int, System.Threading.CancellationToken)"/>は、"/users/{userId}"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUserAsync) + " > GET /users/{userId} をコールする。")]
+        public async Task FetchUserAsync_Returns_User()
+        {
+            const int userId = 1;
+            var endpoint = new Uri($"{BaseUri}/users/{userId}");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsJson(new User(userId, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var user = await sut.FetchUserAsync(userId).ConfigureAwait(false);
+
+            // Assert
+            user.Should().Be(new User(userId, "user1@example.com", "00001", new(1, "Admin", "Adm")));
 
             handler.VerifyRequest(IsExpectedRequest, Times.Once());
 
