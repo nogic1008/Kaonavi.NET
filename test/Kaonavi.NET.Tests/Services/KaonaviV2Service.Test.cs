@@ -334,7 +334,10 @@ namespace Kaonavi.Net.Tests.Services
                     && values.First() == tokenString;
         }
 
-        [Fact]
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchDepartmentsAsync(System.Threading.CancellationToken)"/>は、"/departments"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchDepartmentsAsync) + " > GET /departments をコールする。")]
         public async Task FetchDepartmentsAsync_Returns_DepartmentInfoList()
         {
             // Arrange
