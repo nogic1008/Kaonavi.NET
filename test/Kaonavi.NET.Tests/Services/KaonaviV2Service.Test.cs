@@ -514,6 +514,66 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
+        #region User API
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchUsersAsync(System.Threading.CancellationToken)"/>は、"/users"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUsersAsync) + " > GET /users をコールする。")]
+        public async Task FetchUsersAsync_Returns_Users()
+        {
+            #region JSON
+            const string responseJson = "{"
+            + "\"user_data\": ["
+            + "  {"
+            + "    \"id\": 1,"
+            + "    \"email\": \"taro@kaonavi.jp\","
+            + "    \"member_code\": \"A0002\","
+            + "    \"role\": {"
+            + "      \"id\": 1,"
+            + "      \"name\": \"システム管理者\","
+            + "      \"type\": \"Adm\""
+            + "    }"
+            + "  },"
+            + "  {"
+            + "    \"id\": 2,"
+            + "    \"email\": \"hanako@kaonavi.jp\","
+            + "    \"member_code\": \"A0001\","
+            + "    \"role\": {"
+            + "      \"id\": 2,"
+            + "      \"name\": \"マネージャ\","
+            + "      \"type\": \"一般\""
+            + "    }"
+            + "  }"
+            + "]"
+            + "}";
+            #endregion
+            var endpoint = new Uri(BaseUri + "/users");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var users = await sut.FetchUsersAsync().ConfigureAwait(false);
+
+            // Assert
+            users.Should().Equal(
+                new(1, "taro@kaonavi.jp", "A0002", new(1, "システム管理者", "Adm")),
+                new(2, "hanako@kaonavi.jp", "A0001", new(2, "マネージャ", "一般"))
+            );
+
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Get
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
+        #endregion
+
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchRolesAsync(System.Threading.CancellationToken)"/>は、"/roles"にGETリクエストを行う。
         /// </summary>

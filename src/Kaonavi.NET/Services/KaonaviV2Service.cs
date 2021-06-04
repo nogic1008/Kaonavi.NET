@@ -144,6 +144,28 @@ namespace Kaonavi.Net.Services
                 .ConfigureAwait(false))!;
         }
 
+        #region User
+        /// <summary>
+        /// ユーザー情報の一覧を取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        public async ValueTask<IEnumerable<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/users").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<UsersResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.UserData;
+        }
+        private record UsersResult(
+            [property: JsonPropertyName("user_data")] IEnumerable<User> UserData
+        );
+        #endregion
+
         /// <summary>
         /// ロール情報の一覧を取得します。
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get
