@@ -20,6 +20,7 @@ namespace Kaonavi.Net.Tests.Services
     public class KaonaviV2ServiceTest
     {
         private const string BaseUri = "https://example.com";
+        private const string TestName = nameof(KaonaviV2Service) + " > ";
 
         private static string GenerateRandomString() => Guid.NewGuid().ToString();
 
@@ -323,7 +324,7 @@ namespace Kaonavi.Net.Tests.Services
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchRolesAsync(System.Threading.CancellationToken)"/>は、"/roles"にGETリクエストを行う。
         /// </summary>
-        [Fact]
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchRolesAsync) + " > GET /roles をコールする。")]
         public async Task FetchRolesAsync_Returns_Roles()
         {
             const string responseJson = "{"
