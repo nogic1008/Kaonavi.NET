@@ -573,6 +573,39 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
+        /// <see cref="KaonaviV2Service.AddUserAsync(UserPayload, System.Threading.CancellationToken)"/>は、"/users/{userId}"にPATCHリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AddUserAsync) + " > POST /users をコールする。")]
+        public async Task AddUserAsync_Returns_User()
+        {
+            var endpoint = new Uri($"{BaseUri}/users");
+            string tokenString = GenerateRandomString();
+            var payload = new UserPayload("user1@example.com", "00001", "password", 1);
+            const string expectedJson = "{\"email\":\"user1@example.com\","
+            + "\"member_code\":\"00001\","
+            + "\"password\":\"password\","
+            + "\"role\":{\"id\":1}}";
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsJson(new User(10, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var user = await sut.AddUserAsync(payload).ConfigureAwait(false);
+
+            // Assert
+            user.Should().Be(new User(10, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+
+            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Post
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString
+                    && (await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) == expectedJson,
+                    Times.Once());
+        }
+
+        /// <summary>
         /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.FetchUserAsync(int, System.Threading.CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.FetchUsersAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
@@ -673,7 +706,7 @@ namespace Kaonavi.Net.Tests.Services
             user.Should().Be(new User(userId, "user1@example.com", "00001", new(1, "Admin", "Adm")));
 
             handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == new HttpMethod("PATCH")
+                    && req.Method == HttpMethod.Patch
                     && req.Headers.TryGetValues("Kaonavi-Token", out var values)
                     && values.First() == tokenString
                     && (await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) == expectedJson,

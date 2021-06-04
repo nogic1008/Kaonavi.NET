@@ -173,6 +173,29 @@ namespace Kaonavi.Net.Services
             [property: JsonPropertyName("user_data")] IEnumerable<User> UserData
         );
 
+        /// <summary>
+        /// ユーザー情報を登録します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/post
+        /// </summary>
+        /// <param name="payload">リクエスト</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <remarks>
+        /// 管理者メニュー > ユーザー管理 にてユーザー作成時に設定可能なオプションについては、以下の内容で作成されます。
+        /// - スマホオプション: 停止
+        /// - セキュアアクセス: 停止
+        /// </remarks>
+        public async ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var postPayload = new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!));
+            var response = await _client.PostAsJsonAsync("/users", postPayload, _options).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
+        }
         private record UserJsonPayload(
             [property: JsonPropertyName("email")] string EMail,
             [property: JsonPropertyName("member_code")] string? MemberCode,
