@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -84,6 +85,27 @@ namespace Kaonavi.Net.Services
         }
         public record SheetLayoutsResult(
             [property: JsonPropertyName("sheets")] IEnumerable<SheetLayout> Sheets
+        );
+
+        /// <summary>
+        /// ロール情報の一覧を取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        public async ValueTask<IEnumerable<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/roles").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<RolesResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.RoleData;
+        }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public record RolesResult(
+            [property: JsonPropertyName("role_data")] IEnumerable<Role> RoleData
         );
 
         #region Common Method

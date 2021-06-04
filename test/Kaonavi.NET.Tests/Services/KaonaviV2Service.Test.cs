@@ -319,5 +319,48 @@ namespace Kaonavi.Net.Tests.Services
                     && req.Headers.TryGetValues("Kaonavi-Token", out var values)
                     && values.First() == tokenString;
         }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchRolesAsync(System.Threading.CancellationToken)"/>は、"/roles"にGETリクエストを行う。
+        /// </summary>
+        [Fact]
+        public async Task FetchRolesAsync_Returns_Roles()
+        {
+            const string responseJson = "{"
+            + "\"role_data\": ["
+            + "  {"
+            + "    \"id\": 1,"
+            + "    \"name\": \"カオナビ管理者\","
+            + "    \"type\": \"Adm\""
+            + "  },"
+            + "  {"
+            + "    \"id\": 2,"
+            + "    \"name\": \"カオナビマネージャー\","
+            + "    \"type\": \"一般\""
+            + "  }"
+            + "]"
+            + "}";
+            var endpoint = new Uri(BaseUri + "/roles");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var roles = await sut.FetchRolesAsync().ConfigureAwait(false);
+
+            // Assert
+            roles.Should().Equal(new(1, "カオナビ管理者", "Adm"), new(2, "カオナビマネージャー", "一般"));
+
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Get
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
     }
 }
