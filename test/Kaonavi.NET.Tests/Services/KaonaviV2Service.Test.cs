@@ -610,7 +610,7 @@ namespace Kaonavi.Net.Tests.Services
         /// <summary>
         /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.FetchUserAsync(int, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
-        [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.FetchUsersAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUsersAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task FetchUserAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
@@ -662,7 +662,7 @@ namespace Kaonavi.Net.Tests.Services
         /// <summary>
         /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.UpdateUserAsync(int, UserPayload, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
-        [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.UpdateUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task UpdateUserAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
@@ -718,7 +718,7 @@ namespace Kaonavi.Net.Tests.Services
         /// <summary>
         /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.DeleteUserAsync(int, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
-        [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task DeleteUserAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange

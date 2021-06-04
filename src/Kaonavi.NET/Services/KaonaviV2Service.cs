@@ -250,7 +250,7 @@ namespace Kaonavi.Net.Services
             var patchPayload = new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!));
             var content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(patchPayload, _options));
             content.Headers.ContentType = new("application/json");
-            var req = new HttpRequestMessage(new("PATCH"), $"/users/{userId:D}"){ Content = content };
+            var req = new HttpRequestMessage(new("PATCH"), $"/users/{userId:D}") { Content = content };
 
             var response = await _client.SendAsync(req).ConfigureAwait(false);
             await ValidateApiResponseAsync(response).ConfigureAwait(false);
