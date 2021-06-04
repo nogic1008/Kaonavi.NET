@@ -625,6 +625,84 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
+        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.UpdateUserAsync(int, UserPayload, System.Threading.CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// </summary>
+        [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.UpdateUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
+        public async Task UpdateUserAsync_Throws_ArgumentOutOfRangeException()
+        {
+            // Arrange
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+
+            // Act
+            var sut = CreateSut(handler);
+            Func<Task> act = async () => _ = await sut.UpdateUserAsync(-1, null!).ConfigureAwait(false);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
+                .WithMessage("*userId*")
+                .ConfigureAwait(false);
+
+            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.UpdateUserAsync(int, UserPayload, System.Threading.CancellationToken)"/>は、"/users/{userId}"にPATCHリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateUserAsync) + " > PATCH /users/{userId} をコールする。")]
+        public async Task UpdateUserAsync_Returns_User()
+        {
+            const int userId = 1;
+            var endpoint = new Uri($"{BaseUri}/users/{userId}");
+            string tokenString = GenerateRandomString();
+            var payload = new UserPayload("user1@example.com", "00001", "password", 1);
+            const string expectedJson = "{\"email\":\"user1@example.com\","
+            + "\"member_code\":\"00001\","
+            + "\"password\":\"password\","
+            + "\"role\":{\"id\":1}}";
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsJson(new User(userId, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var user = await sut.UpdateUserAsync(userId, payload).ConfigureAwait(false);
+
+            // Assert
+            user.Should().Be(new User(userId, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+
+            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
+                    && req.Method == new HttpMethod("PATCH")
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString
+                    && (await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) == expectedJson,
+                    Times.Once());
+        }
+
+        /// <summary>
+        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.DeleteUserAsync(int, System.Threading.CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// </summary>
+        [Fact(DisplayName =  TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
+        public async Task DeleteUserAsync_Throws_ArgumentOutOfRangeException()
+        {
+            // Arrange
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+
+            // Act
+            var sut = CreateSut(handler);
+            Func<Task> act = async () => await sut.DeleteUserAsync(-1).ConfigureAwait(false);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
+                .WithMessage("*userId*")
+                .ConfigureAwait(false);
+
+            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+        }
+
+        /// <summary>
         /// <see cref="KaonaviV2Service.DeleteUserAsync(int, System.Threading.CancellationToken)"/>は、"/users/{userId}"にDELETEリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > DELETE /users/{userId} をコールする。")]

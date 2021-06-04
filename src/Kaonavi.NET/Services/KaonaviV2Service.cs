@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,13 @@ namespace Kaonavi.Net.Services
     public class KaonaviV2Service
     {
         private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0";
+        /// <summary>
+        /// APIに送信するJSONペイロードのエンコード設定
+        /// </summary>
+        private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web)
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
         private readonly HttpClient _client;
         private readonly string _consumerKey;
         private readonly string _consumerSecret;
@@ -165,6 +173,13 @@ namespace Kaonavi.Net.Services
             [property: JsonPropertyName("user_data")] IEnumerable<User> UserData
         );
 
+        private record UserJsonPayload(
+            [property: JsonPropertyName("email")] string EMail,
+            [property: JsonPropertyName("member_code")] string? MemberCode,
+            [property: JsonPropertyName("password")] string Password,
+            [property: JsonPropertyName("role")] Role Role
+        );
+
         /// <summary>
         /// <paramref name="userId"/>と一致するログインユーザー情報を取得します。
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get
@@ -180,6 +195,41 @@ namespace Kaonavi.Net.Services
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
             var response = await _client.GetAsync($"/users/{userId:D}").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
+        }
+
+        /// <summary>
+        /// <paramref name="userId"/>と一致するログインユーザー情報を更新します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/patch
+        /// </summary>
+        /// <param name="userId">ユーザーID</param>
+        /// <param name="payload">リクエスト</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
+        /// <remarks>
+        /// 管理者メニュー > ユーザー管理 にて更新可能な以下のオプションについては元の値が維持されます。
+        /// - スマホオプション
+        /// - セキュアアクセス
+        /// - アカウント状態
+        /// - パスワードロック
+        /// </remarks>
+        public async ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
+        {
+            if (userId < 0)
+                throw new ArgumentOutOfRangeException(nameof(userId));
+
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var patchPayload = new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!));
+            var content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(patchPayload, _options));
+            content.Headers.ContentType = new("application/json");
+            var req = new HttpRequestMessage(new("PATCH"), $"/users/{userId:D}"){ Content = content };
+
+            var response = await _client.SendAsync(req).ConfigureAwait(false);
             await ValidateApiResponseAsync(response).ConfigureAwait(false);
 
             return (await response.Content
