@@ -129,7 +129,8 @@ namespace Kaonavi.Net.Tests.Services
         {
             // Arrange
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Dry-Run", headerValue);
+            if (headerValue is not null)
+                client.DefaultRequestHeaders.Add("Dry-Run", headerValue);
 
             // Act
             var sut = new KaonaviV2Service(client, "foo", "bar");
