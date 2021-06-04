@@ -321,6 +321,60 @@ namespace Kaonavi.Net.Tests.Services
                     && values.First() == tokenString;
         }
 
+        #region FetchTaskProgressAsync
+        private const string TestNameFetchTaskProgressAsync = TestName + nameof(KaonaviV2Service.FetchTaskProgressAsync) + " > ";
+
+        [Fact(DisplayName = TestNameFetchTaskProgressAsync + nameof(ArgumentOutOfRangeException) + "をスローする。")]
+        public async Task FetchTaskProgressAsync_Throws_ArgumentOutOfRangeException()
+        {
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+
+            // Act
+            var sut = CreateSut(handler);
+            Func<Task> act = async () => _ = await sut.FetchTaskProgressAsync(-1).ConfigureAwait(false);
+
+            // Assert
+            await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
+                .WithMessage("*taskId*")
+                .ConfigureAwait(false);
+
+            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+        }
+
+        [Fact(DisplayName = TestNameFetchTaskProgressAsync + "GET /tasks/{taskId} をコールする。")]
+        public async Task FetchTaskProgressAsync_Returns_TaskProgress()
+        {
+            const int taskId = 1;
+            var endpoint = new Uri($"{BaseUri}/tasks/{taskId}");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsJson(new TaskProgress(taskId, "NG", new[] { "エラーメッセージ1", "エラーメッセージ2" }));
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var task = await sut.FetchTaskProgressAsync(taskId).ConfigureAwait(false);
+
+            // Assert
+            task.Should().NotBeNull();
+            task.Id.Should().Be(taskId);
+            task.Status.Should().Be("NG");
+            task.Messages.Should().Equal("エラーメッセージ1", "エラーメッセージ2");
+
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Get
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
+        #endregion
+
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchRolesAsync(System.Threading.CancellationToken)"/>は、"/roles"にGETリクエストを行う。
         /// </summary>

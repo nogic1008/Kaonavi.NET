@@ -88,6 +88,27 @@ namespace Kaonavi.Net.Services
         );
 
         /// <summary>
+        /// <paramref name="taskId"/>と一致するタスクの進捗状況を取得します。
+        /// </summary>
+        /// <param name="taskId">タスクID</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
+        public async ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
+        {
+            if (taskId < 0)
+                throw new ArgumentOutOfRangeException(nameof(taskId));
+
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync($"/tasks/{taskId:D}").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskProgress>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
+        }
+
+        /// <summary>
         /// ロール情報の一覧を取得します。
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get
         /// </summary>
