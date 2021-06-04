@@ -277,26 +277,39 @@ namespace Kaonavi.Net.Tests.Services
         [Fact]
         public async Task FetchSheetLayoutsAsync_Returns_SheetLayouts()
         {
+            const string responseJson = "{"
+            + "\"sheets\": ["
+            + "  {"
+            + "    \"id\": 12,"
+            + "    \"name\": \"住所・連絡先\","
+            + "    \"record_type\": 1,"
+            + "    \"custom_fields\": ["
+            + "      {"
+            + "        \"id\": 1000,"
+            + "        \"name\": \"住所\","
+            + "        \"required\": false,"
+            + "        \"type\": \"string\","
+            + "        \"max_length\": 250,"
+            + "        \"enum\": []"
+            + "      },"
+            + "      {"
+            + "        \"id\": 1001,"
+            + "        \"name\": \"電話番号\","
+            + "        \"required\": false,"
+            + "        \"type\": \"string\","
+            + "        \"max_length\": 50,"
+            + "        \"enum\": []"
+            + "      }"
+            + "    ]"
+            + "  }"
+            + "]"
+            + "}";
             var endpoint = new Uri(BaseUri + "/sheet_layouts");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
             handler.SetupRequest(req => req.RequestUri == endpoint)
-                .ReturnsJson(new KaonaviV2Service.SheetLayoutsResult(
-                    new SheetLayout[]
-                    {
-                        new SheetLayout(
-                            Id: 12,
-                            Name: "住所・連絡先",
-                            RecordType: RecordType.Multiple,
-                            CustomFields: new CustomField[]
-                            {
-                                new(1000, "住所", false, "string", 250, Array.Empty<string?>()),
-                                new(1001, "電話番号", false, "string", 50, Array.Empty<string?>())
-                            }
-                        )
-                    }
-                ));
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(handler, accessToken: tokenString);

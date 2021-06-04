@@ -83,7 +83,7 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<SheetLayoutsResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.Sheets;
         }
-        public record SheetLayoutsResult(
+        private record SheetLayoutsResult(
             [property: JsonPropertyName("sheets")] IEnumerable<SheetLayout> Sheets
         );
 
@@ -103,8 +103,7 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<DepartmentsResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.DepartmentData;
         }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public record DepartmentsResult(
+        private record DepartmentsResult(
             [property: JsonPropertyName("department_data")] IEnumerable<DepartmentInfo> DepartmentData
         );
 
@@ -145,8 +144,7 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<RolesResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.RoleData;
         }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public record RolesResult(
+        private record RolesResult(
             [property: JsonPropertyName("role_data")] IEnumerable<Role> RoleData
         );
 
@@ -154,7 +152,7 @@ namespace Kaonavi.Net.Services
         private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
             => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
-        public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
+        private record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
         private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)
         {
             try
