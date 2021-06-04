@@ -353,7 +353,7 @@ namespace Kaonavi.Net.Tests.Services
 
             var handler = new Mock<HttpMessageHandler>();
             handler.SetupRequest(req => req.RequestUri == endpoint)
-                .ReturnsJson(new TaskProgress(taskId, "NG", new[]{ "エラーメッセージ1", "エラーメッセージ2" }));
+                .ReturnsJson(new TaskProgress(taskId, "NG", new[] { "エラーメッセージ1", "エラーメッセージ2" }));
 
             // Act
             var sut = CreateSut(handler, accessToken: tokenString);
