@@ -321,6 +321,76 @@ namespace Kaonavi.Net.Tests.Services
                     && values.First() == tokenString;
         }
 
+        [Fact]
+        public async Task FetchDepartmentsAsync_Returns_DepartmentInfoList()
+        {
+            // Arrange
+            #region JSON
+            const string responseJson = "{"
+            + "\"department_data\": ["
+            + "  {"
+            + "    \"code\": \"1000\","
+            + "    \"name\": \"取締役会\","
+            + "    \"parent_code\": null,"
+            + "    \"leader_member_code\": \"A0002\","
+            + "    \"order\": 1,"
+            + "    \"memo\": \"\""
+            + "  },"
+            + "  {"
+            + "    \"code\": \"1200\","
+            + "    \"name\": \"営業本部\","
+            + "    \"parent_code\": null,"
+            + "    \"leader_member_code\": null,"
+            + "    \"order\": 2,"
+            + "    \"memo\": \"\""
+            + "  },"
+            + "  {"
+            + "    \"code\": \"1500\","
+            + "    \"name\": \"第一営業部\","
+            + "    \"parent_code\": \"1200\","
+            + "    \"leader_member_code\": null,"
+            + "    \"order\": 1,"
+            + "    \"memo\": \"\""
+            + "  },"
+            + "  {"
+            + "    \"code\": \"2000\","
+            + "    \"name\": \"ITグループ\","
+            + "    \"parent_code\": \"1500\","
+            + "    \"leader_member_code\": \"A0001\","
+            + "    \"order\": 1,"
+            + "    \"memo\": \"example\""
+            + "  }"
+            + "]"
+            + "}";
+            #endregion
+            var endpoint = new Uri(BaseUri + "/departments");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var departments = await sut.FetchDepartmentsAsync().ConfigureAwait(false);
+
+            // Assert
+            departments.Should().Equal(
+                new("1000", "取締役会", null, "A0002", 1, ""),
+                new("1200", "営業本部", null, null, 2, ""),
+                new("1500", "第一営業部", "1200", null, 1, ""),
+                new("2000", "ITグループ", "1500", "A0001", 1, "example")
+            );
+
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Get
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
+
         #region FetchTaskProgressAsync
         private const string TestNameFetchTaskProgressAsync = TestName + nameof(KaonaviV2Service.FetchTaskProgressAsync) + " > ";
 
