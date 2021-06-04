@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,13 @@ namespace Kaonavi.Net.Services
     public class KaonaviV2Service
     {
         private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0";
+        /// <summary>
+        /// APIに送信するJSONペイロードのエンコード設定
+        /// </summary>
+        private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web)
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
         private readonly HttpClient _client;
         private readonly string _consumerKey;
         private readonly string _consumerSecret;
@@ -28,6 +36,23 @@ namespace Kaonavi.Net.Services
                 _client.DefaultRequestHeaders.Remove(TokenHeader);
                 if (!string.IsNullOrWhiteSpace(value))
                     _client.DefaultRequestHeaders.Add(TokenHeader, value);
+            }
+        }
+
+        private const string DryRunHeader = "Dry-Run";
+        /// <summary>
+        /// dryrunモードの動作有無を取得または設定します。
+        /// <c>true</c>に設定することで、データベースの操作を行わず、リクエストの内容が適切であるかを検証することが出来ます。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#section/dryrun
+        /// </summary>
+        public bool UseDryRun
+        {
+            get => _client.DefaultRequestHeaders.TryGetValues(DryRunHeader, out var values) && values.First() == "1";
+            set
+            {
+                _client.DefaultRequestHeaders.Remove(DryRunHeader);
+                if (value)
+                    _client.DefaultRequestHeaders.Add(DryRunHeader, "1");
             }
         }
 
@@ -82,15 +107,203 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<SheetLayoutsResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.Sheets;
         }
-        public record SheetLayoutsResult(
+        private record SheetLayoutsResult(
             [property: JsonPropertyName("sheets")] IEnumerable<SheetLayout> Sheets
+        );
+
+        /// <summary>
+        /// 所属情報の一覧を取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E/paths/~1departments/get
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        public async ValueTask<IEnumerable<DepartmentInfo>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/departments").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<DepartmentsResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.DepartmentData;
+        }
+        private record DepartmentsResult(
+            [property: JsonPropertyName("department_data")] IEnumerable<DepartmentInfo> DepartmentData
+        );
+
+        /// <summary>
+        /// <paramref name="taskId"/>と一致するタスクの進捗状況を取得します。
+        /// </summary>
+        /// <param name="taskId">タスクID</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
+        public async ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
+        {
+            if (taskId < 0)
+                throw new ArgumentOutOfRangeException(nameof(taskId));
+
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync($"/tasks/{taskId:D}").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskProgress>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
+        }
+
+        #region User
+        /// <summary>
+        /// ユーザー情報の一覧を取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        public async ValueTask<IEnumerable<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/users").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<UsersResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.UserData;
+        }
+        private record UsersResult(
+            [property: JsonPropertyName("user_data")] IEnumerable<User> UserData
+        );
+
+        /// <summary>
+        /// ユーザー情報を登録します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/post
+        /// </summary>
+        /// <param name="payload">リクエスト</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <remarks>
+        /// 管理者メニュー > ユーザー管理 にてユーザー作成時に設定可能なオプションについては、以下の内容で作成されます。
+        /// - スマホオプション: 停止
+        /// - セキュアアクセス: 停止
+        /// </remarks>
+        public async ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var postPayload = new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!));
+            var response = await _client.PostAsJsonAsync("/users", postPayload, _options).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
+        }
+        private record UserJsonPayload(
+            [property: JsonPropertyName("email")] string EMail,
+            [property: JsonPropertyName("member_code")] string? MemberCode,
+            [property: JsonPropertyName("password")] string Password,
+            [property: JsonPropertyName("role")] Role Role
+        );
+
+        /// <summary>
+        /// <paramref name="userId"/>と一致するログインユーザー情報を取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get
+        /// </summary>
+        /// <param name="userId">ユーザーID</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
+        public async ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
+        {
+            if (userId < 0)
+                throw new ArgumentOutOfRangeException(nameof(userId));
+
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync($"/users/{userId:D}").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
+        }
+
+        /// <summary>
+        /// <paramref name="userId"/>と一致するログインユーザー情報を更新します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/patch
+        /// </summary>
+        /// <param name="userId">ユーザーID</param>
+        /// <param name="payload">リクエスト</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
+        /// <remarks>
+        /// 管理者メニュー > ユーザー管理 にて更新可能な以下のオプションについては元の値が維持されます。
+        /// - スマホオプション
+        /// - セキュアアクセス
+        /// - アカウント状態
+        /// - パスワードロック
+        /// </remarks>
+        public async ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
+        {
+            if (userId < 0)
+                throw new ArgumentOutOfRangeException(nameof(userId));
+
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var patchPayload = new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!));
+            var content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(patchPayload, _options));
+            content.Headers.ContentType = new("application/json");
+            var req = new HttpRequestMessage(new("PATCH"), $"/users/{userId:D}") { Content = content };
+
+            var response = await _client.SendAsync(req).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
+        }
+
+        /// <summary>
+        /// <paramref name="userId"/>と一致するログインユーザー情報を削除します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/delete
+        /// </summary>
+        /// <param name="userId">ユーザーID</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
+        public async ValueTask DeleteUserAsync(int userId, CancellationToken cancellationToken = default)
+        {
+            if (userId < 0)
+                throw new ArgumentOutOfRangeException(nameof(userId));
+
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.DeleteAsync($"/users/{userId:D}").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+        }
+        #endregion
+
+        /// <summary>
+        /// ロール情報の一覧を取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        public async ValueTask<IEnumerable<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/roles").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<RolesResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.RoleData;
+        }
+        private record RolesResult(
+            [property: JsonPropertyName("role_data")] IEnumerable<Role> RoleData
         );
 
         #region Common Method
         private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
             => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
-        public record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
+        private record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
         private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)
         {
             try
