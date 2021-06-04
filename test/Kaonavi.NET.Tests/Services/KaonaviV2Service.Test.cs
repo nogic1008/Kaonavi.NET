@@ -113,6 +113,59 @@ namespace Kaonavi.Net.Tests.Services
             client.DefaultRequestHeaders.TryGetValues("Kaonavi-Token", out var values).Should().BeTrue();
             values!.First().Should().Be(headerValue);
         }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.UseDryRun"/>は、HttpClientのDry-Runヘッダーが"1"かどうかを返す。
+        /// </summary>
+        /// <param name="headerValue">Dry-Runヘッダーに設定する値</param>
+        /// <param name="expected"><see cref="KaonaviV2Service.UseDryRun"/></param>
+        [Theory(DisplayName = TestName + nameof(KaonaviV2Service.UseDryRun) + " > Dry-Run: 1 かどうかを返す。")]
+        [InlineData(null, false)]
+        [InlineData("0", false)]
+        [InlineData("1", true)]
+        [InlineData("foo", false)]
+        public void UseDryRun_Returns_ClientHeader(string? headerValue, bool expected)
+        {
+            // Arrange
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("Dry-Run", headerValue);
+
+            // Act
+            var sut = new KaonaviV2Service(client, "foo", "bar");
+
+            // Assert
+            sut.UseDryRun.Should().Be(expected);
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.UseDryRun"/>は、HttpClientのDry-Runヘッダー値を追加/削除する。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UseDryRun) + " > Dry-Runヘッダーを追加/削除する。")]
+        public void UseDryRun_Sets_ClientHeader()
+        {
+            // Arrange
+            var client = new HttpClient();
+
+            #region UseDryRun = true
+            // Act
+            var sut = new KaonaviV2Service(client, "foo", "bar")
+            {
+                UseDryRun = true
+            };
+
+            // Assert
+            client.DefaultRequestHeaders.TryGetValues("Dry-Run", out var values).Should().BeTrue();
+            values!.First().Should().Be("1");
+            #endregion
+
+            #region UseDryRun = false
+            // Act
+            sut.UseDryRun = false;
+
+            // Assert
+            client.DefaultRequestHeaders.TryGetValues("Dry-Run", out _).Should().BeFalse();
+            #endregion
+        }
         #endregion
 
         private static KaonaviV2Service CreateSut(Mock<HttpMessageHandler> handler, string key = "Key", string secret = "Secret", string? accessToken = null)

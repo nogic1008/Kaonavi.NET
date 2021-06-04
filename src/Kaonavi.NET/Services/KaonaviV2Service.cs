@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -29,6 +28,23 @@ namespace Kaonavi.Net.Services
                 _client.DefaultRequestHeaders.Remove(TokenHeader);
                 if (!string.IsNullOrWhiteSpace(value))
                     _client.DefaultRequestHeaders.Add(TokenHeader, value);
+            }
+        }
+
+        private const string DryRunHeader = "Dry-Run";
+        /// <summary>
+        /// dryrunモードの動作有無を取得または設定します。
+        /// <c>true</c>に設定することで、データベースの操作を行わず、リクエストの内容が適切であるかを検証することが出来ます。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#section/dryrun
+        /// </summary>
+        public bool UseDryRun
+        {
+            get => _client.DefaultRequestHeaders.TryGetValues(DryRunHeader, out var values) && values.First() == "1";
+            set
+            {
+                _client.DefaultRequestHeaders.Remove(DryRunHeader);
+                if (value)
+                    _client.DefaultRequestHeaders.Add(DryRunHeader, "1");
             }
         }
 
