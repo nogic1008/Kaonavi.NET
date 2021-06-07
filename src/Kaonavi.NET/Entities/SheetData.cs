@@ -6,7 +6,7 @@ namespace Kaonavi.Net.Entities
     /// <summary>シート情報</summary>
     public record SheetData
     {
-        public SheetData(string code, SheetRecord record) : this(code, new[]{ record }) { }
+        public SheetData(string code, SheetRecord record) : this(code, new[] { record }) { }
 
         [JsonConstructor]
         public SheetData(string code, IEnumerable<SheetRecord> records)
