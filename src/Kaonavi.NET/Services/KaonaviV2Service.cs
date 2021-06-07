@@ -116,10 +116,6 @@ namespace Kaonavi.Net.Services
         );
 
         #region Member
-        private record MembersResult(
-            [property: JsonPropertyName("member_data")] IEnumerable<MemberData> MemberData
-        );
-
         /// <summary>
         /// 全てのメンバーの基本情報・所属（主務）・兼務情報を取得します。
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get
@@ -133,7 +129,7 @@ namespace Kaonavi.Net.Services
             await ValidateApiResponseAsync(response).ConfigureAwait(false);
 
             return (await response.Content
-                .ReadFromJsonAsync<MembersResult>(_options, cancellationToken)
+                .ReadFromJsonAsync<ApiResult<MemberData>>(_options, cancellationToken)
                 .ConfigureAwait(false))!.MemberData;
         }
 
@@ -149,7 +145,7 @@ namespace Kaonavi.Net.Services
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var postPayload = new MembersResult(payload);
+            var postPayload = new ApiResult<MemberData>(payload);
             var response = await _client.PostAsJsonAsync("/members", postPayload, _options).ConfigureAwait(false);
             await ValidateApiResponseAsync(response).ConfigureAwait(false);
 
@@ -174,7 +170,7 @@ namespace Kaonavi.Net.Services
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var postPayload = new MembersResult(payload);
+            var postPayload = new ApiResult<MemberData>(payload);
             var response = await _client.PutAsJsonAsync("/members", postPayload, _options).ConfigureAwait(false);
             await ValidateApiResponseAsync(response).ConfigureAwait(false);
 
@@ -197,10 +193,89 @@ namespace Kaonavi.Net.Services
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var patchPayload = new MembersResult(payload);
+            var patchPayload = new ApiResult<MemberData>(payload);
             var content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(patchPayload, _options));
             content.Headers.ContentType = new("application/json");
             var req = new HttpRequestMessage(new("PATCH"), "/members") { Content = content };
+
+            var response = await _client.SendAsync(req).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.Id;
+        }
+        #endregion
+
+        #region Sheet
+        /// <summary>
+        /// 指定したシートの全情報を取得します。
+        /// </summary>
+        /// <param name="sheetId">シートID</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        public async ValueTask<IEnumerable<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync($"/sheets/{sheetId:D}", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<ApiResult<SheetData>>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.MemberData;
+        }
+
+        /// <summary>
+        /// 指定したシートのシート情報を一括更新します。
+        /// <paramref name="payload"/> に含まれていない情報は削除されます。
+        /// 複数レコードの情報は送信された配列順に登録されます。
+        /// </summary>
+        /// <param name="sheetId">シートID</param>
+        /// <param name="payload">一括更新するデータ</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <returns><see cref="TaskProgress.Id"/></returns>
+        public async ValueTask<int> ReplaceSheetDataAsync(int sheetId, IEnumerable<SheetData> payload, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var putPayload = new ApiResult<SheetData>(payload);
+            var response = await _client.PutAsJsonAsync($"/sheets/{sheetId:D}", putPayload, _options, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.Id;
+        }
+
+        /// <summary>
+        /// 指定したシートのシート情報の一部を更新します。
+        /// <para>
+        /// 単一レコード
+        /// 送信された情報のみが更新されます。
+        /// <paramref name="payload"/> に含まれていない情報は更新されません。
+        /// 特定の値を削除する場合は、<c>""</c> を送信してください。
+        /// </para>
+        /// <para>
+        /// 複数レコード
+        /// メンバーごとのデータが一括更新されます。
+        /// 特定の値を削除する場合は、<c>""</c> を送信してください。
+        /// 特定のレコードだけを更新することは出来ません。
+        /// <see cref="SheetData.Code"/> が指定されていないメンバーの情報は更新されません。
+        /// 送信された配列順に登録されます。
+        /// </para>
+        /// </summary>
+        /// <param name="sheetId">シートID</param>
+        /// <param name="payload">更新するデータ</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <returns><see cref="TaskProgress.Id"/></returns>
+        public async ValueTask<int> UpdateSheetDataAsync(int sheetId, IEnumerable<SheetData> payload, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var patchPayload = new ApiResult<SheetData>(payload);
+            var content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(patchPayload, _options));
+            content.Headers.ContentType = new("application/json");
+            var req = new HttpRequestMessage(new("PATCH"), $"/sheets/{sheetId:D}") { Content = content };
 
             var response = await _client.SendAsync(req).ConfigureAwait(false);
             await ValidateApiResponseAsync(response).ConfigureAwait(false);
@@ -402,6 +477,10 @@ namespace Kaonavi.Net.Services
         #region Common Method
         private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
             => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
+
+        private record ApiResult<T>(
+            [property: JsonPropertyName("member_data")] IEnumerable<T> MemberData
+        );
 
         private record TaskResult([property: JsonPropertyName("task_id")] int Id);
 
