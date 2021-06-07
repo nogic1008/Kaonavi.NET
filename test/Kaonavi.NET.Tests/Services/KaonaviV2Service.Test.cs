@@ -651,6 +651,206 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
+        #region Sheet API
+        /// <summary>Sheet APIのリクエストPayload</summary>
+        private static readonly SheetData[] _sheetDataPayload = new SheetData[]
+        {
+            new (
+                "A0002",
+                new SheetRecord(
+                    new CustomFieldValue[]
+                    {
+                        new(1000, "東京都港区x-x-x")
+                    }
+                )
+            ),
+            new (
+                "A0001",
+                new SheetRecord[]
+                {
+                    new(
+                        new CustomFieldValue[]
+                        {
+                            new(1000, "大阪府大阪市y番y号"),
+                            new(1001, "06-yyyy-yyyy")
+                        }
+                    ),
+                    new(
+                        new CustomFieldValue[]
+                        {
+                            new(1000, "愛知県名古屋市z丁目z番z号"),
+                            new(1001, "052-zzzz-zzzz")
+                        }
+                    ),
+                }
+            )
+        };
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchSheetDataListAsync(int, CancellationToken)"/>は、"/sheets/{sheetId}"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchSheetDataListAsync) + " > GET /sheets/{sheetId} をコールする。")]
+        public async Task FetchSheetDataListAsync_Returns_SheetDataList()
+        {
+            // Arrange
+            const int sheetId = 1;
+            #region JSON
+            const string responseJson = "{"
+            + "  \"id\": 12,"
+            + "  \"name\": \"住所・連絡先\","
+            + "  \"record_type\": 1,"
+            + "  \"updated_at\": \"2020-10-01 01:23:45\","
+            + "  \"member_data\": ["
+            + "    {"
+            + "      \"code\": \"A0002\","
+            + "      \"records\": ["
+            + "        {"
+            + "          \"custom_fields\": ["
+            + "            {"
+            + "              \"id\": 1000,"
+            + "              \"name\": \"住所\","
+            + "              \"values\": ["
+            + "                \"東京都港区x-x-x\""
+            + "              ]"
+            + "            }"
+            + "          ]"
+            + "        }"
+            + "      ]"
+            + "    },"
+            + "    {"
+            + "      \"code\": \"A0001\","
+            + "      \"records\": ["
+            + "        {"
+            + "          \"custom_fields\": ["
+            + "            {"
+            + "              \"id\": 1000,"
+            + "              \"name\": \"住所\","
+            + "              \"values\": ["
+            + "                \"大阪府大阪市y番y号\""
+            + "              ]"
+            + "            },"
+            + "            {"
+            + "              \"id\": 1001,"
+            + "              \"name\": \"電話番号\","
+            + "              \"values\": ["
+            + "                \"06-yyyy-yyyy\""
+            + "              ]"
+            + "            }"
+            + "          ]"
+            + "        },"
+            + "        {"
+            + "          \"custom_fields\": ["
+            + "            {"
+            + "              \"id\": 1000,"
+            + "              \"name\": \"住所\","
+            + "              \"values\": ["
+            + "                \"愛知県名古屋市z丁目z番z号\""
+            + "              ]"
+            + "            },"
+            + "            {"
+            + "              \"id\": 1001,"
+            + "              \"name\": \"電話番号\","
+            + "              \"values\": ["
+            + "                \"052-zzzz-zzzz\""
+            + "              ]"
+            + "            }"
+            + "          ]"
+            + "        }"
+            + "      ]"
+            + "    }"
+            + "  ]"
+            + "}";
+            #endregion
+            var endpoint = new Uri(BaseUri + $"/sheets/{sheetId}");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var members = await sut.FetchSheetDataListAsync(sheetId).ConfigureAwait(false);
+
+            // Assert
+            members.Should().HaveCount(2);
+
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Get
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.ReplaceSheetDataAsync(int, IEnumerable{SheetData}, CancellationToken)"/>は、"/sheets/{sheetId}"にPUTリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.ReplaceSheetDataAsync) + " > PUT /sheets/{sheetId} をコールする。")]
+        public async Task ReplaceSheetDataAsync_Returns_TaskId()
+        {
+            // Arrange
+            const int sheetId = 1;
+            var endpoint = new Uri(BaseUri + $"/sheets/{sheetId}");
+            string tokenString = GenerateRandomString();
+            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            int taskId = await sut.ReplaceSheetDataAsync(sheetId, _sheetDataPayload).ConfigureAwait(false);
+
+            // Assert
+            taskId.Should().Be(sheetId);
+
+            string? receivedJson = null;
+            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Put
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString
+                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
+                    Times.Once());
+            receivedJson.Should().Be(expectedJson);
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.UpdateSheetDataAsync(int, IEnumerable{SheetData}, CancellationToken)"/>は、"/sheets/{sheetId}"にPATCHリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateSheetDataAsync) + " > PATCH /sheets/{sheetId} をコールする。")]
+        public async Task UpdateSheetDataAsync_Returns_TaskId()
+        {
+            // Arrange
+            const int sheetId = 1;
+            var endpoint = new Uri(BaseUri + $"/sheets/{sheetId}");
+            string tokenString = GenerateRandomString();
+            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            int taskId = await sut.UpdateSheetDataAsync(sheetId, _sheetDataPayload).ConfigureAwait(false);
+
+            // Assert
+            taskId.Should().Be(sheetId);
+
+            string? receivedJson = null;
+            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Patch
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString
+                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
+                    Times.Once());
+            receivedJson.Should().Be(expectedJson);
+        }
+        #endregion
+
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchDepartmentsAsync(CancellationToken)"/>は、"/departments"にGETリクエストを行う。
         /// </summary>
