@@ -27,14 +27,16 @@ namespace Kaonavi.Net.Tests.Entities
         /// <param name="dateTimeString"><see cref="DateTime"/>の文字列表現</param>
         /// <param name="expectedJson">JSON文字列</param>
         [Theory]
-        [InlineData(null, "null")]
-        [InlineData("2020/01/01", "\"2020-01-01\"")]
-        [InlineData("2020/01/01 5:00:00", "\"2020-01-01 05:00:00\"")]
+        [InlineData(null, "{\"date\":null}")]
+        [InlineData("2020/01/01", "{\"date\":\"2020-01-01\"}")]
+        [InlineData("2020/01/01 5:00:00", "{\"date\":\"2020-01-01 05:00:00\"}")]
         public void CanSerializeJSON(string? dateTimeString, string expectedJson)
         {
-            DateTime? date = dateTimeString is not null ? DateTime.Parse(dateTimeString, CultureInfo.InvariantCulture) : null;
+            var record = new TestRecord(
+                dateTimeString is null ? null : DateTime.Parse(dateTimeString, CultureInfo.InvariantCulture)
+            );
 
-            string json = JsonSerializer.Serialize(date, _options);
+            string json = JsonSerializer.Serialize(record, _options);
 
             json.Should().Be(expectedJson);
         }
@@ -45,18 +47,18 @@ namespace Kaonavi.Net.Tests.Entities
         /// <param name="json">JSON文字列</param>
         /// <param name="expectedString"><see cref="DateTime"/>の文字列表現</param>
         [Theory]
-        [InlineData("null", null)]
-        [InlineData("\"\"", null)]
-        [InlineData("\"2020-01-01\"", "01/01/2020 00:00:00")]
-        [InlineData("\"2020-01-01 05:00:00\"", "01/01/2020 05:00:00")]
+        [InlineData("{\"date\":null}", null)]
+        [InlineData("{\"date\":\"\"}", null)]
+        [InlineData("{\"date\":\"2020-01-01\"}", "01/01/2020 00:00:00")]
+        [InlineData("{\"date\":\"2020-01-01 05:00:00\"}", "01/01/2020 05:00:00")]
         public void CanDeserializeJSON(string json, string? expectedString)
         {
-            var date = JsonSerializer.Deserialize<DateTime?>(json, _options);
+            var record = JsonSerializer.Deserialize<TestRecord?>(json, _options)!;
 
             if (expectedString is null)
-                date.Should().BeNull();
+                record.Date.Should().BeNull();
             else
-                date.GetValueOrDefault().ToString(CultureInfo.InvariantCulture).Should().Be(expectedString);
+                record.Date.GetValueOrDefault().ToString(CultureInfo.InvariantCulture).Should().Be(expectedString);
         }
     }
 }
