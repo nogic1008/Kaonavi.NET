@@ -16,6 +16,7 @@ namespace Kaonavi.Net.Services
     public class KaonaviV2Service
     {
         private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0";
+
         /// <summary>
         /// APIに送信するJSONペイロードのエンコード設定
         /// </summary>
@@ -23,6 +24,9 @@ namespace Kaonavi.Net.Services
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
+        static KaonaviV2Service()
+            => _options.Converters.Add(new NullableDateTimeConverter());
+
         private readonly HttpClient _client;
         private readonly string _consumerKey;
         private readonly string _consumerSecret;
@@ -110,6 +114,102 @@ namespace Kaonavi.Net.Services
         private record SheetLayoutsResult(
             [property: JsonPropertyName("sheets")] IEnumerable<SheetLayout> Sheets
         );
+
+        #region Member
+        private record MembersResult(
+            [property: JsonPropertyName("member_data")] IEnumerable<MemberData> MemberData
+        );
+
+        /// <summary>
+        /// 全てのメンバーの基本情報・所属（主務）・兼務情報を取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        public async ValueTask<IEnumerable<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/members").ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<MembersResult>(_options, cancellationToken)
+                .ConfigureAwait(false))!.MemberData;
+        }
+
+        /// <summary>
+        /// メンバー登録と、合わせて基本情報・所属（主務）・兼務情報を登録します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/post
+        /// </summary>
+        /// <remarks>更新リクエスト制限の対象APIです。</remarks>
+        /// <param name="payload">追加するデータ</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <returns><see cref="TaskProgress.Id"/></returns>
+        public async ValueTask<int> AddMemberDataAsync(IEnumerable<MemberData> payload, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var postPayload = new MembersResult(payload);
+            var response = await _client.PostAsJsonAsync("/members", postPayload, _options).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.Id;
+        }
+
+        /// <summary>
+        /// 全てのメンバーの基本情報・所属（主務）・兼務情報を一括更新します。
+        /// Request Body に含まれていない情報は削除されます。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/put
+        /// </summary>
+        /// <remarks>
+        /// メンバーの登録・削除は行われません。
+        /// 更新リクエスト制限の対象APIです。
+        /// </remarks>
+        /// <param name="payload">一括更新するデータ</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <returns><see cref="TaskProgress.Id"/></returns>
+        public async ValueTask<int> ReplaceMemberDataAsync(IEnumerable<MemberData> payload, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var postPayload = new MembersResult(payload);
+            var response = await _client.PutAsJsonAsync("/members", postPayload, _options).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.Id;
+        }
+
+        /// <summary>
+        /// 送信されたメンバーの基本情報・所属（主務）・兼務情報のみを更新します。
+        /// Request Body に含まれていない情報は更新されません。
+        /// 特定の値を削除する場合は、空文字 "" を送信してください。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/patch
+        /// </summary>
+        /// <remarks>更新リクエスト制限の対象APIです。</remarks>
+        /// <param name="payload">更新するデータ</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <returns><see cref="TaskProgress.Id"/></returns>
+        public async ValueTask<int> UpdateMemberDataAsync(IEnumerable<MemberData> payload, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var patchPayload = new MembersResult(payload);
+            var content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(patchPayload, _options));
+            content.Headers.ContentType = new("application/json");
+            var req = new HttpRequestMessage(new("PATCH"), "/members") { Content = content };
+
+            var response = await _client.SendAsync(req).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.Id;
+        }
+        #endregion
 
         /// <summary>
         /// 所属情報の一覧を取得します。
@@ -302,6 +402,8 @@ namespace Kaonavi.Net.Services
         #region Common Method
         private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
             => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
+
+        private record TaskResult([property: JsonPropertyName("task_id")] int Id);
 
         private record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
         private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)

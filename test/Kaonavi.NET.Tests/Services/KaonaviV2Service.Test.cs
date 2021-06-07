@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -23,6 +25,10 @@ namespace Kaonavi.Net.Tests.Services
         private const string BaseUri = "https://example.com";
         private const string TestName = nameof(KaonaviV2Service) + " > ";
 
+        /// <summary>タスク結果JSON</summary>
+        private const string TaskJson = "{\"task_id\":1}";
+
+        /// <summary>ランダムな文字列を生成します。</summary>
         private static string GenerateRandomString() => Guid.NewGuid().ToString();
 
         #region Constractor
@@ -388,6 +394,262 @@ namespace Kaonavi.Net.Tests.Services
                     && req.Headers.TryGetValues("Kaonavi-Token", out var values)
                     && values.First() == tokenString;
         }
+
+        #region Member API
+        /// <summary>Member APIのリクエストPayload</summary>
+        private static readonly MemberData[] _memberDataPayload = new MemberData[]
+        {
+            new (
+                Code: "A0002",
+                Name: "カオナビ 太郎",
+                NameKana: "カオナビ タロウ",
+                Mail: "taro@example.com",
+                EnteredDate: new(2005, 9, 20),
+                Gender: "男性",
+                Birthday: new(1984, 5, 15),
+                Department: new("1000"),
+                SubDepartments: Array.Empty<Department>(),
+                CustomFields: new CustomFieldValue[]
+                {
+                    new(100, "A")
+                }
+            ),
+            new (
+                Code: "A0001",
+                Name: "カオナビ 花子",
+                NameKana: "カオナビ ハナコ",
+                Mail: "hanako@kaonavi.jp",
+                EnteredDate: new(2013, 5, 7),
+                Gender: "女性",
+                Birthday: new(1986, 5, 16),
+                Department: new("2000"),
+                SubDepartments: new Department[]
+                {
+                    new("3000"), new("4000")
+                },
+                CustomFields: new CustomFieldValue[]
+                {
+                    new(100, "O"), new(200, new[]{ "部長", "マネージャー" })
+                }
+            )
+        };
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchMembersDataAsync(CancellationToken)"/>は、"/members"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchMembersDataAsync) + " > GET /members をコールする。")]
+        public async Task FetchMembersDataAsync_Returns_MemberDataList()
+        {
+            // Arrange
+            #region JSON
+            const string responseJson = "{"
+            + "\"updated_at\": \"2020-10-01 01:23:45\","
+            + "\"member_data\": ["
+            + "  {"
+            + "    \"code\": \"A0002\","
+            + "    \"name\": \"カオナビ 太郎\","
+            + "    \"name_kana\": \"カオナビ タロウ\","
+            + "    \"mail\": \"taro@kaonavi.jp\","
+            + "    \"entered_date\": \"2005-09-20\","
+            + "    \"retired_date\": \"\","
+            + "    \"gender\": \"男性\","
+            + "    \"birthday\": \"1984-05-15\","
+            + "    \"age\": 36,"
+            + "    \"years_of_service\": \"15年5ヵ月\","
+            + "    \"department\": {"
+            + "      \"code\": \"1000\","
+            + "      \"name\": \"取締役会\","
+            + "      \"names\": ["
+            + "        \"取締役会\""
+            + "      ]"
+            + "    },"
+            + "    \"sub_departments\": [],"
+            + "    \"custom_fields\": ["
+            + "      {"
+            + "        \"id\": 100,"
+            + "        \"name\": \"血液型\","
+            + "        \"values\": ["
+            + "          \"A\""
+            + "        ]"
+            + "      }"
+            + "    ]"
+            + "  },"
+            + "  {"
+            + "    \"code\": \"A0001\","
+            + "    \"name\": \"カオナビ 花子\","
+            + "    \"name_kana\": \"カオナビ ハナコ\","
+            + "    \"mail\": \"hanako@kaonavi.jp\","
+            + "    \"entered_date\": \"2013-05-07\","
+            + "    \"retired_date\": \"\","
+            + "    \"gender\": \"女性\","
+            + "    \"birthday\": \"1986-05-16\","
+            + "    \"age\": 36,"
+            + "    \"years_of_service\": \"7年9ヵ月\","
+            + "    \"department\": {"
+            + "      \"code\": \"2000\","
+            + "      \"name\": \"営業本部 第一営業部 ITグループ\","
+            + "      \"names\": ["
+            + "        \"営業本部\","
+            + "        \"第一営業部\","
+            + "        \"ITグループ\""
+            + "      ]"
+            + "    },"
+            + "    \"sub_departments\": ["
+            + "      {"
+            + "        \"code\": \"3000\","
+            + "        \"name\": \"企画部\","
+            + "        \"names\": ["
+            + "          \"企画部\""
+            + "        ]"
+            + "      },"
+            + "      {"
+            + "        \"code\": \"4000\","
+            + "        \"name\": \"管理部\","
+            + "        \"names\": ["
+            + "          \"管理部\""
+            + "        ]"
+            + "      }"
+            + "    ],"
+            + "    \"custom_fields\": ["
+            + "      {"
+            + "        \"id\": 100,"
+            + "        \"name\": \"血液型\","
+            + "        \"values\": ["
+            + "          \"O\""
+            + "        ]"
+            + "      },"
+            + "      {"
+            + "        \"id\": 200,"
+            + "        \"name\": \"役職\","
+            + "        \"values\": ["
+            + "          \"部長\","
+            + "          \"マネージャー\""
+            + "        ]"
+            + "      }"
+            + "    ]"
+            + "  }"
+            + "]"
+            + "}";
+            #endregion
+            var endpoint = new Uri(BaseUri + "/members");
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var members = await sut.FetchMembersDataAsync().ConfigureAwait(false);
+
+            // Assert
+            members.Should().HaveCount(2);
+
+            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+
+            bool IsExpectedRequest(HttpRequestMessage req)
+                => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Get
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString;
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.AddMemberDataAsync(IEnumerable{MemberData}, CancellationToken)"/>は、"/members"にPOSTリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AddMemberDataAsync) + " > POST /members をコールする。")]
+        public async Task AddMemberDataAsync_Returns_TaskId()
+        {
+            // Arrange
+            var endpoint = new Uri($"{BaseUri}/members");
+            string tokenString = GenerateRandomString();
+            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            int taskId = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+
+            // Assert
+            taskId.Should().Be(1);
+
+            string? receivedJson = null;
+            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Post
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString
+                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
+                    Times.Once());
+            receivedJson.Should().Be(expectedJson);
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.ReplaceMemberDataAsync(IEnumerable{MemberData}, CancellationToken)"/>は、"/members"にPUTリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.ReplaceMemberDataAsync) + " > PUT /members をコールする。")]
+        public async Task ReplaceMemberDataAsync_Returns_TaskId()
+        {
+            // Arrange
+            var endpoint = new Uri($"{BaseUri}/members");
+            string tokenString = GenerateRandomString();
+            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            int taskId = await sut.ReplaceMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+
+            // Assert
+            taskId.Should().Be(1);
+
+            string? receivedJson = null;
+            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Put
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString
+                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
+                    Times.Once());
+            receivedJson.Should().Be(expectedJson);
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.UpdateMemberDataAsync(IEnumerable{MemberData}, CancellationToken)"/>は、"/members"にPATCHリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateMemberDataAsync) + " > PATCH /members をコールする。")]
+        public async Task UpdateMemberDataAsync_Returns_TaskId()
+        {
+            // Arrange
+            var endpoint = new Uri($"{BaseUri}/members");
+            string tokenString = GenerateRandomString();
+            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            int taskId = await sut.UpdateMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+
+            // Assert
+            taskId.Should().Be(1);
+
+            string? receivedJson = null;
+            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Patch
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString
+                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
+                    Times.Once());
+            receivedJson.Should().Be(expectedJson);
+        }
+        #endregion
 
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchDepartmentsAsync(CancellationToken)"/>は、"/departments"にGETリクエストを行う。
