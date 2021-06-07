@@ -1,5 +1,7 @@
 using System;
+using System.Buffers;
 using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using FluentAssertions;
 using Kaonavi.Net.Entities;
@@ -12,33 +14,31 @@ namespace Kaonavi.Net.Tests.Entities
     /// </summary>
     public class NullableDateTimeConverterTest
     {
-        private static readonly JsonSerializerOptions _options;
-        static NullableDateTimeConverterTest()
-        {
-            _options = new(JsonSerializerDefaults.Web);
-            _options.Converters.Add(new NullableDateTimeConverter());
-        }
-
-        private record TestRecord(DateTime? Date);
-
         /// <summary>
         /// JSON形式に正しくシリアライズできる。
         /// </summary>
         /// <param name="dateTimeString"><see cref="DateTime"/>の文字列表現</param>
         /// <param name="expectedJson">JSON文字列</param>
         [Theory]
-        [InlineData(null, "{\"date\":null}")]
-        [InlineData("2020/01/01", "{\"date\":\"2020-01-01\"}")]
-        [InlineData("2020/01/01 5:00:00", "{\"date\":\"2020-01-01 05:00:00\"}")]
-        public void CanSerializeJSON(string? dateTimeString, string expectedJson)
+        [InlineData(null, "null")]
+        [InlineData("2020/01/01", "\"2020-01-01\"")]
+        [InlineData("2020/01/01 5:00:00", "\"2020-01-01 05:00:00\"")]
+        public void Write(string? dateTimeString, string expectedJson)
         {
-            var record = new TestRecord(
-                dateTimeString is null ? null : DateTime.Parse(dateTimeString, CultureInfo.InvariantCulture)
-            );
+            // Arrange
+            DateTime? date = dateTimeString is null ? null
+                : DateTime.Parse(dateTimeString, CultureInfo.InvariantCulture);
+            var buffer = new ArrayBufferWriter<byte>();
+            var writer = new Utf8JsonWriter(buffer);
 
-            string json = JsonSerializer.Serialize(record, _options);
+            // Act
+            var converter = new NullableDateTimeConverter();
+            converter.Write(writer, date, new(JsonSerializerDefaults.Web));
+            writer.Flush();
 
-            json.Should().Be(expectedJson);
+            // Assert
+            string written = Encoding.UTF8.GetString(buffer.WrittenSpan);
+            written.Should().Be(expectedJson);
         }
 
         /// <summary>
@@ -47,18 +47,26 @@ namespace Kaonavi.Net.Tests.Entities
         /// <param name="json">JSON文字列</param>
         /// <param name="expectedString"><see cref="DateTime"/>の文字列表現</param>
         [Theory]
-        [InlineData("{\"date\":null}", null)]
-        [InlineData("{\"date\":\"\"}", null)]
-        [InlineData("{\"date\":\"2020-01-01\"}", "01/01/2020 00:00:00")]
-        [InlineData("{\"date\":\"2020-01-01 05:00:00\"}", "01/01/2020 05:00:00")]
+        [InlineData("null", null)]
+        [InlineData("\"\"", null)]
+        [InlineData("\"2020-01-01\"", "01/01/2020 00:00:00")]
+        [InlineData("\"2020-01-01 05:00:00\"", "01/01/2020 05:00:00")]
         public void CanDeserializeJSON(string json, string? expectedString)
         {
-            var record = JsonSerializer.Deserialize<TestRecord?>(json, _options)!;
+            // Arrange
+            byte[] jsonData = Encoding.UTF8.GetBytes(json);
+            var reader = new Utf8JsonReader(jsonData);
+            reader.Read();
 
+            // Act
+            var converter = new NullableDateTimeConverter();
+            var date = converter.Read(ref reader, typeof(DateTime?), new());
+
+            // Assert
             if (expectedString is null)
-                record.Date.Should().BeNull();
+                date.Should().BeNull();
             else
-                record.Date.GetValueOrDefault().ToString(CultureInfo.InvariantCulture).Should().Be(expectedString);
+                date.GetValueOrDefault().ToString(CultureInfo.InvariantCulture).Should().Be(expectedString);
         }
     }
 }
