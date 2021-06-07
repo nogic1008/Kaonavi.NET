@@ -8,11 +8,11 @@ namespace Kaonavi.Net.Entities
     /// </summary>
     public record CustomFieldValue
     {
-        public CustomFieldValue(int id, string? name, string value) : this(id, name, new[] { value }) { }
+        public CustomFieldValue(int id, string value, string? name = null) : this(id, new[] { value }, name) { }
 
         [JsonConstructor]
-        public CustomFieldValue(int id, string? name, IEnumerable<string> values)
-            => (Id, Name, Values) = (id, name, values);
+        public CustomFieldValue(int id, IEnumerable<string> values, string? name = null)
+            => (Id, Values, Name) = (id, values, name);
 
         /// <summary>シート項目ID</summary>
         [JsonPropertyName("id")]
