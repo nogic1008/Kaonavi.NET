@@ -13,8 +13,12 @@ using Kaonavi.Net.Entities.Api;
 
 namespace Kaonavi.Net.Services
 {
+    /// <summary>
+    /// カオナビ API v2 を呼び出すサービスの実装
+    /// </summary>
     public class KaonaviV2Service
     {
+        /// <summary>カオナビ API v2 のルートアドレス</summary>
         private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0";
 
         /// <summary>
@@ -27,11 +31,25 @@ namespace Kaonavi.Net.Services
         static KaonaviV2Service()
             => _options.Converters.Add(new NullableDateTimeConverter());
 
+        #region DI Objects
+        /// <summary>
+        /// APIコール時に利用する<see cref="HttpClient"/>のインスタンス
+        /// </summary>
         private readonly HttpClient _client;
-        private readonly string _consumerKey;
-        private readonly string _consumerSecret;
 
+        /// <summary>Consumer Key</summary>
+        private readonly string _consumerKey;
+
+        /// <summary>Consumer Secret</summary>
+        private readonly string _consumerSecret;
+        #endregion
+
+        #region Properties
         private const string TokenHeader = "Kaonavi-Token";
+        /// <summary>
+        /// アクセストークン文字列を取得または設定します。
+        /// 各種API呼び出し時、この項目が<c>null</c>の場合は自動的に<see cref="AuthenticateAsync(CancellationToken)"/>を呼び出します。
+        /// </summary>
         public string? AccessToken
         {
             get => _client.DefaultRequestHeaders.TryGetValues(TokenHeader, out var values) ? values.First() : null;
@@ -59,7 +77,17 @@ namespace Kaonavi.Net.Services
                     _client.DefaultRequestHeaders.Add(DryRunHeader, "1");
             }
         }
+        #endregion
 
+        /// <summary>
+        /// KaonaviV2Serviceの新しいインスタンスを生成します。
+        /// </summary>
+        /// <param name="client">APIコール時に利用する<see cref="HttpClient"/>のインスタンス</param>
+        /// <param name="consumerKey">Consumer Key</param>
+        /// <param name="consumerSecret">Consumer Secret</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="client"/>, <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<c>null</c>の場合にスローされます。
+        /// </exception>
         public KaonaviV2Service(HttpClient client, string consumerKey, string consumerSecret)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
@@ -69,6 +97,11 @@ namespace Kaonavi.Net.Services
             _client.BaseAddress ??= new(BaseApiAddress);
         }
 
+        /// <summary>
+        /// アクセストークンを発行します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3/paths/~1token/post
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
         {
             byte[] byteArray = Encoding.UTF8.GetBytes($"{_consumerKey}:{_consumerSecret}");
@@ -88,6 +121,12 @@ namespace Kaonavi.Net.Services
             return token!;
         }
 
+        #region Layouts
+        /// <summary>
+        /// 使用可能なメンバーのレイアウト定義情報を全て取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1member_layouts/get
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         public async ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
@@ -100,6 +139,11 @@ namespace Kaonavi.Net.Services
                 .ConfigureAwait(false))!;
         }
 
+        /// <summary>
+        /// 使用可能なシートのレイアウト定義情報を全て取得します。
+        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1sheet_layouts/get
+        /// </summary>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         public async ValueTask<IEnumerable<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
@@ -114,6 +158,7 @@ namespace Kaonavi.Net.Services
         private record SheetLayoutsResult(
             [property: JsonPropertyName("sheets")] IEnumerable<SheetLayout> Sheets
         );
+        #endregion
 
         #region Member
         /// <summary>
@@ -475,6 +520,7 @@ namespace Kaonavi.Net.Services
         );
 
         #region Common Method
+        /// <summary>APIコール前に必要な認証を行います。</summary>
         private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
             => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
@@ -485,6 +531,15 @@ namespace Kaonavi.Net.Services
         private record TaskResult([property: JsonPropertyName("task_id")] int Id);
 
         private record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
+
+        /// <summary>
+        /// APIが正しく終了したかどうかを検証します。
+        /// エラーが返ってきた場合は、エラーメッセージを取得し例外をスローします。
+        /// </summary>
+        /// <param name="response">APIレスポンス</param>
+        /// <exception cref="ApplicationException">
+        /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
+        /// </exception>
         private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)
         {
             try
