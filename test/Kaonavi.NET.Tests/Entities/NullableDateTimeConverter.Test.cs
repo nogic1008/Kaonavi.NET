@@ -15,15 +15,16 @@ namespace Kaonavi.Net.Tests.Entities
     public class NullableDateTimeConverterTest
     {
         /// <summary>
-        /// JSON形式に正しくシリアライズできる。
+        /// <see cref="NullableDateTimeConverter.Write(Utf8JsonWriter, DateTime?, JsonSerializerOptions)"/>は、
+        /// <see langword="DateTime?"/>をJSON形式に正しくシリアライズできる。
         /// </summary>
         /// <param name="dateTimeString"><see cref="DateTime"/>の文字列表現</param>
         /// <param name="expectedJson">JSON文字列</param>
-        [Theory]
+        [Theory(DisplayName = nameof(NullableDateTimeConverter) + " > " + nameof(NullableDateTimeConverter.Write))]
         [InlineData(null, "null")]
         [InlineData("2020/01/01", "\"2020-01-01\"")]
         [InlineData("2020/01/01 5:00:00", "\"2020-01-01 05:00:00\"")]
-        public void Write(string? dateTimeString, string expectedJson)
+        public void Write_CanSerialize_NullableDateTime(string? dateTimeString, string expectedJson)
         {
             // Arrange
             DateTime? date = dateTimeString is null ? null
@@ -42,16 +43,17 @@ namespace Kaonavi.Net.Tests.Entities
         }
 
         /// <summary>
-        /// JSON形式から正しくデシリアライズできる。
+        /// <see cref="NullableDateTimeConverter.Read(ref Utf8JsonReader, Type, JsonSerializerOptions)"/>は、
+        /// JSON形式から<see langword="DateTime?"/>を正しくデシリアライズできる。
         /// </summary>
         /// <param name="json">JSON文字列</param>
         /// <param name="expectedString"><see cref="DateTime"/>の文字列表現</param>
-        [Theory]
+        [Theory(DisplayName = nameof(NullableDateTimeConverter) + " > " + nameof(NullableDateTimeConverter.Read))]
         [InlineData("null", null)]
         [InlineData("\"\"", null)]
         [InlineData("\"2020-01-01\"", "01/01/2020 00:00:00")]
         [InlineData("\"2020-01-01 05:00:00\"", "01/01/2020 05:00:00")]
-        public void CanDeserializeJSON(string json, string? expectedString)
+        public void Read_CanDeserialize_NullableDateTime(string json, string? expectedString)
         {
             // Arrange
             byte[] jsonData = Encoding.UTF8.GetBytes(json);

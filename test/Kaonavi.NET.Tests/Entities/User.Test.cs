@@ -10,7 +10,8 @@ namespace Kaonavi.Net.Tests.Entities
     /// </summary>
     public class UserTest
     {
-        private const string TestName = nameof(User) + " > ";
+        private const string MemberJson = "{\"id\": 1,\"email\":\"taro@kaonavi.jp\",\"member_code\":\"A0002\",\"role\":{\"id\":1,\"name\":\"システム管理者\",\"type\":\"Adm\"}}";
+        private const string NonMemberJson = "{\"id\": 2,\"email\": \"hanako@kaonavi.jp\",\"member_code\": null,\"role\": {\"id\": 2,\"name\": \"マネージャ\",\"type\": \"一般\"}}";
 
         /// <summary>
         /// JSONからデシリアライズできる。
@@ -19,15 +20,9 @@ namespace Kaonavi.Net.Tests.Entities
         /// <param name="id"><see cref="User.Id"/></param>
         /// <param name="email"><see cref="User.EMail"/></param>
         /// <param name="memberCode"><see cref="User.MemberCode"/></param>
-        [Theory(DisplayName = TestName + "JSONからデシリアライズできる。")]
-        [InlineData(
-            "{\"id\": 1,\"email\":\"taro@kaonavi.jp\",\"member_code\":\"A0002\",\"role\":{\"id\":1,\"name\":\"システム管理者\",\"type\":\"Adm\"}}",
-            1, "taro@kaonavi.jp", "A0002"
-        )]
-        [InlineData(
-            "{\"id\": 2,\"email\": \"hanako@kaonavi.jp\",\"member_code\": null,\"role\": {\"id\": 2,\"name\": \"マネージャ\",\"type\": \"一般\"}}",
-            2, "hanako@kaonavi.jp", null
-        )]
+        [Theory(DisplayName = nameof(User) + " > JSONからデシリアライズできる。")]
+        [InlineData(MemberJson, 1, "taro@kaonavi.jp", "A0002")]
+        [InlineData(NonMemberJson, 2, "hanako@kaonavi.jp", null)]
         public void CanDeserializeJSON(string json, int id, string email, string? memberCode)
         {
             // Arrange - Act

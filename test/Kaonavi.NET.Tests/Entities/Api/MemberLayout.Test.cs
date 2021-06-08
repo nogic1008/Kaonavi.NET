@@ -7,11 +7,14 @@ using Xunit;
 namespace Kaonavi.Net.Tests.Entities.Api
 {
     /// <summary>
-    /// Unit test for <see cref="MemberLayout"/>
+    /// <see cref="MemberLayout"/>の単体テスト
     /// </summary>
     public class MemberLayoutTest
     {
-        [Fact]
+        /// <summary>
+        /// JSONからデシリアライズできる。
+        /// </summary>
+        [Fact(DisplayName = nameof(MemberLayout) + " > JSONからデシリアライズできる。")]
         public void CanDeserializeJSON()
         {
             // Arrange
