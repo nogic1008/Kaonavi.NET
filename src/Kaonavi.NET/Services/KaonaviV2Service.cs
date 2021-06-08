@@ -506,7 +506,7 @@ namespace Kaonavi.Net.Services
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _client.GetAsync("/roles").ConfigureAwait(false);
+            var response = await _client.GetAsync("/roles", cancellationToken).ConfigureAwait(false);
             await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
