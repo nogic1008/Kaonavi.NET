@@ -112,7 +112,7 @@ namespace Kaonavi.Net.Services
             _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
 
             var response = await _client.PostAsync("/token", content, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             var token = await response.Content
                 .ReadFromJsonAsync<Token>(cancellationToken: cancellationToken)
@@ -131,8 +131,8 @@ namespace Kaonavi.Net.Services
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _client.GetAsync("/member_layouts").ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.GetAsync("/member_layouts", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<MemberLayout>(cancellationToken: cancellationToken)
@@ -148,8 +148,8 @@ namespace Kaonavi.Net.Services
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _client.GetAsync("/sheet_layouts").ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.GetAsync("/sheet_layouts", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<SheetLayoutsResult>(cancellationToken: cancellationToken)
@@ -170,8 +170,8 @@ namespace Kaonavi.Net.Services
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _client.GetAsync("/members").ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.GetAsync("/members", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<ApiResult<MemberData>>(_options, cancellationToken)
@@ -191,8 +191,8 @@ namespace Kaonavi.Net.Services
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
             var postPayload = new ApiResult<MemberData>(payload);
-            var response = await _client.PostAsJsonAsync("/members", postPayload, _options).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.PostAsJsonAsync("/members", postPayload, _options, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
@@ -216,8 +216,8 @@ namespace Kaonavi.Net.Services
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
             var postPayload = new ApiResult<MemberData>(payload);
-            var response = await _client.PutAsJsonAsync("/members", postPayload, _options).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.PutAsJsonAsync("/members", postPayload, _options, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
@@ -243,8 +243,8 @@ namespace Kaonavi.Net.Services
             content.Headers.ContentType = new("application/json");
             var req = new HttpRequestMessage(new("PATCH"), "/members") { Content = content };
 
-            var response = await _client.SendAsync(req).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
@@ -263,7 +263,7 @@ namespace Kaonavi.Net.Services
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
             var response = await _client.GetAsync($"/sheets/{sheetId:D}", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<ApiResult<SheetData>>(cancellationToken: cancellationToken)
@@ -285,7 +285,7 @@ namespace Kaonavi.Net.Services
 
             var putPayload = new ApiResult<SheetData>(payload);
             var response = await _client.PutAsJsonAsync($"/sheets/{sheetId:D}", putPayload, _options, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
@@ -322,8 +322,8 @@ namespace Kaonavi.Net.Services
             content.Headers.ContentType = new("application/json");
             var req = new HttpRequestMessage(new("PATCH"), $"/sheets/{sheetId:D}") { Content = content };
 
-            var response = await _client.SendAsync(req).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
@@ -340,8 +340,8 @@ namespace Kaonavi.Net.Services
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _client.GetAsync("/departments").ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.GetAsync("/departments", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<DepartmentsResult>(cancellationToken: cancellationToken)
@@ -364,8 +364,8 @@ namespace Kaonavi.Net.Services
 
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _client.GetAsync($"/tasks/{taskId:D}").ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.GetAsync($"/tasks/{taskId:D}", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<TaskProgress>(cancellationToken: cancellationToken)
@@ -382,16 +382,14 @@ namespace Kaonavi.Net.Services
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _client.GetAsync("/users").ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.GetAsync("/users", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<UsersResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.UserData;
         }
-        private record UsersResult(
-            [property: JsonPropertyName("user_data")] IEnumerable<User> UserData
-        );
+        private record UsersResult([property: JsonPropertyName("user_data")] IEnumerable<User> UserData);
 
         /// <summary>
         /// ユーザー情報を登録します。
@@ -409,8 +407,8 @@ namespace Kaonavi.Net.Services
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
             var postPayload = new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!));
-            var response = await _client.PostAsJsonAsync("/users", postPayload, _options).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.PostAsJsonAsync("/users", postPayload, _options, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
@@ -437,8 +435,8 @@ namespace Kaonavi.Net.Services
 
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _client.GetAsync($"/users/{userId:D}").ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.GetAsync($"/users/{userId:D}", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
@@ -472,8 +470,8 @@ namespace Kaonavi.Net.Services
             content.Headers.ContentType = new("application/json");
             var req = new HttpRequestMessage(new("PATCH"), $"/users/{userId:D}") { Content = content };
 
-            var response = await _client.SendAsync(req).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
@@ -494,8 +492,8 @@ namespace Kaonavi.Net.Services
 
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
-            var response = await _client.DeleteAsync($"/users/{userId:D}").ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            var response = await _client.DeleteAsync($"/users/{userId:D}", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
         }
         #endregion
 
@@ -509,24 +507,20 @@ namespace Kaonavi.Net.Services
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
             var response = await _client.GetAsync("/roles").ConfigureAwait(false);
-            await ValidateApiResponseAsync(response).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
             return (await response.Content
                 .ReadFromJsonAsync<RolesResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.RoleData;
         }
-        private record RolesResult(
-            [property: JsonPropertyName("role_data")] IEnumerable<Role> RoleData
-        );
+        private record RolesResult([property: JsonPropertyName("role_data")] IEnumerable<Role> RoleData);
 
         #region Common Method
         /// <summary>APIコール前に必要な認証を行います。</summary>
-        private async ValueTask FetchTokenAsync(CancellationToken cancellationToken = default)
+        private async ValueTask FetchTokenAsync(CancellationToken cancellationToken)
             => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
-        private record ApiResult<T>(
-            [property: JsonPropertyName("member_data")] IEnumerable<T> MemberData
-        );
+        private record ApiResult<T>([property: JsonPropertyName("member_data")] IEnumerable<T> MemberData);
 
         private record TaskResult([property: JsonPropertyName("task_id")] int Id);
 
@@ -540,7 +534,7 @@ namespace Kaonavi.Net.Services
         /// <exception cref="ApplicationException">
         /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
         /// </exception>
-        private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response)
+        private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
         {
             try
             {
@@ -549,7 +543,7 @@ namespace Kaonavi.Net.Services
             catch (HttpRequestException ex)
             {
                 string errorMessage = response.Content.Headers.ContentType.MediaType == "application/json"
-                    ? string.Join("\n", (await response.Content.ReadFromJsonAsync<ErrorResponse>().ConfigureAwait(false))!.Errors)
+                    ? string.Join("\n", (await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: cancellationToken).ConfigureAwait(false))!.Errors)
                     : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 throw new ApplicationException(errorMessage, ex);
             }

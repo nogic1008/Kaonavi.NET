@@ -18,12 +18,14 @@ using Xunit;
 namespace Kaonavi.Net.Tests.Services
 {
     /// <summary>
-    /// Unit test for <see cref="KaonaviV2Service"/>
+    /// <see cref="KaonaviV2Service"/>の単体テスト
     /// </summary>
     public class KaonaviV2ServiceTest
     {
-        private const string BaseUri = "https://example.com";
         private const string TestName = nameof(KaonaviV2Service) + " > ";
+
+        /// <summary>テスト用の<see cref="HttpClient.BaseAddress"/></summary>
+        private static readonly Uri _baseUri = new("https://example.com/");
 
         /// <summary>タスク結果JSON</summary>
         private const string TaskJson = "{\"task_id\":1}";
@@ -32,20 +34,35 @@ namespace Kaonavi.Net.Tests.Services
         private static string GenerateRandomString() => Guid.NewGuid().ToString();
 
         #region Constractor
+        private const string TestNameConstractor = TestName + nameof(Constractor) + " > ";
+        /// <summary>
+        /// コンストラクターを呼び出す<see cref="Action"/>を生成します。
+        /// </summary>
         private static Action Constractor(HttpClient? client, string? consumerKey, string? consumerSecret)
             => () => _ = new KaonaviV2Service(client!, consumerKey!, consumerSecret!);
 
-        [Theory]
+        /// <summary>
+        /// Consumer KeyまたはConsumer Secretがnullのとき、<see cref="ArgumentNullException"/>の例外をスローする。
+        /// </summary>
+        /// <param name="consumerKey">Consumer Key</param>
+        /// <param name="consumerSecret">Consumer Secret</param>
+        [Theory(DisplayName = TestNameConstractor + nameof(ArgumentNullException) + "をスローする。")]
         [InlineData(null, "foo")]
         [InlineData("foo", null)]
         public void Constractor_Throws_ArgumentNullException_WhenKeyIsNull(string? consumerKey, string? consumerSecret)
             => Constractor(new(), consumerKey, consumerSecret).Should().ThrowExactly<ArgumentNullException>();
 
-        [Fact]
+        /// <summary>
+        /// HttpClientがnullのとき、<see cref="ArgumentNullException"/>の例外をスローする。
+        /// </summary>
+        [Fact(DisplayName = TestNameConstractor + nameof(ArgumentNullException) + "をスローする。")]
         public void Constractor_Throws_ArgumentNullException_WhenClientIsNull()
             => Constractor(null, "foo", "bar").Should().ThrowExactly<ArgumentNullException>();
 
-        [Fact]
+        /// <summary>
+        /// <see cref="HttpClient.BaseAddress"/>がnullのとき、既定値をセットする。
+        /// </summary>
+        [Fact(DisplayName = TestNameConstractor + nameof(HttpClient.BaseAddress) + "がnullのとき、既定値をセットする。")]
         public void Constractor_Sets_BaseAddress_WhenIsNull()
         {
             // Arrange
@@ -59,26 +76,31 @@ namespace Kaonavi.Net.Tests.Services
             client.BaseAddress.Should().NotBeNull();
         }
 
-        [Fact]
+        /// <summary>
+        /// <see cref="HttpClient.BaseAddress"/>がnullでないときは、既定値をセットしない。
+        /// </summary>
+        [Fact(DisplayName = TestNameConstractor + nameof(HttpClient.BaseAddress) + "がnullでないときは、既定値をセットしない。")]
         public void Constractor_DoesNotSet_BaseAddress_WhenNotNull()
         {
             // Arrange
-            var uri = new Uri("https://example.com/");
             var client = new HttpClient
             {
-                BaseAddress = uri
+                BaseAddress = _baseUri
             };
 
             // Act
             _ = new KaonaviV2Service(client, "foo", "bar");
 
             // Assert
-            client.BaseAddress.Should().Be(uri);
+            client.BaseAddress.Should().Be(_baseUri);
         }
         #endregion
 
         #region Property
-        [Fact]
+        /// <summary>
+        /// <see cref="KaonaviV2Service.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を返す。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AccessToken) + "(get) > Kaonavi-Tokenヘッダーの値を返す。")]
         public void AccessToken_Returns_ClientHeader()
         {
             // Arrange
@@ -93,7 +115,10 @@ namespace Kaonavi.Net.Tests.Services
             sut.AccessToken.Should().Be(headerValue);
         }
 
-        [Fact]
+        /// <summary>
+        /// Kaonavi-Tokenヘッダーがないとき、<see cref="KaonaviV2Service.AccessToken"/>は、nullを返す。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AccessToken) + "(get) > Kaonavi-Tokenヘッダーがないとき、nullを返す。")]
         public void AccessToken_Returns_Null()
         {
             // Arrange - Act
@@ -103,7 +128,10 @@ namespace Kaonavi.Net.Tests.Services
             sut.AccessToken.Should().BeNull();
         }
 
-        [Fact]
+        /// <summary>
+        /// <see cref="KaonaviV2Service.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を設定する。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AccessToken) + "(set) > Kaonavi-Tokenヘッダーの値を設定する。")]
         public void AccessToken_Sets_ClientHeader()
         {
             // Arrange
@@ -118,7 +146,7 @@ namespace Kaonavi.Net.Tests.Services
 
             // Assert
             client.DefaultRequestHeaders.TryGetValues("Kaonavi-Token", out var values).Should().BeTrue();
-            values!.First().Should().Be(headerValue);
+            values.Should().HaveCount(1).And.Contain(headerValue);
         }
 
         /// <summary>
@@ -126,7 +154,7 @@ namespace Kaonavi.Net.Tests.Services
         /// </summary>
         /// <param name="headerValue">Dry-Runヘッダーに設定する値</param>
         /// <param name="expected"><see cref="KaonaviV2Service.UseDryRun"/></param>
-        [Theory(DisplayName = TestName + nameof(KaonaviV2Service.UseDryRun) + " > Dry-Run: 1 かどうかを返す。")]
+        [Theory(DisplayName = TestName + nameof(KaonaviV2Service.UseDryRun) + "(get) > Dry-Run: 1 かどうかを返す。")]
         [InlineData(null, false)]
         [InlineData("0", false)]
         [InlineData("1", true)]
@@ -148,7 +176,7 @@ namespace Kaonavi.Net.Tests.Services
         /// <summary>
         /// <see cref="KaonaviV2Service.UseDryRun"/>は、HttpClientのDry-Runヘッダー値を追加/削除する。
         /// </summary>
-        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UseDryRun) + " > Dry-Runヘッダーを追加/削除する。")]
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UseDryRun) + "(set) > Dry-Runヘッダーを追加/削除する。")]
         public void UseDryRun_Sets_ClientHeader()
         {
             // Arrange
@@ -176,10 +204,17 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
+        /// <summary>
+        /// テスト対象(System Under Test)となる<see cref="KaonaviV2Service"/>のインスタンスを生成します。
+        /// </summary>
+        /// <param name="handler">HttpClientをモックするためのHandlerオブジェクト</param>
+        /// <param name="key">Consumer Key</param>
+        /// <param name="secret">Consumer Secret</param>
+        /// <param name="accessToken">アクセストークン</param>
         private static KaonaviV2Service CreateSut(Mock<HttpMessageHandler> handler, string key = "Key", string secret = "Secret", string? accessToken = null)
         {
             var client = handler.CreateClient();
-            client.BaseAddress = new(BaseUri);
+            client.BaseAddress = _baseUri;
             return new(client, key, secret)
             {
                 AccessToken = accessToken
@@ -187,7 +222,14 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         #region API Common Path
-        [Theory]
+        /// <summary>
+        /// サーバー側がエラーを返したとき、<see cref="ApplicationException"/>の例外をスローする。
+        /// </summary>
+        /// <param name="statusCode">HTTPステータスコード</param>
+        /// <param name="contentFormat">エラー時のレスポンスBodyサンプル</param>
+        /// <param name="message">エラーメッセージ</param>
+        /// <param name="mediaType">MediaType</param>
+        [Theory(DisplayName = TestName + "API Caller > " + nameof(ApplicationException) + "をスローする。")]
         [InlineData(401, "{{\"errors\":[\"{0}\"]}}", "consumer_keyとconsumer_secretの組み合わせが不正です。", "application/json")]
         [InlineData(429, "{{\"errors\":[\"{0}\"]}}", "1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。", "application/json")]
         [InlineData(500, "{0}", "Error", "plain/text")]
@@ -196,7 +238,7 @@ namespace Kaonavi.Net.Tests.Services
             // Arrange
             string key = GenerateRandomString();
             string secret = GenerateRandomString();
-            var endpoint = new Uri(BaseUri + "/token");
+            var endpoint = new Uri(_baseUri, "/token");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -212,11 +254,14 @@ namespace Kaonavi.Net.Tests.Services
                 .WithInnerExceptionExactly<HttpRequestException>();
         }
 
-        [Fact]
+        /// <summary>
+        /// <see cref="KaonaviV2Service.AccessToken"/>がnullのとき、<see cref="KaonaviV2Service.AuthenticateAsync(CancellationToken)"/>を呼び出す。
+        /// </summary>
+        [Fact(DisplayName = TestName + "API Caller > " + nameof(KaonaviV2Service.AuthenticateAsync) + "を呼び出す。")]
         public async Task ApiCaller_Calls_AuthenticateAsync_When_AccessToken_IsNull()
         {
-            var apiEndpoint = new Uri(BaseUri + "/member_layouts");
-            var tokenEndpoint = new Uri(BaseUri + "/token");
+            var apiEndpoint = new Uri(_baseUri, "/member_layouts");
+            var tokenEndpoint = new Uri(_baseUri, "/token");
             string tokenString = GenerateRandomString();
             string key = GenerateRandomString();
             string secret = GenerateRandomString();
@@ -247,13 +292,16 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
-        [Fact]
+        /// <summary>
+        /// <see cref="KaonaviV2Service.AuthenticateAsync(CancellationToken)"/>は、"/token"にBase64文字列のPOSTリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AuthenticateAsync) + " > POST /token をコールする。")]
         public async Task AuthenticateAsync_Posts_Base64String()
         {
             // Arrange
             string key = GenerateRandomString();
             string secret = GenerateRandomString();
-            var endpoint = new Uri(BaseUri + "/token");
+            var endpoint = new Uri(_baseUri, "/token");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -281,10 +329,14 @@ namespace Kaonavi.Net.Tests.Services
                 && await content.ReadAsStringAsync().ConfigureAwait(false) == "grant_type=client_credentials";
         }
 
-        [Fact]
+        #region Layout API
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchMemberLayoutAsync(CancellationToken)"/>は、"/member_layouts"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchMemberLayoutAsync) + " > GET /member_layouts をコールする。")]
         public async Task FetchMemberLayoutAsync_Returns_MemberLayout()
         {
-            var endpoint = new Uri(BaseUri + "/member_layouts");
+            var endpoint = new Uri(_baseUri, "/member_layouts");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -335,7 +387,10 @@ namespace Kaonavi.Net.Tests.Services
                     && values.First() == tokenString;
         }
 
-        [Fact]
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchSheetLayoutsAsync(CancellationToken)"/>は、"/sheet_layouts"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchSheetLayoutsAsync) + " > GET /sheet_layouts をコールする。")]
         public async Task FetchSheetLayoutsAsync_Returns_SheetLayouts()
         {
             const string responseJson = "{"
@@ -365,7 +420,7 @@ namespace Kaonavi.Net.Tests.Services
             + "  }"
             + "]"
             + "}";
-            var endpoint = new Uri(BaseUri + "/sheet_layouts");
+            var endpoint = new Uri(_baseUri, "/sheet_layouts");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -394,6 +449,7 @@ namespace Kaonavi.Net.Tests.Services
                     && req.Headers.TryGetValues("Kaonavi-Token", out var values)
                     && values.First() == tokenString;
         }
+        #endregion
 
         #region Member API
         /// <summary>Member APIのリクエストPayload</summary>
@@ -531,7 +587,7 @@ namespace Kaonavi.Net.Tests.Services
             + "]"
             + "}";
             #endregion
-            var endpoint = new Uri(BaseUri + "/members");
+            var endpoint = new Uri(_baseUri, "/members");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -561,7 +617,7 @@ namespace Kaonavi.Net.Tests.Services
         public async Task AddMemberDataAsync_Returns_TaskId()
         {
             // Arrange
-            var endpoint = new Uri($"{BaseUri}/members");
+            var endpoint = new Uri(_baseUri, "/members");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
 
@@ -593,7 +649,7 @@ namespace Kaonavi.Net.Tests.Services
         public async Task ReplaceMemberDataAsync_Returns_TaskId()
         {
             // Arrange
-            var endpoint = new Uri($"{BaseUri}/members");
+            var endpoint = new Uri(_baseUri, "/members");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
 
@@ -625,7 +681,7 @@ namespace Kaonavi.Net.Tests.Services
         public async Task UpdateMemberDataAsync_Returns_TaskId()
         {
             // Arrange
-            var endpoint = new Uri($"{BaseUri}/members");
+            var endpoint = new Uri(_baseUri, "/members");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
 
@@ -761,7 +817,7 @@ namespace Kaonavi.Net.Tests.Services
             + "  ]"
             + "}";
             #endregion
-            var endpoint = new Uri(BaseUri + $"/sheets/{sheetId}");
+            var endpoint = new Uri(_baseUri, $"/sheets/{sheetId}");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -792,7 +848,7 @@ namespace Kaonavi.Net.Tests.Services
         {
             // Arrange
             const int sheetId = 1;
-            var endpoint = new Uri(BaseUri + $"/sheets/{sheetId}");
+            var endpoint = new Uri(_baseUri, $"/sheets/{sheetId}");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
 
@@ -825,7 +881,7 @@ namespace Kaonavi.Net.Tests.Services
         {
             // Arrange
             const int sheetId = 1;
-            var endpoint = new Uri(BaseUri + $"/sheets/{sheetId}");
+            var endpoint = new Uri(_baseUri, $"/sheets/{sheetId}");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
 
@@ -896,7 +952,7 @@ namespace Kaonavi.Net.Tests.Services
             + "]"
             + "}";
             #endregion
-            var endpoint = new Uri(BaseUri + "/departments");
+            var endpoint = new Uri(_baseUri, "/departments");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -924,9 +980,12 @@ namespace Kaonavi.Net.Tests.Services
                     && values.First() == tokenString;
         }
 
-        #region FetchTaskProgressAsync
+        #region Task API
         private const string TestNameFetchTaskProgressAsync = TestName + nameof(KaonaviV2Service.FetchTaskProgressAsync) + " > ";
 
+        /// <summary>
+        /// taskIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.FetchTaskProgressAsync(int, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// </summary>
         [Fact(DisplayName = TestNameFetchTaskProgressAsync + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task FetchTaskProgressAsync_Throws_ArgumentOutOfRangeException()
         {
@@ -946,11 +1005,14 @@ namespace Kaonavi.Net.Tests.Services
             handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
         }
 
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchTaskProgressAsync(int, CancellationToken)"/>は、"/tasks/{taskId}"にGETリクエストを行う。
+        /// </summary>
         [Fact(DisplayName = TestNameFetchTaskProgressAsync + "GET /tasks/{taskId} をコールする。")]
         public async Task FetchTaskProgressAsync_Returns_TaskProgress()
         {
             const int taskId = 1;
-            var endpoint = new Uri($"{BaseUri}/tasks/{taskId}");
+            var endpoint = new Uri(_baseUri, $"/tasks/{taskId}");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -1010,7 +1072,7 @@ namespace Kaonavi.Net.Tests.Services
             + "]"
             + "}";
             #endregion
-            var endpoint = new Uri(BaseUri + "/users");
+            var endpoint = new Uri(_baseUri, "/users");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -1042,7 +1104,7 @@ namespace Kaonavi.Net.Tests.Services
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AddUserAsync) + " > POST /users をコールする。")]
         public async Task AddUserAsync_Returns_User()
         {
-            var endpoint = new Uri($"{BaseUri}/users");
+            var endpoint = new Uri(_baseUri, "/users");
             string tokenString = GenerateRandomString();
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
             const string expectedJson = "{\"email\":\"user1@example.com\","
@@ -1098,7 +1160,7 @@ namespace Kaonavi.Net.Tests.Services
         public async Task FetchUserAsync_Returns_User()
         {
             const int userId = 1;
-            var endpoint = new Uri($"{BaseUri}/users/{userId}");
+            var endpoint = new Uri(_baseUri, $"/users/{userId}");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -1150,7 +1212,7 @@ namespace Kaonavi.Net.Tests.Services
         public async Task UpdateUserAsync_Returns_User()
         {
             const int userId = 1;
-            var endpoint = new Uri($"{BaseUri}/users/{userId}");
+            var endpoint = new Uri(_baseUri, $"/users/{userId}");
             string tokenString = GenerateRandomString();
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
             const string expectedJson = "{\"email\":\"user1@example.com\","
@@ -1206,7 +1268,7 @@ namespace Kaonavi.Net.Tests.Services
         public async Task DeleteUserAsync_Returns_User()
         {
             const int userId = 1;
-            var endpoint = new Uri($"{BaseUri}/users/{userId}");
+            var endpoint = new Uri(_baseUri, $"/users/{userId}");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
@@ -1248,7 +1310,7 @@ namespace Kaonavi.Net.Tests.Services
             + "  }"
             + "]"
             + "}";
-            var endpoint = new Uri(BaseUri + "/roles");
+            var endpoint = new Uri(_baseUri, "/roles");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
