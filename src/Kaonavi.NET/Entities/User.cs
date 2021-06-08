@@ -4,6 +4,7 @@ namespace Kaonavi.Net.Entities
 {
     /// <summary>ログインユーザー情報</summary>
     public record User(
+        /// <summary>ユーザーID</summary>
         [property: JsonPropertyName("id")] int Id,
         /// <summary>ログインメールアドレス</summary>
         [property: JsonPropertyName("email")] string EMail,

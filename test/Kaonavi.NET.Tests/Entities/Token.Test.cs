@@ -6,11 +6,14 @@ using Xunit;
 namespace Kaonavi.Net.Tests.Entities
 {
     /// <summary>
-    /// Unit test for <see cref="Token"/>
+    /// <see cref="Token"/>の単体テスト
     /// </summary>
     public class TokenTest
     {
-        [Fact]
+        /// <summary>
+        /// JSONからデシリアライズできる。
+        /// </summary>
+        [Fact(DisplayName = nameof(Token) + " > JSONからデシリアライズできる。")]
         public void CanDeserializeJSON()
         {
             // Arrange
