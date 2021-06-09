@@ -342,17 +342,17 @@ namespace Kaonavi.Net.Tests.Services
             var handler = new Mock<HttpMessageHandler>();
             handler.SetupRequest(req => req.RequestUri == endpoint)
                 .ReturnsJson(new MemberLayout(
-                    Code: new("社員番号", true, "string", 50, Array.Empty<string>()),
-                    Name: new("氏名", false, "string", 100, Array.Empty<string>()),
-                    NameKana: new("フリガナ", false, "string", 100, Array.Empty<string>()),
-                    Mail: new("メールアドレス", false, "string", 100, Array.Empty<string>()),
-                    EnteredDate: new("入社日", false, "date", null, Array.Empty<string>()),
-                    RetiredDate: new("退職日", false, "date", null, Array.Empty<string>()),
-                    Gender: new("性別", false, "enum", null, new[] { "男性", "女性" }),
-                    Birthday: new("生年月日", false, "date", null, Array.Empty<string>()),
-                    Department: new("所属", false, "department", null, Array.Empty<string>()),
-                    SubDepartments: new("兼務情報", false, "department[]", null, Array.Empty<string>()),
-                    CustomFields: new CustomField[]
+                    new("社員番号", true, "string", 50, Array.Empty<string>()),
+                    new("氏名", false, "string", 100, Array.Empty<string>()),
+                    new("フリガナ", false, "string", 100, Array.Empty<string>()),
+                    new("メールアドレス", false, "string", 100, Array.Empty<string>()),
+                    new("入社日", false, "date", null, Array.Empty<string>()),
+                    new("退職日", false, "date", null, Array.Empty<string>()),
+                    new("性別", false, "enum", null, new[] { "男性", "女性" }),
+                    new("生年月日", false, "date", null, Array.Empty<string>()),
+                    new("所属", false, "department", null, Array.Empty<string>()),
+                    new("兼務情報", false, "department[]", null, Array.Empty<string>()),
+                    new CustomField[]
                     {
                         new(100, "血液型", false, "enum", null, new[]{ "A", "B", "O", "AB" }),
                         new(200, "役職", false, "enum", null, new[]{ "部長", "課長", "マネージャー", null }),
@@ -456,34 +456,34 @@ namespace Kaonavi.Net.Tests.Services
         private static readonly MemberData[] _memberDataPayload = new MemberData[]
         {
             new (
-                Code: "A0002",
-                Name: "カオナビ 太郎",
-                NameKana: "カオナビ タロウ",
-                Mail: "taro@example.com",
-                EnteredDate: new(2005, 9, 20),
-                Gender: "男性",
-                Birthday: new(1984, 5, 15),
-                Department: new("1000"),
-                SubDepartments: Array.Empty<Department>(),
-                CustomFields: new CustomFieldValue[]
+                code: "A0002",
+                name: "カオナビ 太郎",
+                nameKana: "カオナビ タロウ",
+                mail: "taro@example.com",
+                enteredDate: new(2005, 9, 20),
+                gender: "男性",
+                birthday: new(1984, 5, 15),
+                department: new("1000"),
+                subDepartments: Array.Empty<Department>(),
+                customFields: new CustomFieldValue[]
                 {
                     new(100, "A")
                 }
             ),
             new (
-                Code: "A0001",
-                Name: "カオナビ 花子",
-                NameKana: "カオナビ ハナコ",
-                Mail: "hanako@kaonavi.jp",
-                EnteredDate: new(2013, 5, 7),
-                Gender: "女性",
-                Birthday: new(1986, 5, 16),
-                Department: new("2000"),
-                SubDepartments: new Department[]
+                code: "A0001",
+                name: "カオナビ 花子",
+                nameKana: "カオナビ ハナコ",
+                mail: "hanako@kaonavi.jp",
+                enteredDate: new(2013, 5, 7),
+                gender: "女性",
+                birthday: new(1986, 5, 16),
+                department: new("2000"),
+                subDepartments: new Department[]
                 {
                     new("3000"), new("4000")
                 },
-                CustomFields: new CustomFieldValue[]
+                customFields: new CustomFieldValue[]
                 {
                     new(100, "O"), new(200, new[]{ "部長", "マネージャー" })
                 }
@@ -713,31 +713,23 @@ namespace Kaonavi.Net.Tests.Services
         {
             new (
                 "A0002",
-                new SheetRecord(
-                    new CustomFieldValue[]
-                    {
-                        new(1000, "東京都港区x-x-x")
-                    }
-                )
+                new CustomFieldValue[]
+                {
+                    new(1000, "東京都港区x-x-x")
+                }
             ),
             new (
                 "A0001",
-                new SheetRecord[]
+                new CustomFieldValue[]
                 {
-                    new(
-                        new CustomFieldValue[]
-                        {
-                            new(1000, "大阪府大阪市y番y号"),
-                            new(1001, "06-yyyy-yyyy")
-                        }
-                    ),
-                    new(
-                        new CustomFieldValue[]
-                        {
-                            new(1000, "愛知県名古屋市z丁目z番z号"),
-                            new(1001, "052-zzzz-zzzz")
-                        }
-                    ),
+                    new(1000, "大阪府大阪市y番y号"),
+                    new(1001, "06-yyyy-yyyy")
+                }
+                ,
+                new CustomFieldValue[]
+                {
+                    new(1000, "愛知県名古屋市z丁目z番z号"),
+                    new(1001, "052-zzzz-zzzz")
                 }
             )
         };

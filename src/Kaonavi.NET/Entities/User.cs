@@ -3,14 +3,32 @@ using System.Text.Json.Serialization;
 namespace Kaonavi.Net.Entities
 {
     /// <summary>ログインユーザー情報</summary>
-    public record User(
+    public record User
+    {
+        /// <summary>
+        /// Userの新しいインスタンスを生成します。
+        /// </summary>
+        /// <param name="id">ユーザーID</param>
+        /// <param name="email">ログインメールアドレス</param>
+        /// <param name="memberCode">社員番号 (紐付けメンバーが設定されていない場合は<c>null</c>)</param>
+        /// <param name="role">ロール情報</param>
+        public User(int id, string email, string? memberCode, Role role)
+            => (Id, EMail, MemberCode, Role) = (id, email, memberCode, role);
+
         /// <summary>ユーザーID</summary>
-        [property: JsonPropertyName("id")] int Id,
+        [JsonPropertyName("id")]
+        public int Id { get; init; }
+
         /// <summary>ログインメールアドレス</summary>
-        [property: JsonPropertyName("email")] string EMail,
+        [JsonPropertyName("email")]
+        public string EMail { get; init; }
+
         /// <summary>社員番号 (紐付けメンバーが設定されていない場合は<c>null</c>)</summary>
-        [property: JsonPropertyName("member_code")] string? MemberCode,
+        [JsonPropertyName("member_code")]
+        public string? MemberCode { get; init; }
+
         /// <summary>ロール情報</summary>
-        [property: JsonPropertyName("role")] Role Role
-    );
+        [JsonPropertyName("role")]
+        public Role Role { get; init; }
+    }
 }
