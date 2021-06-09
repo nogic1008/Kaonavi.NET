@@ -8,8 +8,20 @@ namespace Kaonavi.Net.Entities
     /// </summary>
     public record CustomFieldValue
     {
+        /// <summary>
+        /// 単一の項目値を持つ、CustomFieldValueの新しいインスタンスを生成します。
+        /// </summary>
+        /// <param name="id">シート項目ID</param>
+        /// <param name="value">シート項目値</param>
+        /// <param name="name">シート項目名</param>
         public CustomFieldValue(int id, string value, string? name = null) : this(id, new[] { value }, name) { }
 
+        /// <summary>
+        /// 複数の項目値を持つ、CustomFieldValueの新しいインスタンスを生成します。
+        /// </summary>
+        /// <param name="id">シート項目ID</param>
+        /// <param name="values">シート項目値のリスト</param>
+        /// <param name="name">シート項目名</param>
         [JsonConstructor]
         public CustomFieldValue(int id, IEnumerable<string> values, string? name = null)
             => (Id, Values, Name) = (id, values, name);

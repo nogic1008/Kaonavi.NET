@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Kaonavi.Net.Entities
 {
     /// <summary>
-    /// "yyyy-MM-dd HH:mm:ss" <-> DateTime? 変換
+    /// "yyyy-MM-dd HH:mm:ss" &lt;-&gt; DateTime? 変換
     /// </summary>
     public class NullableDateTimeConverter : JsonConverter<DateTime?>
     {
