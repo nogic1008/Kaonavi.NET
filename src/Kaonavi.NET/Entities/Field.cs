@@ -16,7 +16,7 @@ namespace Kaonavi.Net.Entities
         /// <param name="type">入力タイプ ("string", "number", "date", "enum")</param>
         /// <param name="maxLength"><paramref name="type"/>が"string"の場合に設定可能な最大文字数</param>
         /// <param name="enum"><paramref name="type"/>が"enum"の場合に設定可能な値のリスト</param>
-        public Field(string name, bool required, string type, int? maxLength, IEnumerable<string?> @enum)
+        public Field(string name, bool required, string type, int? maxLength, IReadOnlyList<string?> @enum)
             => (Name, Required, Type, MaxLength, Enum) = (name, required, type, maxLength, @enum);
 
         /// <summary>項目名</summary>
@@ -37,6 +37,6 @@ namespace Kaonavi.Net.Entities
 
         /// <summary><see cref="Type"/>が"enum"の場合に設定可能な値のリスト</summary>
         [JsonPropertyName("enum")]
-        public IEnumerable<string?> Enum { get; init; }
+        public IReadOnlyList<string?> Enum { get; init; }
     }
 }

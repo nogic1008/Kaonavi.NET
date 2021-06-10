@@ -12,7 +12,7 @@ namespace Kaonavi.Net.Entities
         /// <param name="id">タスクID</param>
         /// <param name="status">タスクの進捗状況 ("OK", "NG", "ERROR", "WAITING", "RUNNING")</param>
         /// <param name="messages"><paramref name="status"/>がNG/ERROR時の詳細なメッセージ</param>
-        public TaskProgress(int id, string status, IEnumerable<string>? messages)
+        public TaskProgress(int id, string status, IReadOnlyList<string>? messages)
             => (Id, Status, Messages) = (id, status, messages);
 
         /// <summary>タスクID</summary>
@@ -25,6 +25,6 @@ namespace Kaonavi.Net.Entities
 
         /// <summary><see cref="Status"/>がNG/ERROR時の詳細なメッセージ</summary>
         [JsonPropertyName("messages")]
-        public IEnumerable<string>? Messages { get; init; }
+        public IReadOnlyList<string>? Messages { get; init; }
     }
 }

@@ -144,7 +144,7 @@ namespace Kaonavi.Net.Services
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1sheet_layouts/get
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        public async ValueTask<IEnumerable<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -156,7 +156,7 @@ namespace Kaonavi.Net.Services
                 .ConfigureAwait(false))!.Sheets;
         }
         private record SheetLayoutsResult(
-            [property: JsonPropertyName("sheets")] IEnumerable<SheetLayout> Sheets
+            [property: JsonPropertyName("sheets")] IReadOnlyList<SheetLayout> Sheets
         );
         #endregion
 
@@ -166,7 +166,7 @@ namespace Kaonavi.Net.Services
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        public async ValueTask<IEnumerable<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -186,7 +186,7 @@ namespace Kaonavi.Net.Services
         /// <param name="payload">追加するデータ</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         /// <returns><see cref="TaskProgress.Id"/></returns>
-        public async ValueTask<int> AddMemberDataAsync(IEnumerable<MemberData> payload, CancellationToken cancellationToken = default)
+        public async ValueTask<int> AddMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -211,7 +211,7 @@ namespace Kaonavi.Net.Services
         /// <param name="payload">一括更新するデータ</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         /// <returns><see cref="TaskProgress.Id"/></returns>
-        public async ValueTask<int> ReplaceMemberDataAsync(IEnumerable<MemberData> payload, CancellationToken cancellationToken = default)
+        public async ValueTask<int> ReplaceMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -234,7 +234,7 @@ namespace Kaonavi.Net.Services
         /// <param name="payload">更新するデータ</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         /// <returns><see cref="TaskProgress.Id"/></returns>
-        public async ValueTask<int> UpdateMemberDataAsync(IEnumerable<MemberData> payload, CancellationToken cancellationToken = default)
+        public async ValueTask<int> UpdateMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -258,7 +258,7 @@ namespace Kaonavi.Net.Services
         /// </summary>
         /// <param name="sheetId">シートID</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        public async ValueTask<IEnumerable<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
+        public async ValueTask<IReadOnlyList<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -279,7 +279,7 @@ namespace Kaonavi.Net.Services
         /// <param name="payload">一括更新するデータ</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         /// <returns><see cref="TaskProgress.Id"/></returns>
-        public async ValueTask<int> ReplaceSheetDataAsync(int sheetId, IEnumerable<SheetData> payload, CancellationToken cancellationToken = default)
+        public async ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -313,7 +313,7 @@ namespace Kaonavi.Net.Services
         /// <param name="payload">更新するデータ</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         /// <returns><see cref="TaskProgress.Id"/></returns>
-        public async ValueTask<int> UpdateSheetDataAsync(int sheetId, IEnumerable<SheetData> payload, CancellationToken cancellationToken = default)
+        public async ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -336,7 +336,7 @@ namespace Kaonavi.Net.Services
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E/paths/~1departments/get
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        public async ValueTask<IEnumerable<DepartmentInfo>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<IReadOnlyList<DepartmentInfo>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -348,7 +348,7 @@ namespace Kaonavi.Net.Services
                 .ConfigureAwait(false))!.DepartmentData;
         }
         private record DepartmentsResult(
-            [property: JsonPropertyName("department_data")] IEnumerable<DepartmentInfo> DepartmentData
+            [property: JsonPropertyName("department_data")] IReadOnlyList<DepartmentInfo> DepartmentData
         );
 
         /// <summary>
@@ -378,7 +378,7 @@ namespace Kaonavi.Net.Services
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        public async ValueTask<IEnumerable<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -389,7 +389,7 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<UsersResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.UserData;
         }
-        private record UsersResult([property: JsonPropertyName("user_data")] IEnumerable<User> UserData);
+        private record UsersResult([property: JsonPropertyName("user_data")] IReadOnlyList<User> UserData);
 
         /// <summary>
         /// ユーザー情報を登録します。
@@ -502,7 +502,7 @@ namespace Kaonavi.Net.Services
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        public async ValueTask<IEnumerable<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -513,18 +513,18 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<RolesResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.RoleData;
         }
-        private record RolesResult([property: JsonPropertyName("role_data")] IEnumerable<Role> RoleData);
+        private record RolesResult([property: JsonPropertyName("role_data")] IReadOnlyList<Role> RoleData);
 
         #region Common Method
         /// <summary>APIコール前に必要な認証を行います。</summary>
         private async ValueTask FetchTokenAsync(CancellationToken cancellationToken)
             => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
-        private record ApiResult<T>([property: JsonPropertyName("member_data")] IEnumerable<T> MemberData);
+        private record ApiResult<T>([property: JsonPropertyName("member_data")] IReadOnlyList<T> MemberData);
 
         private record TaskResult([property: JsonPropertyName("task_id")] int Id);
 
-        private record ErrorResponse([property: JsonPropertyName("errors")] IEnumerable<string> Errors);
+        private record ErrorResponse([property: JsonPropertyName("errors")] IReadOnlyList<string> Errors);
 
         /// <summary>
         /// APIが正しく終了したかどうかを検証します。
