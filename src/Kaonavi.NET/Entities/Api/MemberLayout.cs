@@ -20,7 +20,7 @@ namespace Kaonavi.Net.Entities.Api
         /// <param name="department">所属</param>
         /// <param name="subDepartments">兼務情報</param>
         /// <param name="customFields">基本情報のカスタム項目のレイアウト定義リスト</param>
-        public MemberLayout(Field code, Field name, Field nameKana, Field mail, Field enteredDate, Field retiredDate, Field gender, Field birthday, Field department, Field subDepartments, IEnumerable<CustomField> customFields)
+        public MemberLayout(Field code, Field name, Field nameKana, Field mail, Field enteredDate, Field retiredDate, Field gender, Field birthday, Field department, Field subDepartments, IReadOnlyList<CustomField> customFields)
             => (Code, Name, NameKana, Mail, EnteredDate, RetiredDate, Gender, Birthday, Department, SubDepartments, CustomFields)
                 = (code, name, nameKana, mail, enteredDate, retiredDate, gender, birthday, department, subDepartments, customFields);
 
@@ -66,6 +66,6 @@ namespace Kaonavi.Net.Entities.Api
 
         /// <summary>基本情報のカスタム項目のレイアウト定義リスト</summary>
         [JsonPropertyName("custom_fields")]
-        public IEnumerable<CustomField> CustomFields { get; init; }
+        public IReadOnlyList<CustomField> CustomFields { get; init; }
     }
 }

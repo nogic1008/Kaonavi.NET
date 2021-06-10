@@ -31,8 +31,8 @@ namespace Kaonavi.Net.Entities
             string? gender = null,
             DateTime? birthday = default,
             Department? department = null,
-            IEnumerable<Department>? subDepartments = null,
-            IEnumerable<CustomFieldValue>? customFields = null)
+            IReadOnlyList<Department>? subDepartments = null,
+            IReadOnlyList<CustomFieldValue>? customFields = null)
             => (Code, Name, NameKana, Mail, EnteredDate, RetiredDate, Gender, Birthday, Department, SubDepartments, CustomFields)
                 = (code, name, nameKana, mail, enteredDate, retiredDate, gender, birthday, department, subDepartments, customFields);
 
@@ -74,10 +74,10 @@ namespace Kaonavi.Net.Entities
 
         /// <summary>兼務情報リスト</summary>
         [JsonPropertyName("sub_departments")]
-        public IEnumerable<Department>? SubDepartments { get; init; }
+        public IReadOnlyList<Department>? SubDepartments { get; init; }
 
         /// <summary>カスタム項目値</summary>
         [JsonPropertyName("custom_fields")]
-        public IEnumerable<CustomFieldValue>? CustomFields { get; init; }
+        public IReadOnlyList<CustomFieldValue>? CustomFields { get; init; }
     }
 }

@@ -23,7 +23,7 @@ namespace Kaonavi.Net.Entities
         /// <param name="values">シート項目値のリスト</param>
         /// <param name="name">シート項目名</param>
         [JsonConstructor]
-        public CustomFieldValue(int id, IEnumerable<string> values, string? name = null)
+        public CustomFieldValue(int id, IReadOnlyList<string> values, string? name = null)
             => (Id, Values, Name) = (id, values, name);
 
         /// <summary>シート項目ID</summary>
@@ -39,6 +39,6 @@ namespace Kaonavi.Net.Entities
         /// チェックボックスの場合にのみ複数の値が返却されます。
         /// </summary>
         [JsonPropertyName("values")]
-        public IEnumerable<string> Values { get; init; }
+        public IReadOnlyList<string> Values { get; init; }
     }
 }

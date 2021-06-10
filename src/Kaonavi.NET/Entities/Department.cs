@@ -12,7 +12,7 @@ namespace Kaonavi.Net.Entities
         /// <param name="code">所属コード</param>
         /// <param name="name">親所属を含む全ての所属名を半角スペース区切りで返却</param>
         /// <param name="names">親所属を含む全ての所属名を配列で返却</param>
-        public Department(string code, string? name = null, IEnumerable<string>? names = null)
+        public Department(string code, string? name = null, IReadOnlyList<string>? names = null)
             => (Code, Name, Names) = (code, name, names);
 
         /// <summary>所属コード</summary>
@@ -25,6 +25,6 @@ namespace Kaonavi.Net.Entities
 
         /// <summary>親所属を含む全ての所属名を配列で返却</summary>
         [JsonPropertyName("names")]
-        public IEnumerable<string>? Names { get; init; }
+        public IReadOnlyList<string>? Names { get; init; }
     }
 }

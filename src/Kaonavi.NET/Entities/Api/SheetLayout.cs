@@ -15,7 +15,7 @@ namespace Kaonavi.Net.Entities.Api
         /// <param name="name">シート名</param>
         /// <param name="recordType">レコードの種類</param>
         /// <param name="customFields">シートのレイアウト定義リスト</param>
-        public SheetLayout(int id, string name, RecordType recordType, IEnumerable<CustomField> customFields)
+        public SheetLayout(int id, string name, RecordType recordType, IReadOnlyList<CustomField> customFields)
             => (Id, Name, RecordType, CustomFields) = (id, name, recordType, customFields);
 
         /// <summary>シートID</summary>
@@ -32,7 +32,7 @@ namespace Kaonavi.Net.Entities.Api
 
         /// <summary>シートのレイアウト定義リスト</summary>
         [JsonPropertyName("custom_fields")]
-        public IEnumerable<CustomField> CustomFields { get; init; }
+        public IReadOnlyList<CustomField> CustomFields { get; init; }
     }
 
     /// <summary>レコードの種類</summary>

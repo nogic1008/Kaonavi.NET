@@ -12,7 +12,7 @@ namespace Kaonavi.Net.Entities
         /// </summary>
         /// <param name="code">社員コード</param>
         /// <param name="customFields">設定値</param>
-        public SheetData(string code, IEnumerable<CustomFieldValue> customFields)
+        public SheetData(string code, IReadOnlyList<CustomFieldValue> customFields)
             : this(code, new[] { new SheetRecord(customFields) }) { }
 
         /// <summary>
@@ -20,8 +20,8 @@ namespace Kaonavi.Net.Entities
         /// </summary>
         /// <param name="code">社員コード</param>
         /// <param name="records">設定値のリスト</param>
-        public SheetData(string code, params IEnumerable<CustomFieldValue>[] records)
-            : this(code, records.Select(r => new SheetRecord(r))) { }
+        public SheetData(string code, params IReadOnlyList<CustomFieldValue>[] records)
+            : this(code, records.Select(r => new SheetRecord(r)).ToArray()) { }
 
         /// <summary>
         /// 複数レコードシート向けに、SheetDataの新しいインスタンスを生成します。
@@ -29,7 +29,7 @@ namespace Kaonavi.Net.Entities
         /// <param name="code">社員コード</param>
         /// <param name="records">設定値のリスト</param>
         [JsonConstructor]
-        public SheetData(string code, IEnumerable<SheetRecord> records)
+        public SheetData(string code, IReadOnlyList<SheetRecord> records)
             => (Code, Records) = (code, records);
 
         /// <summary>
@@ -43,11 +43,11 @@ namespace Kaonavi.Net.Entities
         /// <see cref="Api.RecordType.Multiple"/>の場合にのみ複数の値が返却されます。
         /// </summary>
         [JsonPropertyName("records")]
-        public IEnumerable<SheetRecord> Records { get; init; }
+        public IReadOnlyList<SheetRecord> Records { get; init; }
     }
 
     /// <summary>シート情報の設定値</summary>
     public record SheetRecord(
-        [property: JsonPropertyName("custom_fields")] IEnumerable<CustomFieldValue> CustomFields
+        [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomFieldValue> CustomFields
     );
 }
