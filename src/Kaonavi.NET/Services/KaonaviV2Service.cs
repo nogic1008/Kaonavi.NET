@@ -531,6 +531,7 @@ namespace Kaonavi.Net.Services
         /// エラーが返ってきた場合は、エラーメッセージを取得し例外をスローします。
         /// </summary>
         /// <param name="response">APIレスポンス</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         /// <exception cref="ApplicationException">
         /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
         /// </exception>
