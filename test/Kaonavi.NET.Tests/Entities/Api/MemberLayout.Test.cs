@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Text.Json;
 using FluentAssertions;
 using Kaonavi.Net.Entities.Api;
@@ -140,7 +139,7 @@ namespace Kaonavi.Net.Tests.Entities.Api
             layout.Department.Type.Should().Be("department");
             layout.SubDepartments.Type.Should().Be("department[]");
             layout.CustomFields.Should().HaveCount(2);
-            layout.CustomFields.Last().Enum.Should().Equal("部長", "課長", "マネージャー", null);
+            layout.CustomFields[^1].Enum.Should().Equal("部長", "課長", "マネージャー", null);
         }
     }
 }

@@ -376,7 +376,7 @@ namespace Kaonavi.Net.Tests.Services
             layout.Department.Type.Should().Be("department");
             layout.SubDepartments.Type.Should().Be("department[]");
             layout.CustomFields.Should().HaveCount(2);
-            layout.CustomFields.Last().Enum.Should().Equal("部長", "課長", "マネージャー", null);
+            layout.CustomFields[^1].Enum.Should().Equal("部長", "課長", "マネージャー", null);
 
             handler.VerifyRequest(IsExpectedRequest, Times.Once());
 
@@ -434,7 +434,7 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             layouts.Should().NotBeNullOrEmpty()
                 .And.HaveCount(1);
-            var layout = layouts.First();
+            var layout = layouts[0];
             layout.Id.Should().Be(12);
             layout.Name.Should().Be("住所・連絡先");
             layout.RecordType.Should().Be(RecordType.Multiple);
