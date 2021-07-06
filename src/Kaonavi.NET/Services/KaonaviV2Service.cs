@@ -423,7 +423,7 @@ namespace Kaonavi.Net.Services
             }
             catch (HttpRequestException ex)
             {
-                string errorMessage = response.Content.Headers.ContentType?.MediaType == "application/json"
+                string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
                     ? string.Join("\n", (await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: cancellationToken).ConfigureAwait(false))!.Errors)
 #if NET5_0
                     : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
