@@ -233,7 +233,7 @@ namespace Kaonavi.Net.Tests.Services
         [InlineData(401, "{{\"errors\":[\"{0}\"]}}", "consumer_keyとconsumer_secretの組み合わせが不正です。", "application/json")]
         [InlineData(429, "{{\"errors\":[\"{0}\"]}}", "1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。", "application/json")]
         [InlineData(500, "{0}", "Error", "plain/text")]
-        public async Task ApiCaller_Throws_ApplicationException(int statusCode, string contentFormat, string message, string mediaType)
+        public async Task ApiCaller_Throws_ApplicationException(int statusCode, string contentFormat, string message, string? mediaType)
         {
             // Arrange
             string key = GenerateRandomString();
