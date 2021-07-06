@@ -108,7 +108,7 @@ namespace Kaonavi.Net.Services
             var content = new FormUrlEncodedContent(new Dictionary<string, string>()
             {
                 { "grant_type", "client_credentials" }
-            });
+            }!);
             _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
 
             var response = await _client.PostAsync("/token", content, cancellationToken).ConfigureAwait(false);
@@ -415,7 +415,7 @@ namespace Kaonavi.Net.Services
         /// <exception cref="ApplicationException">
         /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
         /// </exception>
-        private async ValueTask ValidateApiResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+        private static async ValueTask ValidateApiResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
         {
             try
             {
@@ -423,9 +423,13 @@ namespace Kaonavi.Net.Services
             }
             catch (HttpRequestException ex)
             {
-                string errorMessage = response.Content.Headers.ContentType.MediaType == "application/json"
+                string errorMessage = response.Content.Headers.ContentType?.MediaType == "application/json"
                     ? string.Join("\n", (await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: cancellationToken).ConfigureAwait(false))!.Errors)
+#if NET5_0
+                    : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#else
                     : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
                 throw new ApplicationException(errorMessage, ex);
             }
         }
