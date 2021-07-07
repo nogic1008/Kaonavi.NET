@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET", "src\Kaonavi.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Tests", "test\Kaonavi.NET.Tests\Kaonavi.NET.Tests.csproj", "{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppSample", "samples\ConsoleAppSample\ConsoleAppSample.csproj", "{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
