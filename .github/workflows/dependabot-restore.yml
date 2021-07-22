@@ -5,6 +5,12 @@ on:
     branches:
       - dependabot/nuget/**
 
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+  NUGET_XMLDOC_MODE: skip
+  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+
 jobs:
   update:
     name: Update NuGet Lock file
