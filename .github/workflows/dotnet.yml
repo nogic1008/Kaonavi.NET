@@ -67,5 +67,4 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v2.0.2
         with:
-          file: "!**/.nuget/packages/**/*.*"
           flags: ${{ runner.os }}
