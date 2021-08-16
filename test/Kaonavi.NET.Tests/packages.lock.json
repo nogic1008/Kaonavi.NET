@@ -10,9 +10,9 @@
       },
       "FluentAssertions": {
         "type": "Direct",
-        "requested": "[5.10.3, )",
-        "resolved": "5.10.3",
-        "contentHash": "gVPEVp1hLVqcv+7Q2wiDf7kqCNn7+bQcQ0jbJ2mcRT6CeRoZl1tNkqvzSIhvekyldDptk77j1b03MXTTRIqqpg==",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "/nZSISO5mORW/z/MktODY6ncNuOjRF8OGf3gO3JWVoA293MC9ZQbdfPBDNKNMN/FcHghRQKyJakqABguBMtGQw==",
         "dependencies": {
           "System.Configuration.ConfigurationManager": "4.4.0"
         }
@@ -1360,9 +1360,9 @@
       },
       "FluentAssertions": {
         "type": "Direct",
-        "requested": "[5.10.3, )",
-        "resolved": "5.10.3",
-        "contentHash": "gVPEVp1hLVqcv+7Q2wiDf7kqCNn7+bQcQ0jbJ2mcRT6CeRoZl1tNkqvzSIhvekyldDptk77j1b03MXTTRIqqpg==",
+        "requested": "[6.0.0, )",
+        "resolved": "6.0.0",
+        "contentHash": "/nZSISO5mORW/z/MktODY6ncNuOjRF8OGf3gO3JWVoA293MC9ZQbdfPBDNKNMN/FcHghRQKyJakqABguBMtGQw==",
         "dependencies": {
           "System.Configuration.ConfigurationManager": "4.4.0"
         }
