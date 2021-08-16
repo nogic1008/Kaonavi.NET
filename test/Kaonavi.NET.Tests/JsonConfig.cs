@@ -1,19 +1,18 @@
+namespace Kaonavi.Net.Tests;
+
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Kaonavi.Net.Entities;
 
-namespace Kaonavi.Net.Tests
+internal static class JsonConfig
 {
-    internal static class JsonConfig
+    internal static readonly JsonSerializerOptions Default;
+    static JsonConfig()
     {
-        internal static readonly JsonSerializerOptions Default;
-        static JsonConfig()
+        Default = new(JsonSerializerDefaults.Web)
         {
-            Default = new(JsonSerializerDefaults.Web)
-            {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            };
-            Default.Converters.Add(new NullableDateTimeConverter());
-        }
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+        Default.Converters.Add(new NullableDateTimeConverter());
     }
 }
