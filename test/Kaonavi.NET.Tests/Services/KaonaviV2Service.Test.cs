@@ -1077,8 +1077,8 @@ namespace Kaonavi.Net.Tests.Services
 
             // Assert
             users.Should().Equal(
-                new(1, "taro@kaonavi.jp", "A0002", new(1, "システム管理者", "Adm")),
-                new(2, "hanako@kaonavi.jp", "A0001", new(2, "マネージャ", "一般"))
+                new User(1, "taro@kaonavi.jp", "A0002", new(1, "システム管理者", "Adm")),
+                new User(2, "hanako@kaonavi.jp", "A0001", new(2, "マネージャ", "一般"))
             );
 
             handler.VerifyRequest(IsExpectedRequest, Times.Once());
@@ -1314,7 +1314,9 @@ namespace Kaonavi.Net.Tests.Services
             var roles = await sut.FetchRolesAsync().ConfigureAwait(false);
 
             // Assert
-            roles.Should().Equal(new(1, "カオナビ管理者", "Adm"), new(2, "カオナビマネージャー", "一般"));
+            roles.Should().Equal(
+                new Role(1, "カオナビ管理者", "Adm"),
+                new Role(2, "カオナビマネージャー", "一般"));
 
             handler.VerifyRequest(IsExpectedRequest, Times.Once());
 
