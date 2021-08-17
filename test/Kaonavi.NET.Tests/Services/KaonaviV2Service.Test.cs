@@ -264,18 +264,18 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Post);
+            // End point
+            req.Method.Should().Be(HttpMethod.Post);
             req.RequestUri?.PathAndQuery.Should().Be("/token");
 
-                // Header
-                req.Headers.Authorization?.Scheme.Should().Be("Basic");
+            // Header
+            req.Headers.Authorization?.Scheme.Should().Be("Basic");
             byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
             string base64String = Convert.ToBase64String(byteArray);
             req.Headers.Authorization?.Parameter.Should().Be(base64String);
 
-                // Body
-                req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
+            // Body
+            req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
             string body = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             body.Should().Be("grant_type=client_credentials");
 
@@ -314,18 +314,18 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Post);
+            // End point
+            req.Method.Should().Be(HttpMethod.Post);
             req.RequestUri?.PathAndQuery.Should().Be("/token");
 
-                // Header
-                req.Headers.Authorization?.Scheme.Should().Be("Basic");
+            // Header
+            req.Headers.Authorization?.Scheme.Should().Be("Basic");
             byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
             string base64String = Convert.ToBase64String(byteArray);
             req.Headers.Authorization?.Parameter.Should().Be(base64String);
 
-                // Body
-                req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
+            // Body
+            req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
             string body = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             body.Should().Be("grant_type=client_credentials");
 
@@ -447,12 +447,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be("/member_layouts");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -509,12 +509,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be("/sheet_layouts");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -567,12 +567,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be("/sheet_layouts/12");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").Should().Equal(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").Should().Equal(tokenString);
 
             return true;
         }, Times.Once());
@@ -730,12 +730,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be("/members");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -764,15 +764,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Post);
+            // End point
+            req.Method.Should().Be(HttpMethod.Post);
             req.RequestUri?.PathAndQuery.Should().Be("/members");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -802,15 +802,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Put);
+            // End point
+            req.Method.Should().Be(HttpMethod.Put);
             req.RequestUri?.PathAndQuery.Should().Be("/members");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -840,15 +840,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Patch);
+            // End point
+            req.Method.Should().Be(HttpMethod.Patch);
             req.RequestUri?.PathAndQuery.Should().Be("/members");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -879,15 +879,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Post);
+            // End point
+            req.Method.Should().Be(HttpMethod.Post);
             req.RequestUri?.PathAndQuery.Should().Be("/members/delete");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1012,12 +1012,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be($"/sheets/{sheetId}");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1047,15 +1047,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Put);
+            // End point
+            req.Method.Should().Be(HttpMethod.Put);
             req.RequestUri?.PathAndQuery.Should().Be($"/sheets/{sheetId}");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1086,15 +1086,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Patch);
+            // End point
+            req.Method.Should().Be(HttpMethod.Patch);
             req.RequestUri?.PathAndQuery.Should().Be($"/sheets/{sheetId}");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1163,12 +1163,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be("/departments");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1205,15 +1205,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async (req) =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Put);
+            // End point
+            req.Method.Should().Be(HttpMethod.Put);
             req.RequestUri?.PathAndQuery.Should().Be("/departments");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1273,12 +1273,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be($"/tasks/{taskId}");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1334,12 +1334,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be("/users");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1382,15 +1382,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Post);
+            // End point
+            req.Method.Should().Be(HttpMethod.Post);
             req.RequestUri?.PathAndQuery.Should().Be("/users");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1453,12 +1453,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be($"/users/{userId}");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1525,15 +1525,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Patch);
+            // End point
+            req.Method.Should().Be(HttpMethod.Patch);
             req.RequestUri?.PathAndQuery.Should().Be($"/users/{userId}");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1584,12 +1584,12 @@ public class KaonaviV2ServiceTest
         // Assert
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Delete);
+            // End point
+            req.Method.Should().Be(HttpMethod.Delete);
             req.RequestUri?.PathAndQuery.Should().Be($"/users/{userId}");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1635,12 +1635,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be("/roles");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1707,12 +1707,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be("/enum_options");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1752,12 +1752,12 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Get);
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
             req.RequestUri?.PathAndQuery.Should().Be("/enum_options/10");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1789,15 +1789,15 @@ public class KaonaviV2ServiceTest
 
         handler.VerifyRequest(async req =>
         {
-                // End point
-                req.Method.Should().Be(HttpMethod.Put);
+            // End point
+            req.Method.Should().Be(HttpMethod.Put);
             req.RequestUri?.PathAndQuery.Should().Be("/enum_options/10");
 
-                // Header
-                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
-                // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be("{\"enum_option_data\":["
             + "{\"id\":1,\"name\":\"value1\"},"
             + "{\"name\":\"value2\"}"
