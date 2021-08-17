@@ -24,7 +24,7 @@ public class FieldLayoutTest
     /// <param name="type"><see cref="FieldLayout.Type"/></param>
     /// <param name="maxLength"><see cref="FieldLayout.MaxLength"/></param>
     /// <param name="enums"><see cref="FieldLayout.Enum"/></param>
-    [Theory(DisplayName = nameof(FieldLayout) + " > JSONからデシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(FieldLayout)} > JSONからデシリアライズできる。")]
     [InlineData(FieldJson1, "社員番号", true, FieldType.String, 50)]
     [InlineData(FieldJson2, "入社日", false, FieldType.Date, null)]
     [InlineData(FieldJson3, "性別", false, FieldType.Enum, null, "男性", "女性")]
@@ -46,7 +46,7 @@ public class FieldLayoutTest
     /// <summary>
     /// JSONから<see cref="CustomFieldLayout"/>にデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = nameof(CustomFieldLayout) + " > JSONからデシリアライズできる。")]
+    [Fact(DisplayName = $"{nameof(CustomFieldLayout)} > JSONからデシリアライズできる。")]
     public void CustomField_CanDeserializeJSON()
     {
         // Arrange

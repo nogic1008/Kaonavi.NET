@@ -13,7 +13,7 @@ public class TokenTest
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = nameof(Token) + " > JSONからデシリアライズできる。")]
+    [Fact(DisplayName = $"{nameof(Token)} > JSONからデシリアライズできる。")]
     public void CanDeserializeJSON()
     {
         // Arrange

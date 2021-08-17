@@ -21,7 +21,7 @@ public class TaskProgressTest
     /// <param name="id"><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></param>
     /// <param name="status"><inheritdoc cref="TaskProgress" path="/param[@name='Status']/text()"/></param>
     /// <param name="messages"><inheritdoc cref="TaskProgress" path="/param[@name='Messages']/text()"/></param>
-    [Theory(DisplayName = nameof(TaskProgress) + " > JSONからデシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(TaskProgress)} > JSONからデシリアライズできる。")]
     [InlineData(TaskOkJson, 1, "OK")]
     [InlineData(TaskRunningJson, 2, "RUNNING", null)]
     [InlineData(TaskErrorJson, 3, "NG", "エラーメッセージ1", "エラーメッセージ2")]

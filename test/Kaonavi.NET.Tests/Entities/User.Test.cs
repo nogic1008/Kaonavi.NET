@@ -20,7 +20,7 @@ public class UserTest
     /// <param name="id"><see cref="User.Id"/></param>
     /// <param name="email"><see cref="User.EMail"/></param>
     /// <param name="memberCode"><see cref="User.MemberCode"/></param>
-    [Theory(DisplayName = nameof(User) + " > JSONからデシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(User)} > JSONからデシリアライズできる。")]
     [InlineData(MemberJson, 1, "taro@kaonavi.jp", "A0002")]
     [InlineData(NonMemberJson, 2, "hanako@kaonavi.jp", null)]
     public void CanDeserializeJSON(string json, int id, string email, string? memberCode)

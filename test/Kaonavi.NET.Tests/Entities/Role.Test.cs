@@ -17,7 +17,7 @@ public class RoleTest
     /// <param name="id"><see cref="Role.Id"/></param>
     /// <param name="name"><see cref="Role.Name"/></param>
     /// <param name="type"><see cref="Role.Type"/></param>
-    [Theory(DisplayName = nameof(Role) + " > JSONからデシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(Role)} > JSONからデシリアライズできる。")]
     [InlineData("{\"id\": 1,\"name\": \"カオナビ管理者\",\"type\": \"Adm\"}", 1, "カオナビ管理者", "Adm")]
     [InlineData("{\"id\": 2,\"name\": \"カオナビマネージャー\",\"type\": \"一般\"}", 2, "カオナビマネージャー", "一般")]
     public void CanDeserializeJSON(string json, int id, string name, string type)

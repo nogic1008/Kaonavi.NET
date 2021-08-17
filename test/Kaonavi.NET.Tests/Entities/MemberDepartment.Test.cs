@@ -21,7 +21,7 @@ public class MemberDepartmentTest
     /// <param name="code"><see cref="MemberDepartment.Code"/></param>
     /// <param name="name"><see cref="MemberDepartment.Name"/></param>
     /// <param name="names"><see cref="MemberDepartment.Names"/></param>
-    [Theory(DisplayName = nameof(MemberDepartment) + " > JSONからデシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(MemberDepartment)} > JSONからデシリアライズできる。")]
     [InlineData(SimpleJson, "所属コード", null, null)]
     [InlineData(SingleDepJson, "1000", "取締役会", "取締役会")]
     [InlineData(MultipleJson, "2000", "営業本部 第一営業部 ITグループ", "営業本部", "第一営業部", "ITグループ")]

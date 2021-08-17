@@ -12,7 +12,7 @@ public class FieldTypeTest
     /// <summary>JSONにシリアライズできる。</summary>
     /// <param name="fieldType">シリアライズ対象となる<see cref="FieldType"/></param>
     /// <param name="expectedJson">JSON文字列</param>
-    [Theory(DisplayName = nameof(FieldType) + " > JSONにシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(FieldType)} > JSONにシリアライズできる。")]
     [InlineData(FieldType.String, "\"string\"")]
     [InlineData(FieldType.Number, "\"number\"")]
     [InlineData(FieldType.Date, "\"date\"")]
@@ -24,7 +24,7 @@ public class FieldTypeTest
 
     /// <summary>無効な<see cref="FieldType"/>の場合、JsonExceptionをスローする。 </summary>
     /// <param name="invalidValue"><see cref="FieldType"/>の範囲外にあたる値</param>
-    [Theory(DisplayName = nameof(FieldType) + " > 無効な値のとき、JsonExceptionをスローする。")]
+    [Theory(DisplayName = $"{nameof(FieldType)} > 無効な値のとき、JsonExceptionをスローする。")]
     [InlineData(-1)]
     [InlineData(6)]
     public void CannotSerializeJSON_IfInvalidValue(int invalidValue)
@@ -40,7 +40,7 @@ public class FieldTypeTest
     /// <summary>JSONからデシリアライズできる。</summary>
     /// <param name="json">デシリアライズ対象となるJSON文字列</param>
     /// <param name="expected"><see cref="FieldType"/></param>
-    [Theory(DisplayName = nameof(FieldType) + " > JSONからデシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(FieldType)} > JSONからデシリアライズできる。")]
     [InlineData("\"string\"", FieldType.String)]
     [InlineData("\"number\"", FieldType.Number)]
     [InlineData("\"date\"", FieldType.Date)]
@@ -52,7 +52,7 @@ public class FieldTypeTest
 
     /// <summary>無効なJSONの場合、JsonExceptionをスローする。</summary>
     /// <param name="json">JSON文字列</param>
-    [Theory(DisplayName = nameof(FieldType) + " > 無効なJSONのとき、JsonExceptionをスローする。")]
+    [Theory(DisplayName = $"{nameof(FieldType)} > 無効なJSONのとき、JsonExceptionをスローする。")]
     [InlineData("\"\"")]
     [InlineData("\"integer\"")]
     [InlineData("\"string,number\"")]

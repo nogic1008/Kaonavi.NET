@@ -17,7 +17,7 @@ public class CustomFieldValueTest
     /// <param name="id"><see cref="CustomFieldValue.Id"/></param>
     /// <param name="name"><see cref="CustomFieldValue.Name"/></param>
     /// <param name="values"><see cref="CustomFieldValue.Values"/></param>
-    [Theory(DisplayName = nameof(CustomFieldValue) + " > JSONからデシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(CustomFieldValue)} > JSONからデシリアライズできる。")]
     [InlineData("{\"id\":100,\"name\":\"血液型\",\"values\":[\"A\"]}", 100, "血液型", "A")]
     [InlineData("{\"id\":100,\"values\":[\"\"]}", 100, null, "")]
     [InlineData("{\"id\": 1,\"values\":[\"Aコース\",\"Bコース\"]}", 1, null, "Aコース", "Bコース")]

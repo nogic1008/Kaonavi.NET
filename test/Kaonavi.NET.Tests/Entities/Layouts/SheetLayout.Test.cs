@@ -13,7 +13,7 @@ public class SheetLayoutTest
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = nameof(SheetLayout) + " > JSONからデシリアライズできる。")]
+    [Fact(DisplayName = $"{nameof(SheetLayout)} > JSONからデシリアライズできる。")]
     public void CanDeserializeJSON()
     {
         #region JSON

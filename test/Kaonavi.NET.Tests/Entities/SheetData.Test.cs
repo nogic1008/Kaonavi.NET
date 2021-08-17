@@ -10,12 +10,10 @@ using Xunit;
 /// </summary>
 public class SheetDataTest
 {
-    private const string TestName = nameof(SheetData) + " > ";
-
     /// <summary>
     /// <see cref="RecordType.Single"/>のJSONからデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = TestName + "単一レコードのJSONからデシリアライズできる。")]
+    [Fact(DisplayName = $"{nameof(SheetData)} > 単一レコードのJSONからデシリアライズできる。")]
     public void CanDeserializeSingleJSON()
     {
         // Arrange
@@ -51,7 +49,7 @@ public class SheetDataTest
     /// <summary>
     /// <see cref="RecordType.Multiple"/>のJSONからデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = TestName + "複数レコードのJSONからデシリアライズできる。")]
+    [Fact(DisplayName = $"{nameof(SheetData)} > 複数レコードのJSONからデシリアライズできる。")]
     public void CanDeserializeMultipleJSON()
     {
         // Arrange

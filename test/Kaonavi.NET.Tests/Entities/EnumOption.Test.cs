@@ -9,7 +9,7 @@ using Xunit;
 public class EnumOptionTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [Fact(DisplayName = nameof(EnumOption) + " > JSONからデシリアライズできる。")]
+    [Fact(DisplayName = $"{nameof(EnumOption)} > JSONからデシリアライズできる。")]
     public void CanDeserializeJSON()
     {
         // Arrange

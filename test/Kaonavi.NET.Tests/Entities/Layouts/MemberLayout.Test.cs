@@ -13,7 +13,7 @@ public class MemberLayoutTest
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = nameof(MemberLayout) + " > JSONからデシリアライズできる。")]
+    [Fact(DisplayName = $"{nameof(MemberLayout)} > JSONからデシリアライズできる。")]
     public void CanDeserializeJSON()
     {
         // Arrange

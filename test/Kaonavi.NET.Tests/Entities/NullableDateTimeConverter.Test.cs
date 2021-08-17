@@ -15,12 +15,11 @@ using Xunit;
 public class NullableDateTimeConverterTest
 {
     /// <summary>
-    /// <see cref="NullableDateTimeConverter.Write(Utf8JsonWriter, DateTime?, JsonSerializerOptions)"/>は、
-    /// <see langword="DateTime?"/>をJSON形式に正しくシリアライズできる。
+    /// <see cref="NullableDateTimeConverter.Write"/>は、<see langword="DateTime?"/>をJSON形式に正しくシリアライズできる。
     /// </summary>
     /// <param name="dateTimeString"><see cref="DateTime"/>の文字列表現</param>
     /// <param name="expectedJson">JSON文字列</param>
-    [Theory(DisplayName = nameof(NullableDateTimeConverter) + " > " + nameof(NullableDateTimeConverter.Write))]
+    [Theory(DisplayName = $"{nameof(NullableDateTimeConverter)} > ${nameof(NullableDateTimeConverter.Write)}")]
     [InlineData(null, "null")]
     [InlineData("2020/01/01", "\"2020-01-01\"")]
     [InlineData("2020/01/01 5:00:00", "\"2020-01-01 05:00:00\"")]
@@ -43,12 +42,11 @@ public class NullableDateTimeConverterTest
     }
 
     /// <summary>
-    /// <see cref="NullableDateTimeConverter.Read(ref Utf8JsonReader, Type, JsonSerializerOptions)"/>は、
-    /// JSON形式から<see langword="DateTime?"/>を正しくデシリアライズできる。
+    /// <see cref="NullableDateTimeConverter.Read"/>は、JSON形式から<see langword="DateTime?"/>を正しくデシリアライズできる。
     /// </summary>
     /// <param name="json">JSON文字列</param>
     /// <param name="expectedString"><see cref="DateTime"/>の文字列表現</param>
-    [Theory(DisplayName = nameof(NullableDateTimeConverter) + " > " + nameof(NullableDateTimeConverter.Read))]
+    [Theory(DisplayName = $"{nameof(NullableDateTimeConverter)} > ${nameof(NullableDateTimeConverter.Read)}")]
     [InlineData("null", null)]
     [InlineData("\"\"", null)]
     [InlineData("\"2020-01-01\"", "01/01/2020 00:00:00")]

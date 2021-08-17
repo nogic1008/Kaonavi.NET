@@ -24,7 +24,7 @@ public class DepartmentTreeTest
     /// <param name="leaderMemberCode"><inheritdoc cref="DepartmentTree" path="/param[@name='LeaderMemberCode']"/></param>
     /// <param name="order"><inheritdoc cref="DepartmentTree" path="/param[@name='Order']"/></param>
     /// <param name="memo"><inheritdoc cref="DepartmentTree" path="/param[@name='Memo']"/></param>
-    [Theory(DisplayName = nameof(DepartmentTree) + " > JSONからデシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(DepartmentTree)} > JSONからデシリアライズできる。")]
     [InlineData(SimpleJson, "1000", "取締役会", null, "A0002", 1, "")]
     [InlineData(NoLeaderJson, "1200", "営業本部", null, null, 2, null)]
     [InlineData(ChildJson, "2000", "ITグループ", "1500", "A0001", 1, "example")]

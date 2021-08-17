@@ -106,7 +106,7 @@ public class MemberDataTest
     /// <param name="gender"><see cref="MemberData.Gender"/></param>
     /// <param name="birthday"><see cref="MemberData.Birthday"/>の文字列表現</param>
     /// <param name="departmentCode"><see cref="MemberDepartment.Code"/></param>
-    [Theory(DisplayName = nameof(MemberData) + " > JSONからデシリアライズできる。")]
+    [Theory(DisplayName = $"{nameof(MemberData)} > JSONからデシリアライズできる。")]
     [InlineData(SampleJson1, "A0002", "カオナビ 太郎", "カオナビ タロウ", "taro@example.com", "2005/09/20", null, "男性", null, "1000")]
     [InlineData(SampleJson2, "A0001", "カオナビ 花子", "カオナビ ハナコ", "hanako@example.com", "2013/05/07", "2020/03/31", "女性", "1986/05/16", "2000")]
     public void CanDeserializeJSON(string json, string code, string? name, string? nameKana, string? mail, string? enteredDate, string? retiredDate, string? gender, string? birthday, string departmentCode)
