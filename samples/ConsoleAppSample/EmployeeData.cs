@@ -1,7 +1,5 @@
 namespace ConsoleAppSample;
 
-using System;
-using System.Linq;
 using Kaonavi.Net.Entities;
 
 /// <summary>

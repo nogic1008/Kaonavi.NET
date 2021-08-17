@@ -1,7 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System.Text.Json.Serialization;
-
 /// <summary>アクセストークン</summary>
 /// <param name="AccessToken">アクセストークン</param>
 /// <param name="TokenType">トークン種別(<c>"Bearer"</c>固定)</param>

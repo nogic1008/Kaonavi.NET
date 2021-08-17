@@ -1,9 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-
 /// <summary>シート情報</summary>
 public record SheetData
 {

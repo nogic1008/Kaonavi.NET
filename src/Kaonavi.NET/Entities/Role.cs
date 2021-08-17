@@ -1,7 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System.Text.Json.Serialization;
-
 /// <summary>ロール情報</summary>
 /// <param name="Id">ロールID</param>
 /// <param name="Name">ロール名</param>

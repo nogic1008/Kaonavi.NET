@@ -1,8 +1,5 @@
 namespace Kaonavi.Net.Services;
 
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Kaonavi.Net.Entities;
 
 /// <summary>カオナビ API v2の抽象化</summary>

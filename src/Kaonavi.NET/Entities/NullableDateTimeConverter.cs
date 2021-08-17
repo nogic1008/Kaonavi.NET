@@ -1,9 +1,6 @@
 namespace Kaonavi.Net.Entities;
 
-using System;
 using System.Globalization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 /// <summary>
 /// "yyyy-MM-dd HH:mm:ss" &lt;-&gt; DateTime? 変換

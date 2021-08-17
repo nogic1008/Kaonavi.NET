@@ -1,8 +1,5 @@
 namespace ConsoleAppSample;
 
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using ConsoleAppFramework;
 using Kaonavi.Net.Services;
 using Microsoft.Extensions.Logging;
@@ -29,7 +26,7 @@ public class AppBase : ConsoleAppBase
     public async ValueTask FetchLayoutAsync()
     {
         var memberLayout = await _kaonaviService.FetchMemberLayoutAsync(Context.CancellationToken).ConfigureAwait(false);
-        Context.Logger.LogInformation("Received Layout: {0}", JsonSerializer.Serialize(memberLayout));
+        Context.Logger.LogInformation("Received Layout: {memberLayout}", memberLayout);
     }
 
     /// <summary>

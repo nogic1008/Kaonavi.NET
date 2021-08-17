@@ -1,19 +1,11 @@
 namespace Kaonavi.Net.Tests.Services;
 
-using System;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Services;
 using Moq;
 using Moq.Contrib.HttpClient;
-using Xunit;
 
 /// <summary>
 /// <see cref="KaonaviV2Service"/>の単体テスト

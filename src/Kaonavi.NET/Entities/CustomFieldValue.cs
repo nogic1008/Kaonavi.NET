@@ -1,8 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
 /// <summary>基本情報のカスタム項目/シート情報の項目</summary>
 public record CustomFieldValue
 {

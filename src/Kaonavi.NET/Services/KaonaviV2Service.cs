@@ -1,15 +1,8 @@
 namespace Kaonavi.Net.Services;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
 using Kaonavi.Net.Entities;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
@@ -337,7 +330,7 @@ public class KaonaviV2Service : IKaonaviService
         {
             string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
                 ? string.Join("\n", (await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: cancellationToken).ConfigureAwait(false))!.Errors)
-#if NET5_0
+#if NET5_0_OR_GREATER
                     : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
                     : await response.Content.ReadAsStringAsync().ConfigureAwait(false);

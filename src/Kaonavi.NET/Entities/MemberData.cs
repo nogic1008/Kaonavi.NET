@@ -1,9 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System;
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
 /// <summary>メンバー情報(基本情報/所属(主務)/兼務情報)</summary>
 /// <param name="Code">社員番号</param>
 /// <param name="Name">氏名</param>

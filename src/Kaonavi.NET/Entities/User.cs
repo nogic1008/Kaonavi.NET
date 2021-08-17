@@ -1,7 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System.Text.Json.Serialization;
-
 /// <summary>ログインユーザー情報</summary>
 /// <param name="Id">ユーザーID</param>
 /// <param name="EMail">ログインメールアドレス</param>
