@@ -1017,7 +1017,7 @@ namespace Kaonavi.Net.Tests.Services
             var payload = new DepartmentInfo[]
             {
                 new("1000", "取締役会", null, "A0002", 1, ""),
-                new("1200", "営業本部", null, null, 2, ""),
+                new("1200", "営業本部", 2),
                 new("1500", "第一営業部", "1200", null, 1, ""),
                 new("2000", "ITグループ", "1500", "A0001", 1, "example"),
             };
