@@ -28,14 +28,14 @@ namespace Kaonavi.Net.Services
         #region Member
         /// <summary>
         /// 全てのメンバーの基本情報・所属（主務）・兼務情報を取得します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get
+        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get"/>
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// メンバー登録と、合わせて基本情報・所属（主務）・兼務情報を登録します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/post
+        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/post"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">追加するデータ</param>
@@ -46,7 +46,7 @@ namespace Kaonavi.Net.Services
         /// <summary>
         /// 全てのメンバーの基本情報・所属（主務）・兼務情報を一括更新します。
         /// Request Body に含まれていない情報は削除されます。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/put
+        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/put"/>
         /// </summary>
         /// <remarks>
         /// メンバーの登録・削除は行われません。
@@ -61,7 +61,7 @@ namespace Kaonavi.Net.Services
         /// 送信されたメンバーの基本情報・所属（主務）・兼務情報のみを更新します。
         /// Request Body に含まれていない情報は更新されません。
         /// 特定の値を削除する場合は、空文字 "" を送信してください。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/patch
+        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/patch"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">更新するデータ</param>
