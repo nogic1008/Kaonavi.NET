@@ -121,7 +121,7 @@ namespace Kaonavi.Net.Services
             return token!;
         }
 
-        #region Layouts
+        #region Layout
         /// <inheritdoc/>
         public async ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
         {
@@ -260,6 +260,7 @@ namespace Kaonavi.Net.Services
         }
         #endregion
 
+        #region Department
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<DepartmentInfo>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
         {
@@ -272,9 +273,24 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<DepartmentsResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.DepartmentData;
         }
+
+        /// <inheritdoc/>
+        public async ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentInfo> payload, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var postPayload = new DepartmentsResult(payload);
+            var response = await _client.PutAsJsonAsync("/departments", postPayload, _options, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.Id;
+        }
         private record DepartmentsResult(
             [property: JsonPropertyName("department_data")] IReadOnlyList<DepartmentInfo> DepartmentData
         );
+        #endregion
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
