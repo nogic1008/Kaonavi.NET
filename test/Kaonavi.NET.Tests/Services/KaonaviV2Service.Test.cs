@@ -354,8 +354,8 @@ namespace Kaonavi.Net.Tests.Services
                     new("兼務情報", false, "department[]"),
                     new CustomField[]
                     {
-                        new(100, "血液型", false, "enum", null, new[]{ "A", "B", "O", "AB" }),
-                        new(200, "役職", false, "enum", null, new[]{ "部長", "課長", "マネージャー", null }),
+                        new(100, "血液型", false, new[]{ "A", "B", "O", "AB" }),
+                        new(200, "役職", false, new[]{ "部長", "課長", "マネージャー", null }),
                     }
                 ));
 
