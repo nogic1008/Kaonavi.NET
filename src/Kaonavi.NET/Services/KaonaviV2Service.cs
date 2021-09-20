@@ -211,6 +211,21 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!.Id;
         }
+
+        /// <inheritdoc/>
+        public async ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var payload = new DeleteMemberDataPayload(codes);
+            var response = await _client.PostAsJsonAsync("/members/delete", payload, _options, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.Id;
+        }
+        private record DeleteMemberDataPayload(IReadOnlyList<string> Codes);
         #endregion
 
         #region Sheet
