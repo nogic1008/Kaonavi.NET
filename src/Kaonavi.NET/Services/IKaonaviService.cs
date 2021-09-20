@@ -68,6 +68,21 @@ namespace Kaonavi.Net.Services
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         /// <returns><see cref="TaskProgress.Id"/></returns>
         ValueTask<int> UpdateMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 送信されたメンバーを削除します。
+        /// 紐付けユーザーがいる場合、そのアカウント種別によってはユーザーも同時に削除されます。
+        /// <list type="bullet">
+        /// <item>一般の場合、ユーザーも同時に削除されます。</item>
+        /// <item>Admの場合、ユーザーの紐付けが解除。引き続きそのユーザーでログインすることは可能です。</item>
+        /// </list>
+        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1delete/post"/>
+        /// </summary>
+        /// <remarks>更新リクエスト制限の対象APIです。</remarks>
+        /// <param name="codes">削除する社員番号のリスト</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <returns><see cref="TaskProgress.Id"/></returns>
+        ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default);
         #endregion
 
         #region Sheet
