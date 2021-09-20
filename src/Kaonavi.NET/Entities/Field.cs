@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -8,6 +9,31 @@ namespace Kaonavi.Net.Entities
     /// </summary>
     public record Field
     {
+
+        /// <summary>
+        /// Fieldの新しいインスタンスを生成します。
+        /// </summary>
+        /// <param name="name">項目名</param>
+        /// <param name="required">必須入力項目</param>
+        /// <param name="type">入力タイプ ("string", "number", "date", "enum")</param>
+        public Field(string name, bool required, string type) : this(name, required, type, default, Array.Empty<string>()) { }
+
+        /// <summary>
+        /// <see cref="Type"/>が"string"である、Fieldの新しいインスタンスを生成します。
+        /// </summary>
+        /// <param name="name">項目名</param>
+        /// <param name="required">必須入力項目</param>
+        /// <param name="maxLength">設定可能な最大文字数</param>
+        public Field(string name, bool required, int maxLength) : this(name, required, "string", maxLength, Array.Empty<string>()) { }
+
+        /// <summary>
+        /// <see cref="Type"/>が"enum"である、Fieldの新しいインスタンスを生成します。
+        /// </summary>
+        /// <param name="name">項目名</param>
+        /// <param name="required">必須入力項目</param>
+        /// <param name="enum">設定可能な値のリスト</param>
+        public Field(string name, bool required, IReadOnlyList<string?> @enum) : this(name, required, "enum", default, @enum) { }
+
         /// <summary>
         /// Fieldの新しいインスタンスを生成します。
         /// </summary>
@@ -16,6 +42,7 @@ namespace Kaonavi.Net.Entities
         /// <param name="type">入力タイプ ("string", "number", "date", "enum")</param>
         /// <param name="maxLength"><paramref name="type"/>が"string"の場合に設定可能な最大文字数</param>
         /// <param name="enum"><paramref name="type"/>が"enum"の場合に設定可能な値のリスト</param>
+        [JsonConstructor]
         public Field(string name, bool required, string type, int? maxLength, IReadOnlyList<string?> @enum)
             => (Name, Required, Type, MaxLength, Enum) = (name, required, type, maxLength, @enum);
 

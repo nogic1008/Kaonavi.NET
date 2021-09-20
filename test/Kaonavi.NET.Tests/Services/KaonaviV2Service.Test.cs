@@ -342,16 +342,16 @@ namespace Kaonavi.Net.Tests.Services
             var handler = new Mock<HttpMessageHandler>();
             handler.SetupRequest(req => req.RequestUri == endpoint)
                 .ReturnsJson(new MemberLayout(
-                    new("社員番号", true, "string", 50, Array.Empty<string>()),
-                    new("氏名", false, "string", 100, Array.Empty<string>()),
-                    new("フリガナ", false, "string", 100, Array.Empty<string>()),
-                    new("メールアドレス", false, "string", 100, Array.Empty<string>()),
-                    new("入社日", false, "date", null, Array.Empty<string>()),
-                    new("退職日", false, "date", null, Array.Empty<string>()),
-                    new("性別", false, "enum", null, new[] { "男性", "女性" }),
-                    new("生年月日", false, "date", null, Array.Empty<string>()),
-                    new("所属", false, "department", null, Array.Empty<string>()),
-                    new("兼務情報", false, "department[]", null, Array.Empty<string>()),
+                    new("社員番号", true, 50),
+                    new("氏名", false, 100),
+                    new("フリガナ", false, 100),
+                    new("メールアドレス", false, 100),
+                    new("入社日", false, "date"),
+                    new("退職日", false, "date"),
+                    new("性別", false, new[] { "男性", "女性" }),
+                    new("生年月日", false, "date"),
+                    new("所属", false, "department"),
+                    new("兼務情報", false, "department[]"),
                     new CustomField[]
                     {
                         new(100, "血液型", false, "enum", null, new[]{ "A", "B", "O", "AB" }),
