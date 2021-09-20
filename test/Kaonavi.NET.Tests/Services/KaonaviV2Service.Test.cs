@@ -705,6 +705,39 @@ namespace Kaonavi.Net.Tests.Services
                     Times.Once());
             receivedJson.Should().Be(expectedJson);
         }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.DeleteMemberDataAsync"/>は、"/members/delete"にPOSTリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.DeleteMemberDataAsync) + " > POST /members/delete をコールする。")]
+        public async Task DeleteMemberDataAsync_Returns_TaskId()
+        {
+            // Arrange
+            var endpoint = new Uri(_baseUri, "/members/delete");
+            string[] codes = _memberDataPayload.Select(d => d.Code).ToArray();
+            string tokenString = GenerateRandomString();
+            string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, JsonConfig.Default)}}}";
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            int taskId = await sut.DeleteMemberDataAsync(codes).ConfigureAwait(false);
+
+            // Assert
+            taskId.Should().Be(1);
+
+            string? receivedJson = null;
+            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Post
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString
+                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
+                    Times.Once());
+            receivedJson.Should().Be(expectedJson);
+        }
         #endregion
 
         #region Sheet API
