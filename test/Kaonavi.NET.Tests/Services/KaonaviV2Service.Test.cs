@@ -899,6 +899,7 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
+        #region Department API
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchDepartmentsAsync(CancellationToken)"/>は、"/departments"にGETリクエストを行う。
         /// </summary>
@@ -971,6 +972,47 @@ namespace Kaonavi.Net.Tests.Services
                     && req.Headers.TryGetValues("Kaonavi-Token", out var values)
                     && values.First() == tokenString;
         }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.ReplaceDepartmentsAsync"/>は、"/departments"にPUTリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.ReplaceDepartmentsAsync) + " > PUT /departments をコールする。")]
+        public async Task ReplaceDepartmentsAsync_Returns_TaskId()
+        {
+            // Arrange
+            const int sheetId = 1;
+            var payload = new DepartmentInfo[]
+            {
+                new("1000", "取締役会", null, "A0002", 1, ""),
+                new("1200", "営業本部", null, null, 2, ""),
+                new("1500", "第一営業部", "1200", null, 1, ""),
+                new("2000", "ITグループ", "1500", "A0001", 1, "example"),
+            };
+            var endpoint = new Uri(_baseUri, "/departments");
+            string tokenString = GenerateRandomString();
+            string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, JsonConfig.Default)}}}";
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri == endpoint)
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            int taskId = await sut.ReplaceDepartmentsAsync(payload).ConfigureAwait(false);
+
+            // Assert
+            taskId.Should().Be(sheetId);
+
+            string? receivedJson = null;
+            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
+                    && req.Method == HttpMethod.Put
+                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
+                    && values.First() == tokenString
+                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
+                    Times.Once());
+            receivedJson.Should().Be(expectedJson);
+        }
+        #endregion
 
         #region Task API
         private const string TestNameFetchTaskProgressAsync = TestName + nameof(KaonaviV2Service.FetchTaskProgressAsync) + " > ";

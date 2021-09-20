@@ -11,6 +11,7 @@ namespace Kaonavi.Net.Services
     /// </summary>
     public interface IKaonaviService
     {
+        #region Layout
         /// <summary>
         /// 使用可能なメンバーのレイアウト定義情報を全て取得します。
         /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1member_layouts/get
@@ -24,6 +25,7 @@ namespace Kaonavi.Net.Services
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default);
+        #endregion
 
         #region Member
         /// <summary>
@@ -113,12 +115,25 @@ namespace Kaonavi.Net.Services
         ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
         #endregion
 
+        #region Department
         /// <summary>
-        /// 所属情報の一覧を取得します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E/paths/~1departments/get
+        /// 所属ツリーの情報を取得します。
+        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get"/>
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         ValueTask<IReadOnlyList<DepartmentInfo>> FetchDepartmentsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// 所属ツリーの情報を一括更新します。
+        /// <paramref name="payload"/> に含まれていない情報は削除されます。
+        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/put"/>
+        /// </summary>
+        /// <remarks>更新リクエスト制限の対象APIです。</remarks>
+        /// <param name="payload">一括更新するデータ</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <returns><see cref="TaskProgress.Id"/></returns>
+        ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentInfo> payload, CancellationToken cancellationToken = default);
+        #endregion
 
         /// <summary>
         /// <paramref name="taskId"/>と一致するタスクの進捗状況を取得します。
