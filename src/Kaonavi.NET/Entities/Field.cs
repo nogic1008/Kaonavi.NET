@@ -14,7 +14,7 @@ namespace Kaonavi.Net.Entities
         /// <param name="type"><inheritdoc cref="Type" path="/summary/text()"/></param>
         /// <param name="maxLength"><inheritdoc cref="MaxLength" path="/summary/text()"/></param>
         /// <param name="enum"><inheritdoc cref="Enum" path="/summary/text()"/></param>
-        public Field(string name, bool required, string type, int? maxLength, IReadOnlyList<string?> @enum)
+        public Field(string name, bool required, FieldType type, int? maxLength, IReadOnlyList<string?> @enum)
             => (Name, Required, Type, MaxLength, Enum) = (name, required, type, maxLength, @enum);
 
         /// <summary>項目名</summary>
@@ -27,7 +27,7 @@ namespace Kaonavi.Net.Entities
 
         /// <summary>入力タイプ ("string", "number", "date", "enum")</summary>
         [JsonPropertyName("type")]
-        public string Type { get; init; }
+        public FieldType Type { get; init; }
 
         /// <summary><see cref="Type"/>が"string"の場合に設定可能な最大文字数</summary>
         [JsonPropertyName("max_length")]

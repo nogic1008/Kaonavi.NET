@@ -342,20 +342,20 @@ namespace Kaonavi.Net.Tests.Services
             var handler = new Mock<HttpMessageHandler>();
             handler.SetupRequest(req => req.RequestUri == endpoint)
                 .ReturnsJson(new MemberLayout(
-                    new("社員番号", true, "string", 50, Array.Empty<string>()),
-                    new("氏名", false, "string", 100, Array.Empty<string>()),
-                    new("フリガナ", false, "string", 100, Array.Empty<string>()),
-                    new("メールアドレス", false, "string", 100, Array.Empty<string>()),
-                    new("入社日", false, "date", null, Array.Empty<string>()),
-                    new("退職日", false, "date", null, Array.Empty<string>()),
-                    new("性別", false, "enum", null, new[] { "男性", "女性" }),
-                    new("生年月日", false, "date", null, Array.Empty<string>()),
-                    new("所属", false, "department", null, Array.Empty<string>()),
-                    new("兼務情報", false, "department[]", null, Array.Empty<string>()),
+                    new("社員番号", true, FieldType.String, 50, Array.Empty<string>()),
+                    new("氏名", false, FieldType.String, 100, Array.Empty<string>()),
+                    new("フリガナ", false, FieldType.String, 100, Array.Empty<string>()),
+                    new("メールアドレス", false, FieldType.String, 100, Array.Empty<string>()),
+                    new("入社日", false, FieldType.Date, null, Array.Empty<string>()),
+                    new("退職日", false, FieldType.Date, null, Array.Empty<string>()),
+                    new("性別", false, FieldType.Enum, null, new[] { "男性", "女性" }),
+                    new("生年月日", false, FieldType.Date, null, Array.Empty<string>()),
+                    new("所属", false, FieldType.Department, null, Array.Empty<string>()),
+                    new("兼務情報", false, FieldType.DepartmentArray, null, Array.Empty<string>()),
                     new CustomField[]
                     {
-                        new(100, "血液型", false, "enum", null, new[]{ "A", "B", "O", "AB" }),
-                        new(200, "役職", false, "enum", null, new[]{ "部長", "課長", "マネージャー", null }),
+                        new(100, "血液型", false, FieldType.Enum, null, new[]{ "A", "B", "O", "AB" }),
+                        new(200, "役職", false, FieldType.Enum, null, new[]{ "部長", "課長", "マネージャー", null }),
                     }
                 ));
 
@@ -367,14 +367,14 @@ namespace Kaonavi.Net.Tests.Services
             layout.Should().NotBeNull();
             layout!.Code.Name.Should().Be("社員番号");
             layout.Name.Required.Should().BeFalse();
-            layout.NameKana.Type.Should().Be("string");
+            layout.NameKana.Type.Should().Be(FieldType.String);
             layout.Mail.MaxLength.Should().Be(100);
-            layout.EnteredDate.Type.Should().Be("date");
+            layout.EnteredDate.Type.Should().Be(FieldType.Date);
             layout.RetiredDate.Enum.Should().BeEmpty();
             layout.Gender.Enum.Should().Equal("男性", "女性");
             layout.Birthday.MaxLength.Should().BeNull();
-            layout.Department.Type.Should().Be("department");
-            layout.SubDepartments.Type.Should().Be("department[]");
+            layout.Department.Type.Should().Be(FieldType.Department);
+            layout.SubDepartments.Type.Should().Be(FieldType.DepartmentArray);
             layout.CustomFields.Should().HaveCount(2);
             layout.CustomFields[^1].Enum.Should().Equal("部長", "課長", "マネージャー", null);
 

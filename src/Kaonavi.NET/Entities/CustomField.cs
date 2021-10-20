@@ -15,7 +15,7 @@ namespace Kaonavi.Net.Entities
         /// <param name="type"><inheritdoc cref="Field.Type" path="/summary/text()"/></param>
         /// <param name="maxLength"><inheritdoc cref="Field.MaxLength" path="/summary/text()"/></param>
         /// <param name="enum"><inheritdoc cref="Field.Enum" path="/summary/text()"/></param>
-        public CustomField(int id, string name, bool required, string type, int? maxLength, IReadOnlyList<string?> @enum)
+        public CustomField(int id, string name, bool required, FieldType type, int? maxLength, IReadOnlyList<string?> @enum)
             : base(name, required, type, maxLength, @enum) => Id = id;
 
         /// <summary>シート項目ID</summary>
