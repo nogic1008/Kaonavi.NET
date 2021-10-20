@@ -6,22 +6,20 @@ using Kaonavi.Net.Entities.Api;
 
 namespace Kaonavi.Net.Services
 {
-    /// <summary>
-    /// カオナビ API v2の抽象化
-    /// </summary>
+    /// <summary>カオナビ API v2の抽象化</summary>
     public interface IKaonaviService
     {
         #region Layout
         /// <summary>
         /// 使用可能なメンバーのレイアウト定義情報を全て取得します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1member_layouts/get
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1member_layouts/get"/>
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 使用可能なシートのレイアウト定義情報を全て取得します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1sheet_layouts/get
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1sheet_layouts/get"/>
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default);
@@ -30,14 +28,14 @@ namespace Kaonavi.Net.Services
         #region Member
         /// <summary>
         /// 全てのメンバーの基本情報・所属（主務）・兼務情報を取得します。
-        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get"/>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get"/>
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// メンバー登録と、合わせて基本情報・所属（主務）・兼務情報を登録します。
-        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/post"/>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/post"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">追加するデータ</param>
@@ -47,12 +45,14 @@ namespace Kaonavi.Net.Services
 
         /// <summary>
         /// 全てのメンバーの基本情報・所属（主務）・兼務情報を一括更新します。
-        /// Request Body に含まれていない情報は削除されます。
-        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/put"/>
+        /// <paramref name="payload"/>に含まれていない情報は削除されます。
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/put"/>
         /// </summary>
         /// <remarks>
-        /// メンバーの登録・削除は行われません。
-        /// 更新リクエスト制限の対象APIです。
+        /// <list type="bullet">
+        /// <item>メンバーの登録・削除は行われません。</item>
+        /// <item>更新リクエスト制限の対象APIです。</item>
+        /// </list>
         /// </remarks>
         /// <param name="payload">一括更新するデータ</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
@@ -61,9 +61,9 @@ namespace Kaonavi.Net.Services
 
         /// <summary>
         /// 送信されたメンバーの基本情報・所属（主務）・兼務情報のみを更新します。
-        /// Request Body に含まれていない情報は更新されません。
-        /// 特定の値を削除する場合は、空文字 "" を送信してください。
-        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/patch"/>
+        /// <paramref name="payload"/>に含まれていない情報は更新されません。
+        /// 特定の値を削除する場合は、<c>""</c>を送信してください。
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/patch"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">更新するデータ</param>
@@ -78,7 +78,7 @@ namespace Kaonavi.Net.Services
         /// <item>一般の場合、ユーザーも同時に削除されます。</item>
         /// <item>Admの場合、ユーザーの紐付けが解除。引き続きそのユーザーでログインすることは可能です。</item>
         /// </list>
-        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1delete/post"/>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1delete/post"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="codes">削除する社員番号のリスト</param>
@@ -90,6 +90,7 @@ namespace Kaonavi.Net.Services
         #region Sheet
         /// <summary>
         /// 指定したシートの全情報を取得します。
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}/get"/>
         /// </summary>
         /// <param name="sheetId">シートID</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
@@ -99,7 +100,9 @@ namespace Kaonavi.Net.Services
         /// 指定したシートのシート情報を一括更新します。
         /// <paramref name="payload"/> に含まれていない情報は削除されます。
         /// 複数レコードの情報は送信された配列順に登録されます。
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}/put"/>
         /// </summary>
+        /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="sheetId">シートID</param>
         /// <param name="payload">一括更新するデータ</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
@@ -108,21 +111,34 @@ namespace Kaonavi.Net.Services
 
         /// <summary>
         /// 指定したシートのシート情報の一部を更新します。
-        /// <para>
-        /// 単一レコード
-        /// 送信された情報のみが更新されます。
-        /// <paramref name="payload"/> に含まれていない情報は更新されません。
-        /// 特定の値を削除する場合は、<c>""</c> を送信してください。
-        /// </para>
-        /// <para>
-        /// 複数レコード
-        /// メンバーごとのデータが一括更新されます。
-        /// 特定の値を削除する場合は、<c>""</c> を送信してください。
-        /// 特定のレコードだけを更新することは出来ません。
-        /// <see cref="SheetData.Code"/> が指定されていないメンバーの情報は更新されません。
-        /// 送信された配列順に登録されます。
-        /// </para>
+        /// <list type="bullet">
+        /// <item>
+        ///   <term>単一レコード</term>
+        ///   <description>
+        ///     送信された情報のみが更新されます。
+        ///     <paramref name="payload"/> に含まれていない情報は更新されません。
+        ///     特定の値を削除する場合は、<c>""</c>を送信してください。
+        ///   </description>
+        /// </item>
+        /// <item>
+        ///   <term>複数レコード</term>
+        ///   <description>
+        ///     メンバーごとのデータが一括更新されます。
+        ///     特定の値を削除する場合は、<c>""</c>を送信してください。
+        ///     特定のレコードだけを更新することは出来ません。
+        ///     <inheritdoc cref="SheetData.Code" path="/summary"/>が指定されていないメンバーの情報は更新されません。
+        ///     送信された配列順に登録されます。
+        ///   </description>
+        /// </item>
+        /// </list>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}/patch"/>
         /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>追加・挿入のみのAPIはありません。値を追加する場合は、元のデータも含めて更新してください。</item>
+        /// <item>更新リクエスト制限の対象APIです。</item>
+        /// </list>
+        /// </remarks>
         /// <param name="sheetId">シートID</param>
         /// <param name="payload">更新するデータ</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
@@ -133,7 +149,7 @@ namespace Kaonavi.Net.Services
         #region Department
         /// <summary>
         /// 所属ツリーの情報を取得します。
-        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get"/>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get"/>
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         ValueTask<IReadOnlyList<DepartmentInfo>> FetchDepartmentsAsync(CancellationToken cancellationToken = default);
@@ -141,7 +157,7 @@ namespace Kaonavi.Net.Services
         /// <summary>
         /// 所属ツリーの情報を一括更新します。
         /// <paramref name="payload"/> に含まれていない情報は削除されます。
-        /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/put"/>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/put"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">一括更新するデータ</param>
@@ -152,6 +168,7 @@ namespace Kaonavi.Net.Services
 
         /// <summary>
         /// <paramref name="taskId"/>と一致するタスクの進捗状況を取得します。
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%BF%E3%82%B9%E3%82%AF%E9%80%B2%E6%8D%97%E7%8A%B6%E6%B3%81"/>
         /// </summary>
         /// <param name="taskId">タスクID</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
@@ -160,14 +177,14 @@ namespace Kaonavi.Net.Services
         #region User
         /// <summary>
         /// ユーザー情報の一覧を取得します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get"/>
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// ユーザー情報を登録します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/post
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/post"/>
         /// </summary>
         /// <param name="payload">リクエスト</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
@@ -180,7 +197,7 @@ namespace Kaonavi.Net.Services
 
         /// <summary>
         /// <paramref name="userId"/>と一致するログインユーザー情報を取得します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get"/>
         /// </summary>
         /// <param name="userId">ユーザーID</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
@@ -188,7 +205,7 @@ namespace Kaonavi.Net.Services
 
         /// <summary>
         /// <paramref name="userId"/>と一致するログインユーザー情報を更新します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/patch
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get"/>
         /// </summary>
         /// <param name="userId">ユーザーID</param>
         /// <param name="payload">リクエスト</param>
@@ -204,7 +221,7 @@ namespace Kaonavi.Net.Services
 
         /// <summary>
         /// <paramref name="userId"/>と一致するログインユーザー情報を削除します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/delete
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/delete"/>
         /// </summary>
         /// <param name="userId">ユーザーID</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
@@ -213,7 +230,7 @@ namespace Kaonavi.Net.Services
 
         /// <summary>
         /// ロール情報の一覧を取得します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get"/>
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default);
