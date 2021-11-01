@@ -8,12 +8,12 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// DepartmentInfoの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="code">所属コード</param>
-        /// <param name="name">所属名</param>
-        /// <param name="parentCode">親の所属コード (存在しない場合は<c>null</c>)</param>
-        /// <param name="leaderMemberCode">所属の責任者の社員番号 (存在しない場合は<c>null</c>)</param>
-        /// <param name="order">同階層内の並び順</param>
-        /// <param name="memo">所属のメモ (存在しない場合は<c>null</c>)</param>
+        /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
+        /// <param name="name"><inheritdoc cref="Name" path="/summary/text()"/></param>
+        /// <param name="parentCode"><inheritdoc cref="ParentCode" path="/summary/text()"/></param>
+        /// <param name="leaderMemberCode"><inheritdoc cref="LeaderMemberCode" path="/summary/text()"/></param>
+        /// <param name="order"><inheritdoc cref="Order" path="/summary/text()"/></param>
+        /// <param name="memo"><inheritdoc cref="Memo" path="/summary/text()"/></param>
         public DepartmentInfo(string code, string name, string? parentCode, string? leaderMemberCode, int order, string? memo)
             => (Code, Name, ParentCode, LeaderMemberCode, Order, Memo) = (code, name, parentCode, leaderMemberCode, order, memo);
 

@@ -7,7 +7,7 @@ using Moq.Language.Flow;
 
 namespace Kaonavi.Net.Tests
 {
-    public static class MockHttpHandlerExtension
+    internal static class MockHttpHandlerExtension
     {
         private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web);
         public static IReturnsResult<HttpMessageHandler> ReturnsJson<T>(

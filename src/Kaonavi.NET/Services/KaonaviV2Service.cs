@@ -32,15 +32,13 @@ namespace Kaonavi.Net.Services
             => _options.Converters.Add(new NullableDateTimeConverter());
 
         #region DI Objects
-        /// <summary>
-        /// APIコール時に利用する<see cref="HttpClient"/>のインスタンス
-        /// </summary>
+        /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[1]"/></summary>
         private readonly HttpClient _client;
 
-        /// <summary>Consumer Key</summary>
+        /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[2]"/></summary>
         private readonly string _consumerKey;
 
-        /// <summary>Consumer Secret</summary>
+        /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[3]"/></summary>
         private readonly string _consumerSecret;
         #endregion
 
@@ -48,7 +46,7 @@ namespace Kaonavi.Net.Services
         private const string TokenHeader = "Kaonavi-Token";
         /// <summary>
         /// アクセストークン文字列を取得または設定します。
-        /// 各種API呼び出し時、この項目が<c>null</c>の場合は自動的に<see cref="AuthenticateAsync(CancellationToken)"/>を呼び出します。
+        /// 各種API呼び出し時、この項目が<c>null</c>の場合は自動的に<see cref="AuthenticateAsync"/>を呼び出します。
         /// </summary>
         public string? AccessToken
         {
@@ -65,7 +63,7 @@ namespace Kaonavi.Net.Services
         /// <summary>
         /// dryrunモードの動作有無を取得または設定します。
         /// <c>true</c>に設定することで、データベースの操作を行わず、リクエストの内容が適切であるかを検証することが出来ます。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#section/dryrun
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#section/dryrun"/>
         /// </summary>
         public bool UseDryRun
         {
@@ -99,7 +97,7 @@ namespace Kaonavi.Net.Services
 
         /// <summary>
         /// アクセストークンを発行します。
-        /// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3/paths/~1token/post
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3/paths/~1token/post"/>
         /// </summary>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)

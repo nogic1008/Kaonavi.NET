@@ -4,7 +4,7 @@ using Kaonavi.Net.Entities;
 
 namespace Kaonavi.Net.Tests
 {
-    public static class JsonConfig
+    internal static class JsonConfig
     {
         internal static readonly JsonSerializerOptions Default;
         static JsonConfig()
