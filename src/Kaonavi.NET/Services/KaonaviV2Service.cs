@@ -118,7 +118,7 @@ namespace Kaonavi.Net.Services
             return token!;
         }
 
-        #region Layout
+        #region レイアウト定義
         /// <inheritdoc/>
         public async ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
         {
@@ -149,7 +149,7 @@ namespace Kaonavi.Net.Services
         );
         #endregion
 
-        #region Member
+        #region メンバー情報
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
         {
@@ -225,7 +225,7 @@ namespace Kaonavi.Net.Services
         private record DeleteMemberDataPayload(IReadOnlyList<string> Codes);
         #endregion
 
-        #region Sheet
+        #region シート情報
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
         {
@@ -272,7 +272,7 @@ namespace Kaonavi.Net.Services
         }
         #endregion
 
-        #region Department
+        #region 所属ツリー
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
         {
@@ -304,6 +304,7 @@ namespace Kaonavi.Net.Services
         );
         #endregion
 
+        #region タスク進捗状況
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
         public async ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
@@ -320,8 +321,9 @@ namespace Kaonavi.Net.Services
                 .ReadFromJsonAsync<TaskProgress>(cancellationToken: cancellationToken)
                 .ConfigureAwait(false))!;
         }
+        #endregion
 
-        #region User
+        #region ユーザー情報
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
         {
@@ -409,6 +411,7 @@ namespace Kaonavi.Net.Services
         }
         #endregion
 
+        #region ロール
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
         {
@@ -422,6 +425,54 @@ namespace Kaonavi.Net.Services
                 .ConfigureAwait(false))!.RoleData;
         }
         private record RolesResult([property: JsonPropertyName("role_data")] IReadOnlyList<Role> RoleData);
+        #endregion
+
+        #region マスター管理
+        /// <inheritdoc/>
+        public async ValueTask<IReadOnlyList<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync("/enum_options", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<EnumOptionsResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.CustomFieldData;
+        }
+        private record EnumOptionsResult([property: JsonPropertyName("custom_field_data")] IReadOnlyList<EnumOption> CustomFieldData);
+
+        /// <inheritdoc/>
+        public async ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var response = await _client.GetAsync($"/enum_options/{customFieldId}", cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<EnumOption>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!;
+        }
+
+        /// <inheritdoc/>
+        public async ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyList<(int?, string)> payload, CancellationToken cancellationToken = default)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+
+            var putPayload = new EnumOptionPayload(payload.Select(d => new EnumOptionPayload.Data(d.Item1, d.Item2)).ToArray());
+            var response = await _client.PutAsJsonAsync($"/enum_options/{customFieldId}", putPayload, _options, cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
+
+            return (await response.Content
+                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
+                .ConfigureAwait(false))!.Id;
+        }
+        private record EnumOptionPayload([property: JsonPropertyName("enum_option_data")] IReadOnlyList<EnumOptionPayload.Data> EnumOptionData)
+        {
+            internal record Data(int? Id, string Name);
+        }
+        #endregion
 
         #region Common Method
         /// <summary>APIコール前に必要な認証を行います。</summary>

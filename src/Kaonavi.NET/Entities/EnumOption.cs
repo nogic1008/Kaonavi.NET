@@ -5,7 +5,9 @@ namespace Kaonavi.Net.Entities
 {
     /// <summary>マスター情報</summary>
     /// <param name="SheetName">シート名</param>
-    /// <param name="Id">カスタムフィールドID</param>
+    /// <param name="Id">
+    /// カスタムフィールドID <seealso cref="CustomField.Id"/>
+    /// </param>
     /// <param name="Name">カスタムフィールド名</param>
     /// <param name="EnumOptionData"><see cref="Field.Enum"/></param>
     public record EnumOption(
