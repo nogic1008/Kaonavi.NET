@@ -801,12 +801,12 @@
       },
       "System.Net.Http.Json": {
         "type": "Transitive",
-        "resolved": "6.0.0-rc.1.21451.13",
-        "contentHash": "D0rVXaICbX9lkPZLT+RLW8ob9qnZ2jjv2noL1vUDCm0uUJfxZmuRY1p3pHTssc+NtIP/dlX6cWUZjvkRgaf9bA==",
+        "resolved": "6.0.0-rc.2.21480.5",
+        "contentHash": "UcyxU5aoQ/GP5YLwh0sLqKwka/NzTg9dGn1KFaUIEFggdhiXx9kfYeqmB285EfcCgV7Dx9/6+Nvj1Lrc/D9tLw==",
         "dependencies": {
           "System.Buffers": "4.5.1",
           "System.Memory": "4.5.4",
-          "System.Text.Json": "6.0.0-rc.1.21451.13",
+          "System.Text.Json": "6.0.0-rc.2.21480.5",
           "System.Threading.Tasks.Extensions": "4.5.4"
         }
       },
@@ -949,8 +949,8 @@
       },
       "System.Runtime.CompilerServices.Unsafe": {
         "type": "Transitive",
-        "resolved": "6.0.0-rc.1.21451.13",
-        "contentHash": "B4MhG+nG2BX3Z0WR6MRG0YHCZKTskVEcP1M2Al3vWmMRgPuZgvAQ/bGP4gZqoVBWxJqzjgK5rs5o6i5XSfg2Jg=="
+        "resolved": "6.0.0-rc.2.21480.5",
+        "contentHash": "Xn/HBsyA/Fsp0gGZpdJcVBluc0MDXisNHHiYXTdreb1Nl4PEid7L6w3JcWrOU9xQFoL5Ep7ySnNDTn1BVVy26Q=="
       },
       "System.Runtime.Extensions": {
         "type": "Transitive",
@@ -1191,19 +1191,19 @@
       },
       "System.Text.Encodings.Web": {
         "type": "Transitive",
-        "resolved": "6.0.0-rc.1.21451.13",
-        "contentHash": "Zt9cyeZwehAtwpqUEOGHqyi3mfOJd81dFQMjxkhXWpuVYNzkQblFZodIcUhm8E5cLwgQNxkFtwHuaWfQJ1r5EQ==",
+        "resolved": "6.0.0-rc.2.21480.5",
+        "contentHash": "9tYbLbixVbbPJ/dxmL3diSete64KzsqafOCUcopKKg9VNUde6c6ppoeFIIZrvy3QGRO+n7dP4GuvDkpH3Vgqeg==",
         "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0-rc.1.21451.13"
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0-rc.2.21480.5"
         }
       },
       "System.Text.Json": {
         "type": "Transitive",
-        "resolved": "6.0.0-rc.1.21451.13",
-        "contentHash": "mIdbwmvqkiPRTr5EfzaWs6240nha0OK6rwZPweFWV8C+U3ibuIeq9EYHzyq+cob67eYlb7kNXyeKbiqfgaq1mQ==",
+        "resolved": "6.0.0-rc.2.21480.5",
+        "contentHash": "o84o5V+XvbvJ8oZCf8kO5GWgWPIyta2FKFusv/gAqa1Ui52mXc68tHGHu5qhpWJ1JjQzW8oO04t2iULVtGbdZw==",
         "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0-rc.1.21451.13",
-          "System.Text.Encodings.Web": "6.0.0-rc.1.21451.13"
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0-rc.2.21480.5",
+          "System.Text.Encodings.Web": "6.0.0-rc.2.21480.5"
         }
       },
       "System.Text.RegularExpressions": {
@@ -1354,7 +1354,7 @@
       "kaonavi.net": {
         "type": "Project",
         "dependencies": {
-          "System.Net.Http.Json": "6.0.0-rc.1.21451.13",
+          "System.Net.Http.Json": "6.0.0-rc.2.21480.5",
           "System.Threading.Tasks.Extensions": "4.5.4"
         }
       }
