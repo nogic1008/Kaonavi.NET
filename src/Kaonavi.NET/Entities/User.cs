@@ -8,10 +8,10 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// Userの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="id"><inheritdoc cref="Id" path="/summary"/></param>
-        /// <param name="email"><inheritdoc cref="Email" path="/summary"/></param>
-        /// <param name="memberCode"><inheritdoc cref="MemberCode" path="/summary"/></param>
-        /// <param name="role"><inheritdoc cref="Role" path="/summary"/></param>
+        /// <param name="id"><inheritdoc cref="Id" path="/summary/text()"/></param>
+        /// <param name="email"><inheritdoc cref="EMail" path="/summary/text()"/></param>
+        /// <param name="memberCode"><inheritdoc cref="MemberCode" path="/summary/text()"/></param>
+        /// <param name="role"><inheritdoc cref="Role" path="/summary/text()"/></param>
         public User(int id, string email, string? memberCode, Role role)
             => (Id, EMail, MemberCode, Role) = (id, email, memberCode, role);
 

@@ -611,7 +611,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.AddMemberDataAsync(IEnumerable{MemberData}, CancellationToken)"/>は、"/members"にPOSTリクエストを行う。
+        /// <see cref="KaonaviV2Service.AddMemberDataAsync"/>は、"/members"にPOSTリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AddMemberDataAsync) + " > POST /members をコールする。")]
         public async Task AddMemberDataAsync_Returns_TaskId()
@@ -643,7 +643,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.ReplaceMemberDataAsync(IEnumerable{MemberData}, CancellationToken)"/>は、"/members"にPUTリクエストを行う。
+        /// <see cref="KaonaviV2Service.ReplaceMemberDataAsync"/>は、"/members"にPUTリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.ReplaceMemberDataAsync) + " > PUT /members をコールする。")]
         public async Task ReplaceMemberDataAsync_Returns_TaskId()
@@ -675,7 +675,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.UpdateMemberDataAsync(IEnumerable{MemberData}, CancellationToken)"/>は、"/members"にPATCHリクエストを行う。
+        /// <see cref="KaonaviV2Service.UpdateMemberDataAsync"/>は、"/members"にPATCHリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateMemberDataAsync) + " > PATCH /members をコールする。")]
         public async Task UpdateMemberDataAsync_Returns_TaskId()
@@ -866,7 +866,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.ReplaceSheetDataAsync(int, IEnumerable{SheetData}, CancellationToken)"/>は、"/sheets/{sheetId}"にPUTリクエストを行う。
+        /// <see cref="KaonaviV2Service.ReplaceSheetDataAsync"/>は、"/sheets/{sheetId}"にPUTリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.ReplaceSheetDataAsync) + " > PUT /sheets/{sheetId} をコールする。")]
         public async Task ReplaceSheetDataAsync_Returns_TaskId()
@@ -899,7 +899,7 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.UpdateSheetDataAsync(int, IEnumerable{SheetData}, CancellationToken)"/>は、"/sheets/{sheetId}"にPATCHリクエストを行う。
+        /// <see cref="KaonaviV2Service.UpdateSheetDataAsync"/>は、"/sheets/{sheetId}"にPATCHリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateSheetDataAsync) + " > PATCH /sheets/{sheetId} をコールする。")]
         public async Task UpdateSheetDataAsync_Returns_TaskId()
@@ -1358,7 +1358,7 @@ namespace Kaonavi.Net.Tests.Services
         #endregion
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchRolesAsync(CancellationToken)"/>は、"/roles"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchRolesAsync"/>は、"/roles"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchRolesAsync) + " > GET /roles をコールする。")]
         public async Task FetchRolesAsync_Returns_Roles()
