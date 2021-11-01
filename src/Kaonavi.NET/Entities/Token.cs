@@ -8,9 +8,9 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// Tokenの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="accessToken"><inheritdoc cref="AccessToken" path="/summary"/></param>
-        /// <param name="tokenType"><inheritdoc cref="TokenType" path="/summary"/></param>
-        /// <param name="expiresIn"><inheritdoc cref="ExpiresIn" path="/summary"/></param>
+        /// <param name="accessToken"><inheritdoc cref="AccessToken" path="/summary/text()"/></param>
+        /// <param name="tokenType"><inheritdoc cref="TokenType" path="/summary/text()"/></param>
+        /// <param name="expiresIn"><inheritdoc cref="ExpiresIn" path="/summary/text()"/></param>
         public Token(string accessToken, string tokenType, int expiresIn)
             => (AccessToken, TokenType, ExpiresIn) = (accessToken, tokenType, expiresIn);
 

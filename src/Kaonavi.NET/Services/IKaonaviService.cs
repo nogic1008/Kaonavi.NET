@@ -126,7 +126,7 @@ namespace Kaonavi.Net.Services
         ///     メンバーごとのデータが一括更新されます。
         ///     特定の値を削除する場合は、<c>""</c>を送信してください。
         ///     特定のレコードだけを更新することは出来ません。
-        ///     <inheritdoc cref="SheetData.Code" path="/summary"/>が指定されていないメンバーの情報は更新されません。
+        ///     <inheritdoc cref="SheetData.Code" path="/summary/text()"/>が指定されていないメンバーの情報は更新されません。
         ///     送信された配列順に登録されます。
         ///   </description>
         /// </item>
@@ -207,7 +207,7 @@ namespace Kaonavi.Net.Services
         /// <paramref name="userId"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get"/>
         /// </summary>
-        /// <param name="userId"><inheritdoc cref="User.Id" path="/summary"/></param>
+        /// <param name="userId"><inheritdoc cref="User.Id" path="/summary/text()"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
         ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default);
 

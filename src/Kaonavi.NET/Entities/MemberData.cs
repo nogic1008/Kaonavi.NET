@@ -10,17 +10,17 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// MemberDataの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="code"><inheritdoc cref="Code" path="/summary"/></param>
-        /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
-        /// <param name="nameKana"><inheritdoc cref="NameKana" path="/summary"/></param>
-        /// <param name="mail"><inheritdoc cref="Mail" path="/summary"/></param>
-        /// <param name="enteredDate"><inheritdoc cref="EnteredDate" path="/summary"/></param>
-        /// <param name="retiredDate"><inheritdoc cref="RetiredDate" path="/summary"/></param>
-        /// <param name="gender"><inheritdoc cref="Gender" path="/summary"/></param>
-        /// <param name="birthday"><inheritdoc cref="Birthday" path="/summary"/></param>
-        /// <param name="department"><inheritdoc cref="Department" path="/summary"/></param>
-        /// <param name="subDepartments"><inheritdoc cref="SubDepartments" path="/summary"/></param>
-        /// <param name="customFields"><inheritdoc cref="CustomFields" path="/summary"/></param>
+        /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
+        /// <param name="name"><inheritdoc cref="Name" path="/summary/text()"/></param>
+        /// <param name="nameKana"><inheritdoc cref="NameKana" path="/summary/text()"/></param>
+        /// <param name="mail"><inheritdoc cref="Mail" path="/summary/text()"/></param>
+        /// <param name="enteredDate"><inheritdoc cref="EnteredDate" path="/summary/text()"/></param>
+        /// <param name="retiredDate"><inheritdoc cref="RetiredDate" path="/summary/text()"/></param>
+        /// <param name="gender"><inheritdoc cref="Gender" path="/summary/text()"/></param>
+        /// <param name="birthday"><inheritdoc cref="Birthday" path="/summary/text()"/></param>
+        /// <param name="department"><inheritdoc cref="Department" path="/summary/text()"/></param>
+        /// <param name="subDepartments"><inheritdoc cref="SubDepartments" path="/summary/text()"/></param>
+        /// <param name="customFields"><inheritdoc cref="CustomFields" path="/summary/text()"/></param>
         public MemberData(
             string code,
             string? name = null,

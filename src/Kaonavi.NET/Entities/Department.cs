@@ -9,9 +9,9 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// Departmentの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="code"><inheritdoc cref="Code" path="/summary"/></param>
-        /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
-        /// <param name="names"><inheritdoc cref="Names" path="/summary"/></param>
+        /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
+        /// <param name="name"><inheritdoc cref="Name" path="/summary/text()"/></param>
+        /// <param name="names"><inheritdoc cref="Names" path="/summary/text()"/></param>
         public Department(string code, string? name = null, IReadOnlyList<string>? names = null)
             => (Code, Name, Names) = (code, name, names);
 

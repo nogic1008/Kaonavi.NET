@@ -8,12 +8,12 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// DepartmentInfoの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="code"><inheritdoc cref="Code" path="/summary"/></param>
-        /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
-        /// <param name="parentCode"><inheritdoc cref="ParentCode" path="/summary"/></param>
-        /// <param name="leaderMemberCode"><inheritdoc cref="LeaderMemberCode" path="/summary"/></param>
-        /// <param name="order"><inheritdoc cref="Order" path="/summary"/></param>
-        /// <param name="memo"><inheritdoc cref="Memo" path="/summary"/></param>
+        /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
+        /// <param name="name"><inheritdoc cref="Name" path="/summary/text()"/></param>
+        /// <param name="parentCode"><inheritdoc cref="ParentCode" path="/summary/text()"/></param>
+        /// <param name="leaderMemberCode"><inheritdoc cref="LeaderMemberCode" path="/summary/text()"/></param>
+        /// <param name="order"><inheritdoc cref="Order" path="/summary/text()"/></param>
+        /// <param name="memo"><inheritdoc cref="Memo" path="/summary/text()"/></param>
         public DepartmentInfo(string code, string name, string? parentCode, string? leaderMemberCode, int order, string? memo)
             => (Code, Name, ParentCode, LeaderMemberCode, Order, Memo) = (code, name, parentCode, leaderMemberCode, order, memo);
 

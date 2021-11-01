@@ -10,7 +10,7 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// 単一レコードシート向けに、SheetDataの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="code"><inheritdoc cref="Code" path="/summary"/></param>
+        /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
         /// <param name="customFields">設定値</param>
         public SheetData(string code, IReadOnlyList<CustomFieldValue> customFields)
             : this(code, new[] { new SheetRecord(customFields) }) { }
@@ -18,8 +18,8 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// 複数レコードシート向けに、SheetDataの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="code"><inheritdoc cref="Code" path="/summary"/></param>
-        /// <param name="records"><inheritdoc cref="Records" path="/summary"/></param>
+        /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
+        /// <param name="records"><inheritdoc cref="Records" path="/summary/text()"/></param>
         public SheetData(string code, params IReadOnlyList<CustomFieldValue>[] records)
             : this(code, records.Select(r => new SheetRecord(r)).ToArray()) { }
 

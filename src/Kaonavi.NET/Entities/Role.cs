@@ -8,9 +8,9 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// Roleの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="id"><inheritdoc cref="Id" path="/summary"/></param>
-        /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
-        /// <param name="type"><inheritdoc cref="Type" path="/summary"/></param>
+        /// <param name="id"><inheritdoc cref="Id" path="/summary/text()"/></param>
+        /// <param name="name"><inheritdoc cref="Name" path="/summary/text()"/></param>
+        /// <param name="type"><inheritdoc cref="Type" path="/summary/text()"/></param>
         public Role(int id, string name, string type)
             => (Id, Name, Type) = (id, name, type);
 
