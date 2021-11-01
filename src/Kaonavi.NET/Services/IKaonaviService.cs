@@ -21,7 +21,7 @@ namespace Kaonavi.Net.Services
         /// 使用可能なシートのレイアウト定義情報を全て取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1sheet_layouts/get"/>
         /// </summary>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
         ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default);
         #endregion
 
@@ -30,7 +30,7 @@ namespace Kaonavi.Net.Services
         /// 全てのメンバーの基本情報・所属（主務）・兼務情報を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get"/>
         /// </summary>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
         ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -39,8 +39,8 @@ namespace Kaonavi.Net.Services
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">追加するデータ</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        /// <returns><see cref="TaskProgress.Id"/></returns>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
+        /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
         ValueTask<int> AddMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -55,8 +55,8 @@ namespace Kaonavi.Net.Services
         /// </list>
         /// </remarks>
         /// <param name="payload">一括更新するデータ</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        /// <returns><see cref="TaskProgress.Id"/></returns>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
+        /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
         ValueTask<int> ReplaceMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -67,8 +67,8 @@ namespace Kaonavi.Net.Services
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">更新するデータ</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        /// <returns><see cref="TaskProgress.Id"/></returns>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
+        /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
         ValueTask<int> UpdateMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -81,36 +81,36 @@ namespace Kaonavi.Net.Services
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1delete/post"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
-        /// <param name="codes">削除する社員番号のリスト</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        /// <returns><see cref="TaskProgress.Id"/></returns>
+        /// <param name="codes">削除する<inheritdoc cref="MemberData.Code" path="/summary/text()"/>のリスト</param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
+        /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
         ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default);
         #endregion
 
         #region Sheet
         /// <summary>
-        /// 指定したシートの全情報を取得します。
+        /// <paramref name="sheetId"/>と一致するシートの全情報を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}/get"/>
         /// </summary>
-        /// <param name="sheetId">シートID</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <param name="sheetId"><inheritdoc cref="SheetLayout.Id" path="/summary/text()" /></param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
         ValueTask<IReadOnlyList<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 指定したシートのシート情報を一括更新します。
-        /// <paramref name="payload"/> に含まれていない情報は削除されます。
+        /// <paramref name="sheetId"/>と一致する<inheritdoc cref="SheetData" path="/summary/text()"/>を一括更新します。
+        /// <paramref name="payload"/>に含まれていない情報は削除されます。
         /// 複数レコードの情報は送信された配列順に登録されます。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}/put"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
-        /// <param name="sheetId">シートID</param>
+        /// <param name="sheetId"><inheritdoc cref="SheetLayout.Id" path="/summary/text()" /></param>
         /// <param name="payload">一括更新するデータ</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        /// <returns><see cref="TaskProgress.Id"/></returns>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
+        /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary" /></returns>
         ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 指定したシートのシート情報の一部を更新します。
+        /// <paramref name="sheetId"/>と一致する<inheritdoc cref="SheetData" path="/summary/text()"/>の一部を更新します。
         /// <list type="bullet">
         /// <item>
         ///   <term>単一レコード</term>
@@ -139,100 +139,110 @@ namespace Kaonavi.Net.Services
         /// <item>更新リクエスト制限の対象APIです。</item>
         /// </list>
         /// </remarks>
-        /// <param name="sheetId">シートID</param>
+        /// <param name="sheetId"><inheritdoc cref="SheetLayout.Id" path="/summary/text()" /></param>
         /// <param name="payload">更新するデータ</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        /// <returns><see cref="TaskProgress.Id"/></returns>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
+        /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
         ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
         #endregion
 
         #region Department
         /// <summary>
-        /// 所属ツリーの情報を取得します。
+        /// <inheritdoc cref="DepartmentInfo" path="/summary/text()"/>の情報を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get"/>
         /// </summary>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
         ValueTask<IReadOnlyList<DepartmentInfo>> FetchDepartmentsAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// 所属ツリーの情報を一括更新します。
-        /// <paramref name="payload"/> に含まれていない情報は削除されます。
+        /// <inheritdoc cref="DepartmentInfo" path="/summary/text()"/>を一括更新します。
+        /// <paramref name="payload"/>に含まれていない情報は削除されます。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/put"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">一括更新するデータ</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        /// <returns><see cref="TaskProgress.Id"/></returns>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
+        /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
         ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentInfo> payload, CancellationToken cancellationToken = default);
         #endregion
 
         /// <summary>
-        /// <paramref name="taskId"/>と一致するタスクの進捗状況を取得します。
+        /// <paramref name="taskId"/>と一致する<inheritdoc cref="TaskProgress" path="/summary/text()"/>を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%BF%E3%82%B9%E3%82%AF%E9%80%B2%E6%8D%97%E7%8A%B6%E6%B3%81"/>
         /// </summary>
-        /// <param name="taskId">タスクID</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <param name="taskId"><inheritdoc cref="TaskProgress.Id" path="/summary/text()"/></param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param" />
         ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default);
 
         #region User
         /// <summary>
-        /// ユーザー情報の一覧を取得します。
+        /// <inheritdoc cref="User" path="/summary/text()"/>の一覧を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get"/>
         /// </summary>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param"/>
         ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// ユーザー情報を登録します。
+        /// <inheritdoc cref="User" path="/summary/text()"/>を登録します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/post"/>
         /// </summary>
         /// <param name="payload">リクエスト</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param"/>
         /// <remarks>
         /// 管理者メニュー > ユーザー管理 にてユーザー作成時に設定可能なオプションについては、以下の内容で作成されます。
-        /// - スマホオプション: 停止
-        /// - セキュアアクセス: 停止
+        /// <list type="bullet">
+        /// <item>
+        ///   <term>スマホオプション</term>
+        ///   <description>停止</description>
+        /// </item>
+        /// <item>
+        ///   <term>セキュアアクセス</term>
+        ///   <description>停止</description>
+        /// </item>
+        /// </list>
         /// </remarks>
         ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// <paramref name="userId"/>と一致するログインユーザー情報を取得します。
+        /// <paramref name="userId"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get"/>
         /// </summary>
-        /// <param name="userId">ユーザーID</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <param name="userId"><inheritdoc cref="User.Id" path="/summary"/></param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param"/>
         ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// <paramref name="userId"/>と一致するログインユーザー情報を更新します。
+        /// <paramref name="userId"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を更新します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get"/>
         /// </summary>
-        /// <param name="userId">ユーザーID</param>
+        /// <param name="userId"><inheritdoc cref="User.Id" path="/summary/text()"/></param>
         /// <param name="payload">リクエスト</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
         /// <remarks>
         /// 管理者メニュー > ユーザー管理 にて更新可能な以下のオプションについては元の値が維持されます。
-        /// - スマホオプション
-        /// - セキュアアクセス
-        /// - アカウント状態
-        /// - パスワードロック
+        /// <list type="bullet">
+        /// <item>スマホオプション</item>
+        /// <item>セキュアアクセス</item>
+        /// <item>アカウント状態</item>
+        /// <item>パスワードロック</item>
+        /// </list>
         /// </remarks>
         ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// <paramref name="userId"/>と一致するログインユーザー情報を削除します。
+        /// <paramref name="userId"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を削除します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/delete"/>
         /// </summary>
-        /// <param name="userId">ユーザーID</param>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <param name="userId"><inheritdoc cref="User.Id" path="/summary/text()"/></param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param"/>
         ValueTask DeleteUserAsync(int userId, CancellationToken cancellationToken = default);
         #endregion
 
         /// <summary>
-        /// ロール情報の一覧を取得します。
+        /// <inheritdoc cref="Role" path="/summary/text()"/>の一覧を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get"/>
         /// </summary>
-        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <inheritdoc cref="FetchMemberLayoutAsync" path="/param"/>
         ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -11,11 +11,11 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// Fieldの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="name">項目名</param>
-        /// <param name="required">必須入力項目</param>
-        /// <param name="type">入力タイプ ("string", "number", "date", "enum")</param>
-        /// <param name="maxLength"><paramref name="type"/>が"string"の場合に設定可能な最大文字数</param>
-        /// <param name="enum"><paramref name="type"/>が"enum"の場合に設定可能な値のリスト</param>
+        /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
+        /// <param name="required"><inheritdoc cref="Required" path="/summary"/></param>
+        /// <param name="type"><inheritdoc cref="Type" path="/summary"/></param>
+        /// <param name="maxLength"><inheritdoc cref="MaxLength" path="/summary"/></param>
+        /// <param name="enum"><inheritdoc cref="Enum" path="/summary"/></param>
         public Field(string name, bool required, string type, int? maxLength, IReadOnlyList<string?> @enum)
             => (Name, Required, Type, MaxLength, Enum) = (name, required, type, maxLength, @enum);
 

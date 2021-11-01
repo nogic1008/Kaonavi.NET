@@ -10,7 +10,7 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// 単一レコードシート向けに、SheetDataの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="code">社員コード</param>
+        /// <param name="code"><inheritdoc cref="Code" path="/summary"/></param>
         /// <param name="customFields">設定値</param>
         public SheetData(string code, IReadOnlyList<CustomFieldValue> customFields)
             : this(code, new[] { new SheetRecord(customFields) }) { }
@@ -18,30 +18,22 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// 複数レコードシート向けに、SheetDataの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="code">社員コード</param>
-        /// <param name="records">設定値のリスト</param>
+        /// <param name="code"><inheritdoc cref="Code" path="/summary"/></param>
+        /// <param name="records"><inheritdoc cref="Records" path="/summary"/></param>
         public SheetData(string code, params IReadOnlyList<CustomFieldValue>[] records)
             : this(code, records.Select(r => new SheetRecord(r)).ToArray()) { }
 
-        /// <summary>
-        /// 複数レコードシート向けに、SheetDataの新しいインスタンスを生成します。
-        /// </summary>
-        /// <param name="code">社員コード</param>
-        /// <param name="records">設定値のリスト</param>
+        /// <inheritdoc cref="SheetData(string, IReadOnlyList{CustomFieldValue}[])"/>
         [JsonConstructor]
         public SheetData(string code, IReadOnlyList<SheetRecord> records)
             => (Code, Records) = (code, records);
 
-        /// <summary>
-        /// 社員コード
-        /// </summary>
+        /// <summary>社員コード</summary>
         [JsonPropertyName("code")]
         public string Code { get; init; }
 
-        /// <summary>
-        /// メンバーが持つ設定値のリスト
-        /// <see cref="Api.RecordType.Multiple"/>の場合にのみ複数の値が返却されます。
-        /// </summary>
+        /// <summary>メンバーが持つ設定値のリスト</summary>
+        /// <remarks><see cref="Api.RecordType.Multiple"/>の場合にのみ複数の値が返却されます。</remarks>
         [JsonPropertyName("records")]
         public IReadOnlyList<SheetRecord> Records { get; init; }
     }

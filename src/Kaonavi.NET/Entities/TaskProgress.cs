@@ -9,9 +9,9 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// TaskProgressの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="id">タスクID</param>
-        /// <param name="status">タスクの進捗状況 ("OK", "NG", "ERROR", "WAITING", "RUNNING")</param>
-        /// <param name="messages"><paramref name="status"/>がNG/ERROR時の詳細なメッセージ</param>
+        /// <param name="id"><inheritdoc cref="Id" path="/summary"/></param>
+        /// <param name="status"><inheritdoc cref="Status" path="/summary"/></param>
+        /// <param name="messages"><inheritdoc cref="Messages" path="/summary"/></param>
         public TaskProgress(int id, string status, IReadOnlyList<string>? messages)
             => (Id, Status, Messages) = (id, status, messages);
 

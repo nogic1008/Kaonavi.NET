@@ -11,12 +11,8 @@ namespace Kaonavi.Net.Entities
         /// <summary>
         /// CustomFieldの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="id">シート項目ID</param>
-        /// <param name="name">項目名</param>
-        /// <param name="required">必須入力項目</param>
-        /// <param name="type">入力タイプ ("string", "number", "date", "enum")</param>
-        /// <param name="maxLength"><paramref name="type"/>が"string"の場合に設定可能な最大文字数</param>
-        /// <param name="enum"><paramref name="type"/>が"enum"の場合に設定可能な値のリスト</param>
+        /// <param name="id"><inheritdoc cref="Id" path="/summary"/></param>
+        /// <inheritdoc cref="Field(string, bool, string, int?, IReadOnlyList{string?})"/>
         public CustomField(int id, string name, bool required, string type, int? maxLength, IReadOnlyList<string?> @enum)
             : base(name, required, type, maxLength, @enum) => Id = id;
 

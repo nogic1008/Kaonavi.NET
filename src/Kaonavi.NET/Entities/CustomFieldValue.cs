@@ -3,25 +3,23 @@ using System.Text.Json.Serialization;
 
 namespace Kaonavi.Net.Entities
 {
-    /// <summary>
-    /// 基本情報のカスタム項目/シート情報の項目
-    /// </summary>
+    /// <summary>基本情報のカスタム項目/シート情報の項目</summary>
     public record CustomFieldValue
     {
         /// <summary>
         /// 単一の項目値を持つ、CustomFieldValueの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="id">シート項目ID</param>
+        /// <param name="id"><inheritdoc cref="Id" path="/summary"/></param>
         /// <param name="value">シート項目値</param>
-        /// <param name="name">シート項目名</param>
+        /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
         public CustomFieldValue(int id, string value, string? name = null) : this(id, new[] { value }, name) { }
 
         /// <summary>
         /// 複数の項目値を持つ、CustomFieldValueの新しいインスタンスを生成します。
         /// </summary>
-        /// <param name="id">シート項目ID</param>
-        /// <param name="values">シート項目値のリスト</param>
-        /// <param name="name">シート項目名</param>
+        /// <param name="id"><inheritdoc cref="Id" path="/summary"/></param>
+        /// <param name="values"><inheritdoc cref="Values" path="/summary"/></param>
+        /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
         [JsonConstructor]
         public CustomFieldValue(int id, IReadOnlyList<string> values, string? name = null)
             => (Id, Values, Name) = (id, values, name);
@@ -34,10 +32,8 @@ namespace Kaonavi.Net.Entities
         [JsonPropertyName("name")]
         public string? Name { get; init; }
 
-        /// <summary>
-        /// シート項目値のリスト
-        /// チェックボックスの場合にのみ複数の値が返却されます。
-        /// </summary>
+        /// <summary>シート項目値のリスト</summary>
+        /// <remarks>チェックボックスの場合にのみ複数の値が返却されます。</remarks>
         [JsonPropertyName("values")]
         public IReadOnlyList<string> Values { get; init; }
     }
