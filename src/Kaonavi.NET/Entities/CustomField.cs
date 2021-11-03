@@ -4,22 +4,18 @@ using System.Text.Json.Serialization;
 namespace Kaonavi.Net.Entities
 {
     /// <summary>レイアウト定義 カスタム列項目</summary>
-    public record CustomField : Field
-    {
-        /// <summary>
-        /// CustomFieldの新しいインスタンスを生成します。
-        /// </summary>
-        /// <param name="id"><inheritdoc cref="Id" path="/summary/text()"/></param>
-        /// <param name="name"><inheritdoc cref="Field.Name" path="/summary/text()"/></param>
-        /// <param name="required"><inheritdoc cref="Field.Required" path="/summary/text()"/></param>
-        /// <param name="type"><inheritdoc cref="Field.Type" path="/summary/text()"/></param>
-        /// <param name="maxLength"><inheritdoc cref="Field.MaxLength" path="/summary/text()"/></param>
-        /// <param name="enum"><inheritdoc cref="Field.Enum" path="/summary/text()"/></param>
-        public CustomField(int id, string name, bool required, FieldType type, int? maxLength, IReadOnlyList<string?> @enum)
-            : base(name, required, type, maxLength, @enum) => Id = id;
-
-        /// <summary>シート項目ID</summary>
-        [JsonPropertyName("id")]
-        public int Id { get; init; }
-    }
+    /// <param name="Id">シート項目ID</param>
+    /// <param name="Name"><inheritdoc cref="Field" path="/param[@name='Name']/text()"/></param>
+    /// <param name="Required"><inheritdoc cref="Field" path="/param[@name='Required']/text()"/></param>
+    /// <param name="Type"><inheritdoc cref="Field" path="/param[@name='Type']/text()"/></param>
+    /// <param name="MaxLength"><inheritdoc cref="Field" path="/param[@name='MaxLength']/text()"/></param>
+    /// <param name="Enum"><inheritdoc cref="Field" path="/param[@name='Enum']/text()"/></param>
+    public record CustomField(
+        [property: JsonPropertyName("id")] int Id,
+        string Name,
+        bool Required,
+        FieldType Type,
+        int? MaxLength,
+        IReadOnlyList<string?> Enum
+    ) : Field(Name, Required, Type, MaxLength, Enum);
 }

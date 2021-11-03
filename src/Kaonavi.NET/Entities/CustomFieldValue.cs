@@ -24,7 +24,7 @@ namespace Kaonavi.Net.Entities
         public CustomFieldValue(int id, IReadOnlyList<string> values, string? name = null)
             => (Id, Values, Name) = (id, values, name);
 
-        /// <summary>シート項目ID</summary>
+        /// <summary><inheritdoc cref="CustomField" path="/param[@name='Id']/text()"/></summary>
         [JsonPropertyName("id")]
         public int Id { get; init; }
 

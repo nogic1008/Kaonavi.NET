@@ -18,9 +18,9 @@ namespace Kaonavi.Net.Tests.Entities
         /// JSONからデシリアライズできる。
         /// </summary>
         /// <param name="json">JSON文字列</param>
-        /// <param name="id"><see cref="TaskProgress.Id"/></param>
-        /// <param name="status"><see cref="TaskProgress.Status"/></param>
-        /// <param name="messages"><see cref="TaskProgress.Messages"/></param>
+        /// <param name="id"><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></param>
+        /// <param name="status"><inheritdoc cref="TaskProgress" path="/param[@name='Status']/text()"/></param>
+        /// <param name="messages"><inheritdoc cref="TaskProgress" path="/param[@name='Messages']/text()"/></param>
         [Theory(DisplayName = nameof(TaskProgress) + " > JSONからデシリアライズできる。")]
         [InlineData(TaskOkJson, 1, "OK")]
         [InlineData(TaskRunningJson, 2, "RUNNING", null)]
