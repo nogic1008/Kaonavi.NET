@@ -147,6 +147,10 @@ namespace Kaonavi.Net.Services
         private record SheetLayoutsResult(
             [property: JsonPropertyName("sheets")] IReadOnlyList<SheetLayout> Sheets
         );
+
+        /// <inheritdoc/>
+        public ValueTask<SheetLayout> FetchSheetLayoutAsync(int sheetId, CancellationToken cancellationToken = default)
+            => CallApiAsync<SheetLayout>(new(HttpMethod.Get, $"/sheet_layouts/{sheetId}"), cancellationToken);
         #endregion
 
         #region メンバー情報
@@ -484,6 +488,23 @@ namespace Kaonavi.Net.Services
         private record TaskResult([property: JsonPropertyName("task_id")] int Id);
 
         private record ErrorResponse([property: JsonPropertyName("errors")] IReadOnlyList<string> Errors);
+
+        /// <summary>
+        /// APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>に変換して返します。
+        /// </summary>
+        /// <param name="request">APIに対するリクエスト</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <typeparam name="T">JSONの型</typeparam>
+        /// <exception cref="ApplicationException">
+        /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
+        /// </exception>
+        private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
+            var response = await _client.SendAsync(request, cancellationToken: cancellationToken).ConfigureAwait(false);
+            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
+            return (await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken).ConfigureAwait(false))!;
+        }
 
         /// <summary>
         /// APIが正しく終了したかどうかを検証します。

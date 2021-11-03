@@ -22,6 +22,14 @@ namespace Kaonavi.Net.Services
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
         ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// <paramref name="sheetId"/>と一致するシートの使用可能なレイアウト定義を全て取得します。
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1sheet_layouts~1{sheet_id}/get"/>
+        /// </summary>
+        /// <param name="sheetId"><inheritdoc cref="SheetLayout" path="/param[@name='Id']"/></param>
+        /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
+        ValueTask<SheetLayout> FetchSheetLayoutAsync(int sheetId, CancellationToken cancellationToken = default);
         #endregion
 
         #region メンバー情報
