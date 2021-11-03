@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -1014,7 +1013,7 @@ namespace Kaonavi.Net.Tests.Services
         {
             // Arrange
             const int sheetId = 1;
-            var payload = new DepartmentInfo[]
+            var payload = new DepartmentTree[]
             {
                 new("1000", "取締役会", null, "A0002", 1, ""),
                 new("1200", "営業本部", null, null, 2, ""),
