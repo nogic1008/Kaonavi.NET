@@ -352,7 +352,7 @@ namespace Kaonavi.Net.Tests.Services
                     new("生年月日", false, FieldType.Date, null, Array.Empty<string>()),
                     new("所属", false, FieldType.Department, null, Array.Empty<string>()),
                     new("兼務情報", false, FieldType.DepartmentArray, null, Array.Empty<string>()),
-                    new CustomField[]
+                    new CustomFieldLayout[]
                     {
                         new(100, "血液型", false, FieldType.Enum, null, new[]{ "A", "B", "O", "AB" }),
                         new(200, "役職", false, FieldType.Enum, null, new[]{ "部長", "課長", "マネージャー", null }),
@@ -439,7 +439,7 @@ namespace Kaonavi.Net.Tests.Services
             layout.Name.Should().Be("住所・連絡先");
             layout.RecordType.Should().Be(RecordType.Multiple);
             layout.CustomFields.Should().HaveCount(2)
-                .And.AllBeAssignableTo<CustomField>();
+                .And.AllBeAssignableTo<CustomFieldLayout>();
 
             handler.VerifyRequest(IsExpectedRequest, Times.Once());
 

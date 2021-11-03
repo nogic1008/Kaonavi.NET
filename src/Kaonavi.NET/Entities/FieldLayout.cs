@@ -13,7 +13,7 @@ namespace Kaonavi.Net.Entities
     /// <param name="Enum">
     /// <paramref name="Type"/>が<see cref="FieldType.Enum"/>の場合に設定可能な値のリスト
     /// </param>
-    public record Field(
+    public record FieldLayout(
         [property: JsonPropertyName("name")] string Name,
         [property: JsonPropertyName("required")] bool Required,
         [property: JsonPropertyName("type")] FieldType Type,
