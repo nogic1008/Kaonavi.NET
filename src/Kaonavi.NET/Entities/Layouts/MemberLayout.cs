@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Kaonavi.Net.Entities.Api
+namespace Kaonavi.Net.Entities
 {
     /// <summary>メンバー情報(基本情報/所属/兼務情報) レイアウト定義</summary>
     /// <param name="Code"><inheritdoc cref="MemberData" path="/param[@name='Code']/text()"/></param>

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Kaonavi.Net.Entities.Api
+namespace Kaonavi.Net.Entities
 {
     /// <summary>シート レイアウト定義情報</summary>
     /// <param name="Id">シートID</param>
