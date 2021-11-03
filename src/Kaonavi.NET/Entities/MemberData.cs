@@ -25,8 +25,8 @@ namespace Kaonavi.Net.Entities
         [property: JsonPropertyName("retired_date")] DateTime? RetiredDate = default,
         [property: JsonPropertyName("gender")] string? Gender = null,
         [property: JsonPropertyName("birthday")] DateTime? Birthday = default,
-        [property: JsonPropertyName("department")] Department? Department = null,
-        [property: JsonPropertyName("sub_departments")] IReadOnlyList<Department>? SubDepartments = null,
+        [property: JsonPropertyName("department")] MemberDepartment? Department = null,
+        [property: JsonPropertyName("sub_departments")] IReadOnlyList<MemberDepartment>? SubDepartments = null,
         [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomFieldValue>? CustomFields = null
     );
 }

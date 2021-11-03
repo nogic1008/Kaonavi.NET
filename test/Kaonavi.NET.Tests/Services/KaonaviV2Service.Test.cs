@@ -464,7 +464,7 @@ namespace Kaonavi.Net.Tests.Services
                 Gender: "男性",
                 Birthday: new(1984, 5, 15),
                 Department: new("1000"),
-                SubDepartments: Array.Empty<Department>(),
+                SubDepartments: Array.Empty<MemberDepartment>(),
                 CustomFields: new CustomFieldValue[]
                 {
                     new(100, "A")
@@ -479,7 +479,7 @@ namespace Kaonavi.Net.Tests.Services
                 Gender: "女性",
                 Birthday: new(1986, 5, 16),
                 Department: new("2000"),
-                SubDepartments: new Department[]
+                SubDepartments: new MemberDepartment[]
                 {
                     new("3000"), new("4000")
                 },
