@@ -62,7 +62,7 @@ namespace ConsoleAppSample
                 Gender,
                 Birthday,
                 new(DepartmentCode),
-                customFields: new CustomFieldValue[] { new(101, BloodType) }
+                CustomFields: new CustomFieldValue[] { new(101, BloodType) }
             );
     }
 }
