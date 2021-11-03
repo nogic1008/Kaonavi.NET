@@ -447,6 +447,60 @@ namespace Kaonavi.Net.Tests.Services
                     && req.Headers.TryGetValues("Kaonavi-Token", out var values)
                     && values.First() == tokenString;
         }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchSheetLayoutAsync"/>は、"/sheet_layouts/{id}"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchSheetLayoutsAsync) + " > GET /sheet_layouts/:id をコールする。")]
+        public async Task FetchSheetLayoutAsync_Calls_GetApi()
+        {
+            // Arrange
+            #region JSON
+            const string responseJson = "{"
+            + "\"id\": 12,"
+            + "\"name\": \"住所・連絡先\","
+            + "\"record_type\": 1,"
+            + "\"custom_fields\": ["
+            + "  {"
+            + "    \"id\": 1000,"
+            + "    \"name\": \"住所\","
+            + "    \"required\": false,"
+            + "    \"type\": \"string\","
+            + "    \"max_length\": 250,"
+            + "    \"enum\": []"
+            + "  },"
+            + "  {"
+            + "    \"id\": 1001,"
+            + "    \"name\": \"電話番号\","
+            + "    \"required\": false,"
+            + "    \"type\": \"string\","
+            + "    \"max_length\": 50,"
+            + "    \"enum\": []"
+            + "  }"
+            + "]"
+            + "}";
+            #endregion
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri!.PathAndQuery == "/sheet_layouts/12")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var layout = await sut.FetchSheetLayoutAsync(12).ConfigureAwait(false);
+
+            // Assert
+            layout.Should().NotBeNull();
+
+            handler.VerifyRequest(req =>
+            {
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri!.PathAndQuery.Should().Be("/sheet_layouts/12");
+                req.Headers.GetValues("Kaonavi-Token").Should().Equal(tokenString);
+                return true;
+            }, Times.Once());
+        }
         #endregion
 
         #region メンバー情報 API
