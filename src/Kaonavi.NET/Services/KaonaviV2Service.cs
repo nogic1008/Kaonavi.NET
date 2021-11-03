@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,9 +13,7 @@ using Kaonavi.Net.Entities;
 
 namespace Kaonavi.Net.Services
 {
-    /// <summary>
-    /// カオナビ API v2 を呼び出すサービスの実装
-    /// </summary>
+    /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
     public class KaonaviV2Service : IKaonaviService
     {
         /// <summary>カオナビ API v2 のルートアドレス</summary>
@@ -178,30 +177,12 @@ namespace Kaonavi.Net.Services
         #region 所属ツリー
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync("/departments", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<DepartmentsResult>(cancellationToken: cancellationToken)
+            => (await CallApiAsync<DepartmentsResult>(new(HttpMethod.Get, "/departments"), cancellationToken)
                 .ConfigureAwait(false))!.DepartmentData;
-        }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var postPayload = new DepartmentsResult(payload);
-            var response = await _client.PutAsJsonAsync("/departments", postPayload, _options, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.Id;
-        }
+        public ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default)
+            => CallTaskApiAsync(HttpMethod.Put, "/departments", new DepartmentsResult(payload), cancellationToken);
         private record DepartmentsResult(
             [property: JsonPropertyName("department_data")] IReadOnlyList<DepartmentTree> DepartmentData
         );
@@ -211,11 +192,7 @@ namespace Kaonavi.Net.Services
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
         public ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
-        {
-            if (taskId < 0)
-                throw new ArgumentOutOfRangeException(nameof(taskId));
-            return CallApiAsync<TaskProgress>(new(HttpMethod.Get, $"/tasks/{taskId:D}"), cancellationToken);
-        }
+            => CallApiAsync<TaskProgress>(new(HttpMethod.Get, $"/tasks/{ThrowIfNegative(taskId, nameof(taskId)):D}"), cancellationToken);
         #endregion
 
         #region ユーザー情報
@@ -241,36 +218,20 @@ namespace Kaonavi.Net.Services
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
         public ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
-        {
-            if (userId < 0)
-                throw new ArgumentOutOfRangeException(nameof(userId));
-            return CallApiAsync<User>(new(HttpMethod.Get, $"/users/{userId:D}"), cancellationToken);
-        }
+            => CallApiAsync<User>(new(HttpMethod.Get, $"/users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken);
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
         public ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
-        {
-            if (userId < 0)
-                throw new ArgumentOutOfRangeException(nameof(userId));
-            return CallApiAsync<User>(new(new("PATCH"), $"/users/{userId:D}")
+            => CallApiAsync<User>(new(new("PATCH"), $"/users/{ThrowIfNegative(userId, nameof(userId)):D}")
             {
                 Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: _options)
             }, cancellationToken);
-        }
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
         public async ValueTask DeleteUserAsync(int userId, CancellationToken cancellationToken = default)
-        {
-            if (userId < 0)
-                throw new ArgumentOutOfRangeException(nameof(userId));
-
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.DeleteAsync($"/users/{userId:D}", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-        }
+            => await CallApiAsync(new(HttpMethod.Delete, $"/users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken).ConfigureAwait(false);
         #endregion
 
         #region ロール
@@ -317,19 +278,31 @@ namespace Kaonavi.Net.Services
         private record ErrorResponse([property: JsonPropertyName("errors")] IReadOnlyList<string> Errors);
 
         /// <summary>
-        /// APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>に変換して返します。
+        /// APIを呼び出します。
         /// </summary>
         /// <param name="request">APIに対するリクエスト</param>
         /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-        /// <typeparam name="T">JSONの型</typeparam>
         /// <exception cref="ApplicationException">
         /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
         /// </exception>
-        private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
+        private async ValueTask<HttpResponseMessage> CallApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
             var response = await _client.SendAsync(request, cancellationToken: cancellationToken).ConfigureAwait(false);
             await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
+            return response;
+        }
+
+        /// <summary>
+        /// APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>に変換して返します。
+        /// </summary>
+        /// <param name="request"><inheritdoc cref="CallApiAsync" path="/param[@name='request']"/></param>
+        /// <param name="cancellationToken"><inheritdoc cref="CallApiAsync" path="/param[@name='cancellationToken']"/></param>
+        /// <typeparam name="T">JSONの型</typeparam>
+        /// <inheritdoc cref="CallApiAsync" path="/exception"/>
+        private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
             return (await response.Content.ReadFromJsonAsync<T>(_options, cancellationToken).ConfigureAwait(false))!;
         }
 
@@ -373,6 +346,9 @@ namespace Kaonavi.Net.Services
                 throw new ApplicationException(errorMessage, ex);
             }
         }
+
+        private int ThrowIfNegative(int id, string paramName)
+            => id >= 0 ? id : throw new ArgumentOutOfRangeException(paramName);
         #endregion
     }
 }
