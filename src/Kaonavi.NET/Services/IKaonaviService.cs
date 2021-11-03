@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Entities.Api;
 
 namespace Kaonavi.Net.Services
 {

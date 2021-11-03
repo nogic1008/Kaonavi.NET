@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Entities.Api;
 using Kaonavi.Net.Services;
 using Moq;
 using Moq.Contrib.HttpClient;
