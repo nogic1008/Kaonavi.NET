@@ -8,7 +8,7 @@ namespace Kaonavi.Net.Services
     /// <summary>カオナビ API v2の抽象化</summary>
     public interface IKaonaviService
     {
-        #region Layout
+        #region レイアウト定義
         /// <summary>
         /// 使用可能なメンバーのレイアウト定義情報を全て取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E5%AE%9A%E7%BE%A9/paths/~1member_layouts/get"/>
@@ -24,7 +24,7 @@ namespace Kaonavi.Net.Services
         ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default);
         #endregion
 
-        #region Member
+        #region メンバー情報
         /// <summary>
         /// 全てのメンバーの基本情報・所属（主務）・兼務情報を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get"/>
@@ -86,7 +86,7 @@ namespace Kaonavi.Net.Services
         ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default);
         #endregion
 
-        #region Sheet
+        #region シート情報
         /// <summary>
         /// <paramref name="sheetId"/>と一致するシートの全情報を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}/get"/>
@@ -145,7 +145,7 @@ namespace Kaonavi.Net.Services
         ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
         #endregion
 
-        #region Department
+        #region 所属ツリー
         /// <summary>
         /// <inheritdoc cref="DepartmentTree" path="/summary/text()"/>の情報を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get"/>
@@ -165,6 +165,7 @@ namespace Kaonavi.Net.Services
         ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default);
         #endregion
 
+        #region タスク進捗状況
         /// <summary>
         /// <paramref name="taskId"/>と一致する<inheritdoc cref="TaskProgress" path="/summary/text()"/>を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%BF%E3%82%B9%E3%82%AF%E9%80%B2%E6%8D%97%E7%8A%B6%E6%B3%81"/>
@@ -172,8 +173,9 @@ namespace Kaonavi.Net.Services
         /// <param name="taskId"><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
         ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default);
+        #endregion
 
-        #region User
+        #region ユーザー情報
         /// <summary>
         /// <inheritdoc cref="User" path="/summary/text()"/>の一覧を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get"/>
@@ -237,11 +239,54 @@ namespace Kaonavi.Net.Services
         ValueTask DeleteUserAsync(int userId, CancellationToken cancellationToken = default);
         #endregion
 
+        #region ロール
         /// <summary>
         /// <inheritdoc cref="Role" path="/summary/text()"/>の一覧を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get"/>
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
         ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default);
+        #endregion
+
+        #region マスター管理
+        /// <summary>
+        /// マスター管理で編集可能な項目のうち、APIv2 で編集可能な<inheritdoc cref="EnumOption" path="/summary/text()"/>の一覧を取得します。
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC%E7%AE%A1%E7%90%86/paths/~1enum_options/get"/>
+        /// </summary>
+        /// <remarks>
+        /// APIv2 で編集できるのは、プルダウンリスト、ラジオボタン、チェックボックスで作成された項目です。
+        /// ただし、データ連携中の項目はマスター管理で編集不可能なため、上記のパーツ種別であっても取得は出来ません。
+        /// </remarks>
+        /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
+        ValueTask<IReadOnlyList<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// <paramref name="customFieldId"/>と一致する<inheritdoc cref="EnumOption" path="/summary/text()"/>を取得します。
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC%E7%AE%A1%E7%90%86/paths/~1enum_options~1{custom_field_id}/get"/>
+        /// </summary>
+        /// <inheritdoc cref="FetchEnumOptionsAsync" path="/remarks"/>
+        /// <param name="customFieldId"><inheritdoc cref="EnumOption.Id" path="/summary/text()"/></param>
+        /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
+        ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// <paramref name="customFieldId"/>と一致する<inheritdoc cref="EnumOption" path="/summary/text()"/>を一括更新します。
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC%E7%AE%A1%E7%90%86/paths/~1enum_options~1{custom_field_id}/put"/>
+        /// </summary>
+        /// <remarks>
+        /// <list type="bullet">
+        /// <item>マスターを追加したい場合は、id を指定せず name のみ指定してください。</item>
+        /// <item><paramref name="payload"/>に含まれていないマスターは削除されます。ただし、削除できるマスターは、メンバー数が「0」のマスターのみです。</item>
+        /// <item>並び順は送信された配列順に登録されます。</item>
+        /// <item>変更履歴が設定されたシートのマスター情報を更新した際には履歴が作成されます。</item>
+        /// <item><paramref name="payload"/>は0件での指定は出来ません。1件以上指定してください。</item>
+        /// </list>
+        /// </remarks>
+        /// <param name="customFieldId"><inheritdoc cref="EnumOption.Id" path="/summary/text()"/></param>
+        /// <param name="payload">リクエスト</param>
+        /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
+        /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
+        ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyList<(int?, string)> payload, CancellationToken cancellationToken = default);
+        #endregion
     }
 }

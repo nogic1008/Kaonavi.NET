@@ -327,7 +327,7 @@ namespace Kaonavi.Net.Tests.Services
                 && await content.ReadAsStringAsync().ConfigureAwait(false) == "grant_type=client_credentials";
         }
 
-        #region Layout API
+        #region レイアウト定義 API
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchMemberLayoutAsync(CancellationToken)"/>は、"/member_layouts"にGETリクエストを行う。
         /// </summary>
@@ -449,7 +449,7 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
-        #region Member API
+        #region メンバー情報 API
         /// <summary>Member APIのリクエストPayload</summary>
         private static readonly MemberData[] _memberDataPayload = new MemberData[]
         {
@@ -738,7 +738,7 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
-        #region Sheet API
+        #region シート情報 API
         /// <summary>Sheet APIのリクエストPayload</summary>
         private static readonly SheetData[] _sheetDataPayload = new SheetData[]
         {
@@ -930,7 +930,7 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
-        #region Department API
+        #region 所属ツリー API
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchDepartmentsAsync(CancellationToken)"/>は、"/departments"にGETリクエストを行う。
         /// </summary>
@@ -1045,7 +1045,7 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
-        #region Task API
+        #region タスク進捗状況 API
         private const string TestNameFetchTaskProgressAsync = TestName + nameof(KaonaviV2Service.FetchTaskProgressAsync) + " > ";
 
         /// <summary>
@@ -1104,7 +1104,7 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
-        #region User API
+        #region ユーザー情報 API
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchUsersAsync(CancellationToken)"/>は、"/users"にGETリクエストを行う。
         /// </summary>
@@ -1355,6 +1355,7 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
+        #region ロール API
         /// <summary>
         /// <see cref="KaonaviV2Service.FetchRolesAsync"/>は、"/roles"にGETリクエストを行う。
         /// </summary>
@@ -1399,5 +1400,154 @@ namespace Kaonavi.Net.Tests.Services
                     && req.Headers.TryGetValues("Kaonavi-Token", out var values)
                     && values.First() == tokenString;
         }
+        #endregion
+
+        #region マスター管理 API
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchEnumOptionsAsync"/>は、"/enum_options"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchEnumOptionsAsync) + " > GET /enum_options をコールする。")]
+        public async Task FetchEnumOptionsAsync_Calls_GetApi()
+        {
+            // Arrange
+            #region JSON
+            const string responseJson = "{"
+            + "\"custom_field_data\": ["
+            + "  {"
+            + "    \"sheet_name\": \"役職情報\","
+            + "    \"id\": 10,"
+            + "    \"name\": \"役職\","
+            + "    \"enum_option_data\": ["
+            + "      { \"id\": 1, \"name\": \"社長\" },"
+            + "      { \"id\": 2, \"name\": \"部長\" },"
+            + "      { \"id\": 3, \"name\": \"課長\" }"
+            + "    ]"
+            + "  },"
+            + "  {"
+            + "    \"sheet_name\": \"家族情報\","
+            + "    \"id\": 20,"
+            + "    \"name\": \"続柄区分\","
+            + "    \"enum_option_data\": ["
+            + "      { \"id\": 4, \"name\": \"父\" },"
+            + "      { \"id\": 5, \"name\": \"母\" },"
+            + "      { \"id\": 6, \"name\": \"兄\" },"
+            + "      { \"id\": 7, \"name\": \"姉\" }"
+            + "    ]"
+            + "  },"
+            + "  {"
+            + "    \"sheet_name\": \"学歴情報\","
+            + "    \"id\": 30,"
+            + "    \"name\": \"学歴区分\","
+            + "    \"enum_option_data\": ["
+            + "      { \"id\": 8, \"name\": \"高校\" },"
+            + "      { \"id\": 9, \"name\": \"大学\" },"
+            + "      { \"id\": 10, \"name\": \"大学院\" }"
+            + "    ]"
+            + "  }"
+            + "]"
+            + "}";
+            #endregion
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri!.PathAndQuery == "/enum_options")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var entities = await sut.FetchEnumOptionsAsync().ConfigureAwait(false);
+
+            // Assert
+            entities.Should().HaveCount(3);
+
+            handler.VerifyRequest(req =>
+            {
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri!.PathAndQuery.Should().Be("/enum_options");
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+                return true;
+            }, Times.Once());
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.FetchEnumOptionAsync"/>は、"/enum_options/{id}"にGETリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchEnumOptionAsync) + " > GET /enum_options/:id をコールする。")]
+        public async Task FetchEnumOptionAsync_Calls_GetApi()
+        {
+            // Arrange
+            #region JSON
+            const string responseJson = "{"
+            + "\"sheet_name\": \"役職情報\","
+            + "\"id\": 10,"
+            + "\"name\": \"役職\","
+            + "\"enum_option_data\": ["
+            + "  { \"id\": 1, \"name\": \"社長\" },"
+            + "  { \"id\": 2, \"name\": \"部長\" },"
+            + "  { \"id\": 3, \"name\": \"課長\" }"
+            + "]"
+            + "}";
+            #endregion
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri!.PathAndQuery == "/enum_options/10")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            var entity = await sut.FetchEnumOptionAsync(10).ConfigureAwait(false);
+
+            // Assert
+            entity.Should().NotBeNull();
+
+            handler.VerifyRequest(req =>
+            {
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri!.PathAndQuery.Should().Be("/enum_options/10");
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+                return true;
+            }, Times.Once());
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviV2Service.UpdateEnumOptionAsync"/>は、"/enum_options/{id}"にPUTリクエストを行う。
+        /// </summary>
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateEnumOptionAsync) + " > PUT /enum_options/:id をコールする。")]
+        public async Task UpdateEnumOptionAsync_Calls_PutApi()
+        {
+            // Arrange
+            string tokenString = GenerateRandomString();
+
+            var handler = new Mock<HttpMessageHandler>();
+            handler.SetupRequest(req => req.RequestUri!.PathAndQuery == "/enum_options/10")
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: tokenString);
+            int taskId = await sut.UpdateEnumOptionAsync(10, new (int?, string)[]
+            {
+                (1, "value1"),
+                (null, "value2"),
+            }).ConfigureAwait(false);
+
+            // Assert
+            taskId.Should().Be(1);
+
+            handler.VerifyRequest(async req =>
+            {
+                req.Method.Should().Be(HttpMethod.Put);
+                req.RequestUri!.PathAndQuery.Should().Be("/enum_options/10");
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be("{\"enum_option_data\":["
+                + "{\"id\":1,\"name\":\"value1\"},"
+                + "{\"name\":\"value2\"}"
+                + "]}");
+                return true;
+            }, Times.Once());
+        }
+        #endregion
     }
 }
