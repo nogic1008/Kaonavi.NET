@@ -456,34 +456,34 @@ namespace Kaonavi.Net.Tests.Services
         private static readonly MemberData[] _memberDataPayload = new MemberData[]
         {
             new (
-                code: "A0002",
-                name: "カオナビ 太郎",
-                nameKana: "カオナビ タロウ",
-                mail: "taro@example.com",
-                enteredDate: new(2005, 9, 20),
-                gender: "男性",
-                birthday: new(1984, 5, 15),
-                department: new("1000"),
-                subDepartments: Array.Empty<Department>(),
-                customFields: new CustomFieldValue[]
+                Code: "A0002",
+                Name: "カオナビ 太郎",
+                NameKana: "カオナビ タロウ",
+                Mail: "taro@example.com",
+                EnteredDate: new(2005, 9, 20),
+                Gender: "男性",
+                Birthday: new(1984, 5, 15),
+                Department: new("1000"),
+                SubDepartments: Array.Empty<Department>(),
+                CustomFields: new CustomFieldValue[]
                 {
                     new(100, "A")
                 }
             ),
             new (
-                code: "A0001",
-                name: "カオナビ 花子",
-                nameKana: "カオナビ ハナコ",
-                mail: "hanako@kaonavi.jp",
-                enteredDate: new(2013, 5, 7),
-                gender: "女性",
-                birthday: new(1986, 5, 16),
-                department: new("2000"),
-                subDepartments: new Department[]
+                Code: "A0001",
+                Name: "カオナビ 花子",
+                NameKana: "カオナビ ハナコ",
+                Mail: "hanako@kaonavi.jp",
+                EnteredDate: new(2013, 5, 7),
+                Gender: "女性",
+                Birthday: new(1986, 5, 16),
+                Department: new("2000"),
+                SubDepartments: new Department[]
                 {
                     new("3000"), new("4000")
                 },
-                customFields: new CustomFieldValue[]
+                CustomFields: new CustomFieldValue[]
                 {
                     new(100, "O"), new(200, new[]{ "部長", "マネージャー" })
                 }

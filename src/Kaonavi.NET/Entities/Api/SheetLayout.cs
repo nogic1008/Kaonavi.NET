@@ -3,39 +3,19 @@ using System.Text.Json.Serialization;
 
 namespace Kaonavi.Net.Entities.Api
 {
-    /// <summary>
-    /// シート レイアウト定義情報
-    /// </summary>
-    public record SheetLayout
-    {
-        /// <summary>
-        /// SheetLayoutの新しいインスタンスを生成します。
-        /// </summary>
-        /// <param name="id">シートID</param>
-        /// <param name="name">シート名</param>
-        /// <param name="recordType">レコードの種類</param>
-        /// <param name="customFields">シートのレイアウト定義リスト</param>
-        public SheetLayout(int id, string name, RecordType recordType, IReadOnlyList<CustomField> customFields)
-            => (Id, Name, RecordType, CustomFields) = (id, name, recordType, customFields);
+    /// <summary>シート レイアウト定義情報</summary>
+    /// <param name="Id">シートID</param>
+    /// <param name="Name">シート名</param>
+    /// <param name="RecordType">レコードの種類</param>
+    /// <param name="CustomFields">シートのレイアウト定義リスト</param>
+    public record SheetLayout(
+        [property: JsonPropertyName("id")] int Id,
+        [property: JsonPropertyName("name")] string Name,
+        [property: JsonPropertyName("record_type")] RecordType RecordType,
+        [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomField> CustomFields
+    );
 
-        /// <summary>シートID</summary>
-        [JsonPropertyName("id")]
-        public int Id { get; init; }
-
-        /// <summary>シート名</summary>
-        [JsonPropertyName("name")]
-        public string Name { get; init; }
-
-        /// <summary>レコードの種類</summary>
-        [JsonPropertyName("record_type")]
-        public RecordType RecordType { get; init; }
-
-        /// <summary>シートのレイアウト定義リスト</summary>
-        [JsonPropertyName("custom_fields")]
-        public IReadOnlyList<CustomField> CustomFields { get; init; }
-    }
-
-    /// <summary>レコードの種類</summary>
+    /// <summary><inheritdoc cref="SheetLayout" path="/param[@name='RecordType']/text()"/></summary>
     public enum RecordType
     {
         /// <summary>単一レコードシート</summary>
