@@ -1,7 +1,6 @@
 using System.Text.Json;
 using FluentAssertions;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Entities.Api;
 using Xunit;
 
 namespace Kaonavi.Net.Tests.Entities.Api
@@ -52,7 +51,7 @@ namespace Kaonavi.Net.Tests.Entities.Api
             layout.Name.Should().Be("住所・連絡先");
             layout.RecordType.Should().Be(RecordType.Multiple);
             layout.CustomFields.Should().HaveCount(2)
-                .And.AllBeAssignableTo<CustomField>();
+                .And.AllBeAssignableTo<CustomFieldLayout>();
         }
     }
 }

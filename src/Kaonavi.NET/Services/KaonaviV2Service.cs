@@ -9,7 +9,6 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Entities.Api;
 
 namespace Kaonavi.Net.Services
 {
@@ -275,7 +274,7 @@ namespace Kaonavi.Net.Services
 
         #region Department
         /// <inheritdoc/>
-        public async ValueTask<IReadOnlyList<DepartmentInfo>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
+        public async ValueTask<IReadOnlyList<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -288,7 +287,7 @@ namespace Kaonavi.Net.Services
         }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentInfo> payload, CancellationToken cancellationToken = default)
+        public async ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default)
         {
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
 
@@ -301,7 +300,7 @@ namespace Kaonavi.Net.Services
                 .ConfigureAwait(false))!.Id;
         }
         private record DepartmentsResult(
-            [property: JsonPropertyName("department_data")] IReadOnlyList<DepartmentInfo> DepartmentData
+            [property: JsonPropertyName("department_data")] IReadOnlyList<DepartmentTree> DepartmentData
         );
         #endregion
 

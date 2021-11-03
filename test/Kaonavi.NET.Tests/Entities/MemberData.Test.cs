@@ -105,7 +105,7 @@ namespace Kaonavi.Net.Tests.Entities
         /// <param name="retiredDate"><see cref="MemberData.RetiredDate"/>の文字列表現</param>
         /// <param name="gender"><see cref="MemberData.Gender"/></param>
         /// <param name="birthday"><see cref="MemberData.Birthday"/>の文字列表現</param>
-        /// <param name="departmentCode"><see cref="Department.Code"/></param>
+        /// <param name="departmentCode"><see cref="MemberDepartment.Code"/></param>
         [Theory(DisplayName = nameof(MemberData) + " > JSONからデシリアライズできる。")]
         [InlineData(SampleJson1, "A0002", "カオナビ 太郎", "カオナビ タロウ", "taro@example.com", "2005/09/20", null, "男性", null, "1000")]
         [InlineData(SampleJson2, "A0001", "カオナビ 花子", "カオナビ ハナコ", "hanako@example.com", "2013/05/07", "2020/03/31", "女性", "1986/05/16", "2000")]
@@ -135,7 +135,7 @@ namespace Kaonavi.Net.Tests.Entities
                 memberData.Birthday.Should().BeNull();
             memberData.Department.Should().NotBeNull();
             memberData.Department!.Code.Should().Be(departmentCode);
-            memberData.SubDepartments.Should().AllBeAssignableTo<Department>();
+            memberData.SubDepartments.Should().AllBeAssignableTo<MemberDepartment>();
             memberData.CustomFields.Should().AllBeAssignableTo<CustomFieldValue>();
         }
     }

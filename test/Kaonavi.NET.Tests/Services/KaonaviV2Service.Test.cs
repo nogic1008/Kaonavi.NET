@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -9,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Entities.Api;
 using Kaonavi.Net.Services;
 using Moq;
 using Moq.Contrib.HttpClient;
@@ -352,7 +350,7 @@ namespace Kaonavi.Net.Tests.Services
                     new("生年月日", false, FieldType.Date, null, Array.Empty<string>()),
                     new("所属", false, FieldType.Department, null, Array.Empty<string>()),
                     new("兼務情報", false, FieldType.DepartmentArray, null, Array.Empty<string>()),
-                    new CustomField[]
+                    new CustomFieldLayout[]
                     {
                         new(100, "血液型", false, FieldType.Enum, null, new[]{ "A", "B", "O", "AB" }),
                         new(200, "役職", false, FieldType.Enum, null, new[]{ "部長", "課長", "マネージャー", null }),
@@ -439,7 +437,7 @@ namespace Kaonavi.Net.Tests.Services
             layout.Name.Should().Be("住所・連絡先");
             layout.RecordType.Should().Be(RecordType.Multiple);
             layout.CustomFields.Should().HaveCount(2)
-                .And.AllBeAssignableTo<CustomField>();
+                .And.AllBeAssignableTo<CustomFieldLayout>();
 
             handler.VerifyRequest(IsExpectedRequest, Times.Once());
 
@@ -464,7 +462,7 @@ namespace Kaonavi.Net.Tests.Services
                 Gender: "男性",
                 Birthday: new(1984, 5, 15),
                 Department: new("1000"),
-                SubDepartments: Array.Empty<Department>(),
+                SubDepartments: Array.Empty<MemberDepartment>(),
                 CustomFields: new CustomFieldValue[]
                 {
                     new(100, "A")
@@ -479,7 +477,7 @@ namespace Kaonavi.Net.Tests.Services
                 Gender: "女性",
                 Birthday: new(1986, 5, 16),
                 Department: new("2000"),
-                SubDepartments: new Department[]
+                SubDepartments: new MemberDepartment[]
                 {
                     new("3000"), new("4000")
                 },
@@ -1014,7 +1012,7 @@ namespace Kaonavi.Net.Tests.Services
         {
             // Arrange
             const int sheetId = 1;
-            var payload = new DepartmentInfo[]
+            var payload = new DepartmentTree[]
             {
                 new("1000", "取締役会", null, "A0002", 1, ""),
                 new("1200", "営業本部", null, null, 2, ""),

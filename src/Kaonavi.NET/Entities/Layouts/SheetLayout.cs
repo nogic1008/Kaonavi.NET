@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Kaonavi.Net.Entities.Api
+namespace Kaonavi.Net.Entities
 {
     /// <summary>シート レイアウト定義情報</summary>
     /// <param name="Id">シートID</param>
@@ -12,7 +12,7 @@ namespace Kaonavi.Net.Entities.Api
         [property: JsonPropertyName("id")] int Id,
         [property: JsonPropertyName("name")] string Name,
         [property: JsonPropertyName("record_type")] RecordType RecordType,
-        [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomField> CustomFields
+        [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomFieldLayout> CustomFields
     );
 
     /// <summary><inheritdoc cref="SheetLayout" path="/param[@name='RecordType']/text()"/></summary>

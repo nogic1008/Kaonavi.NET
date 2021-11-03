@@ -6,9 +6,9 @@ using Xunit;
 namespace Kaonavi.Net.Tests.Entities
 {
     /// <summary>
-    /// <see cref="Field"/>および<see cref="CustomField"/>の単体テスト
+    /// <see cref="FieldLayout"/>および<see cref="CustomFieldLayout"/>の単体テスト
     /// </summary>
-    public class FieldTest
+    public class FieldLayoutTest
     {
         #region Field
         private const string FieldJson1 = "{\"name\":\"社員番号\",\"required\":true,\"type\":\"string\",\"max_length\":50,\"enum\":[]}";
@@ -16,22 +16,22 @@ namespace Kaonavi.Net.Tests.Entities
         private const string FieldJson3 = "{\"name\":\"性別\",\"required\":false,\"type\":\"enum\",\"max_length\":null,\"enum\":[\"男性\",\"女性\"]}";
 
         /// <summary>
-        /// JSONから<see cref="Field"/>にデシリアライズできる。
+        /// JSONから<see cref="FieldLayout"/>にデシリアライズできる。
         /// </summary>
         /// <param name="json">JSON文字列</param>
-        /// <param name="name"><see cref="Field.Name"/></param>
-        /// <param name="required"><see cref="Field.Required"/></param>
-        /// <param name="type"><see cref="Field.Type"/></param>
-        /// <param name="maxLength"><see cref="Field.MaxLength"/></param>
-        /// <param name="enums"><see cref="Field.Enum"/></param>
-        [Theory(DisplayName = nameof(Field) + " > JSONからデシリアライズできる。")]
+        /// <param name="name"><see cref="FieldLayout.Name"/></param>
+        /// <param name="required"><see cref="FieldLayout.Required"/></param>
+        /// <param name="type"><see cref="FieldLayout.Type"/></param>
+        /// <param name="maxLength"><see cref="FieldLayout.MaxLength"/></param>
+        /// <param name="enums"><see cref="FieldLayout.Enum"/></param>
+        [Theory(DisplayName = nameof(FieldLayout) + " > JSONからデシリアライズできる。")]
         [InlineData(FieldJson1, "社員番号", true, FieldType.String, 50)]
         [InlineData(FieldJson2, "入社日", false, FieldType.Date, null)]
         [InlineData(FieldJson3, "性別", false, FieldType.Enum, null, "男性", "女性")]
         public void Field_CanDeserializeJSON(string json, string name, bool required, FieldType type, int? maxLength, params string[] enums)
         {
             // Arrange - Act
-            var field = JsonSerializer.Deserialize<Field>(json);
+            var field = JsonSerializer.Deserialize<FieldLayout>(json);
 
             // Assert
             field.Should().NotBeNull();
@@ -44,9 +44,9 @@ namespace Kaonavi.Net.Tests.Entities
         #endregion
 
         /// <summary>
-        /// JSONから<see cref="CustomField"/>にデシリアライズできる。
+        /// JSONから<see cref="CustomFieldLayout"/>にデシリアライズできる。
         /// </summary>
-        [Fact(DisplayName = nameof(CustomField) + " > JSONからデシリアライズできる。")]
+        [Fact(DisplayName = nameof(CustomFieldLayout) + " > JSONからデシリアライズできる。")]
         public void CustomField_CanDeserializeJSON()
         {
             // Arrange
@@ -60,7 +60,7 @@ namespace Kaonavi.Net.Tests.Entities
             + "}";
 
             // Act
-            var customField = JsonSerializer.Deserialize<CustomField>(jsonString);
+            var customField = JsonSerializer.Deserialize<CustomFieldLayout>(jsonString);
 
             // Assert
             customField.Should().NotBeNull();
