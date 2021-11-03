@@ -25,7 +25,7 @@ namespace Kaonavi.Net.Services
         /// </summary>
         private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web)
         {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         };
         static KaonaviV2Service()
             => _options.Converters.Add(new NullableDateTimeConverter());
@@ -120,30 +120,13 @@ namespace Kaonavi.Net.Services
 
         #region レイアウト定義
         /// <inheritdoc/>
-        public async ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync("/member_layouts", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<MemberLayout>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!;
-        }
+        public ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
+            => CallApiAsync<MemberLayout>(new(HttpMethod.Get, "/member_layouts"), cancellationToken);
 
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync("/sheet_layouts", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<SheetLayoutsResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.Sheets;
-        }
+            => (await CallApiAsync<SheetLayoutsResult>(new(HttpMethod.Get, "/sheet_layouts"), cancellationToken)
+                .ConfigureAwait(false)).Sheets;
         private record SheetLayoutsResult(
             [property: JsonPropertyName("sheets")] IReadOnlyList<SheetLayout> Sheets
         );
@@ -156,124 +139,40 @@ namespace Kaonavi.Net.Services
         #region メンバー情報
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync("/members", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<ApiResult<MemberData>>(_options, cancellationToken)
-                .ConfigureAwait(false))!.MemberData;
-        }
+            => (await CallApiAsync<ApiResult<MemberData>>(new(HttpMethod.Get, "/members"), cancellationToken)
+                .ConfigureAwait(false)).MemberData;
 
         /// <inheritdoc/>
-        public async ValueTask<int> AddMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var postPayload = new ApiResult<MemberData>(payload);
-            var response = await _client.PostAsJsonAsync("/members", postPayload, _options, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.Id;
-        }
+        public ValueTask<int> AddMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
+            => CallTaskApiAsync(HttpMethod.Post, "/members", new ApiResult<MemberData>(payload), cancellationToken);
 
         /// <inheritdoc/>
-        public async ValueTask<int> ReplaceMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var postPayload = new ApiResult<MemberData>(payload);
-            var response = await _client.PutAsJsonAsync("/members", postPayload, _options, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.Id;
-        }
+        public ValueTask<int> ReplaceMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
+            => CallTaskApiAsync(HttpMethod.Put, "/members", new ApiResult<MemberData>(payload), cancellationToken);
 
         /// <inheritdoc/>
-        public async ValueTask<int> UpdateMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var patchPayload = new ApiResult<MemberData>(payload);
-            var content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(patchPayload, _options));
-            content.Headers.ContentType = new("application/json");
-            var req = new HttpRequestMessage(new("PATCH"), "/members") { Content = content };
-
-            var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.Id;
-        }
+        public ValueTask<int> UpdateMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
+            => CallTaskApiAsync(new("PATCH"), "/members", new ApiResult<MemberData>(payload), cancellationToken);
 
         /// <inheritdoc/>
-        public async ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var payload = new DeleteMemberDataPayload(codes);
-            var response = await _client.PostAsJsonAsync("/members/delete", payload, _options, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.Id;
-        }
+        public ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default)
+            => CallTaskApiAsync(HttpMethod.Post, "/members/delete", new DeleteMemberDataPayload(codes), cancellationToken);
         private record DeleteMemberDataPayload(IReadOnlyList<string> Codes);
         #endregion
 
         #region シート情報
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync($"/sheets/{sheetId:D}", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<ApiResult<SheetData>>(cancellationToken: cancellationToken)
+            => (await CallApiAsync<ApiResult<SheetData>>(new(HttpMethod.Get, $"/sheets/{sheetId:D}"), cancellationToken)
                 .ConfigureAwait(false))!.MemberData;
-        }
 
         /// <inheritdoc/>
-        public async ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var putPayload = new ApiResult<SheetData>(payload);
-            var response = await _client.PutAsJsonAsync($"/sheets/{sheetId:D}", putPayload, _options, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.Id;
-        }
+        public ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
+            => CallTaskApiAsync(HttpMethod.Put, $"/sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
 
         /// <inheritdoc/>
-        public async ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var patchPayload = new ApiResult<SheetData>(payload);
-            var content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(patchPayload, _options));
-            content.Headers.ContentType = new("application/json");
-            var req = new HttpRequestMessage(new("PATCH"), $"/sheets/{sheetId:D}") { Content = content };
-
-            var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.Id;
-        }
+        public ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
+            => CallTaskApiAsync(new("PATCH"), $"/sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
         #endregion
 
         #region 所属ツリー
@@ -311,50 +210,27 @@ namespace Kaonavi.Net.Services
         #region タスク進捗状況
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
-        public async ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
+        public ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
         {
             if (taskId < 0)
                 throw new ArgumentOutOfRangeException(nameof(taskId));
-
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync($"/tasks/{taskId:D}", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<TaskProgress>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!;
+            return CallApiAsync<TaskProgress>(new(HttpMethod.Get, $"/tasks/{taskId:D}"), cancellationToken);
         }
         #endregion
 
         #region ユーザー情報
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync("/users", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<UsersResult>(cancellationToken: cancellationToken)
+            => (await CallApiAsync<UsersResult>(new(HttpMethod.Get, "/users"), cancellationToken)
                 .ConfigureAwait(false))!.UserData;
-        }
         private record UsersResult([property: JsonPropertyName("user_data")] IReadOnlyList<User> UserData);
 
         /// <inheritdoc/>
-        public async ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var postPayload = new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!));
-            var response = await _client.PostAsJsonAsync("/users", postPayload, _options, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!;
-        }
+        public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
+            => CallApiAsync<User>(new(HttpMethod.Post, "/users")
+            {
+                Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: _options)
+            }, cancellationToken);
         private record UserJsonPayload(
             [property: JsonPropertyName("email")] string EMail,
             [property: JsonPropertyName("member_code")] string? MemberCode,
@@ -364,41 +240,23 @@ namespace Kaonavi.Net.Services
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
-        public async ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
+        public ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
         {
             if (userId < 0)
                 throw new ArgumentOutOfRangeException(nameof(userId));
-
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync($"/users/{userId:D}", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!;
+            return CallApiAsync<User>(new(HttpMethod.Get, $"/users/{userId:D}"), cancellationToken);
         }
 
         /// <inheritdoc/>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
-        public async ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
+        public ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
         {
             if (userId < 0)
                 throw new ArgumentOutOfRangeException(nameof(userId));
-
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var patchPayload = new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!));
-            var content = new ByteArrayContent(JsonSerializer.SerializeToUtf8Bytes(patchPayload, _options));
-            content.Headers.ContentType = new("application/json");
-            var req = new HttpRequestMessage(new("PATCH"), $"/users/{userId:D}") { Content = content };
-
-            var response = await _client.SendAsync(req, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<User>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!;
+            return CallApiAsync<User>(new(new("PATCH"), $"/users/{userId:D}")
+            {
+                Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: _options)
+            }, cancellationToken);
         }
 
         /// <inheritdoc/>
@@ -418,60 +276,29 @@ namespace Kaonavi.Net.Services
         #region ロール
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync("/roles", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<RolesResult>(cancellationToken: cancellationToken)
+            => (await CallApiAsync<RolesResult>(new(HttpMethod.Get, "/roles"), cancellationToken)
                 .ConfigureAwait(false))!.RoleData;
-        }
         private record RolesResult([property: JsonPropertyName("role_data")] IReadOnlyList<Role> RoleData);
         #endregion
 
         #region マスター管理
         /// <inheritdoc/>
         public async ValueTask<IReadOnlyList<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync("/enum_options", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<EnumOptionsResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.CustomFieldData;
-        }
+            => (await CallApiAsync<EnumOptionsResult>(new(HttpMethod.Get, "/enum_options"), cancellationToken)
+                .ConfigureAwait(false)).CustomFieldData;
         private record EnumOptionsResult([property: JsonPropertyName("custom_field_data")] IReadOnlyList<EnumOption> CustomFieldData);
 
         /// <inheritdoc/>
-        public async ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var response = await _client.GetAsync($"/enum_options/{customFieldId}", cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<EnumOption>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!;
-        }
+        public ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default)
+            => CallApiAsync<EnumOption>(new(HttpMethod.Get, $"/enum_options/{customFieldId}"), cancellationToken);
 
         /// <inheritdoc/>
-        public async ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyList<(int?, string)> payload, CancellationToken cancellationToken = default)
-        {
-            await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-
-            var putPayload = new EnumOptionPayload(payload.Select(d => new EnumOptionPayload.Data(d.Item1, d.Item2)).ToArray());
-            var response = await _client.PutAsJsonAsync($"/enum_options/{customFieldId}", putPayload, _options, cancellationToken).ConfigureAwait(false);
-            await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-
-            return (await response.Content
-                .ReadFromJsonAsync<TaskResult>(cancellationToken: cancellationToken)
-                .ConfigureAwait(false))!.Id;
-        }
+        public ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyList<(int?, string)> payload, CancellationToken cancellationToken = default)
+            => CallTaskApiAsync(
+                HttpMethod.Put,
+                $"/enum_options/{customFieldId}",
+                new EnumOptionPayload(payload.Select(d => new EnumOptionPayload.Data(d.Item1, d.Item2)).ToArray()),
+                cancellationToken);
         private record EnumOptionPayload([property: JsonPropertyName("enum_option_data")] IReadOnlyList<EnumOptionPayload.Data> EnumOptionData)
         {
             internal record Data(int? Id, string Name);
@@ -503,8 +330,21 @@ namespace Kaonavi.Net.Services
             await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
             var response = await _client.SendAsync(request, cancellationToken: cancellationToken).ConfigureAwait(false);
             await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-            return (await response.Content.ReadFromJsonAsync<T>(cancellationToken: cancellationToken).ConfigureAwait(false))!;
+            return (await response.Content.ReadFromJsonAsync<T>(_options, cancellationToken).ConfigureAwait(false))!;
         }
+
+        /// <summary>
+        /// APIを呼び出し、受け取った<inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/>を返します。
+        /// </summary>
+        /// <param name="request">APIに対するリクエスト</param>
+        /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+        /// <inheritdoc cref="CallApiAsync" path="/exception"/>
+        private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, CancellationToken cancellationToken)
+            => (await CallApiAsync<TaskResult>(new(method, uri)
+            {
+                Content = JsonContent.Create(payload, options: _options)
+            }, cancellationToken).ConfigureAwait(false)).Id;
 
         /// <summary>
         /// APIが正しく終了したかどうかを検証します。
