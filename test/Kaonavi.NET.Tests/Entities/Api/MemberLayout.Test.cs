@@ -1,5 +1,6 @@
 using System.Text.Json;
 using FluentAssertions;
+using Kaonavi.Net.Entities;
 using Kaonavi.Net.Entities.Api;
 using Xunit;
 
@@ -130,14 +131,14 @@ namespace Kaonavi.Net.Tests.Entities.Api
             layout.Should().NotBeNull();
             layout!.Code.Name.Should().Be("社員番号");
             layout.Name.Required.Should().BeFalse();
-            layout.NameKana.Type.Should().Be("string");
+            layout.NameKana.Type.Should().Be(FieldType.String);
             layout.Mail.MaxLength.Should().Be(100);
-            layout.EnteredDate.Type.Should().Be("date");
+            layout.EnteredDate.Type.Should().Be(FieldType.Date);
             layout.RetiredDate.Enum.Should().BeEmpty();
             layout.Gender.Enum.Should().Equal("男性", "女性");
             layout.Birthday.MaxLength.Should().BeNull();
-            layout.Department.Type.Should().Be("department");
-            layout.SubDepartments.Type.Should().Be("department[]");
+            layout.Department.Type.Should().Be(FieldType.Department);
+            layout.SubDepartments.Type.Should().Be(FieldType.DepartmentArray);
             layout.CustomFields.Should().HaveCount(2);
             layout.CustomFields[^1].Enum.Should().Equal("部長", "課長", "マネージャー", null);
         }

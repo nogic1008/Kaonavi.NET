@@ -25,10 +25,10 @@ namespace Kaonavi.Net.Tests.Entities
         /// <param name="maxLength"><see cref="Field.MaxLength"/></param>
         /// <param name="enums"><see cref="Field.Enum"/></param>
         [Theory(DisplayName = nameof(Field) + " > JSONからデシリアライズできる。")]
-        [InlineData(FieldJson1, "社員番号", true, "string", 50)]
-        [InlineData(FieldJson2, "入社日", false, "date", null)]
-        [InlineData(FieldJson3, "性別", false, "enum", null, "男性", "女性")]
-        public void Field_CanDeserializeJSON(string json, string name, bool required, string type, int? maxLength, params string[] enums)
+        [InlineData(FieldJson1, "社員番号", true, FieldType.String, 50)]
+        [InlineData(FieldJson2, "入社日", false, FieldType.Date, null)]
+        [InlineData(FieldJson3, "性別", false, FieldType.Enum, null, "男性", "女性")]
+        public void Field_CanDeserializeJSON(string json, string name, bool required, FieldType type, int? maxLength, params string[] enums)
         {
             // Arrange - Act
             var field = JsonSerializer.Deserialize<Field>(json);
@@ -67,7 +67,7 @@ namespace Kaonavi.Net.Tests.Entities
             customField!.Id.Should().Be(100);
             customField.Name.Should().Be("血液型");
             customField.Required.Should().BeFalse();
-            customField.Type.Should().Be("enum");
+            customField.Type.Should().Be(FieldType.Enum);
             customField.MaxLength.Should().BeNull();
             customField.Enum.Should().Equal("A", "B", "O", "AB");
         }
