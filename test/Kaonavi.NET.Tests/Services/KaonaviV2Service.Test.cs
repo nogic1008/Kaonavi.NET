@@ -94,7 +94,7 @@ namespace Kaonavi.Net.Tests.Services
         }
         #endregion
 
-        #region Property
+        #region Properties
         /// <summary>
         /// <see cref="KaonaviV2Service.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を返す。
         /// </summary>
@@ -189,7 +189,7 @@ namespace Kaonavi.Net.Tests.Services
 
             // Assert
             client.DefaultRequestHeaders.TryGetValues("Dry-Run", out var values).Should().BeTrue();
-            values!.First().Should().Be("1");
+            values?.First().Should().Be("1");
             #endregion
 
             #region UseDryRun = false
@@ -236,11 +236,10 @@ namespace Kaonavi.Net.Tests.Services
             // Arrange
             string key = GenerateRandomString();
             string secret = GenerateRandomString();
-            var endpoint = new Uri(_baseUri, "/token");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
                 .ReturnsResponse((HttpStatusCode)statusCode, string.Format(contentFormat, message), mediaType);
 
             // Act
@@ -258,14 +257,13 @@ namespace Kaonavi.Net.Tests.Services
         [Fact(DisplayName = TestName + "API Caller > " + nameof(KaonaviV2Service.AuthenticateAsync) + "を呼び出す。")]
         public async Task ApiCaller_Calls_AuthenticateAsync_When_AccessToken_IsNull()
         {
-            var apiEndpoint = new Uri(_baseUri, "/member_layouts");
-            var tokenEndpoint = new Uri(_baseUri, "/token");
+            // Arrange
             string tokenString = GenerateRandomString();
             string key = GenerateRandomString();
             string secret = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == tokenEndpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
                 .ReturnsResponse(HttpStatusCode.InternalServerError, "Error", "text/plain");
 
             // Act
@@ -275,36 +273,48 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             await act.Should().ThrowExactlyAsync<ApplicationException>().ConfigureAwait(false);
 
-            byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
-            string base64String = Convert.ToBase64String(byteArray);
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
-            handler.VerifyRequest(res => res.RequestUri == apiEndpoint, Times.Never());
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Post);
+                req.RequestUri?.PathAndQuery.Should().Be("/token");
 
-            async Task<bool> IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == tokenEndpoint
-                && req.Method == HttpMethod.Post
-                && req.Headers.Authorization!.Scheme == "Basic"
-                && req.Headers.Authorization.Parameter == base64String
-                && req.Content is FormUrlEncodedContent content
-                && await content.ReadAsStringAsync().ConfigureAwait(false) == "grant_type=client_credentials";
+                // Header
+                req.Headers.Authorization?.Scheme.Should().Be("Basic");
+                byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
+                string base64String = Convert.ToBase64String(byteArray);
+                req.Headers.Authorization?.Parameter.Should().Be(base64String);
+
+                // Body
+                req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
+                string body = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                body.Should().Be("grant_type=client_credentials");
+
+                return true;
+            }, Times.Once());
+            handler.VerifyRequest(res => res.RequestUri?.PathAndQuery != "/token", Times.Never());
         }
         #endregion
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.AuthenticateAsync(CancellationToken)"/>は、"/token"にBase64文字列のPOSTリクエストを行う。
+        /// <see cref="KaonaviV2Service.AuthenticateAsync"/>は、"/token"にBase64文字列のPOSTリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AuthenticateAsync) + " > POST /token をコールする。")]
-        public async Task AuthenticateAsync_Posts_Base64String()
+        public async Task AuthenticateAsync_Calls_PostApi()
         {
             // Arrange
+            const string responseJson = "{"
+            + "\"access_token\": \"25396f58-10f8-c228-7f0f-818b1d666b2e\","
+            + "\"token_type\": \"Bearer\","
+            + "\"expires_in\": 3600"
+            + "}";
             string key = GenerateRandomString();
             string secret = GenerateRandomString();
-            var endpoint = new Uri(_baseUri, "/token");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
-                .ReturnsJson(new Token(tokenString, "Bearer", 3600));
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(handler, key, secret);
@@ -312,50 +322,132 @@ namespace Kaonavi.Net.Tests.Services
 
             // Assert
             token.Should().NotBeNull();
-            token.Should().Be(new Token(tokenString, "Bearer", 3600));
 
-            byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
-            string base64String = Convert.ToBase64String(byteArray);
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Post);
+                req.RequestUri?.PathAndQuery.Should().Be("/token");
 
-            async Task<bool> IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                && req.Method == HttpMethod.Post
-                && req.Headers.Authorization!.Scheme == "Basic"
-                && req.Headers.Authorization.Parameter == base64String
-                && req.Content is FormUrlEncodedContent content
-                && await content.ReadAsStringAsync().ConfigureAwait(false) == "grant_type=client_credentials";
+                // Header
+                req.Headers.Authorization?.Scheme.Should().Be("Basic");
+                byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
+                string base64String = Convert.ToBase64String(byteArray);
+                req.Headers.Authorization?.Parameter.Should().Be(base64String);
+
+                // Body
+                req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
+                string body = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                body.Should().Be("grant_type=client_credentials");
+
+                return true;
+            }, Times.Once());
         }
 
         #region レイアウト定義 API
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchMemberLayoutAsync(CancellationToken)"/>は、"/member_layouts"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchMemberLayoutAsync"/>は、"/member_layouts"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchMemberLayoutAsync) + " > GET /member_layouts をコールする。")]
-        public async Task FetchMemberLayoutAsync_Returns_MemberLayout()
+        public async Task FetchMemberLayoutAsync_Calls_GetApi()
         {
-            var endpoint = new Uri(_baseUri, "/member_layouts");
+            #region JSON
+            const string responseJson = "{"
+            + "\"code\": {"
+            + "  \"name\": \"社員番号\","
+            + "  \"required\": true,"
+            + "  \"type\": \"string\","
+            + "  \"max_length\": 50,"
+            + "  \"enum\": []"
+            + "},"
+            + "\"name\": {"
+            + "  \"name\": \"氏名\","
+            + "  \"required\": false,"
+            + "  \"type\": \"string\","
+            + "  \"max_length\": 100,"
+            + "  \"enum\": []"
+            + "},"
+            + "\"name_kana\": {"
+            + "  \"name\": \"フリガナ\","
+            + "  \"required\": false,"
+            + "  \"type\": \"string\","
+            + "  \"max_length\": 100,"
+            + "  \"enum\": []"
+            + "},"
+            + "\"mail\": {"
+            + "  \"name\": \"メールアドレス\","
+            + "  \"required\": false,"
+            + "  \"type\": \"string\","
+            + "  \"max_length\": 100,"
+            + "  \"enum\": []"
+            + "},"
+            + "\"entered_date\": {"
+            + "  \"name\": \"入社日\","
+            + "  \"required\": false,"
+            + "  \"type\": \"date\","
+            + "  \"max_length\": null,"
+            + "  \"enum\": []"
+            + "},"
+            + "\"retired_date\": {"
+            + "  \"name\": \"退職日\","
+            + "  \"required\": false,"
+            + "  \"type\": \"date\","
+            + "  \"max_length\": null,"
+            + "  \"enum\": []"
+            + "},"
+            + "\"gender\": {"
+            + "  \"name\": \"性別\","
+            + "  \"required\": false,"
+            + "  \"type\": \"enum\","
+            + "  \"max_length\": null,"
+            + "  \"enum\": [\"男性\", \"女性\"]"
+            + "},"
+            + "\"birthday\": {"
+            + "  \"name\": \"生年月日\","
+            + "  \"required\": false,"
+            + "  \"type\": \"date\","
+            + "  \"max_length\": null,"
+            + "  \"enum\": []"
+            + "},"
+            + "\"department\": {"
+            + "  \"name\": \"所属\","
+            + "  \"required\": false,"
+            + "  \"type\": \"department\","
+            + "  \"max_length\": null,"
+            + "  \"enum\": []"
+            + "},"
+            + "\"sub_departments\": {"
+            + "  \"name\": \"兼務情報\","
+            + "  \"required\": false,"
+            + "  \"type\": \"department[]\","
+            + "  \"max_length\": null,"
+            + "  \"enum\": []"
+            + "},"
+            + "\"custom_fields\": ["
+            + "  {"
+            + "    \"id\": 100,"
+            + "    \"name\": \"血液型\","
+            + "    \"required\": false,"
+            + "    \"type\": \"enum\","
+            + "    \"max_length\": null,"
+            + "    \"enum\": [\"A\", \"B\", \"O\", \"AB\"]"
+            + "  },"
+            + "  {"
+            + "    \"id\": 200,"
+            + "    \"name\": \"役職\","
+            + "    \"required\": false,"
+            + "    \"type\": \"enum\","
+            + "    \"max_length\": null,"
+            + "    \"enum\": [\"部長\", \"課長\", \"マネージャー\", null]"
+            + "  }"
+            + "]"
+            + "}";
+            #endregion
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
-                .ReturnsJson(new MemberLayout(
-                    new("社員番号", true, FieldType.String, 50, Array.Empty<string>()),
-                    new("氏名", false, FieldType.String, 100, Array.Empty<string>()),
-                    new("フリガナ", false, FieldType.String, 100, Array.Empty<string>()),
-                    new("メールアドレス", false, FieldType.String, 100, Array.Empty<string>()),
-                    new("入社日", false, FieldType.Date, null, Array.Empty<string>()),
-                    new("退職日", false, FieldType.Date, null, Array.Empty<string>()),
-                    new("性別", false, FieldType.Enum, null, new[] { "男性", "女性" }),
-                    new("生年月日", false, FieldType.Date, null, Array.Empty<string>()),
-                    new("所属", false, FieldType.Department, null, Array.Empty<string>()),
-                    new("兼務情報", false, FieldType.DepartmentArray, null, Array.Empty<string>()),
-                    new CustomFieldLayout[]
-                    {
-                        new(100, "血液型", false, FieldType.Enum, null, new[]{ "A", "B", "O", "AB" }),
-                        new(200, "役職", false, FieldType.Enum, null, new[]{ "部長", "課長", "マネージャー", null }),
-                    }
-                ));
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/member_layouts")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(handler, accessToken: tokenString);
@@ -363,34 +455,28 @@ namespace Kaonavi.Net.Tests.Services
 
             // Assert
             layout.Should().NotBeNull();
-            layout!.Code.Name.Should().Be("社員番号");
-            layout.Name.Required.Should().BeFalse();
-            layout.NameKana.Type.Should().Be(FieldType.String);
-            layout.Mail.MaxLength.Should().Be(100);
-            layout.EnteredDate.Type.Should().Be(FieldType.Date);
-            layout.RetiredDate.Enum.Should().BeEmpty();
-            layout.Gender.Enum.Should().Equal("男性", "女性");
-            layout.Birthday.MaxLength.Should().BeNull();
-            layout.Department.Type.Should().Be(FieldType.Department);
-            layout.SubDepartments.Type.Should().Be(FieldType.DepartmentArray);
-            layout.CustomFields.Should().HaveCount(2);
-            layout.CustomFields[^1].Enum.Should().Equal("部長", "課長", "マネージャー", null);
 
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri?.PathAndQuery.Should().Be("/member_layouts");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Get
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchSheetLayoutsAsync(CancellationToken)"/>は、"/sheet_layouts"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchSheetLayoutsAsync"/>は、"/sheet_layouts"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchSheetLayoutsAsync) + " > GET /sheet_layouts をコールする。")]
-        public async Task FetchSheetLayoutsAsync_Returns_SheetLayouts()
+        public async Task FetchSheetLayoutsAsync_Calls_GetApi()
         {
+            // Arrange
+            #region JSON
             const string responseJson = "{"
             + "\"sheets\": ["
             + "  {"
@@ -418,11 +504,11 @@ namespace Kaonavi.Net.Tests.Services
             + "  }"
             + "]"
             + "}";
-            var endpoint = new Uri(_baseUri, "/sheet_layouts");
+            #endregion
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/sheet_layouts")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
@@ -430,28 +516,25 @@ namespace Kaonavi.Net.Tests.Services
             var layouts = await sut.FetchSheetLayoutsAsync().ConfigureAwait(false);
 
             // Assert
-            layouts.Should().NotBeNullOrEmpty()
-                .And.HaveCount(1);
-            var layout = layouts[0];
-            layout.Id.Should().Be(12);
-            layout.Name.Should().Be("住所・連絡先");
-            layout.RecordType.Should().Be(RecordType.Multiple);
-            layout.CustomFields.Should().HaveCount(2)
-                .And.AllBeAssignableTo<CustomFieldLayout>();
+            layouts.Should().HaveCount(1);
 
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri?.PathAndQuery.Should().Be("/sheet_layouts");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Get
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchSheetLayoutAsync"/>は、"/sheet_layouts/{id}"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchSheetLayoutAsync"/>は、"/sheet_layouts/{sheetId}"にGETリクエストを行う。
         /// </summary>
-        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchSheetLayoutsAsync) + " > GET /sheet_layouts/:id をコールする。")]
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchSheetLayoutsAsync) + " > GET /sheet_layouts/:sheetId をコールする。")]
         public async Task FetchSheetLayoutAsync_Calls_GetApi()
         {
             // Arrange
@@ -483,7 +566,7 @@ namespace Kaonavi.Net.Tests.Services
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri!.PathAndQuery == "/sheet_layouts/12")
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/sheet_layouts/12")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
@@ -495,9 +578,13 @@ namespace Kaonavi.Net.Tests.Services
 
             handler.VerifyRequest(req =>
             {
+                // End point
                 req.Method.Should().Be(HttpMethod.Get);
-                req.RequestUri!.PathAndQuery.Should().Be("/sheet_layouts/12");
+                req.RequestUri?.PathAndQuery.Should().Be("/sheet_layouts/12");
+
+                // Header
                 req.Headers.GetValues("Kaonavi-Token").Should().Equal(tokenString);
+
                 return true;
             }, Times.Once());
         }
@@ -543,10 +630,10 @@ namespace Kaonavi.Net.Tests.Services
         };
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchMembersDataAsync(CancellationToken)"/>は、"/members"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchMembersDataAsync"/>は、"/members"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchMembersDataAsync) + " > GET /members をコールする。")]
-        public async Task FetchMembersDataAsync_Returns_MemberDataList()
+        public async Task FetchMembersDataAsync_Calls_GetApi()
         {
             // Arrange
             #region JSON
@@ -639,11 +726,10 @@ namespace Kaonavi.Net.Tests.Services
             + "]"
             + "}";
             #endregion
-            var endpoint = new Uri(_baseUri, "/members");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
@@ -653,28 +739,31 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             members.Should().HaveCount(2);
 
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri?.PathAndQuery.Should().Be("/members");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Get
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
         /// <see cref="KaonaviV2Service.AddMemberDataAsync"/>は、"/members"にPOSTリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AddMemberDataAsync) + " > POST /members をコールする。")]
-        public async Task AddMemberDataAsync_Returns_TaskId()
+        public async Task AddMemberDataAsync_Calls_PostApi()
         {
             // Arrange
-            var endpoint = new Uri(_baseUri, "/members");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
@@ -684,29 +773,35 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             taskId.Should().Be(1);
 
-            string? receivedJson = null;
-            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Post
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString
-                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
-                    Times.Once());
-            receivedJson.Should().Be(expectedJson);
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Post);
+                req.RequestUri?.PathAndQuery.Should().Be("/members");
+
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                // Body
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be(expectedJson);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
         /// <see cref="KaonaviV2Service.ReplaceMemberDataAsync"/>は、"/members"にPUTリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.ReplaceMemberDataAsync) + " > PUT /members をコールする。")]
-        public async Task ReplaceMemberDataAsync_Returns_TaskId()
+        public async Task ReplaceMemberDataAsync_Calls_PutApi()
         {
             // Arrange
-            var endpoint = new Uri(_baseUri, "/members");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
@@ -716,29 +811,35 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             taskId.Should().Be(1);
 
-            string? receivedJson = null;
-            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Put
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString
-                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
-                    Times.Once());
-            receivedJson.Should().Be(expectedJson);
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Put);
+                req.RequestUri?.PathAndQuery.Should().Be("/members");
+
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                // Body
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be(expectedJson);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
         /// <see cref="KaonaviV2Service.UpdateMemberDataAsync"/>は、"/members"にPATCHリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateMemberDataAsync) + " > PATCH /members をコールする。")]
-        public async Task UpdateMemberDataAsync_Returns_TaskId()
+        public async Task UpdateMemberDataAsync_Calls_PatchApi()
         {
             // Arrange
-            var endpoint = new Uri(_baseUri, "/members");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
@@ -748,30 +849,36 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             taskId.Should().Be(1);
 
-            string? receivedJson = null;
-            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Patch
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString
-                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
-                    Times.Once());
-            receivedJson.Should().Be(expectedJson);
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Patch);
+                req.RequestUri?.PathAndQuery.Should().Be("/members");
+
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                // Body
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be(expectedJson);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
         /// <see cref="KaonaviV2Service.DeleteMemberDataAsync"/>は、"/members/delete"にPOSTリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.DeleteMemberDataAsync) + " > POST /members/delete をコールする。")]
-        public async Task DeleteMemberDataAsync_Returns_TaskId()
+        public async Task DeleteMemberDataAsync_Calls_PostApi()
         {
             // Arrange
-            var endpoint = new Uri(_baseUri, "/members/delete");
             string[] codes = _memberDataPayload.Select(d => d.Code).ToArray();
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, JsonConfig.Default)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/delete")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
@@ -781,14 +888,21 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             taskId.Should().Be(1);
 
-            string? receivedJson = null;
-            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Post
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString
-                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
-                    Times.Once());
-            receivedJson.Should().Be(expectedJson);
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Post);
+                req.RequestUri?.PathAndQuery.Should().Be("/members/delete");
+
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                // Body
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be(expectedJson);
+
+                return true;
+            }, Times.Once());
         }
         #endregion
 
@@ -820,10 +934,10 @@ namespace Kaonavi.Net.Tests.Services
         };
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchSheetDataListAsync(int, CancellationToken)"/>は、"/sheets/{sheetId}"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchSheetDataListAsync"/>は、"/sheets/{sheetId}"にGETリクエストを行う。
         /// </summary>
-        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchSheetDataListAsync) + " > GET /sheets/{sheetId} をコールする。")]
-        public async Task FetchSheetDataListAsync_Returns_SheetDataList()
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchSheetDataListAsync) + " > GET /sheets/:sheetId をコールする。")]
+        public async Task FetchSheetDataListAsync_Calls_GetApi()
         {
             // Arrange
             const int sheetId = 1;
@@ -894,11 +1008,10 @@ namespace Kaonavi.Net.Tests.Services
             + "  ]"
             + "}";
             #endregion
-            var endpoint = new Uri(_baseUri, $"/sheets/{sheetId}");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
@@ -908,29 +1021,32 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             members.Should().HaveCount(2);
 
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri?.PathAndQuery.Should().Be($"/sheets/{sheetId}");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Get
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
         /// <see cref="KaonaviV2Service.ReplaceSheetDataAsync"/>は、"/sheets/{sheetId}"にPUTリクエストを行う。
         /// </summary>
-        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.ReplaceSheetDataAsync) + " > PUT /sheets/{sheetId} をコールする。")]
-        public async Task ReplaceSheetDataAsync_Returns_TaskId()
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.ReplaceSheetDataAsync) + " > PUT /sheets/:sheetId をコールする。")]
+        public async Task ReplaceSheetDataAsync_Calls_PutApi()
         {
             // Arrange
             const int sheetId = 1;
-            var endpoint = new Uri(_baseUri, $"/sheets/{sheetId}");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
@@ -940,30 +1056,36 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             taskId.Should().Be(sheetId);
 
-            string? receivedJson = null;
-            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Put
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString
-                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
-                    Times.Once());
-            receivedJson.Should().Be(expectedJson);
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Put);
+                req.RequestUri?.PathAndQuery.Should().Be($"/sheets/{sheetId}");
+
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                // Body
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be(expectedJson);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
         /// <see cref="KaonaviV2Service.UpdateSheetDataAsync"/>は、"/sheets/{sheetId}"にPATCHリクエストを行う。
         /// </summary>
-        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateSheetDataAsync) + " > PATCH /sheets/{sheetId} をコールする。")]
-        public async Task UpdateSheetDataAsync_Returns_TaskId()
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateSheetDataAsync) + " > PATCH /sheets/:sheetId をコールする。")]
+        public async Task UpdateSheetDataAsync_Calls_PatchApi()
         {
             // Arrange
             const int sheetId = 1;
-            var endpoint = new Uri(_baseUri, $"/sheets/{sheetId}");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
@@ -973,23 +1095,30 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             taskId.Should().Be(sheetId);
 
-            string? receivedJson = null;
-            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Patch
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString
-                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
-                    Times.Once());
-            receivedJson.Should().Be(expectedJson);
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Patch);
+                req.RequestUri?.PathAndQuery.Should().Be($"/sheets/{sheetId}");
+
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                // Body
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be(expectedJson);
+
+                return true;
+            }, Times.Once());
         }
         #endregion
 
         #region 所属ツリー API
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchDepartmentsAsync(CancellationToken)"/>は、"/departments"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchDepartmentsAsync"/>は、"/departments"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchDepartmentsAsync) + " > GET /departments をコールする。")]
-        public async Task FetchDepartmentsAsync_Returns_DepartmentInfoList()
+        public async Task FetchDepartmentsAsync_Calls_GetApi()
         {
             // Arrange
             #region JSON
@@ -1030,11 +1159,10 @@ namespace Kaonavi.Net.Tests.Services
             + "]"
             + "}";
             #endregion
-            var endpoint = new Uri(_baseUri, "/departments");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
@@ -1042,27 +1170,26 @@ namespace Kaonavi.Net.Tests.Services
             var departments = await sut.FetchDepartmentsAsync().ConfigureAwait(false);
 
             // Assert
-            departments.Should().Equal(
-                new("1000", "取締役会", null, "A0002", 1, ""),
-                new("1200", "営業本部", null, null, 2, ""),
-                new("1500", "第一営業部", "1200", null, 1, ""),
-                new("2000", "ITグループ", "1500", "A0001", 1, "example")
-            );
+            departments.Should().HaveCount(4);
 
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri?.PathAndQuery.Should().Be("/departments");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Get
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
         /// <see cref="KaonaviV2Service.ReplaceDepartmentsAsync"/>は、"/departments"にPUTリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.ReplaceDepartmentsAsync) + " > PUT /departments をコールする。")]
-        public async Task ReplaceDepartmentsAsync_Returns_TaskId()
+        public async Task ReplaceDepartmentsAsync_Calls_PutApi()
         {
             // Arrange
             const int sheetId = 1;
@@ -1073,12 +1200,11 @@ namespace Kaonavi.Net.Tests.Services
                 new("1500", "第一営業部", "1200", null, 1, ""),
                 new("2000", "ITグループ", "1500", "A0001", 1, "example"),
             };
-            var endpoint = new Uri(_baseUri, "/departments");
             string tokenString = GenerateRandomString();
             string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, JsonConfig.Default)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
@@ -1088,14 +1214,21 @@ namespace Kaonavi.Net.Tests.Services
             // Assert
             taskId.Should().Be(sheetId);
 
-            string? receivedJson = null;
-            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Put
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString
-                    && (receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) is not null,
-                    Times.Once());
-            receivedJson.Should().Be(expectedJson);
+            handler.VerifyRequest(async (req) =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Put);
+                req.RequestUri?.PathAndQuery.Should().Be("/departments");
+
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                // Body
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be(expectedJson);
+
+                return true;
+            }, Times.Once());
         }
         #endregion
 
@@ -1103,7 +1236,8 @@ namespace Kaonavi.Net.Tests.Services
         private const string TestNameFetchTaskProgressAsync = TestName + nameof(KaonaviV2Service.FetchTaskProgressAsync) + " > ";
 
         /// <summary>
-        /// taskIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.FetchTaskProgressAsync(int, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// <inheritdoc cref="KaonaviV2Service.FetchTaskProgressAsync" path="/param[@name='taskId']"/>が<c>0</c>未満のとき、
+        /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         [Fact(DisplayName = TestNameFetchTaskProgressAsync + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task FetchTaskProgressAsync_Throws_ArgumentOutOfRangeException()
@@ -1125,18 +1259,23 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchTaskProgressAsync(int, CancellationToken)"/>は、"/tasks/{taskId}"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
         /// </summary>
-        [Fact(DisplayName = TestNameFetchTaskProgressAsync + "GET /tasks/{taskId} をコールする。")]
-        public async Task FetchTaskProgressAsync_Returns_TaskProgress()
+        [Fact(DisplayName = TestNameFetchTaskProgressAsync + "GET /tasks/:taskId をコールする。")]
+        public async Task FetchTaskProgressAsync_Calls_GetApi()
         {
+            // Arrange
             const int taskId = 1;
-            var endpoint = new Uri(_baseUri, $"/tasks/{taskId}");
+            const string responseJson = "{"
+            + "\"id\": 1,"
+            + "\"status\": \"NG\","
+            + "\"messages\": [\"エラーメッセージ1\", \"エラーメッセージ2\"]"
+            + "}";
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
-                .ReturnsJson(new TaskProgress(taskId, "NG", new[] { "エラーメッセージ1", "エラーメッセージ2" }));
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(handler, accessToken: tokenString);
@@ -1144,27 +1283,29 @@ namespace Kaonavi.Net.Tests.Services
 
             // Assert
             task.Should().NotBeNull();
-            task.Id.Should().Be(taskId);
-            task.Status.Should().Be("NG");
-            task.Messages.Should().Equal("エラーメッセージ1", "エラーメッセージ2");
 
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri?.PathAndQuery.Should().Be($"/tasks/{taskId}");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Get
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
         #endregion
 
         #region ユーザー情報 API
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchUsersAsync(CancellationToken)"/>は、"/users"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchUsersAsync"/>は、"/users"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUsersAsync) + " > GET /users をコールする。")]
-        public async Task FetchUsersAsync_Returns_Users()
+        public async Task FetchUsersAsync_Calls_GetApi()
         {
+            // Arrange
             #region JSON
             const string responseJson = "{"
             + "\"user_data\": ["
@@ -1191,11 +1332,10 @@ namespace Kaonavi.Net.Tests.Services
             + "]"
             + "}";
             #endregion
-            var endpoint = new Uri(_baseUri, "/users");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
@@ -1203,28 +1343,39 @@ namespace Kaonavi.Net.Tests.Services
             var users = await sut.FetchUsersAsync().ConfigureAwait(false);
 
             // Assert
-            users.Should().Equal(
-                new User(1, "taro@kaonavi.jp", "A0002", new(1, "システム管理者", "Adm")),
-                new User(2, "hanako@kaonavi.jp", "A0001", new(2, "マネージャ", "一般"))
-            );
+            users.Should().HaveCount(2);
 
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri?.PathAndQuery.Should().Be("/users");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Get
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.AddUserAsync(UserPayload, CancellationToken)"/>は、"/users/{userId}"にPATCHリクエストを行う。
+        /// <see cref="KaonaviV2Service.AddUserAsync"/>は、"/users"にPOSTリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.AddUserAsync) + " > POST /users をコールする。")]
-        public async Task AddUserAsync_Returns_User()
+        public async Task AddUserAsync_Calls_PostApi()
         {
-            var endpoint = new Uri(_baseUri, "/users");
+            // Arrange
             string tokenString = GenerateRandomString();
+            const string responseJson = "{"
+            + "\"id\": 1,"
+            + "\"email\": \"user1@example.com\","
+            + "\"member_code\": \"00001\","
+            + "\"role\": {"
+            + "  \"id\": 1,"
+            + "  \"name\": \"システム管理者\","
+            + "  \"type\": \"Adm\""
+            + "}"
+            + "}";
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
             const string expectedJson = "{\"email\":\"user1@example.com\","
             + "\"member_code\":\"00001\","
@@ -1232,28 +1383,38 @@ namespace Kaonavi.Net.Tests.Services
             + "\"role\":{\"id\":1}}";
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
-                .ReturnsJson(new User(10, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(handler, accessToken: tokenString);
             var user = await sut.AddUserAsync(payload).ConfigureAwait(false);
 
             // Assert
-            user.Should().Be(new User(10, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+            user.Should().NotBeNull();
 
-            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Post
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString
-                    && (await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) == expectedJson,
-                    Times.Once());
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Post);
+                req.RequestUri?.PathAndQuery.Should().Be("/users");
+
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                // Body
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be(expectedJson);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
-        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.FetchUserAsync(int, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// <inheritdoc cref="KaonaviV2Service.FetchUserAsync" path="/param[@name='userId']"/>が<c>0</c>未満のとき、
+        /// <see cref="KaonaviV2Service.FetchUserAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
-        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUsersAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task FetchUserAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
@@ -1273,37 +1434,52 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.FetchUserAsync(int, CancellationToken)"/>は、"/users/{userId}"にGETリクエストを行う。
+        /// <see cref="KaonaviV2Service.FetchUserAsync"/>は、"/users/{userId}"にGETリクエストを行う。
         /// </summary>
-        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUserAsync) + " > GET /users/{userId} をコールする。")]
-        public async Task FetchUserAsync_Returns_User()
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchUserAsync) + " > GET /users/:userId をコールする。")]
+        public async Task FetchUserAsync_Calls_GetApi()
         {
+            // Arrange
             const int userId = 1;
-            var endpoint = new Uri(_baseUri, $"/users/{userId}");
+            const string responseJson = "{"
+            + "\"id\": 1,"
+            + "\"email\": \"user1@example.com\","
+            + "\"member_code\": \"00001\","
+            + "\"role\": {"
+            + "  \"id\": 1,"
+            + "  \"name\": \"システム管理者\","
+            + "  \"type\": \"Adm\""
+            + "}"
+            + "}";
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
-                .ReturnsJson(new User(userId, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(handler, accessToken: tokenString);
             var user = await sut.FetchUserAsync(userId).ConfigureAwait(false);
 
             // Assert
-            user.Should().Be(new User(userId, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+            user.Should().NotBeNull();
 
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri?.PathAndQuery.Should().Be($"/users/{userId}");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Get
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
-        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.UpdateUserAsync(int, UserPayload, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// <inheritdoc cref="KaonaviV2Service.UpdateUserAsync" path="/param[@name='userId']"/>が<c>0</c>未満のとき、
+        /// <see cref="KaonaviV2Service.UpdateUserAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task UpdateUserAsync_Throws_ArgumentOutOfRangeException()
@@ -1325,13 +1501,23 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.UpdateUserAsync(int, UserPayload, CancellationToken)"/>は、"/users/{userId}"にPATCHリクエストを行う。
+        /// <see cref="KaonaviV2Service.UpdateUserAsync"/>は、"/users/{userId}"にPATCHリクエストを行う。
         /// </summary>
-        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateUserAsync) + " > PATCH /users/{userId} をコールする。")]
-        public async Task UpdateUserAsync_Returns_User()
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.UpdateUserAsync) + " > PATCH /users/:userId をコールする。")]
+        public async Task UpdateUserAsync_Calls_PatchApi()
         {
+            // Arrange
             const int userId = 1;
-            var endpoint = new Uri(_baseUri, $"/users/{userId}");
+            const string responseJson = "{"
+            + "\"id\": 1,"
+            + "\"email\": \"user1@example.com\","
+            + "\"member_code\": \"00001\","
+            + "\"role\": {"
+            + "  \"id\": 1,"
+            + "  \"name\": \"システム管理者\","
+            + "  \"type\": \"Adm\""
+            + "}"
+            + "}";
             string tokenString = GenerateRandomString();
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
             const string expectedJson = "{\"email\":\"user1@example.com\","
@@ -1340,26 +1526,36 @@ namespace Kaonavi.Net.Tests.Services
             + "\"role\":{\"id\":1}}";
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
-                .ReturnsJson(new User(userId, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(handler, accessToken: tokenString);
             var user = await sut.UpdateUserAsync(userId, payload).ConfigureAwait(false);
 
             // Assert
-            user.Should().Be(new User(userId, "user1@example.com", "00001", new(1, "Admin", "Adm")));
+            user.Should().NotBeNull();
 
-            handler.VerifyRequest(async (req) => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Patch
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString
-                    && (await req.Content!.ReadAsStringAsync().ConfigureAwait(false)) == expectedJson,
-                    Times.Once());
+            handler.VerifyRequest(async req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Patch);
+                req.RequestUri?.PathAndQuery.Should().Be($"/users/{userId}");
+
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                // Body
+                string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+                receivedJson.Should().Be(expectedJson);
+
+                return true;
+            }, Times.Once());
         }
 
         /// <summary>
-        /// userIdが<c>0</c>未満のとき、<see cref="KaonaviV2Service.DeleteUserAsync(int, CancellationToken)"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// <inheritdoc cref="KaonaviV2Service.DeleteUserAsync" path="/param[@name='userId']"/>が<c>0</c>未満のとき、
+        /// <see cref="KaonaviV2Service.DeleteUserAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > " + nameof(ArgumentOutOfRangeException) + "をスローする。")]
         public async Task DeleteUserAsync_Throws_ArgumentOutOfRangeException()
@@ -1381,17 +1577,17 @@ namespace Kaonavi.Net.Tests.Services
         }
 
         /// <summary>
-        /// <see cref="KaonaviV2Service.DeleteUserAsync(int, CancellationToken)"/>は、"/users/{userId}"にDELETEリクエストを行う。
+        /// <see cref="KaonaviV2Service.DeleteUserAsync"/>は、"/users/{userId}"にDELETEリクエストを行う。
         /// </summary>
-        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > DELETE /users/{userId} をコールする。")]
-        public async Task DeleteUserAsync_Returns_User()
+        [Fact(DisplayName = TestName + nameof(KaonaviV2Service.DeleteUserAsync) + " > DELETE /users/:userId をコールする。")]
+        public async Task DeleteUserAsync_Calls_DeleteApi()
         {
+            // Arrange
             const int userId = 1;
-            var endpoint = new Uri(_baseUri, $"/users/{userId}");
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
                 .ReturnsResponse(HttpStatusCode.NoContent);
 
             // Act
@@ -1399,13 +1595,17 @@ namespace Kaonavi.Net.Tests.Services
             await sut.DeleteUserAsync(userId).ConfigureAwait(false);
 
             // Assert
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Delete);
+                req.RequestUri?.PathAndQuery.Should().Be($"/users/{userId}");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Delete
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
         #endregion
 
@@ -1414,8 +1614,10 @@ namespace Kaonavi.Net.Tests.Services
         /// <see cref="KaonaviV2Service.FetchRolesAsync"/>は、"/roles"にGETリクエストを行う。
         /// </summary>
         [Fact(DisplayName = TestName + nameof(KaonaviV2Service.FetchRolesAsync) + " > GET /roles をコールする。")]
-        public async Task FetchRolesAsync_Returns_Roles()
+        public async Task FetchRolesAsync_Calls_GetApi()
         {
+            // Arrange
+            #region JSON
             const string responseJson = "{"
             + "\"role_data\": ["
             + "  {"
@@ -1430,11 +1632,11 @@ namespace Kaonavi.Net.Tests.Services
             + "  }"
             + "]"
             + "}";
-            var endpoint = new Uri(_baseUri, "/roles");
+            #endregion
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri == endpoint)
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/roles")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
@@ -1442,17 +1644,19 @@ namespace Kaonavi.Net.Tests.Services
             var roles = await sut.FetchRolesAsync().ConfigureAwait(false);
 
             // Assert
-            roles.Should().Equal(
-                new Role(1, "カオナビ管理者", "Adm"),
-                new Role(2, "カオナビマネージャー", "一般"));
+            roles.Should().HaveCount(2);
 
-            handler.VerifyRequest(IsExpectedRequest, Times.Once());
+            handler.VerifyRequest(req =>
+            {
+                // End point
+                req.Method.Should().Be(HttpMethod.Get);
+                req.RequestUri?.PathAndQuery.Should().Be("/roles");
 
-            bool IsExpectedRequest(HttpRequestMessage req)
-                => req.RequestUri == endpoint
-                    && req.Method == HttpMethod.Get
-                    && req.Headers.TryGetValues("Kaonavi-Token", out var values)
-                    && values.First() == tokenString;
+                // Header
+                req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+                return true;
+            }, Times.Once());
         }
         #endregion
 
@@ -1504,7 +1708,7 @@ namespace Kaonavi.Net.Tests.Services
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri!.PathAndQuery == "/enum_options")
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/enum_options")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
@@ -1516,9 +1720,13 @@ namespace Kaonavi.Net.Tests.Services
 
             handler.VerifyRequest(req =>
             {
+                // End point
                 req.Method.Should().Be(HttpMethod.Get);
-                req.RequestUri!.PathAndQuery.Should().Be("/enum_options");
+                req.RequestUri?.PathAndQuery.Should().Be("/enum_options");
+
+                // Header
                 req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
                 return true;
             }, Times.Once());
         }
@@ -1545,7 +1753,7 @@ namespace Kaonavi.Net.Tests.Services
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri!.PathAndQuery == "/enum_options/10")
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/enum_options/10")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
@@ -1557,9 +1765,13 @@ namespace Kaonavi.Net.Tests.Services
 
             handler.VerifyRequest(req =>
             {
+                // End point
                 req.Method.Should().Be(HttpMethod.Get);
-                req.RequestUri!.PathAndQuery.Should().Be("/enum_options/10");
+                req.RequestUri?.PathAndQuery.Should().Be("/enum_options/10");
+
+                // Header
                 req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
                 return true;
             }, Times.Once());
         }
@@ -1574,7 +1786,7 @@ namespace Kaonavi.Net.Tests.Services
             string tokenString = GenerateRandomString();
 
             var handler = new Mock<HttpMessageHandler>();
-            handler.SetupRequest(req => req.RequestUri!.PathAndQuery == "/enum_options/10")
+            handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/enum_options/10")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
@@ -1590,15 +1802,20 @@ namespace Kaonavi.Net.Tests.Services
 
             handler.VerifyRequest(async req =>
             {
+                // End point
                 req.Method.Should().Be(HttpMethod.Put);
-                req.RequestUri!.PathAndQuery.Should().Be("/enum_options/10");
+                req.RequestUri?.PathAndQuery.Should().Be("/enum_options/10");
+
+                // Header
                 req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
+                // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
                 receivedJson.Should().Be("{\"enum_option_data\":["
                 + "{\"id\":1,\"name\":\"value1\"},"
                 + "{\"name\":\"value2\"}"
                 + "]}");
+
                 return true;
             }, Times.Once());
         }
