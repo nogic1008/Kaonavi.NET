@@ -18,8 +18,6 @@ public class KaonaviV2Service : IKaonaviService
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
-    static KaonaviV2Service()
-        => _options.Converters.Add(new NullableDateTimeConverter());
 
     #region DI Objects
     /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[1]"/></summary>

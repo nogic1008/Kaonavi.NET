@@ -17,10 +17,10 @@ public record MemberData(
     [property: JsonPropertyName("name")] string? Name = null,
     [property: JsonPropertyName("name_kana")] string? NameKana = null,
     [property: JsonPropertyName("mail")] string? Mail = null,
-    [property: JsonPropertyName("entered_date")] DateTime? EnteredDate = default,
-    [property: JsonPropertyName("retired_date")] DateTime? RetiredDate = default,
+    [property: JsonPropertyName("entered_date")][property: JsonConverter(typeof(DateConverter))] DateTime? EnteredDate = default,
+    [property: JsonPropertyName("retired_date")][property: JsonConverter(typeof(DateConverter))] DateTime? RetiredDate = default,
     [property: JsonPropertyName("gender")] string? Gender = null,
-    [property: JsonPropertyName("birthday")] DateTime? Birthday = default,
+    [property: JsonPropertyName("birthday")][property: JsonConverter(typeof(DateConverter))] DateTime? Birthday = default,
     [property: JsonPropertyName("department")] MemberDepartment? Department = null,
     [property: JsonPropertyName("sub_departments")] IReadOnlyList<MemberDepartment>? SubDepartments = null,
     [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomFieldValue>? CustomFields = null
