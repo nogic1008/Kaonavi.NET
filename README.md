@@ -23,7 +23,6 @@ Unofficial Kaonavi Library for .NET
 ### Setup
 
 ```powershell
-> dotnet tool restore
 > dotnet restore
 ```
 
