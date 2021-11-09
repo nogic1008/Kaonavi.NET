@@ -34,7 +34,7 @@ public class KaonaviV2Service : IKaonaviService
     private const string TokenHeader = "Kaonavi-Token";
     /// <summary>
     /// アクセストークン文字列を取得または設定します。
-    /// 各種API呼び出し時、この項目が<c>null</c>の場合は自動的に<see cref="AuthenticateAsync"/>を呼び出します。
+    /// 各種API呼び出し時、この項目が<see langword="null"/>の場合は自動的に<see cref="AuthenticateAsync"/>を呼び出します。
     /// </summary>
     public string? AccessToken
     {
@@ -72,7 +72,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <param name="consumerKey">Consumer Key</param>
     /// <param name="consumerSecret">Consumer Secret</param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="client"/>, <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<c>null</c>の場合にスローされます。
+    /// <paramref name="client"/>, <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<see langword="null"/>の場合にスローされます。
     /// </exception>
     public KaonaviV2Service(HttpClient client, string consumerKey, string consumerSecret)
     {
