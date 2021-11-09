@@ -271,7 +271,7 @@ public class KaonaviV2Service : IKaonaviService
     /// APIを呼び出します。
     /// </summary>
     /// <param name="request">APIに対するリクエスト</param>
-    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <exception cref="ApplicationException">
     /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
     /// </exception>
@@ -299,8 +299,10 @@ public class KaonaviV2Service : IKaonaviService
     /// <summary>
     /// APIを呼び出し、受け取った<inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/>を返します。
     /// </summary>
-    /// <param name="request">APIに対するリクエスト</param>
-    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+    /// <param name="method">HTTP Method</param>
+    /// <param name="uri">リクエストURI</param>
+    /// <param name="payload">APIに対するリクエスト</param>
+    /// <param name="cancellationToken"><inheritdoc cref="CallApiAsync" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, CancellationToken cancellationToken)
