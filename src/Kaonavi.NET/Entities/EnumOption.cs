@@ -6,10 +6,10 @@ using System.Text.Json.Serialization;
 /// <summary>マスター情報</summary>
 /// <param name="SheetName">シート名</param>
 /// <param name="Id">
-/// カスタムフィールドID <seealso cref="CustomField.Id"/>
+/// カスタムフィールドID <seealso cref="CustomFieldLayout.Id"/>
 /// </param>
 /// <param name="Name">カスタムフィールド名</param>
-/// <param name="EnumOptionData"><see cref="Field.Enum"/></param>
+/// <param name="EnumOptionData"><see cref="FieldLayout.Enum"/></param>
 public record EnumOption(
     [property: JsonPropertyName("sheet_name")] string SheetName,
     [property: JsonPropertyName("id")] int Id,

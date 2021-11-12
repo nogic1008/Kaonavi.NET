@@ -5,11 +5,11 @@ using System.Text.Json.Serialization;
 
 /// <summary>レイアウト定義 カスタム列項目</summary>
 /// <param name="Id">シート項目ID</param>
-/// <param name="Name"><inheritdoc cref="FieldLayout" path="/param[@name='Name']/text()"/></param>
-/// <param name="Required"><inheritdoc cref="FieldLayout" path="/param[@name='Required']/text()"/></param>
-/// <param name="Type"><inheritdoc cref="FieldLayout" path="/param[@name='Type']/text()"/></param>
-/// <param name="MaxLength"><inheritdoc cref="FieldLayout" path="/param[@name='MaxLength']/text()"/></param>
-/// <param name="Enum"><inheritdoc cref="FieldLayout" path="/param[@name='Enum']/text()"/></param>
+/// <param name="Name"><inheritdoc cref="FieldLayout" path="/param[@name='Name']"/></param>
+/// <param name="Required"><inheritdoc cref="FieldLayout" path="/param[@name='Required']"/></param>
+/// <param name="Type"><inheritdoc cref="FieldLayout" path="/param[@name='Type']"/></param>
+/// <param name="MaxLength"><inheritdoc cref="FieldLayout" path="/param[@name='MaxLength']"/></param>
+/// <param name="Enum"><inheritdoc cref="FieldLayout" path="/param[@name='Enum']"/></param>
 public record CustomFieldLayout(
     [property: JsonPropertyName("id")] int Id,
     string Name,

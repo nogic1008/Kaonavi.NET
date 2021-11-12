@@ -5,7 +5,7 @@ namespace Kaonavi.Net.Entities;
 /// <param name="EMail">ログインメールアドレス</param>
 /// <param name="MemberCode">
 /// <inheritdoc cref="MemberData" path="/param[@name='Code']/text()"/>
-/// (紐付けメンバーが設定されていない場合は<c>null</c>)
+/// (紐付けメンバーが設定されていない場合は<see langword="null"/>)
 /// </param>
 /// <param name="Role"><inheritdoc cref="Entities.Role" path="/summary/text()"/></param>
 public record User(

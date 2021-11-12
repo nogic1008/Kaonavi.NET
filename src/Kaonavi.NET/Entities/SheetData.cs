@@ -29,7 +29,7 @@ public record SheetData
     public string Code { get; init; }
 
     /// <summary>メンバーが持つ設定値のリスト</summary>
-    /// <remarks><see cref="Api.RecordType.Multiple"/>の場合にのみ複数の値が返却されます。</remarks>
+    /// <remarks><see cref="RecordType.Multiple"/>の場合にのみ複数の値が返却されます。</remarks>
     [JsonPropertyName("records")]
     public IReadOnlyList<SheetRecord> Records { get; init; }
 }
