@@ -34,5 +34,5 @@
 
 ## See also
 
-- [ConsoleAppFramework v3 - より強化されたC#のためのコマンドラインツール用フレームワーク](http://neue.cc/2020/10/01_595.html)
+- [ConsoleAppFramework v4 - Minimal API for CommandLine tool](https://neue.cc/2021/12/30.html)
 - [ASP.NET Core の .NET 汎用ホスト](https://docs.microsoft.com/aspnet/core/fundamentals/host/generic-host)
