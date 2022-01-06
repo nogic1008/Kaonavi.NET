@@ -1,9 +1,6 @@
 namespace Kaonavi.Net.Tests.Entities;
 
-using System.Text.Json;
-using FluentAssertions;
 using Kaonavi.Net.Entities;
-using Xunit;
 
 /// <summary><see cref="EnumOption"/>の単体テスト</summary>
 public class EnumOptionTest

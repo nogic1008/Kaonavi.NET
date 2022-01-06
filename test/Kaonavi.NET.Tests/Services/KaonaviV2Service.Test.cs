@@ -1,6 +1,5 @@
 namespace Kaonavi.Net.Tests.Services;
 
-using System.Net.Http;
 using System.Text;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Services;

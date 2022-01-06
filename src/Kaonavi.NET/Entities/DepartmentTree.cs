@@ -1,7 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System.Text.Json.Serialization;
-
 /// <summary>所属ツリー</summary>
 /// <param name="Code">所属コード</param>
 /// <param name="Name">所属名</param>

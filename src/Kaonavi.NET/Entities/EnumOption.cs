@@ -1,8 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
 /// <summary>マスター情報</summary>
 /// <param name="SheetName">シート名</param>
 /// <param name="Id">
