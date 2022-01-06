@@ -26,7 +26,6 @@
     <Using Include="FluentAssertions" />
     <Using Include="Xunit" />
     <Using Include="System.Net.HttpStatusCode" Alias="HttpStatusCode" />
-    <Using Include="System.Threading.CancellationToken" Alias="CancellationToken" />
   </ItemGroup>
 
   <ItemGroup>

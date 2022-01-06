@@ -15,7 +15,6 @@
     </AssemblyAttribute>
     <Using Include="System.Text.Json" />
     <Using Include="System.Text.Json.Serialization" />
-    <Using Include="System.Threading.CancellationToken" Alias="CancellationToken" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
