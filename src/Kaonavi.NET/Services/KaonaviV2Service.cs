@@ -16,6 +16,7 @@ public class KaonaviV2Service : IKaonaviService
     /// </summary>
     private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web)
     {
+        Converters = { new JsonConverterFactoryForApiResult() },
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
@@ -129,19 +130,19 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     public async ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
         => (await CallApiAsync<ApiResult<MemberData>>(new(HttpMethod.Get, "/members"), cancellationToken)
-            .ConfigureAwait(false)).MemberData;
+            .ConfigureAwait(false)).Data;
 
     /// <inheritdoc/>
     public ValueTask<int> AddMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Post, "/members", new ApiResult<MemberData>(payload), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, "/members", new ApiResult<MemberData>("member_data", payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, "/members", new ApiResult<MemberData>(payload), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "/members", new ApiResult<MemberData>("member_data", payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> UpdateMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(new("PATCH"), "/members", new ApiResult<MemberData>(payload), cancellationToken);
+        => CallTaskApiAsync(new("PATCH"), "/members", new ApiResult<MemberData>("member_data", payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default)
@@ -153,29 +154,26 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     public async ValueTask<IReadOnlyList<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
         => (await CallApiAsync<ApiResult<SheetData>>(new(HttpMethod.Get, $"/sheets/{sheetId:D}"), cancellationToken)
-            .ConfigureAwait(false))!.MemberData;
+            .ConfigureAwait(false)).Data;
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, $"/sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, $"/sheets/{sheetId:D}", new ApiResult<SheetData>("member_data", payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(new("PATCH"), $"/sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
+        => CallTaskApiAsync(new("PATCH"), $"/sheets/{sheetId:D}", new ApiResult<SheetData>("member_data", payload), cancellationToken);
     #endregion
 
     #region 所属ツリー
     /// <inheritdoc/>
     public async ValueTask<IReadOnlyList<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<DepartmentsResult>(new(HttpMethod.Get, "/departments"), cancellationToken)
-            .ConfigureAwait(false))!.DepartmentData;
+        => (await CallApiAsync<ApiResult<DepartmentTree>>(new(HttpMethod.Get, "/departments"), cancellationToken)
+            .ConfigureAwait(false)).Data;
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, "/departments", new DepartmentsResult(payload), cancellationToken);
-    private record DepartmentsResult(
-        [property: JsonPropertyName("department_data")] IReadOnlyList<DepartmentTree> DepartmentData
-    );
+        => CallTaskApiAsync(HttpMethod.Put, "/departments", new ApiResult<DepartmentTree>("department_data", payload), cancellationToken);
     #endregion
 
     #region タスク進捗状況
@@ -188,9 +186,8 @@ public class KaonaviV2Service : IKaonaviService
     #region ユーザー情報
     /// <inheritdoc/>
     public async ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<UsersResult>(new(HttpMethod.Get, "/users"), cancellationToken)
-            .ConfigureAwait(false))!.UserData;
-    private record UsersResult([property: JsonPropertyName("user_data")] IReadOnlyList<User> UserData);
+        => (await CallApiAsync<ApiResult<User>>(new(HttpMethod.Get, "/users"), cancellationToken)
+            .ConfigureAwait(false)).Data;
 
     /// <inheritdoc/>
     public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
@@ -227,17 +224,15 @@ public class KaonaviV2Service : IKaonaviService
     #region ロール
     /// <inheritdoc/>
     public async ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<RolesResult>(new(HttpMethod.Get, "/roles"), cancellationToken)
-            .ConfigureAwait(false))!.RoleData;
-    private record RolesResult([property: JsonPropertyName("role_data")] IReadOnlyList<Role> RoleData);
+        => (await CallApiAsync<ApiResult<Role>>(new(HttpMethod.Get, "/roles"), cancellationToken)
+            .ConfigureAwait(false))!.Data;
     #endregion
 
     #region マスター管理
     /// <inheritdoc/>
     public async ValueTask<IReadOnlyList<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<EnumOptionsResult>(new(HttpMethod.Get, "/enum_options"), cancellationToken)
-            .ConfigureAwait(false)).CustomFieldData;
-    private record EnumOptionsResult([property: JsonPropertyName("custom_field_data")] IReadOnlyList<EnumOption> CustomFieldData);
+        => (await CallApiAsync<ApiResult<EnumOption>>(new(HttpMethod.Get, "/enum_options"), cancellationToken)
+            .ConfigureAwait(false)).Data;
 
     /// <inheritdoc/>
     public ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default)
@@ -260,8 +255,6 @@ public class KaonaviV2Service : IKaonaviService
     /// <summary>APIコール前に必要な認証を行います。</summary>
     private async ValueTask FetchTokenAsync(CancellationToken cancellationToken)
         => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
-
-    private record ApiResult<T>([property: JsonPropertyName("member_data")] IReadOnlyList<T> MemberData);
 
     private record TaskResult([property: JsonPropertyName("task_id")] int Id);
 
