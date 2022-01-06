@@ -22,6 +22,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="System.Text.Json" />
+    <Using Include="FluentAssertions" />
+    <Using Include="Xunit" />
+    <Using Include="System.Net.HttpStatusCode" Alias="HttpStatusCode" />
+    <Using Include="System.Threading.CancellationToken" Alias="CancellationToken" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="../../src/Kaonavi.NET/Kaonavi.NET.csproj" />
   </ItemGroup>
 
