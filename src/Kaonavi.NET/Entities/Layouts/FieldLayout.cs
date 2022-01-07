@@ -1,8 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
 /// <summary>レイアウト定義 列項目</summary>
 /// <param name="Name">項目名</param>
 /// <param name="Required">必須入力項目</param>

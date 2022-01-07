@@ -1,9 +1,6 @@
 namespace Kaonavi.Net.Tests.Entities;
 
-using System.Text.Json;
-using FluentAssertions;
 using Kaonavi.Net.Entities;
-using Xunit;
 
 /// <summary>
 /// <see cref="MemberLayout"/>の単体テスト
