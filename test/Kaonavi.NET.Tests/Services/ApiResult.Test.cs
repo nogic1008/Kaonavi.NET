@@ -37,6 +37,7 @@ public class ApiResultTest
     /// <param name="name"><see cref="SampleClass.Name"/></param>
     [Theory]
     [InlineData("{\"sample_data\":[{\"id\":1,\"name\":\"foo\"}]}", "sample_data", 1, "foo")]
+    [InlineData("{\"other_data\":[{\"id\":2,\"name\":\"bar\"}],\"ignore\":true}", "other_data", 2, "bar")]
     public void CanDeserializeJson(string json, string propertyName, int id, string name)
     {
         var result = JsonSerializer.Deserialize<ApiResult<SampleClass>>(json, JsonConfig.Default)!;
