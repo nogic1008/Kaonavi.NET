@@ -10,7 +10,7 @@ internal class JsonConverterFactoryForApiResult : JsonConverterFactory
 
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         => (JsonConverter)Activator
-            .CreateInstance(GetJsonConverterType(typeToConvert.GetGenericArguments()[0]));
+            .CreateInstance(GetJsonConverterType(typeToConvert.GetGenericArguments()[0]))!;
 
     private static Type GetJsonConverterType(Type resultType)
         => typeof(ApiResultJsonConverter<>).MakeGenericType(resultType);
