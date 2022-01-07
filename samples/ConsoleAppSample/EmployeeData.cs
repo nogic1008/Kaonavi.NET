@@ -40,7 +40,7 @@ public record EmployeeData(
         memberData.Mail ?? "",
         memberData.Gender ?? "",
         memberData.Birthday.GetValueOrDefault(),
-        memberData.CustomFields?.FirstOrDefault(c => c.Id == 101)?.Values[0] ?? "",
+        memberData.CustomFields?.FirstOrDefault(c => c.Id == 101)?.Value ?? "",
         memberData.EnteredDate.GetValueOrDefault(),
         memberData.RetiredDate
     )

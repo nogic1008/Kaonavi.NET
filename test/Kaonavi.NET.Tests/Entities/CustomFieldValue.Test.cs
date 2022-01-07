@@ -27,6 +27,7 @@ public class CustomFieldValueTest
         fieldValue.Should().NotBeNull();
         fieldValue!.Id.Should().Be(id);
         fieldValue.Name.Should().Be(name);
+        fieldValue.Value.Should().Be(values[0]);
         fieldValue.Values.Should().NotBeNullOrEmpty()
             .And.Equal(values);
     }
