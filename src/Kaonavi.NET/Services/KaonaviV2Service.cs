@@ -1,6 +1,5 @@
 namespace Kaonavi.Net.Services;
 
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
 using Kaonavi.Net.Entities;

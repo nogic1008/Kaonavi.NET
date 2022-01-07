@@ -7,9 +7,10 @@ public record CustomFieldValue
     /// 単一の項目値を持つ、CustomFieldValueの新しいインスタンスを生成します。
     /// </summary>
     /// <param name="id"><inheritdoc cref="Id" path="/summary/text()"/></param>
-    /// <param name="value">シート項目値</param>
+    /// <param name="value"><inheritdoc cref="Value" path="/summary/text()"/></param>
     /// <param name="name"><inheritdoc cref="Name" path="/summary/text()"/></param>
-    public CustomFieldValue(int id, string value, string? name = null) : this(id, new[] { value }, name) { }
+    public CustomFieldValue(int id, string value, string? name = null)
+        => (Id, Value, Name) = (id, value, name);
 
     /// <summary>
     /// 複数の項目値を持つ、CustomFieldValueの新しいインスタンスを生成します。
@@ -29,8 +30,23 @@ public record CustomFieldValue
     [JsonPropertyName("name")]
     public string? Name { get; init; }
 
+    private readonly string? _value;
+
+    /// <summary>シート項目値</summary>
+    [JsonIgnore]
+    public string Value
+    {
+        get => _value ?? _values![0];
+        init => _value = value;
+    }
+
+    private IReadOnlyList<string>? _values;
     /// <summary>シート項目値のリスト</summary>
     /// <remarks>チェックボックスの場合にのみ複数の値が返却されます。</remarks>
     [JsonPropertyName("values")]
-    public IReadOnlyList<string> Values { get; init; }
+    public IReadOnlyList<string> Values
+    {
+        get => _values ??= new[] { _value! };
+        init => _values = value;
+    }
 }

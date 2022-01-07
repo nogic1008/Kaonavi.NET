@@ -14,6 +14,8 @@
       <_Parameter1>true</_Parameter1>
     </AssemblyAttribute>
     <InternalsVisibleTo Include="Kaonavi.NET.Tests" />
+    <Using Include="System.Text.Json" />
+    <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">

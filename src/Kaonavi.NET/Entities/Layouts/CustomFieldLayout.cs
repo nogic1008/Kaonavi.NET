@@ -1,8 +1,5 @@
 namespace Kaonavi.Net.Entities;
 
-using System.Collections.Generic;
-using System.Text.Json.Serialization;
-
 /// <summary>レイアウト定義 カスタム列項目</summary>
 /// <param name="Id">シート項目ID</param>
 /// <param name="Name"><inheritdoc cref="FieldLayout" path="/param[@name='Name']"/></param>
