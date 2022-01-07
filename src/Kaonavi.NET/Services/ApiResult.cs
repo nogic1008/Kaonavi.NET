@@ -1,7 +1,5 @@
 namespace Kaonavi.Net.Services;
 
-using System.Reflection;
-
 internal record ApiResult<T>(string PropertyName, IReadOnlyList<T> Data);
 
 internal class JsonConverterFactoryForApiResult : JsonConverterFactory
@@ -11,17 +9,11 @@ internal class JsonConverterFactoryForApiResult : JsonConverterFactory
         && typeToConvert.GetGenericTypeDefinition() == typeof(ApiResult<>);
 
     public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
-    {
-        var elementType = typeToConvert.GetGenericArguments()[0];
+        => (JsonConverter)Activator
+            .CreateInstance(GetJsonConverterType(typeToConvert.GetGenericArguments()[0]));
 
-        return (JsonConverter)Activator.CreateInstance(
-            typeof(ApiResultJsonConverter<>)
-                .MakeGenericType(new Type[] { elementType }),
-            BindingFlags.Instance | BindingFlags.Public,
-            binder: null,
-            args: null,
-            culture: null)!;
-    }
+    private static Type GetJsonConverterType(Type resultType)
+        => typeof(ApiResultJsonConverter<>).MakeGenericType(resultType);
 }
 
 /// <inheritdoc/>
