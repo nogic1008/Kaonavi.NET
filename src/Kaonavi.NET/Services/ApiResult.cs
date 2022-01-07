@@ -29,11 +29,10 @@ internal class ApiResultJsonConverter<T> : JsonConverter<ApiResult<T>>
         string? propertyName = null;
         while (reader.Read())
         {
-            if (reader.TokenType == JsonTokenType.PropertyName)
+            if (reader.TokenType == JsonTokenType.PropertyName && reader.GetString()!.Contains("_data"))
             {
                 propertyName = reader.GetString()!;
-                if (propertyName.Contains("_data"))
-                    data = JsonSerializer.Deserialize<IReadOnlyList<T>>(ref reader, options);
+                data = JsonSerializer.Deserialize<IReadOnlyList<T>>(ref reader, options);
             }
         }
         return data is not null ? new(propertyName!, data) : throw new JsonException();
