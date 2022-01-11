@@ -1,6 +1,9 @@
 namespace Kaonavi.Net.Entities;
 
+using System.Diagnostics.CodeAnalysis;
+
 /// <summary>"yyyy-MM-dd" &lt;-&gt; <see langword="DateOnly?"/>変換</summary>
+[ExcludeFromCodeCoverage]
 internal class DateOnlyConverter : JsonConverter<DateOnly?>
 {
     private const string DateFormat = "yyyy-MM-dd";
