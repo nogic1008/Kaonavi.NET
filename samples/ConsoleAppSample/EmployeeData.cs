@@ -22,10 +22,10 @@ public record EmployeeData(
     string DepartmentCode,
     string MailAddress,
     string Gender,
-    DateTime Birthday,
+    DateOnly Birthday,
     string BloodType,
-    DateTime EnteredDate,
-    DateTime? RetiredDate = default
+    DateOnly EnteredDate,
+    DateOnly? RetiredDate = default
 )
 {
     /// <summary>
