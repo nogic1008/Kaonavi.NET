@@ -15,6 +15,7 @@ public class KaonaviV2Service : IKaonaviService
     /// </summary>
     private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web)
     {
+        Converters = { new DateOnlyConverter() },
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 

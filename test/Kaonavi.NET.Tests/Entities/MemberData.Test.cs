@@ -116,22 +116,21 @@ public class MemberDataTest
         memberData.Name.Should().Be(name);
         memberData.NameKana.Should().Be(nameKana);
         memberData.Mail.Should().Be(mail);
-        if (enteredDate is not null)
-            memberData.EnteredDate.Should().Be(DateTime.ParseExact(enteredDate, "yyyy/MM/dd", null));
-        else
-            memberData.EnteredDate.Should().BeNull();
-        if (retiredDate is not null)
-            memberData.RetiredDate.Should().Be(DateTime.ParseExact(retiredDate, "yyyy/MM/dd", null));
-        else
-            memberData.RetiredDate.Should().BeNull();
+        IsEqual(memberData.EnteredDate, enteredDate);
+        IsEqual(memberData.RetiredDate, retiredDate);
         memberData.Gender.Should().Be(gender);
-        if (birthday is not null)
-            memberData.Birthday.Should().Be(DateTime.ParseExact(birthday, "yyyy/MM/dd", null));
-        else
-            memberData.Birthday.Should().BeNull();
+        IsEqual(memberData.Birthday, birthday);
         memberData.Department.Should().NotBeNull();
         memberData.Department!.Code.Should().Be(departmentCode);
         memberData.SubDepartments.Should().AllBeAssignableTo<MemberDepartment>();
         memberData.CustomFields.Should().AllBeAssignableTo<CustomFieldValue>();
+
+        static void IsEqual(DateOnly? dateTime, string? expected)
+        {
+            if (expected is not null)
+                dateTime.Should().Be(DateOnly.ParseExact(expected, "yyyy/MM/dd", null));
+            else
+                dateTime.Should().BeNull();
+        }
     }
 }
