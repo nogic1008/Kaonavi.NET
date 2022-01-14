@@ -113,12 +113,8 @@ public class KaonaviV2Service : IKaonaviService
         => CallApiAsync<MemberLayout>(new(HttpMethod.Get, "/member_layouts"), cancellationToken);
 
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<SheetLayoutsResult>(new(HttpMethod.Get, "/sheet_layouts"), cancellationToken)
-            .ConfigureAwait(false)).Sheets;
-    private record SheetLayoutsResult(
-        [property: JsonPropertyName("sheets")] IReadOnlyList<SheetLayout> Sheets
-    );
+    public ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
+        => CallFetchListApiAsync<SheetLayout>("/sheet_layouts", "sheets", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<SheetLayout> FetchSheetLayoutAsync(int sheetId, CancellationToken cancellationToken = default)
@@ -127,9 +123,8 @@ public class KaonaviV2Service : IKaonaviService
 
     #region メンバー情報
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<ApiResult<MemberData>>(new(HttpMethod.Get, "/members"), cancellationToken)
-            .ConfigureAwait(false)).MemberData;
+    public ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
+        => CallFetchListApiAsync<MemberData>("/members", "member_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> AddMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
@@ -151,9 +146,8 @@ public class KaonaviV2Service : IKaonaviService
 
     #region シート情報
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyList<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
-        => (await CallApiAsync<ApiResult<SheetData>>(new(HttpMethod.Get, $"/sheets/{sheetId:D}"), cancellationToken)
-            .ConfigureAwait(false))!.MemberData;
+    public ValueTask<IReadOnlyList<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
+        => CallFetchListApiAsync<SheetData>($"/sheets/{sheetId:D}", "member_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
@@ -166,9 +160,8 @@ public class KaonaviV2Service : IKaonaviService
 
     #region 所属ツリー
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyList<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<DepartmentsResult>(new(HttpMethod.Get, "/departments"), cancellationToken)
-            .ConfigureAwait(false))!.DepartmentData;
+    public ValueTask<IReadOnlyList<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
+        => CallFetchListApiAsync<DepartmentTree>("/departments", "department_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default)
@@ -187,10 +180,8 @@ public class KaonaviV2Service : IKaonaviService
 
     #region ユーザー情報
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<UsersResult>(new(HttpMethod.Get, "/users"), cancellationToken)
-            .ConfigureAwait(false))!.UserData;
-    private record UsersResult([property: JsonPropertyName("user_data")] IReadOnlyList<User> UserData);
+    public ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
+        => CallFetchListApiAsync<User>("/users", "user_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
@@ -226,18 +217,14 @@ public class KaonaviV2Service : IKaonaviService
 
     #region ロール
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<RolesResult>(new(HttpMethod.Get, "/roles"), cancellationToken)
-            .ConfigureAwait(false))!.RoleData;
-    private record RolesResult([property: JsonPropertyName("role_data")] IReadOnlyList<Role> RoleData);
+    public ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
+        => CallFetchListApiAsync<Role>("/roles", "role_data", cancellationToken);
     #endregion
 
     #region マスター管理
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyList<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync<EnumOptionsResult>(new(HttpMethod.Get, "/enum_options"), cancellationToken)
-            .ConfigureAwait(false)).CustomFieldData;
-    private record EnumOptionsResult([property: JsonPropertyName("custom_field_data")] IReadOnlyList<EnumOption> CustomFieldData);
+    public ValueTask<IReadOnlyList<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
+        => CallFetchListApiAsync<EnumOption>("/enum_options", "custom_field_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default)
@@ -310,6 +297,17 @@ public class KaonaviV2Service : IKaonaviService
         {
             Content = JsonContent.Create(payload, options: _options)
         }, cancellationToken).ConfigureAwait(false)).Id;
+
+    /// <summary>
+    /// GET APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>の配列に変換して返します。
+    /// </summary>
+    /// <param name="uri">リクエストURI</param>
+    /// <param name="propertyName">レスポンスJSONに含まれる、配列のプロパティ名</param>
+    /// <param name="cancellationToken"><inheritdoc cref="CallApiAsync" path="/param[@name='cancellationToken']"/></param>
+    /// <typeparam name="T">JSONの配列型</typeparam>
+    private async ValueTask<IReadOnlyList<T>> CallFetchListApiAsync<T>(string uri, string propertyName, CancellationToken cancellationToken)
+        => (await CallApiAsync<JsonElement>(new(HttpMethod.Get, uri), cancellationToken).ConfigureAwait(false))
+            .GetProperty(propertyName).Deserialize<IReadOnlyList<T>>(_options)!;
 
     /// <summary>
     /// APIが正しく終了したかどうかを検証します。
