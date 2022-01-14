@@ -250,8 +250,6 @@ public class KaonaviV2Service : IKaonaviService
 
     private record ApiResult<T>([property: JsonPropertyName("member_data")] IReadOnlyList<T> MemberData);
 
-    private record ErrorResponse([property: JsonPropertyName("errors")] IReadOnlyList<string> Errors);
-
     /// <summary>
     /// APIを呼び出します。
     /// </summary>
@@ -325,7 +323,10 @@ public class KaonaviV2Service : IKaonaviService
         catch (HttpRequestException ex)
         {
             string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
-                ? string.Join("\n", (await response.Content.ReadFromJsonAsync<ErrorResponse>(cancellationToken: cancellationToken).ConfigureAwait(false))!.Errors)
+                ? string.Join("\n",
+                    (await response.Content.ReadFromJsonAsync<JsonElement>(_options, cancellationToken).ConfigureAwait(false))
+                        .GetProperty("errors").EnumerateArray().Select(el => el.GetString())
+                )
 #if NET5_0_OR_GREATER
                     : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 #else
