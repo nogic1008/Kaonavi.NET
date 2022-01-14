@@ -40,7 +40,7 @@ public class SheetDataTest
         sheetData.Should().NotBeNull();
         sheetData!.Code.Should().Be("A0002");
         sheetData.Records.Should().ContainSingle()
-            .Which.CustomFields.Should().AllBeAssignableTo<CustomFieldValue>();
+            .Which.Should().AllBeAssignableTo<CustomFieldValue>();
     }
 
     /// <summary>
@@ -101,6 +101,6 @@ public class SheetDataTest
         sheetData.Should().NotBeNull();
         sheetData!.Code.Should().Be("A0001");
         sheetData.Records.Should().HaveCount(2)
-            .And.AllBeAssignableTo<SheetRecord>();
+            .And.AllBeAssignableTo<IReadOnlyList<CustomFieldValue>>();
     }
 }
