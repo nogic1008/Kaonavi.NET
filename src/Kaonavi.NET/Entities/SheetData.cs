@@ -38,8 +38,14 @@ public record SheetData
 internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>
 {
     public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => JsonSerializer.Deserialize<IReadOnlyList<SheetRecord>>(ref reader, options)!
-            .Select(d => d.CustomFields).ToArray();
+        => JsonSerializer.Deserialize<IReadOnlyList<JsonElement>>(ref reader, options)!
+            .Select(d =>
+                d.GetProperty("custom_fields")
+                    .EnumerateArray()
+                    .Select(el => el.Deserialize<CustomFieldValue>(options)!)
+                    .ToArray()
+            )
+            .ToArray();
 
     public override void Write(Utf8JsonWriter writer, IReadOnlyList<IReadOnlyList<CustomFieldValue>> value, JsonSerializerOptions options)
     {
@@ -53,10 +59,5 @@ internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<
         }
         writer.WriteEndArray();
     }
-
-    /// <summary>シート情報の設定値</summary>
-    private record SheetRecord(
-        [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomFieldValue> CustomFields
-    );
 }
 
