@@ -250,8 +250,6 @@ public class KaonaviV2Service : IKaonaviService
 
     private record ApiResult<T>([property: JsonPropertyName("member_data")] IReadOnlyList<T> MemberData);
 
-    private record TaskResult([property: JsonPropertyName("task_id")] int Id);
-
     private record ErrorResponse([property: JsonPropertyName("errors")] IReadOnlyList<string> Errors);
 
     /// <summary>
@@ -293,10 +291,10 @@ public class KaonaviV2Service : IKaonaviService
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, CancellationToken cancellationToken)
-        => (await CallApiAsync<TaskResult>(new(method, uri)
+        => (await CallApiAsync<JsonElement>(new(method, uri)
         {
             Content = JsonContent.Create(payload, options: _options)
-        }, cancellationToken).ConfigureAwait(false)).Id;
+        }, cancellationToken).ConfigureAwait(false)).GetProperty("task_id").GetInt32();
 
     /// <summary>
     /// GET APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>の配列に変換して返します。
