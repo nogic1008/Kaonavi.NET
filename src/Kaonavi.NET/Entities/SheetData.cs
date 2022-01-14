@@ -37,10 +37,12 @@ public record SheetData
 
 internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>
 {
+    private const string PropertyName = "custom_fields";
+
     public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => JsonSerializer.Deserialize<IReadOnlyList<JsonElement>>(ref reader, options)!
             .Select(d =>
-                d.GetProperty("custom_fields")
+                d.GetProperty(PropertyName)
                     .EnumerateArray()
                     .Select(el => el.Deserialize<CustomFieldValue>(options)!)
                     .ToArray()
@@ -53,7 +55,7 @@ internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<
         foreach (var record in value)
         {
             writer.WriteStartObject();
-            writer.WritePropertyName("custom_fields");
+            writer.WritePropertyName(PropertyName);
             JsonSerializer.Serialize(writer, record, options);
             writer.WriteEndObject();
         }
