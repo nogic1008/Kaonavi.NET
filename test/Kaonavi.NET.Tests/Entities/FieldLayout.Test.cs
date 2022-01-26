@@ -38,7 +38,7 @@ public class FieldLayoutTest
         field.MaxLength.Should().Be(maxLength);
         field.Enum.Should().Equal(enums);
     }
-    #endregion
+    #endregion Field
 
     /// <summary>
     /// JSONから<see cref="CustomFieldLayout"/>にデシリアライズできる。

@@ -27,7 +27,7 @@ public interface IKaonaviService
     /// <param name="sheetId"><inheritdoc cref="SheetLayout" path="/param[@name='Id']"/></param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     ValueTask<SheetLayout> FetchSheetLayoutAsync(int sheetId, CancellationToken cancellationToken = default);
-    #endregion
+    #endregion レイアウト定義
 
     #region メンバー情報
     /// <summary>
@@ -89,7 +89,7 @@ public interface IKaonaviService
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default);
-    #endregion
+    #endregion メンバー情報
 
     #region シート情報
     /// <summary>
@@ -148,7 +148,7 @@ public interface IKaonaviService
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
-    #endregion
+    #endregion シート情報
 
     #region 所属ツリー
     /// <summary>
@@ -168,7 +168,7 @@ public interface IKaonaviService
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default);
-    #endregion
+    #endregion 所属ツリー
 
     #region タスク進捗状況
     /// <summary>
@@ -178,7 +178,7 @@ public interface IKaonaviService
     /// <param name="taskId"><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default);
-    #endregion
+    #endregion タスク進捗状況
 
     #region ユーザー情報
     /// <summary>
@@ -242,7 +242,7 @@ public interface IKaonaviService
     /// <param name="userId"><inheritdoc cref="User" path="/param[@name='Id']/text()"/></param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     ValueTask DeleteUserAsync(int userId, CancellationToken cancellationToken = default);
-    #endregion
+    #endregion ユーザー情報
 
     #region ロール
     /// <summary>
@@ -251,7 +251,7 @@ public interface IKaonaviService
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default);
-    #endregion
+    #endregion ロール
 
     #region マスター管理
     /// <summary>
@@ -292,5 +292,5 @@ public interface IKaonaviService
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
     ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyList<(int?, string)> payload, CancellationToken cancellationToken = default);
-    #endregion
+    #endregion マスター管理
 }

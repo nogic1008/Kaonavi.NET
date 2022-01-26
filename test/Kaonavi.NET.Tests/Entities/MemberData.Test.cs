@@ -87,7 +87,7 @@ public class MemberDataTest
     + "    }"
     + "  ]"
     + "}";
-    #endregion
+    #endregion JSON
 
     /// <summary>
     /// JSONからデシリアライズできる。

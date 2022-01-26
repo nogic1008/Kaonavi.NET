@@ -28,7 +28,7 @@ public class KaonaviV2Service : IKaonaviService
 
     /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[3]"/></summary>
     private readonly string _consumerSecret;
-    #endregion
+    #endregion DI Objects
 
     #region Properties
     private const string TokenHeader = "Kaonavi-Token";
@@ -63,7 +63,7 @@ public class KaonaviV2Service : IKaonaviService
                 _client.DefaultRequestHeaders.Add(DryRunHeader, "1");
         }
     }
-    #endregion
+    #endregion Properties
 
     /// <summary>
     /// KaonaviV2Serviceの新しいインスタンスを生成します。
@@ -119,7 +119,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     public ValueTask<SheetLayout> FetchSheetLayoutAsync(int sheetId, CancellationToken cancellationToken = default)
         => CallApiAsync<SheetLayout>(new(HttpMethod.Get, $"/sheet_layouts/{sheetId}"), cancellationToken);
-    #endregion
+    #endregion レイアウト定義
 
     #region メンバー情報
     /// <inheritdoc/>
@@ -142,7 +142,7 @@ public class KaonaviV2Service : IKaonaviService
     public ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default)
         => CallTaskApiAsync(HttpMethod.Post, "/members/delete", new DeleteMemberDataPayload(codes), cancellationToken);
     private record DeleteMemberDataPayload(IReadOnlyList<string> Codes);
-    #endregion
+    #endregion メンバー情報
 
     #region シート情報
     /// <inheritdoc/>
@@ -156,7 +156,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     public ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
         => CallTaskApiAsync(new("PATCH"), $"/sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
-    #endregion
+    #endregion シート情報
 
     #region 所属ツリー
     /// <inheritdoc/>
@@ -169,14 +169,14 @@ public class KaonaviV2Service : IKaonaviService
     private record DepartmentsResult(
         [property: JsonPropertyName("department_data")] IReadOnlyList<DepartmentTree> DepartmentData
     );
-    #endregion
+    #endregion 所属ツリー
 
     #region タスク進捗状況
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
         => CallApiAsync<TaskProgress>(new(HttpMethod.Get, $"/tasks/{ThrowIfNegative(taskId, nameof(taskId)):D}"), cancellationToken);
-    #endregion
+    #endregion タスク進捗状況
 
     #region ユーザー情報
     /// <inheritdoc/>
@@ -213,13 +213,13 @@ public class KaonaviV2Service : IKaonaviService
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
     public async ValueTask DeleteUserAsync(int userId, CancellationToken cancellationToken = default)
         => await CallApiAsync(new(HttpMethod.Delete, $"/users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken).ConfigureAwait(false);
-    #endregion
+    #endregion ユーザー情報
 
     #region ロール
     /// <inheritdoc/>
     public ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
         => CallFetchListApiAsync<Role>("/roles", "role_data", cancellationToken);
-    #endregion
+    #endregion ロール
 
     #region マスター管理
     /// <inheritdoc/>
@@ -241,7 +241,7 @@ public class KaonaviV2Service : IKaonaviService
     {
         internal record Data(int? Id, string Name);
     }
-    #endregion
+    #endregion マスター管理
 
     #region Common Method
     /// <summary>APIコール前に必要な認証を行います。</summary>
@@ -338,5 +338,5 @@ public class KaonaviV2Service : IKaonaviService
 
     private int ThrowIfNegative(int id, string paramName)
         => id >= 0 ? id : throw new ArgumentOutOfRangeException(paramName);
-    #endregion
+    #endregion Common Method
 }

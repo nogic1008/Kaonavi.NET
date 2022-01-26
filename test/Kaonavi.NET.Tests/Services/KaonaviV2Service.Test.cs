@@ -80,7 +80,7 @@ public class KaonaviV2ServiceTest
         // Assert
         client.BaseAddress.Should().Be(_baseUri);
     }
-    #endregion
+    #endregion Constractor
 
     #region Properties
     /// <summary>
@@ -178,7 +178,7 @@ public class KaonaviV2ServiceTest
         // Assert
         client.DefaultRequestHeaders.TryGetValues("Dry-Run", out var values).Should().BeTrue();
         values?.First().Should().Be("1");
-        #endregion
+        #endregion UseDryRun = true
 
         #region UseDryRun = false
         // Act
@@ -186,9 +186,9 @@ public class KaonaviV2ServiceTest
 
         // Assert
         client.DefaultRequestHeaders.TryGetValues("Dry-Run", out _).Should().BeFalse();
-        #endregion
+        #endregion UseDryRun = false
     }
-    #endregion
+    #endregion Properties
 
     /// <summary>
     /// テスト対象(System Under Test)となる<see cref="KaonaviV2Service"/>のインスタンスを生成します。
@@ -282,7 +282,7 @@ public class KaonaviV2ServiceTest
         }, Times.Once());
         handler.VerifyRequest(res => res.RequestUri?.PathAndQuery != "/token", Times.Never());
     }
-    #endregion
+    #endregion API Common Path
 
     /// <summary>
     /// <see cref="KaonaviV2Service.AuthenticateAsync"/>は、"/token"にBase64文字列のPOSTリクエストを行う。
@@ -430,7 +430,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -492,7 +492,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -550,7 +550,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -576,7 +576,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion レイアウト定義 API
 
     #region メンバー情報 API
     /// <summary>Member APIのリクエストPayload</summary>
@@ -713,7 +713,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -892,7 +892,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion メンバー情報 API
 
     #region シート情報 API
     /// <summary>Sheet APIのリクエストPayload</summary>
@@ -995,7 +995,7 @@ public class KaonaviV2ServiceTest
         + "    }"
         + "  ]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1099,7 +1099,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion シート情報 API
 
     #region 所属ツリー API
     /// <summary>
@@ -1146,7 +1146,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1218,7 +1218,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion 所属ツリー API
 
     #region タスク進捗状況 API
     /// <summary>
@@ -1282,7 +1282,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion タスク進捗状況 API
 
     #region ユーザー情報 API
     /// <summary>
@@ -1317,7 +1317,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1593,7 +1593,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion ユーザー情報 API
 
     #region ロール API
     /// <summary>
@@ -1618,7 +1618,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1644,7 +1644,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion ロール API
 
     #region マスター管理 API
     /// <summary>
@@ -1690,7 +1690,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1735,7 +1735,7 @@ public class KaonaviV2ServiceTest
         + "  { \"id\": 3, \"name\": \"課長\" }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1805,5 +1805,5 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion マスター管理 API
 }

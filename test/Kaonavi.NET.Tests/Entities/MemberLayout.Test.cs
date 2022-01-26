@@ -118,7 +118,7 @@ public class MemberLayoutTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
 
         // Act
         var layout = JsonSerializer.Deserialize<MemberLayout>(jsonString);
