@@ -1,8 +1,8 @@
-namespace Kaonavi.Net.Services;
-
 using System.Net.Http.Json;
 using System.Text;
 using Kaonavi.Net.Entities;
+
+namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
 public class KaonaviV2Service : IKaonaviService

@@ -1,10 +1,10 @@
-namespace Kaonavi.Net.Tests.Services;
-
 using System.Text;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Services;
 using Moq;
 using Moq.Contrib.HttpClient;
+
+namespace Kaonavi.Net.Tests.Services;
 
 /// <summary>
 /// <see cref="KaonaviV2Service"/>の単体テスト

@@ -1,6 +1,6 @@
-namespace Kaonavi.Net.Entities;
-
 using System.ComponentModel;
+
+namespace Kaonavi.Net.Entities;
 
 /// <summary>フィールドの入力タイプ</summary>
 [JsonConverter(typeof(FieldTypeJsonConverter))]

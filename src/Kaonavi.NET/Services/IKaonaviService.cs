@@ -1,6 +1,6 @@
-namespace Kaonavi.Net.Services;
-
 using Kaonavi.Net.Entities;
+
+namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2の抽象化</summary>
 public interface IKaonaviService

@@ -1,6 +1,6 @@
-namespace ConsoleAppSample;
-
 using Kaonavi.Net.Entities;
+
+namespace ConsoleAppSample;
 
 /// <summary>
 /// 社員情報
