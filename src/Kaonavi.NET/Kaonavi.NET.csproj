@@ -18,7 +18,7 @@
     <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework)'!='net6.0'">
     <PackageReference Include="Portable.System.DateTimeOnly" Version="6.0.0" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
     <PackageReference Include="System.Text.Json" Version="6.0.1" />
