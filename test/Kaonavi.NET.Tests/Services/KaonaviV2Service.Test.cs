@@ -24,14 +24,17 @@ public class KaonaviV2ServiceTest
     /// <summary>
     /// コンストラクターを呼び出す<see cref="Action"/>を生成します。
     /// </summary>
+    /// <param name="client"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='client']"/></param>
+    /// <param name="consumerKey"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
+    /// <param name="consumerSecret"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
     private static Action Constractor(HttpClient? client, string? consumerKey, string? consumerSecret)
         => () => _ = new KaonaviV2Service(client!, consumerKey!, consumerSecret!);
 
     /// <summary>
-    /// Consumer KeyまたはConsumer Secretがnullのとき、<see cref="ArgumentNullException"/>の例外をスローする。
+    /// <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
-    /// <param name="consumerKey">Consumer Key</param>
-    /// <param name="consumerSecret">Consumer Secret</param>
+    /// <param name="consumerKey"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
+    /// <param name="consumerSecret"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
     [Theory(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > ArgumentNullExceptionをスローする。")]
     [InlineData(null, "foo")]
     [InlineData("foo", null)]
@@ -39,14 +42,14 @@ public class KaonaviV2ServiceTest
         => Constractor(new(), consumerKey, consumerSecret).Should().ThrowExactly<ArgumentNullException>();
 
     /// <summary>
-    /// HttpClientがnullのとき、<see cref="ArgumentNullException"/>の例外をスローする。
+    /// HttpClientが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > ArgumentNullExceptionをスローする。")]
     public void Constractor_Throws_ArgumentNullException_WhenClientIsNull()
         => Constractor(null, "foo", "bar").Should().ThrowExactly<ArgumentNullException>();
 
     /// <summary>
-    /// <see cref="HttpClient.BaseAddress"/>がnullのとき、既定値をセットする。
+    /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>のとき、既定値をセットする。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > {nameof(HttpClient.BaseAddress)}がnullのとき、既定値をセットする。")]
     public void Constractor_Sets_BaseAddress_WhenIsNull()
@@ -63,7 +66,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="HttpClient.BaseAddress"/>がnullでないときは、既定値をセットしない。
+    /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>でないときは、既定値をセットしない。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > {nameof(HttpClient.BaseAddress)}がnullでないときは、既定値をセットしない。")]
     public void Constractor_DoesNotSet_BaseAddress_WhenNotNull()
@@ -102,7 +105,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// Kaonavi-Tokenヘッダーがないとき、<see cref="KaonaviV2Service.AccessToken"/>は、nullを返す。
+    /// Kaonavi-Tokenヘッダーがないとき、<see cref="KaonaviV2Service.AccessToken"/>は、<see langword="null"/>を返す。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.AccessToken)}(get) > Kaonavi-Tokenヘッダーがないとき、nullを返す。")]
     public void AccessToken_Returns_Null()
@@ -240,7 +243,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AccessToken"/>がnullのとき、<see cref="KaonaviV2Service.AuthenticateAsync(CancellationToken)"/>を呼び出す。
+    /// <see cref="KaonaviV2Service.AccessToken"/>が<see langword="null"/>のとき、<see cref="KaonaviV2Service.AuthenticateAsync(CancellationToken)"/>を呼び出す。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > API Caller > {nameof(KaonaviV2Service.AuthenticateAsync)}を呼び出す。")]
     public async Task ApiCaller_Calls_AuthenticateAsync_When_AccessToken_IsNull()

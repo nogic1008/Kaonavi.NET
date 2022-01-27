@@ -245,6 +245,7 @@ public class KaonaviV2Service : IKaonaviService
 
     #region Common Method
     /// <summary>APIコール前に必要な認証を行います。</summary>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     private async ValueTask FetchTokenAsync(CancellationToken cancellationToken)
         => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
