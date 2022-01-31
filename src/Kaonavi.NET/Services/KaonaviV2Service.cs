@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text;
 using Kaonavi.Net.Entities;
+using Nogic.JsonConverters;
 
 namespace Kaonavi.Net.Services;
 
@@ -15,7 +16,10 @@ public class KaonaviV2Service : IKaonaviService
     /// </summary>
     private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web)
     {
-        Converters = { new DateOnlyConverter() },
+        Converters =
+        {
+            new BlankNullableConverter<DateOnly>(new DateOnlyConverter()),
+        },
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
