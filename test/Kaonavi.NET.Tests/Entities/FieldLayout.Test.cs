@@ -28,7 +28,7 @@ public class FieldLayoutTest
     public void Field_CanDeserializeJSON(string json, string name, bool required, FieldType type, int? maxLength, params string[] enums)
     {
         // Arrange - Act
-        var field = JsonSerializer.Deserialize<FieldLayout>(json);
+        var field = JsonSerializer.Deserialize<FieldLayout>(json, JsonConfig.Default);
 
         // Assert
         field.Should().NotBeNull();
@@ -57,7 +57,7 @@ public class FieldLayoutTest
         + "}";
 
         // Act
-        var customField = JsonSerializer.Deserialize<CustomFieldLayout>(jsonString);
+        var customField = JsonSerializer.Deserialize<CustomFieldLayout>(jsonString, JsonConfig.Default);
 
         // Assert
         customField.Should().NotBeNull();

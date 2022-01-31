@@ -21,6 +21,7 @@ public class KaonaviV2Service : IKaonaviService
             new BlankNullableConverter<DateOnly>(new DateOnlyConverter()),
         },
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNamingPolicy = new JsonLowerSnakeCaseNamingPolicy(),
     };
 
     #region DI Objects
@@ -174,9 +175,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     public ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default)
         => CallTaskApiAsync(HttpMethod.Put, "/departments", new DepartmentsResult(payload), cancellationToken);
-    private record DepartmentsResult(
-        [property: JsonPropertyName("department_data")] IReadOnlyList<DepartmentTree> DepartmentData
-    );
+    private record DepartmentsResult(IReadOnlyList<DepartmentTree> DepartmentData);
     #endregion 所属ツリー
 
     #region タスク進捗状況
@@ -197,12 +196,7 @@ public class KaonaviV2Service : IKaonaviService
         {
             Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
         }, cancellationToken);
-    private record UserJsonPayload(
-        [property: JsonPropertyName("email")] string EMail,
-        [property: JsonPropertyName("member_code")] string? MemberCode,
-        [property: JsonPropertyName("password")] string Password,
-        [property: JsonPropertyName("role")] Role Role
-    );
+    private record UserJsonPayload(string EMail, string? MemberCode, string Password, Role Role);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
@@ -245,7 +239,7 @@ public class KaonaviV2Service : IKaonaviService
             $"/enum_options/{customFieldId}",
             new EnumOptionPayload(payload.Select(d => new EnumOptionPayload.Data(d.Item1, d.Item2)).ToArray()),
             cancellationToken);
-    private record EnumOptionPayload([property: JsonPropertyName("enum_option_data")] IReadOnlyList<EnumOptionPayload.Data> EnumOptionData)
+    private record EnumOptionPayload(IReadOnlyList<EnumOptionPayload.Data> EnumOptionData)
     {
         internal record Data(int? Id, string Name);
     }
@@ -257,7 +251,7 @@ public class KaonaviV2Service : IKaonaviService
     private async ValueTask FetchTokenAsync(CancellationToken cancellationToken)
         => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
-    private record ApiResult<T>([property: JsonPropertyName("member_data")] IReadOnlyList<T> MemberData);
+    private record ApiResult<T>(IReadOnlyList<T> MemberData);
 
     /// <summary>
     /// APIを呼び出します。

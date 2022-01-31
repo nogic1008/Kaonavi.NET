@@ -44,7 +44,7 @@ public class FieldTypeTest
     [InlineData("\"department\"", FieldType.Department)]
     [InlineData("\"department[]\"", FieldType.DepartmentArray)]
     public void CanDeserializeJSON(string json, FieldType expected)
-        => JsonSerializer.Deserialize<FieldType>(json).Should().Be(expected);
+        => JsonSerializer.Deserialize<FieldType>(json, JsonConfig.Default).Should().Be(expected);
 
     /// <summary>無効なJSONの場合、JsonExceptionをスローする。</summary>
     /// <param name="json">JSON文字列</param>

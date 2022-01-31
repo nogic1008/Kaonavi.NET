@@ -11,9 +11,9 @@ namespace Kaonavi.Net.Entities;
 /// <paramref name="Type"/>が<see cref="FieldType.Enum"/>の場合に設定可能な値のリスト
 /// </param>
 public record FieldLayout(
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("required")] bool Required,
-    [property: JsonPropertyName("type")] FieldType Type,
-    [property: JsonPropertyName("max_length")] int? MaxLength,
-    [property: JsonPropertyName("enum")] IReadOnlyList<string?> Enum
+    string Name,
+    bool Required,
+    FieldType Type,
+    int? MaxLength,
+    IReadOnlyList<string?> Enum
 );

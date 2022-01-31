@@ -40,7 +40,7 @@ public class SheetLayoutTest
         #endregion JSON
 
         // Act
-        var layout = JsonSerializer.Deserialize<SheetLayout>(jsonString);
+        var layout = JsonSerializer.Deserialize<SheetLayout>(jsonString, JsonConfig.Default);
 
         // Assert
         layout.Should().NotBeNull();

@@ -25,7 +25,7 @@ public class TaskProgressTest
     public void CanDeserializeJSON(string json, int id, string status, params string[] messages)
     {
         // Arrange - Act
-        var task = JsonSerializer.Deserialize<TaskProgress>(json);
+        var task = JsonSerializer.Deserialize<TaskProgress>(json, JsonConfig.Default);
 
         // Assert
         task.Should().NotBeNull();

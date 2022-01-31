@@ -14,10 +14,10 @@ namespace Kaonavi.Net.Entities;
 /// <param name="Order">同階層内の並び順</param>
 /// <param name="Memo">所属のメモ (存在しない場合は<see langword="null"/>)</param>
 public record DepartmentTree(
-    [property: JsonPropertyName("code")] string Code,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("parent_code")] string? ParentCode,
-    [property: JsonPropertyName("leader_member_code")] string? LeaderMemberCode,
-    [property: JsonPropertyName("order")] int Order,
-    [property: JsonPropertyName("memo")] string? Memo
+    string Code,
+    string Name,
+    string? ParentCode,
+    string? LeaderMemberCode,
+    int Order,
+    string? Memo
 );

@@ -6,10 +6,10 @@ namespace Kaonavi.Net.Entities;
 /// <param name="RecordType">レコードの種類</param>
 /// <param name="CustomFields">シートのレイアウト定義リスト</param>
 public record SheetLayout(
-    [property: JsonPropertyName("id")] int Id,
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("record_type")] RecordType RecordType,
-    [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomFieldLayout> CustomFields
+    int Id,
+    string Name,
+    RecordType RecordType,
+    IReadOnlyList<CustomFieldLayout> CustomFields
 );
 
 /// <summary><inheritdoc cref="SheetLayout" path="/param[@name='RecordType']/text()"/></summary>

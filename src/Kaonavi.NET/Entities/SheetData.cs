@@ -25,12 +25,10 @@ public record SheetData
         => (Code, Records) = (code, records);
 
     /// <summary>社員コード</summary>
-    [JsonPropertyName("code")]
     public string Code { get; init; }
 
     /// <summary>メンバーが持つ設定値のリスト</summary>
     /// <remarks><see cref="RecordType.Multiple"/>の場合にのみ複数の値が返却されます。</remarks>
-    [JsonPropertyName("records")]
     [JsonConverter(typeof(SheetRecordConverter))]
     public IReadOnlyList<IReadOnlyList<CustomFieldValue>> Records { get; init; }
 }

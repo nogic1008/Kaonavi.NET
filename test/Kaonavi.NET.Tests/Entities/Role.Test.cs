@@ -20,7 +20,7 @@ public class RoleTest
     public void CanDeserializeJSON(string json, int id, string name, string type)
     {
         // Arrange - Act
-        var role = JsonSerializer.Deserialize<Role>(json);
+        var role = JsonSerializer.Deserialize<Role>(json, JsonConfig.Default);
 
         // Assert
         role.Should().Be(new Role(id, name, type));

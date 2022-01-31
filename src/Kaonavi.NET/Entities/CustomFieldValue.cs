@@ -23,11 +23,9 @@ public record CustomFieldValue
         => (Id, Values, Name) = (id, values, name);
 
     /// <summary><inheritdoc cref="CustomFieldLayout" path="/param[@name='Id']/text()"/></summary>
-    [JsonPropertyName("id")]
     public int Id { get; init; }
 
     /// <summary>シート項目名</summary>
-    [JsonPropertyName("name")]
     public string? Name { get; init; }
 
     private readonly string? _value;
@@ -43,7 +41,6 @@ public record CustomFieldValue
     private IReadOnlyList<string>? _values;
     /// <summary>シート項目値のリスト</summary>
     /// <remarks>チェックボックスの場合にのみ複数の値が返却されます。</remarks>
-    [JsonPropertyName("values")]
     public IReadOnlyList<string> Values
     {
         get => _values ??= new[] { _value! };
