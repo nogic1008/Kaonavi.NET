@@ -25,7 +25,7 @@ public record SheetData
         => (Code, Records) = (code, records);
 
     /// <summary>社員コード</summary>
-    /// [JsonPropertyName("code")]
+    [JsonPropertyName("code")]
     public string Code { get; init; }
 
     /// <summary>メンバーが持つ設定値のリスト</summary>
