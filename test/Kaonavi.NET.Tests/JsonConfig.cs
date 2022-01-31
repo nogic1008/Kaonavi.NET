@@ -1,16 +1,8 @@
-using System.Text.Json.Serialization;
-using Nogic.JsonConverters;
+using Kaonavi.Net.Services;
 
 namespace Kaonavi.Net.Tests;
 
 internal static class JsonConfig
 {
-    internal static readonly JsonSerializerOptions Default = new(JsonSerializerDefaults.Web)
-    {
-        Converters =
-        {
-            new BlankNullableConverter<DateOnly>(new DateOnlyConverter()),
-        },
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    };
+    internal static readonly JsonSerializerOptions Default = new(KaonaviV2Service.Options);
 }

@@ -14,7 +14,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <summary>
     /// APIに送信するJSONペイロードのエンコード設定
     /// </summary>
-    private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web)
+    internal static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web)
     {
         Converters =
         {
@@ -195,7 +195,7 @@ public class KaonaviV2Service : IKaonaviService
     public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
         => CallApiAsync<User>(new(HttpMethod.Post, "/users")
         {
-            Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: _options)
+            Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
         }, cancellationToken);
     private record UserJsonPayload(
         [property: JsonPropertyName("email")] string EMail,
@@ -214,7 +214,7 @@ public class KaonaviV2Service : IKaonaviService
     public ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
         => CallApiAsync<User>(new(new("PATCH"), $"/users/{ThrowIfNegative(userId, nameof(userId)):D}")
         {
-            Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: _options)
+            Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
         }, cancellationToken);
 
     /// <inheritdoc/>
@@ -285,7 +285,7 @@ public class KaonaviV2Service : IKaonaviService
     private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
-        return (await response.Content.ReadFromJsonAsync<T>(_options, cancellationToken).ConfigureAwait(false))!;
+        return (await response.Content.ReadFromJsonAsync<T>(Options, cancellationToken).ConfigureAwait(false))!;
     }
 
     /// <summary>
@@ -300,7 +300,7 @@ public class KaonaviV2Service : IKaonaviService
     private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, CancellationToken cancellationToken)
         => (await CallApiAsync<JsonElement>(new(method, uri)
         {
-            Content = JsonContent.Create(payload, options: _options)
+            Content = JsonContent.Create(payload, options: Options)
         }, cancellationToken).ConfigureAwait(false)).GetProperty("task_id").GetInt32();
 
     /// <summary>
@@ -312,7 +312,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <typeparam name="T">JSONの配列型</typeparam>
     private async ValueTask<IReadOnlyList<T>> CallFetchListApiAsync<T>(string uri, string propertyName, CancellationToken cancellationToken)
         => (await CallApiAsync<JsonElement>(new(HttpMethod.Get, uri), cancellationToken).ConfigureAwait(false))
-            .GetProperty(propertyName).Deserialize<IReadOnlyList<T>>(_options)!;
+            .GetProperty(propertyName).Deserialize<IReadOnlyList<T>>(Options)!;
 
     /// <summary>
     /// APIが正しく終了したかどうかを検証します。
@@ -333,7 +333,7 @@ public class KaonaviV2Service : IKaonaviService
         {
             string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
                 ? string.Join("\n",
-                    (await response.Content.ReadFromJsonAsync<JsonElement>(_options, cancellationToken).ConfigureAwait(false))
+                    (await response.Content.ReadFromJsonAsync<JsonElement>(Options, cancellationToken).ConfigureAwait(false))
                         .GetProperty("errors").EnumerateArray().Select(el => el.GetString())
                 )
 #if NET5_0_OR_GREATER
