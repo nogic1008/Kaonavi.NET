@@ -287,6 +287,11 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
+      "Nogic.JsonConverters": {
+        "type": "Transitive",
+        "resolved": "0.1.0",
+        "contentHash": "grIGFkODAjQmZFtAHzxc3KNQnOAVG+06sKPy1EBxNGSbUiJbtg7Azk+hK3OjmCjiMmWKUA2Dt4/Yz3+aRAQcjw=="
+      },
       "System.Diagnostics.DiagnosticSource": {
         "type": "Transitive",
         "resolved": "6.0.0",
@@ -323,7 +328,10 @@
         }
       },
       "kaonavi.net": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Nogic.JsonConverters": "0.1.0"
+        }
       }
     }
   }

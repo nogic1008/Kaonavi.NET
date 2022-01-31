@@ -300,6 +300,15 @@
           "System.Xml.XDocument": "4.0.11"
         }
       },
+      "Nogic.JsonConverters": {
+        "type": "Transitive",
+        "resolved": "0.1.0",
+        "contentHash": "grIGFkODAjQmZFtAHzxc3KNQnOAVG+06sKPy1EBxNGSbUiJbtg7Azk+hK3OjmCjiMmWKUA2Dt4/Yz3+aRAQcjw==",
+        "dependencies": {
+          "Portable.System.DateTimeOnly": "6.0.0",
+          "System.Text.Json": "6.0.1"
+        }
+      },
       "NuGet.Frameworks": {
         "type": "Transitive",
         "resolved": "5.11.0",
@@ -1284,6 +1293,7 @@
       "kaonavi.net": {
         "type": "Project",
         "dependencies": {
+          "Nogic.JsonConverters": "0.1.0",
           "Portable.System.DateTimeOnly": "6.0.1",
           "System.Net.Http.Json": "6.0.0",
           "System.Text.Json": "6.0.4",
@@ -1580,6 +1590,11 @@
           "System.Xml.ReaderWriter": "4.0.11",
           "System.Xml.XDocument": "4.0.11"
         }
+      },
+      "Nogic.JsonConverters": {
+        "type": "Transitive",
+        "resolved": "0.1.0",
+        "contentHash": "grIGFkODAjQmZFtAHzxc3KNQnOAVG+06sKPy1EBxNGSbUiJbtg7Azk+hK3OjmCjiMmWKUA2Dt4/Yz3+aRAQcjw=="
       },
       "NuGet.Frameworks": {
         "type": "Transitive",
@@ -2518,7 +2533,10 @@
         }
       },
       "kaonavi.net": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Nogic.JsonConverters": "0.1.0"
+        }
       }
     }
   }
