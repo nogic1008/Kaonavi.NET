@@ -1,6 +1,6 @@
-namespace Kaonavi.Net.Tests.Entities;
-
 using Kaonavi.Net.Entities;
+
+namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary>
 /// <see cref="SheetData"/>の単体テスト
@@ -31,7 +31,7 @@ public class SheetDataTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
 
         // Act
         var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString);
@@ -92,7 +92,7 @@ public class SheetDataTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
 
         // Act
         var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString);

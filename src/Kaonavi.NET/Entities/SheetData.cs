@@ -62,4 +62,3 @@ internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<
         writer.WriteEndArray();
     }
 }
-

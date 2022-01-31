@@ -1,6 +1,6 @@
-namespace Kaonavi.Net.Entities;
-
 using System.Diagnostics.CodeAnalysis;
+
+namespace Kaonavi.Net.Entities;
 
 /// <summary>"yyyy-MM-dd" &lt;-&gt; <see langword="DateOnly?"/>変換</summary>
 [ExcludeFromCodeCoverage]

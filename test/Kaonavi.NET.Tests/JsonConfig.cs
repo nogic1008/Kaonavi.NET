@@ -1,7 +1,7 @@
-namespace Kaonavi.Net.Tests;
-
 using System.Text.Json.Serialization;
 using Kaonavi.Net.Entities;
+
+namespace Kaonavi.Net.Tests;
 
 internal static class JsonConfig
 {

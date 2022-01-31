@@ -1,6 +1,6 @@
-namespace Kaonavi.Net.Tests.Entities;
-
 using Kaonavi.Net.Entities;
+
+namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary>
 /// <see cref="SheetLayout"/>の単体テスト
@@ -37,7 +37,7 @@ public class SheetLayoutTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
 
         // Act
         var layout = JsonSerializer.Deserialize<SheetLayout>(jsonString);

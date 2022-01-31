@@ -1,6 +1,6 @@
-namespace Kaonavi.Net.Tests.Entities;
-
 using Kaonavi.Net.Entities;
+
+namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary>
 /// <see cref="MemberData"/>の単体テスト
@@ -87,7 +87,7 @@ public class MemberDataTest
     + "    }"
     + "  ]"
     + "}";
-    #endregion
+    #endregion JSON
 
     /// <summary>
     /// JSONからデシリアライズできる。

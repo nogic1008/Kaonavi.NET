@@ -1,6 +1,6 @@
-namespace Kaonavi.Net.Tests.Entities;
-
 using Kaonavi.Net.Entities;
+
+namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary>
 /// <see cref="Token"/>の単体テスト

@@ -1,6 +1,6 @@
-namespace Kaonavi.Net.Tests.Entities;
-
 using Kaonavi.Net.Entities;
+
+namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary>
 /// <see cref="MemberLayout"/>の単体テスト
@@ -118,7 +118,7 @@ public class MemberLayoutTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
 
         // Act
         var layout = JsonSerializer.Deserialize<MemberLayout>(jsonString);

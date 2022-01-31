@@ -1,10 +1,10 @@
-namespace Kaonavi.Net.Tests.Services;
-
 using System.Text;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Services;
 using Moq;
 using Moq.Contrib.HttpClient;
+
+namespace Kaonavi.Net.Tests.Services;
 
 /// <summary>
 /// <see cref="KaonaviV2Service"/>の単体テスト
@@ -24,14 +24,17 @@ public class KaonaviV2ServiceTest
     /// <summary>
     /// コンストラクターを呼び出す<see cref="Action"/>を生成します。
     /// </summary>
+    /// <param name="client"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='client']"/></param>
+    /// <param name="consumerKey"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
+    /// <param name="consumerSecret"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
     private static Action Constractor(HttpClient? client, string? consumerKey, string? consumerSecret)
         => () => _ = new KaonaviV2Service(client!, consumerKey!, consumerSecret!);
 
     /// <summary>
-    /// Consumer KeyまたはConsumer Secretがnullのとき、<see cref="ArgumentNullException"/>の例外をスローする。
+    /// <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
-    /// <param name="consumerKey">Consumer Key</param>
-    /// <param name="consumerSecret">Consumer Secret</param>
+    /// <param name="consumerKey"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
+    /// <param name="consumerSecret"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
     [Theory(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > ArgumentNullExceptionをスローする。")]
     [InlineData(null, "foo")]
     [InlineData("foo", null)]
@@ -39,14 +42,14 @@ public class KaonaviV2ServiceTest
         => Constractor(new(), consumerKey, consumerSecret).Should().ThrowExactly<ArgumentNullException>();
 
     /// <summary>
-    /// HttpClientがnullのとき、<see cref="ArgumentNullException"/>の例外をスローする。
+    /// HttpClientが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > ArgumentNullExceptionをスローする。")]
     public void Constractor_Throws_ArgumentNullException_WhenClientIsNull()
         => Constractor(null, "foo", "bar").Should().ThrowExactly<ArgumentNullException>();
 
     /// <summary>
-    /// <see cref="HttpClient.BaseAddress"/>がnullのとき、既定値をセットする。
+    /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>のとき、既定値をセットする。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > {nameof(HttpClient.BaseAddress)}がnullのとき、既定値をセットする。")]
     public void Constractor_Sets_BaseAddress_WhenIsNull()
@@ -63,7 +66,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="HttpClient.BaseAddress"/>がnullでないときは、既定値をセットしない。
+    /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>でないときは、既定値をセットしない。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > {nameof(HttpClient.BaseAddress)}がnullでないときは、既定値をセットしない。")]
     public void Constractor_DoesNotSet_BaseAddress_WhenNotNull()
@@ -80,7 +83,7 @@ public class KaonaviV2ServiceTest
         // Assert
         client.BaseAddress.Should().Be(_baseUri);
     }
-    #endregion
+    #endregion Constractor
 
     #region Properties
     /// <summary>
@@ -102,7 +105,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// Kaonavi-Tokenヘッダーがないとき、<see cref="KaonaviV2Service.AccessToken"/>は、nullを返す。
+    /// Kaonavi-Tokenヘッダーがないとき、<see cref="KaonaviV2Service.AccessToken"/>は、<see langword="null"/>を返す。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.AccessToken)}(get) > Kaonavi-Tokenヘッダーがないとき、nullを返す。")]
     public void AccessToken_Returns_Null()
@@ -178,7 +181,7 @@ public class KaonaviV2ServiceTest
         // Assert
         client.DefaultRequestHeaders.TryGetValues("Dry-Run", out var values).Should().BeTrue();
         values?.First().Should().Be("1");
-        #endregion
+        #endregion UseDryRun = true
 
         #region UseDryRun = false
         // Act
@@ -186,9 +189,9 @@ public class KaonaviV2ServiceTest
 
         // Assert
         client.DefaultRequestHeaders.TryGetValues("Dry-Run", out _).Should().BeFalse();
-        #endregion
+        #endregion UseDryRun = false
     }
-    #endregion
+    #endregion Properties
 
     /// <summary>
     /// テスト対象(System Under Test)となる<see cref="KaonaviV2Service"/>のインスタンスを生成します。
@@ -240,7 +243,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AccessToken"/>がnullのとき、<see cref="KaonaviV2Service.AuthenticateAsync(CancellationToken)"/>を呼び出す。
+    /// <see cref="KaonaviV2Service.AccessToken"/>が<see langword="null"/>のとき、<see cref="KaonaviV2Service.AuthenticateAsync(CancellationToken)"/>を呼び出す。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > API Caller > {nameof(KaonaviV2Service.AuthenticateAsync)}を呼び出す。")]
     public async Task ApiCaller_Calls_AuthenticateAsync_When_AccessToken_IsNull()
@@ -282,7 +285,7 @@ public class KaonaviV2ServiceTest
         }, Times.Once());
         handler.VerifyRequest(res => res.RequestUri?.PathAndQuery != "/token", Times.Never());
     }
-    #endregion
+    #endregion API Common Path
 
     /// <summary>
     /// <see cref="KaonaviV2Service.AuthenticateAsync"/>は、"/token"にBase64文字列のPOSTリクエストを行う。
@@ -430,7 +433,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -492,7 +495,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -550,7 +553,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -576,7 +579,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion レイアウト定義 API
 
     #region メンバー情報 API
     /// <summary>Member APIのリクエストPayload</summary>
@@ -713,7 +716,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -892,7 +895,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion メンバー情報 API
 
     #region シート情報 API
     /// <summary>Sheet APIのリクエストPayload</summary>
@@ -995,7 +998,7 @@ public class KaonaviV2ServiceTest
         + "    }"
         + "  ]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1099,7 +1102,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion シート情報 API
 
     #region 所属ツリー API
     /// <summary>
@@ -1146,7 +1149,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1218,7 +1221,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion 所属ツリー API
 
     #region タスク進捗状況 API
     /// <summary>
@@ -1282,7 +1285,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion タスク進捗状況 API
 
     #region ユーザー情報 API
     /// <summary>
@@ -1317,7 +1320,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1593,7 +1596,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion ユーザー情報 API
 
     #region ロール API
     /// <summary>
@@ -1618,7 +1621,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1644,7 +1647,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion ロール API
 
     #region マスター管理 API
     /// <summary>
@@ -1690,7 +1693,7 @@ public class KaonaviV2ServiceTest
         + "  }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1735,7 +1738,7 @@ public class KaonaviV2ServiceTest
         + "  { \"id\": 3, \"name\": \"課長\" }"
         + "]"
         + "}";
-        #endregion
+        #endregion JSON
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1805,5 +1808,5 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion
+    #endregion マスター管理 API
 }

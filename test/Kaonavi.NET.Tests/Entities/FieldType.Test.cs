@@ -1,10 +1,6 @@
-namespace Kaonavi.Net.Tests.Entities;
-
-using System;
-using System.Text.Json;
-using FluentAssertions;
 using Kaonavi.Net.Entities;
-using Xunit;
+
+namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="FieldType"/>の単体テスト</summary>
 public class FieldTypeTest
