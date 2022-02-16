@@ -53,18 +53,17 @@ jobs:
 
       - name: Restore
         run: dotnet restore --force-evaluate
+      - name: Fix format
+        run: |
+          npm install -g eclint
+          eclint fix "**/packages.lock.json"
+
       - name: Compare Diff
         id: diff
         continue-on-error: true
         run: |
           git add -N .
-          git diff --name-only --ignore-all-space --ignore-blank-lines --exit-code
-
-      - name: Fix format
-        if: steps.diff.outcome == 'failure'
-        run: |
-          npm install -g eclint
-          eclint fix "**/packages.lock.json"
+          git diff --name-only --exit-code
       - name: Commit & Push
         if: steps.diff.outcome == 'failure'
         run: |
