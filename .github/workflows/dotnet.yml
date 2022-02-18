@@ -85,7 +85,9 @@ jobs:
       - name: Setup .NET SDK
         uses: nogic1008/actions/.github/actions/setup-dotnet@fc7240c007a00bc7932de4f5eea4d998914b8662
         with:
-          dotnet-version: 3.1.x,6.0.x
+          dotnet-version: |
+            3.1.x
+            6.0.x
 
       - name: Restore
         run: dotnet restore --locked-mode
