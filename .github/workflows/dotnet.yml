@@ -23,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2.4.0
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v1.9.0
+        uses: nogic1008/actions/.github/actions/setup-dotnet@fc7240c007a00bc7932de4f5eea4d998914b8662
       - name: Add Problem Matcher for dotnet-format
         uses: xt0rted/dotnet-format-problem-matcher@v1.2.0
       - name: Lint
@@ -82,18 +82,10 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2.4.0
-      - uses: actions/cache@v2.1.7
-        with:
-          path: ${{ env.NUGET_PACKAGES }}
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-      - name: Setup .NET Core 3.1 SDK
-        uses: actions/setup-dotnet@v1.9.0
-        with:
-          dotnet-version: 3.1.x
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v1.9.0
+        uses: nogic1008/actions/.github/actions/setup-dotnet@fc7240c007a00bc7932de4f5eea4d998914b8662
+        with:
+          dotnet-version: 3.1.x,6.0.x
 
       - name: Restore
         run: dotnet restore --locked-mode
