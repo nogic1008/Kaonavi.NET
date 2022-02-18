@@ -11,10 +11,7 @@ on:
       - "**.md"
 
 env:
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
-  DOTNET_NOLOGO: true
   NUGET_XMLDOC_MODE: skip
-  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
 
 jobs:
   lint:
@@ -38,18 +35,12 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-      - uses: actions/cache@v2.1.7
-        with:
-          path: ${{ env.NUGET_PACKAGES }}
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-      - name: Setup .NET Core 3.1 SDK
-        uses: actions/setup-dotnet@v1.9.0
-        with:
-          dotnet-version: 3.1.x
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v1.9.0
+        uses: nogic1008/actions/.github/actions/setup-dotnet@fc7240c007a00bc7932de4f5eea4d998914b8662
+        with:
+          dotnet-version: |
+            3.1.x
+            6.0.x
 
       - name: Restore
         run: dotnet restore --force-evaluate
