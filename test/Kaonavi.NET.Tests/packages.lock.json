@@ -307,8 +307,8 @@
       },
       "Portable.System.DateTimeOnly": {
         "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "0n6XBcQuEzDvMdanoyUIM5pjHFYsJp1Oj66wKyWlJZEzom2FJBSyKijK6OOecTZiTmSWlqZwrW0SLmex+ZwjZg=="
+        "resolved": "6.0.1",
+        "contentHash": "zYjaLhKPuyz2+namKOd3KqM48aQuCE1DlxTnNv59qJG+wzVFPhUq8h5/Ff4zHJ0iC4M22EWJ+CW1mTSJYb3Bew=="
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -1359,7 +1359,7 @@
       "kaonavi.net": {
         "type": "Project",
         "dependencies": {
-          "Portable.System.DateTimeOnly": "6.0.0",
+          "Portable.System.DateTimeOnly": "6.0.1",
           "System.Net.Http.Json": "6.0.0",
           "System.Text.Json": "6.0.2",
           "System.Threading.Tasks.Extensions": "4.5.4"
