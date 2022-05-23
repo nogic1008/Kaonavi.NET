@@ -156,6 +156,10 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     public ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
         => CallTaskApiAsync(new("PATCH"), $"/sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
+
+    /// <inheritdoc/>
+    public ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default)
+        => CallTaskApiAsync(HttpMethod.Post, $"/sheets/{sheetId:D}/add", new ApiResult<SheetData>(payload), cancellationToken);
     #endregion シート情報
 
     #region 所属ツリー
