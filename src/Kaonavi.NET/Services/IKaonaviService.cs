@@ -117,7 +117,7 @@ public interface IKaonaviService
     /// <paramref name="sheetId"/>と一致する<inheritdoc cref="SheetData" path="/summary/text()"/>の一部を更新します。
     /// <list type="bullet">
     /// <item>
-    ///   <term>単一レコード</term>
+    ///   <term><inheritdoc cref="RecordType.Single" path="/summary/text()"/></term>
     ///   <description>
     ///     送信された情報のみが更新されます。
     ///     <paramref name="payload"/> に含まれていない情報は更新されません。
@@ -125,7 +125,7 @@ public interface IKaonaviService
     ///   </description>
     /// </item>
     /// <item>
-    ///   <term>複数レコード</term>
+    ///   <term><inheritdoc cref="RecordType.Multiple" path="/summary/text()"/></term>
     ///   <description>
     ///     メンバーごとのデータが一括更新されます。
     ///     特定の値を削除する場合は、<c>""</c>を送信してください。
@@ -139,7 +139,6 @@ public interface IKaonaviService
     /// </summary>
     /// <remarks>
     /// <list type="bullet">
-    /// <item>追加・挿入のみのAPIはありません。値を追加する場合は、元のデータも含めて更新してください。</item>
     /// <item>更新リクエスト制限の対象APIです。</item>
     /// </list>
     /// </remarks>
@@ -148,6 +147,17 @@ public interface IKaonaviService
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// <paramref name="sheetId"/>と一致する<inheritdoc cref="RecordType.Multiple"/>にレコードを追加します。
+    /// <inheritdoc cref="RecordType.Single"/>は対象外です。
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}~1add/post"/>
+    /// </summary>
+    /// <param name="sheetId"><inheritdoc cref="SheetLayout" path="/param[@name='Id']/text()"/></param>
+    /// <param name="payload">追加するデータ</param>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+    ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
     #endregion シート情報
 
     #region 所属ツリー
