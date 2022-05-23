@@ -1102,6 +1102,45 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
+
+    /// <summary>
+    /// <see cref="KaonaviV2Service.AddSheetDataAsync"/>は、"/sheets/{sheetId}/add"にPOSTリクエストを行う。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.AddSheetDataAsync)} > POST /sheets/:sheetId/add をコールする。")]
+    public async Task AddSheetDataAsync_Calls_PostApi()
+    {
+        // Arrange
+        const int sheetId = 1;
+        string tokenString = GenerateRandomString();
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
+
+        var handler = new Mock<HttpMessageHandler>();
+        handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}/add")
+            .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        int taskId = await sut.AddSheetDataAsync(sheetId, _sheetDataPayload).ConfigureAwait(false);
+
+        // Assert
+        taskId.Should().Be(sheetId);
+
+        handler.VerifyRequest(async req =>
+        {
+            // End point
+            req.Method.Should().Be(HttpMethod.Post);
+            req.RequestUri?.PathAndQuery.Should().Be($"/sheets/{sheetId}/add");
+
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            receivedJson.Should().Be(expectedJson);
+
+            return true;
+        }, Times.Once());
+    }
     #endregion シート情報 API
 
     #region 所属ツリー API
