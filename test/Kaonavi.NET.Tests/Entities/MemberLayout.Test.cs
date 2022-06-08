@@ -121,7 +121,7 @@ public class MemberLayoutTest
         #endregion JSON
 
         // Act
-        var layout = JsonSerializer.Deserialize<MemberLayout>(jsonString);
+        var layout = JsonSerializer.Deserialize<MemberLayout>(jsonString, JsonConfig.Default);
 
         // Assert
         layout.Should().NotBeNull();

@@ -23,7 +23,7 @@ public class UserTest
     public void CanDeserializeJSON(string json, int id, string email, string? memberCode)
     {
         // Arrange - Act
-        var user = JsonSerializer.Deserialize<User>(json);
+        var user = JsonSerializer.Deserialize<User>(json, JsonConfig.Default);
 
         // Assert
         user.Should().NotBeNull();

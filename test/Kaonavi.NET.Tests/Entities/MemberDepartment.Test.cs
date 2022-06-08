@@ -25,7 +25,7 @@ public class MemberDepartmentTest
     public void CanDeserializeJSON(string json, string code, string? name, params string?[] names)
     {
         // Arrange - Act
-        var department = JsonSerializer.Deserialize<MemberDepartment>(json);
+        var department = JsonSerializer.Deserialize<MemberDepartment>(json, JsonConfig.Default);
 
         // Assert
         department.Should().NotBeNull();

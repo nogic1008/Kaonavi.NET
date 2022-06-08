@@ -18,6 +18,10 @@
     <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Nogic.JsonConverters" Version="0.1.0" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(TargetFramework)'!='net6.0'">
     <PackageReference Include="Portable.System.DateTimeOnly" Version="6.0.1" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />

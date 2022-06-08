@@ -13,15 +13,15 @@ namespace Kaonavi.Net.Entities;
 /// <param name="SubDepartments">兼務情報</param>
 /// <param name="CustomFields">基本情報のカスタム項目のレイアウト定義リスト</param>
 public record MemberLayout(
-    [property: JsonPropertyName("code")] FieldLayout Code,
-    [property: JsonPropertyName("name")] FieldLayout Name,
-    [property: JsonPropertyName("name_kana")] FieldLayout NameKana,
-    [property: JsonPropertyName("mail")] FieldLayout Mail,
-    [property: JsonPropertyName("entered_date")] FieldLayout EnteredDate,
-    [property: JsonPropertyName("retired_date")] FieldLayout RetiredDate,
-    [property: JsonPropertyName("gender")] FieldLayout Gender,
-    [property: JsonPropertyName("birthday")] FieldLayout Birthday,
-    [property: JsonPropertyName("department")] FieldLayout Department,
-    [property: JsonPropertyName("sub_departments")] FieldLayout SubDepartments,
-    [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomFieldLayout> CustomFields
+    FieldLayout Code,
+    FieldLayout Name,
+    FieldLayout NameKana,
+    FieldLayout Mail,
+    FieldLayout EnteredDate,
+    FieldLayout RetiredDate,
+    FieldLayout Gender,
+    FieldLayout Birthday,
+    FieldLayout Department,
+    FieldLayout SubDepartments,
+    IReadOnlyList<CustomFieldLayout> CustomFields
 );

@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using System.Text;
 using Kaonavi.Net.Entities;
+using Nogic.JsonConverters;
 
 namespace Kaonavi.Net.Services;
 
@@ -13,10 +14,14 @@ public class KaonaviV2Service : IKaonaviService
     /// <summary>
     /// APIに送信するJSONペイロードのエンコード設定
     /// </summary>
-    private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.Web)
+    internal static readonly JsonSerializerOptions Options = new(JsonSerializerDefaults.Web)
     {
-        Converters = { new DateOnlyConverter() },
+        Converters =
+        {
+            new BlankNullableConverter<DateOnly>(new DateOnlyConverter()),
+        },
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNamingPolicy = new JsonLowerSnakeCaseNamingPolicy(),
     };
 
     #region DI Objects
@@ -170,9 +175,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     public ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default)
         => CallTaskApiAsync(HttpMethod.Put, "/departments", new DepartmentsResult(payload), cancellationToken);
-    private record DepartmentsResult(
-        [property: JsonPropertyName("department_data")] IReadOnlyList<DepartmentTree> DepartmentData
-    );
+    private record DepartmentsResult(IReadOnlyList<DepartmentTree> DepartmentData);
     #endregion 所属ツリー
 
     #region タスク進捗状況
@@ -191,14 +194,9 @@ public class KaonaviV2Service : IKaonaviService
     public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
         => CallApiAsync<User>(new(HttpMethod.Post, "/users")
         {
-            Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: _options)
+            Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
         }, cancellationToken);
-    private record UserJsonPayload(
-        [property: JsonPropertyName("email")] string EMail,
-        [property: JsonPropertyName("member_code")] string? MemberCode,
-        [property: JsonPropertyName("password")] string Password,
-        [property: JsonPropertyName("role")] Role Role
-    );
+    private record UserJsonPayload(string EMail, string? MemberCode, string Password, Role Role);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
@@ -210,7 +208,7 @@ public class KaonaviV2Service : IKaonaviService
     public ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
         => CallApiAsync<User>(new(new("PATCH"), $"/users/{ThrowIfNegative(userId, nameof(userId)):D}")
         {
-            Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: _options)
+            Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
         }, cancellationToken);
 
     /// <inheritdoc/>
@@ -241,7 +239,7 @@ public class KaonaviV2Service : IKaonaviService
             $"/enum_options/{customFieldId}",
             new EnumOptionPayload(payload.Select(d => new EnumOptionPayload.Data(d.Item1, d.Item2)).ToArray()),
             cancellationToken);
-    private record EnumOptionPayload([property: JsonPropertyName("enum_option_data")] IReadOnlyList<EnumOptionPayload.Data> EnumOptionData)
+    private record EnumOptionPayload(IReadOnlyList<EnumOptionPayload.Data> EnumOptionData)
     {
         internal record Data(int? Id, string Name);
     }
@@ -253,7 +251,7 @@ public class KaonaviV2Service : IKaonaviService
     private async ValueTask FetchTokenAsync(CancellationToken cancellationToken)
         => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
-    private record ApiResult<T>([property: JsonPropertyName("member_data")] IReadOnlyList<T> MemberData);
+    private record ApiResult<T>(IReadOnlyList<T> MemberData);
 
     /// <summary>
     /// APIを呼び出します。
@@ -281,7 +279,7 @@ public class KaonaviV2Service : IKaonaviService
     private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
-        return (await response.Content.ReadFromJsonAsync<T>(_options, cancellationToken).ConfigureAwait(false))!;
+        return (await response.Content.ReadFromJsonAsync<T>(Options, cancellationToken).ConfigureAwait(false))!;
     }
 
     /// <summary>
@@ -296,7 +294,7 @@ public class KaonaviV2Service : IKaonaviService
     private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, CancellationToken cancellationToken)
         => (await CallApiAsync<JsonElement>(new(method, uri)
         {
-            Content = JsonContent.Create(payload, options: _options)
+            Content = JsonContent.Create(payload, options: Options)
         }, cancellationToken).ConfigureAwait(false)).GetProperty("task_id").GetInt32();
 
     /// <summary>
@@ -308,7 +306,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <typeparam name="T">JSONの配列型</typeparam>
     private async ValueTask<IReadOnlyList<T>> CallFetchListApiAsync<T>(string uri, string propertyName, CancellationToken cancellationToken)
         => (await CallApiAsync<JsonElement>(new(HttpMethod.Get, uri), cancellationToken).ConfigureAwait(false))
-            .GetProperty(propertyName).Deserialize<IReadOnlyList<T>>(_options)!;
+            .GetProperty(propertyName).Deserialize<IReadOnlyList<T>>(Options)!;
 
     /// <summary>
     /// APIが正しく終了したかどうかを検証します。
@@ -329,7 +327,7 @@ public class KaonaviV2Service : IKaonaviService
         {
             string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
                 ? string.Join("\n",
-                    (await response.Content.ReadFromJsonAsync<JsonElement>(_options, cancellationToken).ConfigureAwait(false))
+                    (await response.Content.ReadFromJsonAsync<JsonElement>(Options, cancellationToken).ConfigureAwait(false))
                         .GetProperty("errors").EnumerateArray().Select(el => el.GetString())
                 )
 #if NET5_0_OR_GREATER

@@ -13,15 +13,15 @@ namespace Kaonavi.Net.Entities;
 /// <param name="SubDepartments">兼務情報リスト</param>
 /// <param name="CustomFields">カスタム項目値</param>
 public record MemberData(
-    [property: JsonPropertyName("code")] string Code,
-    [property: JsonPropertyName("name")] string? Name = null,
-    [property: JsonPropertyName("name_kana")] string? NameKana = null,
-    [property: JsonPropertyName("mail")] string? Mail = null,
-    [property: JsonPropertyName("entered_date")] DateOnly? EnteredDate = default,
-    [property: JsonPropertyName("retired_date")] DateOnly? RetiredDate = default,
-    [property: JsonPropertyName("gender")] string? Gender = null,
-    [property: JsonPropertyName("birthday")] DateOnly? Birthday = default,
-    [property: JsonPropertyName("department")] MemberDepartment? Department = null,
-    [property: JsonPropertyName("sub_departments")] IReadOnlyList<MemberDepartment>? SubDepartments = null,
-    [property: JsonPropertyName("custom_fields")] IReadOnlyList<CustomFieldValue>? CustomFields = null
+    string Code,
+    string? Name = null,
+    string? NameKana = null,
+    string? Mail = null,
+    DateOnly? EnteredDate = default,
+    DateOnly? RetiredDate = default,
+    string? Gender = null,
+    DateOnly? Birthday = default,
+    MemberDepartment? Department = null,
+    IReadOnlyList<MemberDepartment>? SubDepartments = null,
+    IReadOnlyList<CustomFieldValue>? CustomFields = null
 );

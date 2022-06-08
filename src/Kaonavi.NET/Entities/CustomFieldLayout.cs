@@ -8,7 +8,7 @@ namespace Kaonavi.Net.Entities;
 /// <param name="MaxLength"><inheritdoc cref="FieldLayout" path="/param[@name='MaxLength']"/></param>
 /// <param name="Enum"><inheritdoc cref="FieldLayout" path="/param[@name='Enum']"/></param>
 public record CustomFieldLayout(
-    [property: JsonPropertyName("id")] int Id,
+    int Id,
     string Name,
     bool Required,
     FieldType Type,

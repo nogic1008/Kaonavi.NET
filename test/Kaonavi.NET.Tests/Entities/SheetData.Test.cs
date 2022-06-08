@@ -34,7 +34,7 @@ public class SheetDataTest
         #endregion JSON
 
         // Act
-        var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString);
+        var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString, JsonConfig.Default);
 
         // Assert
         sheetData.Should().NotBeNull();
@@ -95,7 +95,7 @@ public class SheetDataTest
         #endregion JSON
 
         // Act
-        var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString);
+        var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString, JsonConfig.Default);
 
         // Assert
         sheetData.Should().NotBeNull();
