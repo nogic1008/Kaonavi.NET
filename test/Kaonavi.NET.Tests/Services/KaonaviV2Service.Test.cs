@@ -313,6 +313,9 @@ public class KaonaviV2ServiceTest
 
         // Assert
         token.Should().NotBeNull();
+        token.AccessToken.Should().Be("25396f58-10f8-c228-7f0f-818b1d666b2e");
+        token.TokenType.Should().Be("Bearer");
+        token.ExpiresIn.Should().Be(3600);
 
         handler.VerifyRequest(async req =>
         {
