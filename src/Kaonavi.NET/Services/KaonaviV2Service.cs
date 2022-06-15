@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json.Serialization.Metadata;
 using Kaonavi.Net.Entities;
 using Nogic.JsonConverters;
 
@@ -106,7 +107,7 @@ public class KaonaviV2Service : IKaonaviService
         await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
         var token = await response.Content
-            .ReadFromJsonAsync(JsonContext.Default.Token, cancellationToken)
+            .ReadFromJsonAsync(IncomingJsonContext.Default.Token, cancellationToken)
             .ConfigureAwait(false);
         _client.DefaultRequestHeaders.Authorization = null;
         return token!;
@@ -192,24 +193,24 @@ public class KaonaviV2Service : IKaonaviService
 
     /// <inheritdoc/>
     public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
-        => CallApiAsync<User>(new(HttpMethod.Post, "/users")
+        => CallApiAsync(new(HttpMethod.Post, "/users")
         {
             Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
-        }, cancellationToken);
+        }, IncomingJsonContext.Default.User, cancellationToken);
     private record UserJsonPayload(string EMail, string? MemberCode, string Password, Role Role);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
-        => CallApiAsync<User>(new(HttpMethod.Get, $"/users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken);
+        => CallApiAsync(new(HttpMethod.Get, $"/users/{ThrowIfNegative(userId, nameof(userId)):D}"), IncomingJsonContext.Default.User, cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
-        => CallApiAsync<User>(new(new("PATCH"), $"/users/{ThrowIfNegative(userId, nameof(userId)):D}")
+        => CallApiAsync(new(new("PATCH"), $"/users/{ThrowIfNegative(userId, nameof(userId)):D}")
         {
             Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
-        }, cancellationToken);
+        }, IncomingJsonContext.Default.User, cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
@@ -280,6 +281,20 @@ public class KaonaviV2Service : IKaonaviService
     {
         var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
         return (await response.Content.ReadFromJsonAsync<T>(Options, cancellationToken).ConfigureAwait(false))!;
+    }
+
+    /// <summary>
+    /// APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>に変換して返します。
+    /// </summary>
+    /// <param name="request"><inheritdoc cref="CallApiAsync" path="/param[@name='request']"/></param>
+    /// <param name="jsonTypeInfo"><typeparamref name="T"/>に変換するためのContext</param>
+    /// <param name="cancellationToken"><inheritdoc cref="CallApiAsync" path="/param[@name='cancellationToken']"/></param>
+    /// <typeparam name="T">JSONの型</typeparam>
+    /// <inheritdoc cref="CallApiAsync" path="/exception"/>
+    private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, JsonTypeInfo<T> jsonTypeInfo, CancellationToken cancellationToken)
+    {
+        var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
+        return (await response.Content.ReadFromJsonAsync(jsonTypeInfo, cancellationToken).ConfigureAwait(false))!;
     }
 
     /// <summary>

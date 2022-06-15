@@ -9,8 +9,3 @@ public record Token(
     [property: JsonPropertyName("token_type")] string TokenType,
     [property: JsonPropertyName("expires_in")] int ExpiresIn
 );
-
-[JsonSerializable(typeof(Token))]
-internal partial class JsonContext : JsonSerializerContext
-{
-}

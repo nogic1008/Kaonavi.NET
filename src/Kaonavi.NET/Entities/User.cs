@@ -8,4 +8,9 @@ namespace Kaonavi.Net.Entities;
 /// (紐付けメンバーが設定されていない場合は<see langword="null"/>)
 /// </param>
 /// <param name="Role"><inheritdoc cref="Entities.Role" path="/summary/text()"/></param>
-public record User(int Id, string EMail, string? MemberCode, Role Role);
+public record User(
+    int Id,
+    [property: JsonPropertyName("email")] string EMail,
+    [property: JsonPropertyName("member_code")] string? MemberCode,
+    Role Role
+);

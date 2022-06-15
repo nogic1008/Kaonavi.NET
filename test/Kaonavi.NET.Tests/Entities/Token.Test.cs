@@ -21,7 +21,7 @@ public class TokenTest
         + "}";
 
         // Act
-        var token = JsonSerializer.Deserialize(jsonString, JsonContext.Default.Token);
+        var token = JsonSerializer.Deserialize(jsonString, IncomingJsonContext.Default.Token);
 
         // Assert
         token.Should().NotBeNull();
