@@ -1,6 +1,7 @@
 namespace Kaonavi.Net.Entities;
 
 [JsonSerializable(typeof(Role))]
+[JsonSerializable(typeof(TaskProgress))]
 [JsonSerializable(typeof(Token))]
 [JsonSerializable(typeof(User))]
 [JsonSourceGenerationOptions(

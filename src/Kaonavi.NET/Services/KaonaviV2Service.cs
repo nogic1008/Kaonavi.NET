@@ -183,7 +183,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
-        => CallApiAsync<TaskProgress>(new(HttpMethod.Get, $"/tasks/{ThrowIfNegative(taskId, nameof(taskId)):D}"), cancellationToken);
+        => CallApiAsync(new(HttpMethod.Get, $"/tasks/{ThrowIfNegative(taskId, nameof(taskId)):D}"), IncomingJsonContext.Default.TaskProgress, cancellationToken);
     #endregion タスク進捗状況
 
     #region ユーザー情報

@@ -5,10 +5,13 @@ namespace Kaonavi.Net.Tests.Entities;
 /// <summary>
 /// <see cref="TaskProgress"/>の単体テスト
 /// </summary>
-public class TaskProgressTest
+public sealed class TaskProgressTest
 {
+    // lang=json,strict
     private const string TaskOkJson = "{\"id\": 1,\"status\": \"OK\",\"messages\": []}";
+    // lang=json,strict
     private const string TaskRunningJson = "{\"id\": 2,\"status\": \"RUNNING\"}";
+    // lang=json,strict
     private const string TaskErrorJson = "{\"id\": 3,\"status\": \"NG\",\"messages\": [\"エラーメッセージ1\",\"エラーメッセージ2\"]}";
 
     /// <summary>
@@ -25,12 +28,12 @@ public class TaskProgressTest
     public void CanDeserializeJSON(string json, int id, string status, params string[] messages)
     {
         // Arrange - Act
-        var task = JsonSerializer.Deserialize<TaskProgress>(json, JsonConfig.Default);
+        var task = JsonSerializer.Deserialize(json, IncomingJsonContext.Default.TaskProgress);
 
         // Assert
-        task.Should().NotBeNull();
-        task!.Id.Should().Be(id);
-        task.Status.Should().Be(status);
-        task.Messages.Should().Equal(messages);
+        _ = task.Should().NotBeNull();
+        _ = task!.Id.Should().Be(id);
+        _ = task.Status.Should().Be(status);
+        _ = task.Messages.Should().Equal(messages);
     }
 }
