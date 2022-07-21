@@ -317,8 +317,8 @@
       },
       "Portable.System.DateTimeOnly": {
         "type": "Transitive",
-        "resolved": "6.0.1",
-        "contentHash": "zYjaLhKPuyz2+namKOd3KqM48aQuCE1DlxTnNv59qJG+wzVFPhUq8h5/Ff4zHJ0iC4M22EWJ+CW1mTSJYb3Bew=="
+        "resolved": "6.0.2",
+        "contentHash": "ER1F8j5ffASUpNtj5T8FoXf7K4T9+eetayrk+WJSpMWzn4dPJJKJj1cyvf4At2s8sHY3xCqDuE/d0ISpc+h3kg=="
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
@@ -1295,7 +1295,7 @@
         "type": "Project",
         "dependencies": {
           "Nogic.JsonConverters": "0.1.0",
-          "Portable.System.DateTimeOnly": "6.0.1",
+          "Portable.System.DateTimeOnly": "6.0.2",
           "System.Net.Http.Json": "6.0.0",
           "System.Text.Json": "6.0.5",
           "System.Threading.Tasks.Extensions": "4.5.4"
