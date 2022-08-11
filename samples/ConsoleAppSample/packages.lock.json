@@ -330,7 +330,7 @@
       "kaonavi.net": {
         "type": "Project",
         "dependencies": {
-          "Nogic.JsonConverters": "0.1.0"
+          "Nogic.JsonConverters": "[0.1.0, )"
         }
       }
     }
