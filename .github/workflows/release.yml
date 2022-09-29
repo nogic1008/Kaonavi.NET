@@ -24,7 +24,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v2.1.1
+        uses: actions/setup-dotnet@v3.0.0
 
       - name: Restore
         run: dotnet restore --locked-mode
