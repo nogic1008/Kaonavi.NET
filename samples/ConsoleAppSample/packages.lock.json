@@ -4,9 +4,9 @@
     "net6.0": {
       "ConsoleAppFramework": {
         "type": "Direct",
-        "requested": "[4.2.2, )",
-        "resolved": "4.2.2",
-        "contentHash": "pR5fZN29UQqGFxwcAC9jIbHSXgPvmiU51bi4x8iAvgFkFOl1K9bzzxa73lHo92ifRSgebvtbKBj1nkH21Ntghw==",
+        "requested": "[4.2.3, )",
+        "resolved": "4.2.3",
+        "contentHash": "Q+V7D16F1HeH6SAoRKtPs4rfkfNPbug0wxcxuZob6e/EK610QsdhEjJVq194zzQRtmOos4UHAR29MXTNAlp2+Q==",
         "dependencies": {
           "Microsoft.Extensions.Hosting": "6.0.0",
           "System.Text.Json": "6.0.1"
