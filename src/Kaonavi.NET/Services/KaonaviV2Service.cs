@@ -82,11 +82,25 @@ public class KaonaviV2Service : IKaonaviService
     /// </exception>
     public KaonaviV2Service(HttpClient client, string consumerKey, string consumerSecret)
     {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _consumerKey = consumerKey ?? throw new ArgumentNullException(nameof(consumerKey));
-        _consumerSecret = consumerSecret ?? throw new ArgumentNullException(nameof(consumerSecret));
-
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(client);
+        ArgumentNullException.ThrowIfNull(consumerKey);
+        ArgumentNullException.ThrowIfNull(consumerSecret);
+#else
+        ThrowIfNull(client, nameof(client));
+        ThrowIfNull(consumerKey, nameof(consumerKey));
+        ThrowIfNull(consumerSecret, nameof(consumerSecret));
+#endif
+        (_client, _consumerKey, _consumerSecret) = (client, consumerKey, consumerSecret);
         _client.BaseAddress ??= new(BaseApiAddress);
+
+#if !NET6_0_OR_GREATER
+        static void ThrowIfNull(object? @object, string paramName)
+        {
+            if (@object is null)
+                throw new ArgumentNullException(paramName);
+        }
+#endif
     }
 
     /// <summary>

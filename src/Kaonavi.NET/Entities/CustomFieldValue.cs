@@ -33,7 +33,7 @@ public record CustomFieldValue
     [JsonIgnore]
     public string Value
     {
-        get => _value ??= _values.First();
+        get => _value ??= _values!.First();
         init => _value = value;
     }
 
