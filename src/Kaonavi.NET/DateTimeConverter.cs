@@ -1,5 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Kaonavi.Net;
 
 /// <summary>"yyyy-MM-dd hh:mm:ss" - <see cref="DateTime"/>変換</summary>
