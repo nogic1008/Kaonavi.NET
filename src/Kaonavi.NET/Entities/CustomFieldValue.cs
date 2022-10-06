@@ -29,7 +29,6 @@ public record CustomFieldValue
     public string? Name { get; init; }
 
     private readonly string? _value;
-
     /// <summary>シート項目値</summary>
     [JsonIgnore]
     public string Value
