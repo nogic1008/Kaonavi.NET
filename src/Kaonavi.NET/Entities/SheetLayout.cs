@@ -9,7 +9,7 @@ public record SheetLayout(
     int Id,
     string Name,
     RecordType RecordType,
-    IReadOnlyList<CustomFieldLayout> CustomFields
+    IReadOnlyCollection<CustomFieldLayout> CustomFields
 );
 
 /// <summary><inheritdoc cref="SheetLayout" path="/param[@name='RecordType']/text()"/></summary>

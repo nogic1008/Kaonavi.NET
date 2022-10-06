@@ -8,7 +8,7 @@ public record SheetData
     /// </summary>
     /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
     /// <param name="customFields">設定値</param>
-    public SheetData(string code, IReadOnlyList<CustomFieldValue> customFields)
+    public SheetData(string code, IReadOnlyCollection<CustomFieldValue> customFields)
         : this(code, new[] { customFields }) { }
 
     /// <summary>
@@ -16,12 +16,12 @@ public record SheetData
     /// </summary>
     /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
     /// <param name="records"><inheritdoc cref="Records" path="/summary/text()"/></param>
-    public SheetData(string code, params IReadOnlyList<CustomFieldValue>[] records)
+    public SheetData(string code, params IReadOnlyCollection<CustomFieldValue>[] records)
         => (Code, Records) = (code, records);
 
-    /// <inheritdoc cref="SheetData(string, IReadOnlyList{CustomFieldValue}[])"/>
+    /// <inheritdoc cref="SheetData(string, IReadOnlyCollection{CustomFieldValue}[])"/>
     [JsonConstructor]
-    public SheetData(string code, IReadOnlyList<IReadOnlyList<CustomFieldValue>> records)
+    public SheetData(string code, IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>> records)
         => (Code, Records) = (code, records);
 
     /// <summary>社員コード</summary>
@@ -30,15 +30,15 @@ public record SheetData
     /// <summary>メンバーが持つ設定値のリスト</summary>
     /// <remarks><see cref="RecordType.Multiple"/>の場合にのみ複数の値が返却されます。</remarks>
     [JsonConverter(typeof(SheetRecordConverter))]
-    public IReadOnlyList<IReadOnlyList<CustomFieldValue>> Records { get; init; }
+    public IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>> Records { get; init; }
 }
 
-internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>
+internal class SheetRecordConverter : JsonConverter<IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>>>
 {
     private const string PropertyName = "custom_fields";
 
-    public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => JsonSerializer.Deserialize<IReadOnlyList<JsonElement>>(ref reader, options)!
+    public override IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        => JsonSerializer.Deserialize<IReadOnlyCollection<JsonElement>>(ref reader, options)!
             .Select(d =>
                 d.GetProperty(PropertyName)
                     .EnumerateArray()
@@ -47,7 +47,7 @@ internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<
             )
             .ToArray();
 
-    public override void Write(Utf8JsonWriter writer, IReadOnlyList<IReadOnlyList<CustomFieldValue>> value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>> value, JsonSerializerOptions options)
     {
         writer.WriteStartArray();
         foreach (var record in value)

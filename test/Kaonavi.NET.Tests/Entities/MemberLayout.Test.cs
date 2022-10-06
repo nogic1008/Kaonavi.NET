@@ -124,18 +124,18 @@ public class MemberLayoutTest
         var layout = JsonSerializer.Deserialize<MemberLayout>(jsonString, JsonConfig.Default);
 
         // Assert
-        layout.Should().NotBeNull();
-        layout!.Code.Name.Should().Be("社員番号");
-        layout.Name.Required.Should().BeFalse();
-        layout.NameKana.Type.Should().Be(FieldType.String);
-        layout.Mail.MaxLength.Should().Be(100);
-        layout.EnteredDate.Type.Should().Be(FieldType.Date);
-        layout.RetiredDate.Enum.Should().BeEmpty();
-        layout.Gender.Enum.Should().Equal("男性", "女性");
-        layout.Birthday.MaxLength.Should().BeNull();
-        layout.Department.Type.Should().Be(FieldType.Department);
-        layout.SubDepartments.Type.Should().Be(FieldType.DepartmentArray);
-        layout.CustomFields.Should().HaveCount(2);
-        layout.CustomFields[^1].Enum.Should().Equal("部長", "課長", "マネージャー", null);
+        _ = layout.Should().NotBeNull();
+        _ = layout!.Code.Name.Should().Be("社員番号");
+        _ = layout.Name.Required.Should().BeFalse();
+        _ = layout.NameKana.Type.Should().Be(FieldType.String);
+        _ = layout.Mail.MaxLength.Should().Be(100);
+        _ = layout.EnteredDate.Type.Should().Be(FieldType.Date);
+        _ = layout.RetiredDate.Enum.Should().BeEmpty();
+        _ = layout.Gender.Enum.Should().Equal("男性", "女性");
+        _ = layout.Birthday.MaxLength.Should().BeNull();
+        _ = layout.Department.Type.Should().Be(FieldType.Department);
+        _ = layout.SubDepartments.Type.Should().Be(FieldType.DepartmentArray);
+        _ = layout.CustomFields.Should().HaveCount(2);
+        _ = layout.CustomFields.Last().Enum.Should().Equal("部長", "課長", "マネージャー", null);
     }
 }
