@@ -212,12 +212,11 @@ public interface IKaonaviService
 
     #region ユーザー情報
     /// <summary>
-    /// <inheritdoc cref="User" path="/summary/text()"/>の一覧を取得します。
-    /// 一度もログインしたことがないユーザーの場合、last_login_at:nullと返却されます。
+    /// <inheritdoc cref="UserWithLoginAt" path="/summary/text()"/>の一覧を取得します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get"/>
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyList<UserWithLoginAt>> FetchUsersAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <inheritdoc cref="User" path="/summary/text()"/>を登録します。
@@ -241,13 +240,12 @@ public interface IKaonaviService
     ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// <paramref name="userId"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を取得します。
-    /// 一度もログインしたことがないユーザーの場合、last_login_at:nullと返却されます。
+    /// <paramref name="userId"/>と一致する<inheritdoc cref="UserWithLoginAt" path="/summary/text()"/>を取得します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get"/>
     /// </summary>
-    /// <param name="userId"><inheritdoc cref="User" path="/param[@name='Id']/text()"/></param>
+    /// <param name="userId"><inheritdoc cref="UserWithLoginAt" path="/param[@name='Id']/text()"/></param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default);
+    ValueTask<UserWithLoginAt> FetchUserAsync(int userId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="userId"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を更新します。
