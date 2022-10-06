@@ -24,9 +24,9 @@ public class TokenTest
         var token = JsonSerializer.Deserialize<Token>(jsonString, JsonConfig.Default);
 
         // Assert
-        token.Should().NotBeNull();
-        token!.AccessToken.Should().Be("25396f58-10f8-c228-7f0f-818b1d666b2e");
-        token.TokenType.Should().Be("Bearer");
-        token.ExpiresIn.Should().Be(3600);
+        _ = token.Should().NotBeNull();
+        _ = token!.AccessToken.Should().Be("25396f58-10f8-c228-7f0f-818b1d666b2e");
+        _ = token.TokenType.Should().Be("Bearer");
+        _ = token.ExpiresIn.Should().Be(3600);
     }
 }

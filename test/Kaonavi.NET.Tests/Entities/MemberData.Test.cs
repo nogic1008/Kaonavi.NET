@@ -111,26 +111,18 @@ public class MemberDataTest
         var memberData = JsonSerializer.Deserialize<MemberData>(json, JsonConfig.Default);
 
         // Assert
-        memberData.Should().NotBeNull();
-        memberData!.Code.Should().Be(code);
-        memberData.Name.Should().Be(name);
-        memberData.NameKana.Should().Be(nameKana);
-        memberData.Mail.Should().Be(mail);
-        IsEqual(memberData.EnteredDate, enteredDate);
-        IsEqual(memberData.RetiredDate, retiredDate);
-        memberData.Gender.Should().Be(gender);
-        IsEqual(memberData.Birthday, birthday);
-        memberData.Department.Should().NotBeNull();
-        memberData.Department!.Code.Should().Be(departmentCode);
-        memberData.SubDepartments.Should().AllBeAssignableTo<MemberDepartment>();
-        memberData.CustomFields.Should().AllBeAssignableTo<CustomFieldValue>();
-
-        static void IsEqual(DateOnly? dateTime, string? expected)
-        {
-            if (expected is not null)
-                dateTime.Should().Be(DateOnly.ParseExact(expected, "yyyy/MM/dd", null));
-            else
-                dateTime.Should().BeNull();
-        }
+        _ = memberData.Should().NotBeNull();
+        _ = memberData!.Code.Should().Be(code);
+        _ = memberData.Name.Should().Be(name);
+        _ = memberData.NameKana.Should().Be(nameKana);
+        _ = memberData.Mail.Should().Be(mail);
+        _ = memberData.EnteredDate.Should().Be(DateOnly.TryParseExact(enteredDate, "yyyy/MM/dd", out var entered) ? entered : null);
+        _ = memberData.RetiredDate.Should().Be(DateOnly.TryParseExact(retiredDate, "yyyy/MM/dd", out var retired) ? retired : null);
+        _ = memberData.Gender.Should().Be(gender);
+        _ = memberData.Birthday.Should().Be(DateOnly.TryParseExact(birthday, "yyyy/MM/dd", out var birth) ? birth : null);
+        _ = memberData.Department.Should().NotBeNull();
+        _ = memberData.Department!.Code.Should().Be(departmentCode);
+        _ = memberData.SubDepartments.Should().AllBeAssignableTo<MemberDepartment>();
+        _ = memberData.CustomFields.Should().AllBeAssignableTo<CustomFieldValue>();
     }
 }

@@ -47,7 +47,7 @@ public class KaonaviV2Service : IKaonaviService
         get => _client.DefaultRequestHeaders.TryGetValues(TokenHeader, out var values) ? values.First() : null;
         set
         {
-            _client.DefaultRequestHeaders.Remove(TokenHeader);
+            _ = _client.DefaultRequestHeaders.Remove(TokenHeader);
             if (!string.IsNullOrWhiteSpace(value))
                 _client.DefaultRequestHeaders.Add(TokenHeader, value);
         }
@@ -64,7 +64,7 @@ public class KaonaviV2Service : IKaonaviService
         get => _client.DefaultRequestHeaders.TryGetValues(DryRunHeader, out var values) && values.First() == "1";
         set
         {
-            _client.DefaultRequestHeaders.Remove(DryRunHeader);
+            _ = _client.DefaultRequestHeaders.Remove(DryRunHeader);
             if (value)
                 _client.DefaultRequestHeaders.Add(DryRunHeader, "1");
         }
@@ -82,11 +82,25 @@ public class KaonaviV2Service : IKaonaviService
     /// </exception>
     public KaonaviV2Service(HttpClient client, string consumerKey, string consumerSecret)
     {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-        _consumerKey = consumerKey ?? throw new ArgumentNullException(nameof(consumerKey));
-        _consumerSecret = consumerSecret ?? throw new ArgumentNullException(nameof(consumerSecret));
-
+#if NET6_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull(client);
+        ArgumentNullException.ThrowIfNull(consumerKey);
+        ArgumentNullException.ThrowIfNull(consumerSecret);
+#else
+        ThrowIfNull(client, nameof(client));
+        ThrowIfNull(consumerKey, nameof(consumerKey));
+        ThrowIfNull(consumerSecret, nameof(consumerSecret));
+#endif
+        (_client, _consumerKey, _consumerSecret) = (client, consumerKey, consumerSecret);
         _client.BaseAddress ??= new(BaseApiAddress);
+
+#if !NET6_0_OR_GREATER
+        static void ThrowIfNull(object? @object, string paramName)
+        {
+            if (@object is null)
+                throw new ArgumentNullException(paramName);
+        }
+#endif
     }
 
     /// <summary>

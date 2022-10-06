@@ -26,11 +26,11 @@ public class FieldTypeTest
     public void CannotSerializeJSON_IfInvalidValue(int invalidValue)
     {
         // Arrange
-        Enum.IsDefined(typeof(FieldType), invalidValue).Should().BeFalse();
+        _ = Enum.IsDefined(typeof(FieldType), invalidValue).Should().BeFalse();
 
         // Act - Assert
-        Action action = () => JsonSerializer.Serialize((FieldType)invalidValue);
-        action.Should().ThrowExactly<JsonException>();
+        var action = () => JsonSerializer.Serialize((FieldType)invalidValue);
+        _ = action.Should().ThrowExactly<JsonException>();
     }
 
     /// <summary>JSONからデシリアライズできる。</summary>
@@ -54,7 +54,7 @@ public class FieldTypeTest
     [InlineData("\"string,number\"")]
     public void CannotDeserializeJSON_IfInvalidJson(string json)
     {
-        Action action = () => JsonSerializer.Deserialize<FieldType>(json);
-        action.Should().ThrowExactly<JsonException>();
+        var action = () => JsonSerializer.Deserialize<FieldType>(json);
+        _ = action.Should().ThrowExactly<JsonException>();
     }
 }
