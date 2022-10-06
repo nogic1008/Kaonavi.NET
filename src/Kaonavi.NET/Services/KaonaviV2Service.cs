@@ -18,6 +18,7 @@ public class KaonaviV2Service : IKaonaviService
     {
         Converters =
         {
+            new DateTimeConverter(),
             new BlankNullableConverter<DateOnly>(new DateOnlyConverter()),
         },
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -191,8 +192,8 @@ public class KaonaviV2Service : IKaonaviService
 
     #region ユーザー情報
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyList<User>> FetchUsersAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync<User>("/users", "user_data", cancellationToken);
+    public ValueTask<IReadOnlyList<UserWithLoginAt>> FetchUsersAsync(CancellationToken cancellationToken = default)
+        => CallFetchListApiAsync<UserWithLoginAt>("/users", "user_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
@@ -204,8 +205,8 @@ public class KaonaviV2Service : IKaonaviService
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<User> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
-        => CallApiAsync<User>(new(HttpMethod.Get, $"/users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken);
+    public ValueTask<UserWithLoginAt> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
+        => CallApiAsync<UserWithLoginAt>(new(HttpMethod.Get, $"/users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>

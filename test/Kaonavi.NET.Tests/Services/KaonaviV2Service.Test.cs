@@ -1383,7 +1383,8 @@ public class KaonaviV2ServiceTest
         + "      \"id\": 1,"
         + "      \"name\": \"システム管理者\","
         + "      \"type\": \"Adm\""
-        + "    }"
+        + "    },"
+        + "    \"last_login_at\": \"2021-11-01 12:00:00\""
         + "  },"
         + "  {"
         + "    \"id\": 2,"
@@ -1393,7 +1394,8 @@ public class KaonaviV2ServiceTest
         + "      \"id\": 2,"
         + "      \"name\": \"マネージャ\","
         + "      \"type\": \"一般\""
-        + "    }"
+        + "    },"
+        + "    \"last_login_at\": null"
         + "  }"
         + "]"
         + "}";
@@ -1401,7 +1403,7 @@ public class KaonaviV2ServiceTest
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
-        handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
             .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
         // Act
@@ -1409,16 +1411,17 @@ public class KaonaviV2ServiceTest
         var users = await sut.FetchUsersAsync().ConfigureAwait(false);
 
         // Assert
-        users.Should().HaveCount(2);
+        _ = users.Should().AllBeAssignableTo<UserWithLoginAt>()
+            .And.HaveCount(2);
 
         handler.VerifyRequest(req =>
         {
             // End point
-            req.Method.Should().Be(HttpMethod.Get);
-            req.RequestUri?.PathAndQuery.Should().Be("/users");
+            _ = req.Method.Should().Be(HttpMethod.Get);
+            _ = req.RequestUri?.PathAndQuery.Should().Be("/users");
 
             // Header
-            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());
@@ -1485,16 +1488,15 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         var handler = new Mock<HttpMessageHandler>();
-        handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+        _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
 
         // Act
         var sut = CreateSut(handler);
         Func<Task> act = async () => _ = await sut.FetchUserAsync(-1).ConfigureAwait(false);
 
         // Assert
-        await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*userId*")
-            .ConfigureAwait(false);
+        _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
+            .WithMessage("*userId*");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
@@ -1507,37 +1509,34 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         const int userId = 1;
-        const string responseJson = "{"
-        + "\"id\": 1,"
-        + "\"email\": \"user1@example.com\","
-        + "\"member_code\": \"00001\","
-        + "\"role\": {"
-        + "  \"id\": 1,"
-        + "  \"name\": \"システム管理者\","
-        + "  \"type\": \"Adm\""
-        + "}"
-        + "}";
         string tokenString = GenerateRandomString();
+        var responseUser = new UserWithLoginAt(
+            userId,
+            "user1@example.com",
+            "00001",
+            new(1, "システム管理者", "Adm"),
+            new(2021, 11, 1, 12, 0, 0)
+        );
 
         var handler = new Mock<HttpMessageHandler>();
-        handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
-            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
+            .ReturnsJsonResponse(HttpStatusCode.OK, responseUser, KaonaviV2Service.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
         var user = await sut.FetchUserAsync(userId).ConfigureAwait(false);
 
         // Assert
-        user.Should().NotBeNull();
+        _ = user.Should().Be(responseUser);
 
         handler.VerifyRequest(req =>
         {
             // End point
-            req.Method.Should().Be(HttpMethod.Get);
-            req.RequestUri?.PathAndQuery.Should().Be($"/users/{userId}");
+            _ = req.Method.Should().Be(HttpMethod.Get);
+            _ = req.RequestUri?.PathAndQuery.Should().Be($"/users/{userId}");
 
             // Header
-            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             return true;
         }, Times.Once());

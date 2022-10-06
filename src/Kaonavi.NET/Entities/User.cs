@@ -9,3 +9,13 @@ namespace Kaonavi.Net.Entities;
 /// </param>
 /// <param name="Role"><inheritdoc cref="Entities.Role" path="/summary/text()"/></param>
 public record User(int Id, string EMail, string? MemberCode, Role Role);
+
+/// <inheritdoc cref="User"/>
+/// <param name="LastLoginAt">最終ログイン日時(一度もログインしたことがない場合は<see langword="null"/>)</param>
+public record UserWithLoginAt(
+    int Id,
+    string EMail,
+    string? MemberCode,
+    Role Role,
+    DateTime? LastLoginAt
+) : User(Id, EMail, MemberCode, Role);
