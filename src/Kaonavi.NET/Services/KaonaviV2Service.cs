@@ -121,7 +121,7 @@ public class KaonaviV2Service : IKaonaviService
         await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
         var token = await response.Content
-            .ReadFromJsonAsync<Token>(cancellationToken: cancellationToken)
+            .ReadFromJsonAsync<Token>(Options, cancellationToken)
             .ConfigureAwait(false);
         _client.DefaultRequestHeaders.Authorization = null;
         return token!;

@@ -295,25 +295,21 @@ public class KaonaviV2ServiceTest
     public async Task AuthenticateAsync_Calls_PostApi()
     {
         // Arrange
-        const string responseJson = "{"
-        + "\"access_token\": \"25396f58-10f8-c228-7f0f-818b1d666b2e\","
-        + "\"token_type\": \"Bearer\","
-        + "\"expires_in\": 3600"
-        + "}";
         string key = GenerateRandomString();
         string secret = GenerateRandomString();
         string tokenString = GenerateRandomString();
+        var response = new Token("25396f58-10f8-c228-7f0f-818b1d666b2e", "Bearer", 3600);
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
-            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
 
         // Act
         var sut = CreateSut(handler, key, secret);
         var token = await sut.AuthenticateAsync().ConfigureAwait(false);
 
         // Assert
-        _ = token.Should().NotBeNull();
+        _ = token.Should().Be(response);
 
         handler.VerifyRequest(async req =>
         {
@@ -368,16 +364,12 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         const int taskId = 1;
-        const string responseJson = "{"
-        + "\"id\": 1,"
-        + "\"status\": \"NG\","
-        + "\"messages\": [\"エラーメッセージ1\", \"エラーメッセージ2\"]"
-        + "}";
         string tokenString = GenerateRandomString();
+        var response = new TaskProgress(taskId, "NG", new[] { "エラーメッセージ1", "エラーメッセージ2" });
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
-            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -385,6 +377,9 @@ public class KaonaviV2ServiceTest
 
         // Assert
         _ = task.Should().NotBeNull();
+        _ = task.Id.Should().Be(taskId);
+        _ = task.Status.Should().Be("NG");
+        _ = task.Messages.Should().Equal("エラーメッセージ1", "エラーメッセージ2");
 
         handler.VerifyRequest(req =>
         {
@@ -407,103 +402,28 @@ public class KaonaviV2ServiceTest
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchMemberLayoutAsync)} > GET /member_layouts をコールする。")]
     public async Task FetchMemberLayoutAsync_Calls_GetApi()
     {
-        #region JSON
-        const string responseJson = "{"
-        + "\"code\": {"
-        + "  \"name\": \"社員番号\","
-        + "  \"required\": true,"
-        + "  \"type\": \"string\","
-        + "  \"max_length\": 50,"
-        + "  \"enum\": []"
-        + "},"
-        + "\"name\": {"
-        + "  \"name\": \"氏名\","
-        + "  \"required\": false,"
-        + "  \"type\": \"string\","
-        + "  \"max_length\": 100,"
-        + "  \"enum\": []"
-        + "},"
-        + "\"name_kana\": {"
-        + "  \"name\": \"フリガナ\","
-        + "  \"required\": false,"
-        + "  \"type\": \"string\","
-        + "  \"max_length\": 100,"
-        + "  \"enum\": []"
-        + "},"
-        + "\"mail\": {"
-        + "  \"name\": \"メールアドレス\","
-        + "  \"required\": false,"
-        + "  \"type\": \"string\","
-        + "  \"max_length\": 100,"
-        + "  \"enum\": []"
-        + "},"
-        + "\"entered_date\": {"
-        + "  \"name\": \"入社日\","
-        + "  \"required\": false,"
-        + "  \"type\": \"date\","
-        + "  \"max_length\": null,"
-        + "  \"enum\": []"
-        + "},"
-        + "\"retired_date\": {"
-        + "  \"name\": \"退職日\","
-        + "  \"required\": false,"
-        + "  \"type\": \"date\","
-        + "  \"max_length\": null,"
-        + "  \"enum\": []"
-        + "},"
-        + "\"gender\": {"
-        + "  \"name\": \"性別\","
-        + "  \"required\": false,"
-        + "  \"type\": \"enum\","
-        + "  \"max_length\": null,"
-        + "  \"enum\": [\"男性\", \"女性\"]"
-        + "},"
-        + "\"birthday\": {"
-        + "  \"name\": \"生年月日\","
-        + "  \"required\": false,"
-        + "  \"type\": \"date\","
-        + "  \"max_length\": null,"
-        + "  \"enum\": []"
-        + "},"
-        + "\"department\": {"
-        + "  \"name\": \"所属\","
-        + "  \"required\": false,"
-        + "  \"type\": \"department\","
-        + "  \"max_length\": null,"
-        + "  \"enum\": []"
-        + "},"
-        + "\"sub_departments\": {"
-        + "  \"name\": \"兼務情報\","
-        + "  \"required\": false,"
-        + "  \"type\": \"department[]\","
-        + "  \"max_length\": null,"
-        + "  \"enum\": []"
-        + "},"
-        + "\"custom_fields\": ["
-        + "  {"
-        + "    \"id\": 100,"
-        + "    \"name\": \"血液型\","
-        + "    \"required\": false,"
-        + "    \"type\": \"enum\","
-        + "    \"max_length\": null,"
-        + "    \"enum\": [\"A\", \"B\", \"O\", \"AB\"]"
-        + "  },"
-        + "  {"
-        + "    \"id\": 200,"
-        + "    \"name\": \"役職\","
-        + "    \"required\": false,"
-        + "    \"type\": \"enum\","
-        + "    \"max_length\": null,"
-        + "    \"enum\": [\"部長\", \"課長\", \"マネージャー\", null]"
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
         string tokenString = GenerateRandomString();
+        var response = new MemberLayout(
+            new FieldLayout("社員番号", true, FieldType.String, 50, Array.Empty<string?>()),
+            new FieldLayout("氏名", false, FieldType.String, 100, Array.Empty<string?>()),
+            new FieldLayout("フリガナ", false, FieldType.String, 100, Array.Empty<string?>()),
+            new FieldLayout("メールアドレス", false, FieldType.String, 100, Array.Empty<string?>()),
+            new FieldLayout("入社日", false, FieldType.Date, null, Array.Empty<string?>()),
+            new FieldLayout("退職日", false, FieldType.Date, null, Array.Empty<string?>()),
+            new FieldLayout("性別", false, FieldType.Enum, null, new[] { "男性", "女性" }),
+            new FieldLayout("生年月日", false, FieldType.Date, null, Array.Empty<string?>()),
+            new FieldLayout("所属", false, FieldType.Department, null, Array.Empty<string?>()),
+            new FieldLayout("兼務情報", false, FieldType.DepartmentArray, null, Array.Empty<string?>()),
+            new CustomFieldLayout[]
+            {
+                new(100, "血液型", false, FieldType.Enum, null, new[] { "A", "B", "O", "AB" }),
+                new(200, "役職", false, FieldType.Enum, null, new[] { "部長", "課長", "マネージャー", null }),
+            }
+        );
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/member_layouts")
-            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -511,6 +431,17 @@ public class KaonaviV2ServiceTest
 
         // Assert
         _ = layout.Should().NotBeNull();
+        _ = layout.Code.Name.Should().Be("社員番号");
+        _ = layout.Name.Name.Should().Be("氏名");
+        _ = layout.NameKana.Name.Should().Be("フリガナ");
+        _ = layout.Mail.Name.Should().Be("メールアドレス");
+        _ = layout.EnteredDate.Name.Should().Be("入社日");
+        _ = layout.RetiredDate.Name.Should().Be("退職日");
+        _ = layout.Gender.Name.Should().Be("性別");
+        _ = layout.Birthday.Name.Should().Be("生年月日");
+        _ = layout.Department.Name.Should().Be("所属");
+        _ = layout.SubDepartments.Name.Should().Be("兼務情報");
+        _ = layout.CustomFields.Should().HaveCount(2);
 
         handler.VerifyRequest(req =>
         {
@@ -594,36 +525,22 @@ public class KaonaviV2ServiceTest
     public async Task FetchSheetLayoutAsync_Calls_GetApi()
     {
         // Arrange
-        #region JSON
-        const string responseJson = "{"
-        + "\"id\": 12,"
-        + "\"name\": \"住所・連絡先\","
-        + "\"record_type\": 1,"
-        + "\"custom_fields\": ["
-        + "  {"
-        + "    \"id\": 1000,"
-        + "    \"name\": \"住所\","
-        + "    \"required\": false,"
-        + "    \"type\": \"string\","
-        + "    \"max_length\": 250,"
-        + "    \"enum\": []"
-        + "  },"
-        + "  {"
-        + "    \"id\": 1001,"
-        + "    \"name\": \"電話番号\","
-        + "    \"required\": false,"
-        + "    \"type\": \"string\","
-        + "    \"max_length\": 50,"
-        + "    \"enum\": []"
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
+        const int sheetId = 12;
         string tokenString = GenerateRandomString();
+        var response = new SheetLayout(
+            sheetId,
+            "住所・連絡先",
+            RecordType.Multiple,
+            new CustomFieldLayout[]
+            {
+                new(1000, "住所", false, FieldType.String, 250, Array.Empty<string?>()),
+                new(1001, "電話番号", false, FieldType.String, 50, Array.Empty<string?>()),
+            }
+        );
 
         var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/sheet_layouts/12")
-            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheet_layouts/{sheetId}")
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -631,12 +548,16 @@ public class KaonaviV2ServiceTest
 
         // Assert
         _ = layout.Should().NotBeNull();
+        _ = layout.Id.Should().Be(sheetId);
+        _ = layout.Name.Should().Be("住所・連絡先");
+        _ = layout.RecordType.Should().Be(RecordType.Multiple);
+        _ = layout.CustomFields.Should().HaveCount(2);
 
         handler.VerifyRequest(req =>
         {
             // End point
             _ = req.Method.Should().Be(HttpMethod.Get);
-            _ = (req.RequestUri?.PathAndQuery.Should().Be("/sheet_layouts/12"));
+            _ = (req.RequestUri?.PathAndQuery.Should().Be($"/sheet_layouts/{sheetId}"));
 
             // Header
             _ = req.Headers.GetValues("Kaonavi-Token").Should().Equal(tokenString);
