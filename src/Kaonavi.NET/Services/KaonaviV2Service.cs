@@ -144,6 +144,10 @@ public class KaonaviV2Service : IKaonaviService
         => CallTaskApiAsync(new("PATCH"), "/members", new ApiResult<MemberData>(payload), cancellationToken);
 
     /// <inheritdoc/>
+    public ValueTask<int> OverWriteMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
+        => CallTaskApiAsync(HttpMethod.Put, "/members/overwrite", new ApiResult<MemberData>(payload), cancellationToken);
+
+    /// <inheritdoc/>
     public ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default)
         => CallTaskApiAsync(HttpMethod.Post, "/members/delete", new DeleteMemberDataPayload(codes), cancellationToken);
     private record DeleteMemberDataPayload(IReadOnlyList<string> Codes);

@@ -76,6 +76,26 @@ public interface IKaonaviService
     ValueTask<int> UpdateMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// 現在登録されているメンバーとそれに紐づく基本情報・所属(主務)・兼務情報を全て、<paramref name="payload"/>で入れ替えます。
+    /// <list type="bullet">
+    /// <item>存在しない社員番号を指定した場合、新しくメンバーを登録します。</item>
+    /// <item>存在する社員番号を指定した場合、メンバー情報を更新します。</item>
+    /// <item>存在する社員番号を指定していない場合、メンバーを削除します。</item>
+    /// </list>
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1overwrite/put"/>
+    /// </summary>
+    /// <remarks>
+    /// <list type="bullet">
+    /// <item>更新リクエスト制限の対象APIです。</item>
+    /// <item>メンバーの削除はリクエスト時に登録処理が完了しているメンバーに対してのみ実行されます。</item>
+    /// </list>
+    /// </remarks>
+    /// <param name="payload">入れ替え対象となるデータ</param>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+    ValueTask<int> OverWriteMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// 送信されたメンバーを削除します。
     /// 紐付けユーザーがいる場合、そのアカウント種別によってはユーザーも同時に削除されます。
     /// <list type="bullet">
