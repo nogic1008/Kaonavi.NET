@@ -18,6 +18,7 @@ public class KaonaviV2Service : IKaonaviService
     {
         Converters =
         {
+            new DateTimeConverter(),
             new BlankNullableConverter<DateOnly>(new DateOnlyConverter()),
         },
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
