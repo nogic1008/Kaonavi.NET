@@ -28,12 +28,12 @@ public record CustomFieldValue
     /// <summary>シート項目名</summary>
     public string? Name { get; init; }
 
-    private readonly string? _value;
+    private string? _value;
     /// <summary>シート項目値</summary>
     [JsonIgnore]
     public string Value
     {
-        get => _value ?? _values.First();
+        get => _value ??= _values.First();
         init => _value = value;
     }
 
