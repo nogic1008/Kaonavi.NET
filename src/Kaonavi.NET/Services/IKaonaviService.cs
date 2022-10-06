@@ -28,7 +28,7 @@ public interface IKaonaviService
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E8%A8%AD%E5%AE%9A/paths/~1sheet_layouts/get"/>
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyList<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyCollection<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="sheetId"/>と一致するシートの使用可能なレイアウト設定を全て取得します。
@@ -45,7 +45,7 @@ public interface IKaonaviService
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get"/>
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyList<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyCollection<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// メンバー登録と、合わせて基本情報・所属(主務)・兼務情報を登録します。
@@ -55,7 +55,7 @@ public interface IKaonaviService
     /// <param name="payload">追加するデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> AddMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> AddMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 全てのメンバーの基本情報・所属(主務)・兼務情報を一括更新します。
@@ -71,7 +71,7 @@ public interface IKaonaviService
     /// <param name="payload">一括更新するデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> ReplaceMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> ReplaceMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 送信されたメンバーの基本情報・所属(主務)・兼務情報のみを更新します。
@@ -83,7 +83,7 @@ public interface IKaonaviService
     /// <param name="payload">更新するデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> UpdateMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> UpdateMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 現在登録されているメンバーとそれに紐づく基本情報・所属(主務)・兼務情報を全て、<paramref name="payload"/>で入れ替えます。
@@ -103,7 +103,7 @@ public interface IKaonaviService
     /// <param name="payload">入れ替え対象となるデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> OverWriteMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> OverWriteMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 送信されたメンバーを削除します。
@@ -118,7 +118,7 @@ public interface IKaonaviService
     /// <param name="codes">削除する<inheritdoc cref="MemberData" path="/param[@name='Code']/text()"/>のリスト</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default);
+    ValueTask<int> DeleteMemberDataAsync(IReadOnlyCollection<string> codes, CancellationToken cancellationToken = default);
     #endregion メンバー情報
 
     #region シート情報
@@ -128,7 +128,7 @@ public interface IKaonaviService
     /// </summary>
     /// <param name="sheetId"><inheritdoc cref="SheetLayout" path="/param[@name='Id']/text()"/></param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyList<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyCollection<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="sheetId"/>と一致する<inheritdoc cref="SheetData" path="/summary/text()"/>を一括更新します。
@@ -141,7 +141,7 @@ public interface IKaonaviService
     /// <param name="payload">一括更新するデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="sheetId"/>と一致する<inheritdoc cref="SheetData" path="/summary/text()"/>の一部を更新します。
@@ -176,7 +176,7 @@ public interface IKaonaviService
     /// <param name="payload">更新するデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="sheetId"/>と一致する<inheritdoc cref="RecordType.Multiple"/>にレコードを追加します。
@@ -187,7 +187,7 @@ public interface IKaonaviService
     /// <param name="payload">追加するデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
     #endregion シート情報
 
     #region 所属ツリー
@@ -196,7 +196,7 @@ public interface IKaonaviService
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get"/>
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyList<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyCollection<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <inheritdoc cref="DepartmentTree" path="/summary/text()"/>を一括更新します。
@@ -207,7 +207,7 @@ public interface IKaonaviService
     /// <param name="payload">一括更新するデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyCollection<DepartmentTree> payload, CancellationToken cancellationToken = default);
     #endregion 所属ツリー
 
     #region ユーザー情報
@@ -216,7 +216,7 @@ public interface IKaonaviService
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get"/>
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyList<UserWithLoginAt>> FetchUsersAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyCollection<UserWithLoginAt>> FetchUsersAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <inheritdoc cref="User" path="/summary/text()"/>を登録します。
@@ -280,7 +280,7 @@ public interface IKaonaviService
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get"/>
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyList<Role>> FetchRolesAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyCollection<Role>> FetchRolesAsync(CancellationToken cancellationToken = default);
     #endregion ロール
 
     #region マスター管理
@@ -293,7 +293,7 @@ public interface IKaonaviService
     /// ただし、データ連携中の項目はマスター管理で編集不可能なため、上記のパーツ種別であっても取得は出来ません。
     /// </remarks>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyList<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyCollection<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="customFieldId"/>と一致する<inheritdoc cref="EnumOption" path="/summary/text()"/>を取得します。
@@ -321,6 +321,6 @@ public interface IKaonaviService
     /// <param name="payload">リクエスト</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
     /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
-    ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyList<(int? id, string name)> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyCollection<(int? id, string name)> payload, CancellationToken cancellationToken = default);
     #endregion マスター管理
 }

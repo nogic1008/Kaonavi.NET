@@ -7,5 +7,5 @@ namespace Kaonavi.Net.Entities;
 public record MemberDepartment(
     string Code,
     string? Name = null,
-    IReadOnlyList<string>? Names = null
+    IReadOnlyCollection<string>? Names = null
 );

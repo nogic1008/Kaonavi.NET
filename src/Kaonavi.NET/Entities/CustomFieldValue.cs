@@ -19,7 +19,7 @@ public record CustomFieldValue
     /// <param name="values"><inheritdoc cref="Values" path="/summary/text()"/></param>
     /// <param name="name"><inheritdoc cref="Name" path="/summary/text()"/></param>
     [JsonConstructor]
-    public CustomFieldValue(int id, IReadOnlyList<string> values, string? name = null)
+    public CustomFieldValue(int id, IReadOnlyCollection<string> values, string? name = null)
         => (Id, Values, Name) = (id, values, name);
 
     /// <summary><inheritdoc cref="CustomFieldLayout" path="/param[@name='Id']/text()"/></summary>
@@ -29,19 +29,18 @@ public record CustomFieldValue
     public string? Name { get; init; }
 
     private readonly string? _value;
-
     /// <summary>シート項目値</summary>
     [JsonIgnore]
     public string Value
     {
-        get => _value ?? _values![0];
+        get => _value ?? _values.First();
         init => _value = value;
     }
 
-    private IReadOnlyList<string>? _values;
+    private IReadOnlyCollection<string>? _values;
     /// <summary>シート項目値のリスト</summary>
     /// <remarks>チェックボックスの場合にのみ複数の値が返却されます。</remarks>
-    public IReadOnlyList<string> Values
+    public IReadOnlyCollection<string> Values
     {
         get => _values ??= new[] { _value! };
         init => _values = value;

@@ -101,6 +101,6 @@ public class SheetDataTest
         sheetData.Should().NotBeNull();
         sheetData!.Code.Should().Be("A0001");
         sheetData.Records.Should().HaveCount(2)
-            .And.AllBeAssignableTo<IReadOnlyList<CustomFieldValue>>();
+            .And.AllBeAssignableTo<IReadOnlyCollection<CustomFieldValue>>();
     }
 }
