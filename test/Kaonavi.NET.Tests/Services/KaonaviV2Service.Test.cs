@@ -15,6 +15,7 @@ public class KaonaviV2ServiceTest
     private static readonly Uri _baseUri = new("https://example.com/");
 
     /// <summary>タスク結果JSON</summary>
+    /*lang=json,strict*/
     private const string TaskJson = "{\"task_id\":1}";
 
     /// <summary>ランダムな文字列を生成します。</summary>

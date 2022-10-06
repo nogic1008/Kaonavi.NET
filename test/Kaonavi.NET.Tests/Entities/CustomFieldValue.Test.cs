@@ -15,9 +15,9 @@ public class CustomFieldValueTest
     /// <param name="name"><see cref="CustomFieldValue.Name"/></param>
     /// <param name="values"><see cref="CustomFieldValue.Values"/></param>
     [Theory(DisplayName = $"{nameof(CustomFieldValue)} > JSONからデシリアライズできる。")]
-    [InlineData("{\"id\":100,\"name\":\"血液型\",\"values\":[\"A\"]}", 100, "血液型", "A")]
-    [InlineData("{\"id\":100,\"values\":[\"\"]}", 100, null, "")]
-    [InlineData("{\"id\": 1,\"values\":[\"Aコース\",\"Bコース\"]}", 1, null, "Aコース", "Bコース")]
+    [InlineData(/*lang=json,strict*/ "{\"id\":100,\"name\":\"血液型\",\"values\":[\"A\"]}", 100, "血液型", "A")]
+    [InlineData(/*lang=json,strict*/ "{\"id\":100,\"values\":[\"\"]}", 100, null, "")]
+    [InlineData(/*lang=json,strict*/ "{\"id\": 1,\"values\":[\"Aコース\",\"Bコース\"]}", 1, null, "Aコース", "Bコース")]
     public void CanDeserializeJSON(string json, int id, string? name, params string[] values)
     {
         // Arrange - Act

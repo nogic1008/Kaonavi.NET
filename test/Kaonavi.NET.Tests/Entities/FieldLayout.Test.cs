@@ -7,20 +7,22 @@ namespace Kaonavi.Net.Tests.Entities;
 /// </summary>
 public class FieldLayoutTest
 {
-    #region Field
+    /*lang=json,strict*/
     private const string FieldJson1 = "{\"name\":\"社員番号\",\"required\":true,\"type\":\"string\",\"max_length\":50,\"enum\":[]}";
+    /*lang=json,strict*/
     private const string FieldJson2 = "{\"name\":\"入社日\",\"required\":false,\"type\":\"date\",\"max_length\":null,\"enum\":[]}";
+    /*lang=json,strict*/
     private const string FieldJson3 = "{\"name\":\"性別\",\"required\":false,\"type\":\"enum\",\"max_length\":null,\"enum\":[\"男性\",\"女性\"]}";
 
     /// <summary>
     /// JSONから<see cref="FieldLayout"/>にデシリアライズできる。
     /// </summary>
     /// <param name="json">JSON文字列</param>
-    /// <param name="name"><see cref="FieldLayout.Name"/></param>
-    /// <param name="required"><see cref="FieldLayout.Required"/></param>
-    /// <param name="type"><see cref="FieldLayout.Type"/></param>
-    /// <param name="maxLength"><see cref="FieldLayout.MaxLength"/></param>
-    /// <param name="enums"><see cref="FieldLayout.Enum"/></param>
+    /// <param name="name"><inheritdoc cref="FieldLayout.Name" path="/summary"/></param>
+    /// <param name="required"><inheritdoc cref="FieldLayout.Required" path="/summary"/></param>
+    /// <param name="type"><inheritdoc cref="FieldLayout.Type" path="/summary"/></param>
+    /// <param name="maxLength"><inheritdoc cref="FieldLayout.MaxLength" path="/summary"/></param>
+    /// <param name="enums"><inheritdoc cref="FieldLayout.Enum" path="/summary"/></param>
     [Theory(DisplayName = $"{nameof(FieldLayout)} > JSONからデシリアライズできる。")]
     [InlineData(FieldJson1, "社員番号", true, FieldType.String, 50)]
     [InlineData(FieldJson2, "入社日", false, FieldType.Date, null)]
@@ -38,7 +40,6 @@ public class FieldLayoutTest
         _ = field.MaxLength.Should().Be(maxLength);
         _ = field.Enum.Should().Equal(enums);
     }
-    #endregion Field
 
     /// <summary>
     /// JSONから<see cref="CustomFieldLayout"/>にデシリアライズできる。
