@@ -7,10 +7,9 @@ public class DateTimeConverter : JsonConverter<DateTime>
 {
     /// <inheritdoc/>
     public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => DateTime.Parse(reader.GetString() ?? "");
+        => DateTime.Parse(reader.GetString()!);
 
     /// <inheritdoc/>
-    [ExcludeFromCodeCoverage]
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         => writer.WriteStringValue(value.ToString("yyyy-MM-dd hh:mm:ss"));
 }
