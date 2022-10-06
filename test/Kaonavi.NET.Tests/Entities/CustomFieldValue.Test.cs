@@ -24,11 +24,11 @@ public class CustomFieldValueTest
         var fieldValue = JsonSerializer.Deserialize<CustomFieldValue>(json, JsonConfig.Default);
 
         // Assert
-        fieldValue.Should().NotBeNull();
-        fieldValue!.Id.Should().Be(id);
-        fieldValue.Name.Should().Be(name);
-        fieldValue.Value.Should().Be(values[0]);
-        fieldValue.Values.Should().NotBeNullOrEmpty()
+        _ = fieldValue.Should().NotBeNull();
+        _ = fieldValue!.Id.Should().Be(id);
+        _ = fieldValue.Name.Should().Be(name);
+        _ = fieldValue.Value.Should().Be(values[0]);
+        _ = fieldValue.Values.Should().NotBeNullOrEmpty()
             .And.Equal(values);
     }
 }

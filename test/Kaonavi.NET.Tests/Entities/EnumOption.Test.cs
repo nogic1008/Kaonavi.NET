@@ -25,11 +25,11 @@ public class EnumOptionTest
         var enumOption = JsonSerializer.Deserialize<EnumOption>(jsonString, JsonConfig.Default);
 
         // Assert
-        enumOption.Should().NotBeNull();
-        enumOption!.SheetName.Should().Be("役職情報");
-        enumOption.Id.Should().Be(10);
-        enumOption.Name.Should().Be("役職");
-        enumOption.EnumOptionData.Should().NotBeNullOrEmpty()
+        _ = enumOption.Should().NotBeNull();
+        _ = enumOption!.SheetName.Should().Be("役職情報");
+        _ = enumOption.Id.Should().Be(10);
+        _ = enumOption.Name.Should().Be("役職");
+        _ = enumOption.EnumOptionData.Should().NotBeNullOrEmpty()
             .And.Equal(new EnumOption.Data(1, "社長"), new(2, "部長"), new(3, "課長"));
     }
 }

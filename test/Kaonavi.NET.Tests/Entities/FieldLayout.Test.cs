@@ -31,12 +31,12 @@ public class FieldLayoutTest
         var field = JsonSerializer.Deserialize<FieldLayout>(json, JsonConfig.Default);
 
         // Assert
-        field.Should().NotBeNull();
-        field!.Name.Should().Be(name);
-        field.Required.Should().Be(required);
-        field.Type.Should().Be(type);
-        field.MaxLength.Should().Be(maxLength);
-        field.Enum.Should().Equal(enums);
+        _ = field.Should().NotBeNull();
+        _ = field!.Name.Should().Be(name);
+        _ = field.Required.Should().Be(required);
+        _ = field.Type.Should().Be(type);
+        _ = field.MaxLength.Should().Be(maxLength);
+        _ = field.Enum.Should().Equal(enums);
     }
     #endregion Field
 
@@ -60,12 +60,12 @@ public class FieldLayoutTest
         var customField = JsonSerializer.Deserialize<CustomFieldLayout>(jsonString, JsonConfig.Default);
 
         // Assert
-        customField.Should().NotBeNull();
-        customField!.Id.Should().Be(100);
-        customField.Name.Should().Be("血液型");
-        customField.Required.Should().BeFalse();
-        customField.Type.Should().Be(FieldType.Enum);
-        customField.MaxLength.Should().BeNull();
-        customField.Enum.Should().Equal("A", "B", "O", "AB");
+        _ = customField.Should().NotBeNull();
+        _ = customField!.Id.Should().Be(100);
+        _ = customField.Name.Should().Be("血液型");
+        _ = customField.Required.Should().BeFalse();
+        _ = customField.Type.Should().Be(FieldType.Enum);
+        _ = customField.MaxLength.Should().BeNull();
+        _ = customField.Enum.Should().Equal("A", "B", "O", "AB");
     }
 }

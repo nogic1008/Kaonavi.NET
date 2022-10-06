@@ -37,9 +37,9 @@ public class SheetDataTest
         var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString, JsonConfig.Default);
 
         // Assert
-        sheetData.Should().NotBeNull();
-        sheetData!.Code.Should().Be("A0002");
-        sheetData.Records.Should().ContainSingle()
+        _ = sheetData.Should().NotBeNull();
+        _ = sheetData!.Code.Should().Be("A0002");
+        _ = sheetData.Records.Should().ContainSingle()
             .Which.Should().AllBeAssignableTo<CustomFieldValue>();
     }
 
@@ -98,9 +98,9 @@ public class SheetDataTest
         var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString, JsonConfig.Default);
 
         // Assert
-        sheetData.Should().NotBeNull();
-        sheetData!.Code.Should().Be("A0001");
-        sheetData.Records.Should().HaveCount(2)
+        _ = sheetData.Should().NotBeNull();
+        _ = sheetData!.Code.Should().Be("A0001");
+        _ = sheetData.Records.Should().HaveCount(2)
             .And.AllBeAssignableTo<IReadOnlyCollection<CustomFieldValue>>();
     }
 }

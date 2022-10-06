@@ -23,6 +23,6 @@ public class RoleTest
         var role = JsonSerializer.Deserialize<Role>(json, JsonConfig.Default);
 
         // Assert
-        role.Should().Be(new Role(id, name, type));
+        _ = role.Should().Be(new Role(id, name, type));
     }
 }

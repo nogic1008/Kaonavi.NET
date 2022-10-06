@@ -28,9 +28,9 @@ public class MemberDepartmentTest
         var department = JsonSerializer.Deserialize<MemberDepartment>(json, JsonConfig.Default);
 
         // Assert
-        department.Should().NotBeNull();
-        department!.Code.Should().Be(code);
-        department.Name.Should().Be(name);
-        department.Names.Should().Equal(names);
+        _ = department.Should().NotBeNull();
+        _ = department!.Code.Should().Be(code);
+        _ = department.Name.Should().Be(name);
+        _ = department.Names.Should().Equal(names);
     }
 }

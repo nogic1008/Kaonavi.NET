@@ -43,11 +43,11 @@ public class SheetLayoutTest
         var layout = JsonSerializer.Deserialize<SheetLayout>(jsonString, JsonConfig.Default);
 
         // Assert
-        layout.Should().NotBeNull();
-        layout!.Id.Should().Be(12);
-        layout.Name.Should().Be("住所・連絡先");
-        layout.RecordType.Should().Be(RecordType.Multiple);
-        layout.CustomFields.Should().HaveCount(2)
+        _ = layout.Should().NotBeNull();
+        _ = layout!.Id.Should().Be(12);
+        _ = layout.Name.Should().Be("住所・連絡先");
+        _ = layout.RecordType.Should().Be(RecordType.Multiple);
+        _ = layout.CustomFields.Should().HaveCount(2)
             .And.AllBeAssignableTo<CustomFieldLayout>();
     }
 }

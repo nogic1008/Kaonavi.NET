@@ -47,7 +47,7 @@ public class KaonaviV2Service : IKaonaviService
         get => _client.DefaultRequestHeaders.TryGetValues(TokenHeader, out var values) ? values.First() : null;
         set
         {
-            _client.DefaultRequestHeaders.Remove(TokenHeader);
+            _ = _client.DefaultRequestHeaders.Remove(TokenHeader);
             if (!string.IsNullOrWhiteSpace(value))
                 _client.DefaultRequestHeaders.Add(TokenHeader, value);
         }
@@ -64,7 +64,7 @@ public class KaonaviV2Service : IKaonaviService
         get => _client.DefaultRequestHeaders.TryGetValues(DryRunHeader, out var values) && values.First() == "1";
         set
         {
-            _client.DefaultRequestHeaders.Remove(DryRunHeader);
+            _ = _client.DefaultRequestHeaders.Remove(DryRunHeader);
             if (value)
                 _client.DefaultRequestHeaders.Add(DryRunHeader, "1");
         }

@@ -28,9 +28,9 @@ public class TaskProgressTest
         var task = JsonSerializer.Deserialize<TaskProgress>(json, JsonConfig.Default);
 
         // Assert
-        task.Should().NotBeNull();
-        task!.Id.Should().Be(id);
-        task.Status.Should().Be(status);
-        task.Messages.Should().Equal(messages);
+        _ = task.Should().NotBeNull();
+        _ = task!.Id.Should().Be(id);
+        _ = task.Status.Should().Be(status);
+        _ = task.Messages.Should().Equal(messages);
     }
 }
