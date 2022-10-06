@@ -858,6 +858,44 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
+    /// <see cref="KaonaviV2Service.OverWriteMemberDataAsync"/>は、"/members/overwrite"にPUTリクエストを行う。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.OverWriteMemberDataAsync)} > PUT /members/overwrite をコールする。")]
+    public async Task OverWriteMemberDataAsync_Calls_PutApi()
+    {
+        // Arrange
+        string tokenString = GenerateRandomString();
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
+            .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        int taskId = await sut.OverWriteMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+
+        // Assert
+        _ = taskId.Should().Be(1);
+
+        handler.VerifyRequest(async req =>
+        {
+            // End point
+            _ = req.Method.Should().Be(HttpMethod.Put);
+            _ = req.RequestUri?.PathAndQuery.Should().Be("/members/overwrite");
+
+            // Header
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            _ = receivedJson.Should().Be(expectedJson);
+
+            return true;
+        }, Times.Once());
+    }
+
+    /// <summary>
     /// <see cref="KaonaviV2Service.DeleteMemberDataAsync"/>は、"/members/delete"にPOSTリクエストを行う。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.DeleteMemberDataAsync)} > POST /members/delete をコールする。")]
