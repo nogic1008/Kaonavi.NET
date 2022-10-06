@@ -335,7 +335,71 @@ public class KaonaviV2ServiceTest
         }, Times.Once());
     }
 
-    #region レイアウト定義 API
+    #region タスク進捗状況 API
+    /// <summary>
+    /// <inheritdoc cref="KaonaviV2Service.FetchTaskProgressAsync" path="/param[@name='taskId']"/>が<c>0</c>未満のとき、
+    /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchTaskProgressAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    public async Task FetchTaskProgressAsync_Throws_ArgumentOutOfRangeException()
+    {
+        // Arrange
+        var handler = new Mock<HttpMessageHandler>();
+        handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+
+        // Act
+        var sut = CreateSut(handler);
+        Func<Task> act = async () => _ = await sut.FetchTaskProgressAsync(-1).ConfigureAwait(false);
+
+        // Assert
+        await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
+            .WithMessage("*taskId*")
+            .ConfigureAwait(false);
+
+        handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+    }
+
+    /// <summary>
+    /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchTaskProgressAsync)} > GET /tasks/:taskId をコールする。")]
+    public async Task FetchTaskProgressAsync_Calls_GetApi()
+    {
+        // Arrange
+        const int taskId = 1;
+        const string responseJson = "{"
+        + "\"id\": 1,"
+        + "\"status\": \"NG\","
+        + "\"messages\": [\"エラーメッセージ1\", \"エラーメッセージ2\"]"
+        + "}";
+        string tokenString = GenerateRandomString();
+
+        var handler = new Mock<HttpMessageHandler>();
+        handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
+            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        var task = await sut.FetchTaskProgressAsync(taskId).ConfigureAwait(false);
+
+        // Assert
+        task.Should().NotBeNull();
+
+        handler.VerifyRequest(req =>
+        {
+            // End point
+            req.Method.Should().Be(HttpMethod.Get);
+            req.RequestUri?.PathAndQuery.Should().Be($"/tasks/{taskId}");
+
+            // Header
+            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            return true;
+        }, Times.Once());
+    }
+    #endregion タスク進捗状況 API
+
+    #region レイアウト設定 API
     /// <summary>
     /// <see cref="KaonaviV2Service.FetchMemberLayoutAsync"/>は、"/member_layouts"にGETリクエストを行う。
     /// </summary>
@@ -579,7 +643,7 @@ public class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
-    #endregion レイアウト定義 API
+    #endregion レイアウト設定 API
 
     #region メンバー情報 API
     /// <summary>Member APIのリクエストPayload</summary>
@@ -852,6 +916,44 @@ public class KaonaviV2ServiceTest
             // Body
             string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
             receivedJson.Should().Be(expectedJson);
+
+            return true;
+        }, Times.Once());
+    }
+
+    /// <summary>
+    /// <see cref="KaonaviV2Service.OverWriteMemberDataAsync"/>は、"/members/overwrite"にPUTリクエストを行う。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.OverWriteMemberDataAsync)} > PUT /members/overwrite をコールする。")]
+    public async Task OverWriteMemberDataAsync_Calls_PutApi()
+    {
+        // Arrange
+        string tokenString = GenerateRandomString();
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
+            .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        int taskId = await sut.OverWriteMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+
+        // Assert
+        _ = taskId.Should().Be(1);
+
+        handler.VerifyRequest(async req =>
+        {
+            // End point
+            _ = req.Method.Should().Be(HttpMethod.Put);
+            _ = req.RequestUri?.PathAndQuery.Should().Be("/members/overwrite");
+
+            // Header
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            _ = receivedJson.Should().Be(expectedJson);
 
             return true;
         }, Times.Once());
@@ -1261,70 +1363,6 @@ public class KaonaviV2ServiceTest
         }, Times.Once());
     }
     #endregion 所属ツリー API
-
-    #region タスク進捗状況 API
-    /// <summary>
-    /// <inheritdoc cref="KaonaviV2Service.FetchTaskProgressAsync" path="/param[@name='taskId']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
-    /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchTaskProgressAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-    public async Task FetchTaskProgressAsync_Throws_ArgumentOutOfRangeException()
-    {
-        // Arrange
-        var handler = new Mock<HttpMessageHandler>();
-        handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
-
-        // Act
-        var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.FetchTaskProgressAsync(-1).ConfigureAwait(false);
-
-        // Assert
-        await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*taskId*")
-            .ConfigureAwait(false);
-
-        handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
-    }
-
-    /// <summary>
-    /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
-    /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchTaskProgressAsync)} > GET /tasks/:taskId をコールする。")]
-    public async Task FetchTaskProgressAsync_Calls_GetApi()
-    {
-        // Arrange
-        const int taskId = 1;
-        const string responseJson = "{"
-        + "\"id\": 1,"
-        + "\"status\": \"NG\","
-        + "\"messages\": [\"エラーメッセージ1\", \"エラーメッセージ2\"]"
-        + "}";
-        string tokenString = GenerateRandomString();
-
-        var handler = new Mock<HttpMessageHandler>();
-        handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
-            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
-
-        // Act
-        var sut = CreateSut(handler, accessToken: tokenString);
-        var task = await sut.FetchTaskProgressAsync(taskId).ConfigureAwait(false);
-
-        // Assert
-        task.Should().NotBeNull();
-
-        handler.VerifyRequest(req =>
-        {
-            // End point
-            req.Method.Should().Be(HttpMethod.Get);
-            req.RequestUri?.PathAndQuery.Should().Be($"/tasks/{taskId}");
-
-            // Header
-            req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
-
-            return true;
-        }, Times.Once());
-    }
-    #endregion タスク進捗状況 API
 
     #region ユーザー情報 API
     /// <summary>

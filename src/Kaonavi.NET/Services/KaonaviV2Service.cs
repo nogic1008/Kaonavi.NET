@@ -112,7 +112,14 @@ public class KaonaviV2Service : IKaonaviService
         return token!;
     }
 
-    #region レイアウト定義
+    #region タスク進捗状況
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
+    public ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
+        => CallApiAsync<TaskProgress>(new(HttpMethod.Get, $"/tasks/{ThrowIfNegative(taskId, nameof(taskId)):D}"), cancellationToken);
+    #endregion タスク進捗状況
+
+    #region レイアウト設定
     /// <inheritdoc/>
     public ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
         => CallApiAsync<MemberLayout>(new(HttpMethod.Get, "/member_layouts"), cancellationToken);
@@ -124,7 +131,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     public ValueTask<SheetLayout> FetchSheetLayoutAsync(int sheetId, CancellationToken cancellationToken = default)
         => CallApiAsync<SheetLayout>(new(HttpMethod.Get, $"/sheet_layouts/{sheetId}"), cancellationToken);
-    #endregion レイアウト定義
+    #endregion レイアウト設定
 
     #region メンバー情報
     /// <inheritdoc/>
@@ -142,6 +149,10 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     public ValueTask<int> UpdateMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
         => CallTaskApiAsync(new("PATCH"), "/members", new ApiResult<MemberData>(payload), cancellationToken);
+
+    /// <inheritdoc/>
+    public ValueTask<int> OverWriteMemberDataAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default)
+        => CallTaskApiAsync(HttpMethod.Put, "/members/overwrite", new ApiResult<MemberData>(payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> DeleteMemberDataAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default)
@@ -177,13 +188,6 @@ public class KaonaviV2Service : IKaonaviService
         => CallTaskApiAsync(HttpMethod.Put, "/departments", new DepartmentsResult(payload), cancellationToken);
     private record DepartmentsResult(IReadOnlyList<DepartmentTree> DepartmentData);
     #endregion 所属ツリー
-
-    #region タスク進捗状況
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
-        => CallApiAsync<TaskProgress>(new(HttpMethod.Get, $"/tasks/{ThrowIfNegative(taskId, nameof(taskId)):D}"), cancellationToken);
-    #endregion タスク進捗状況
 
     #region ユーザー情報
     /// <inheritdoc/>
