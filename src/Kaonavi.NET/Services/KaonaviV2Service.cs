@@ -9,7 +9,7 @@ namespace Kaonavi.Net.Services;
 public class KaonaviV2Service : IKaonaviService
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
-    private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0";
+    private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
 
     /// <summary>
     /// APIに送信するJSONペイロードのエンコード設定
@@ -117,7 +117,7 @@ public class KaonaviV2Service : IKaonaviService
             }!);
         _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
 
-        var response = await _client.PostAsync("/token", content, cancellationToken).ConfigureAwait(false);
+        var response = await _client.PostAsync("token", content, cancellationToken).ConfigureAwait(false);
         await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
         var token = await response.Content
@@ -131,87 +131,87 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
-        => CallApiAsync<TaskProgress>(new(HttpMethod.Get, $"/tasks/{ThrowIfNegative(taskId, nameof(taskId)):D}"), cancellationToken);
+        => CallApiAsync<TaskProgress>(new(HttpMethod.Get, $"tasks/{ThrowIfNegative(taskId, nameof(taskId)):D}"), cancellationToken);
     #endregion タスク進捗状況
 
     #region レイアウト設定
     /// <inheritdoc/>
     public ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
-        => CallApiAsync<MemberLayout>(new(HttpMethod.Get, "/member_layouts"), cancellationToken);
+        => CallApiAsync<MemberLayout>(new(HttpMethod.Get, "member_layouts"), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<IReadOnlyCollection<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync<SheetLayout>("/sheet_layouts", "sheets", cancellationToken);
+        => CallFetchListApiAsync<SheetLayout>("sheet_layouts", "sheets", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<SheetLayout> FetchSheetLayoutAsync(int sheetId, CancellationToken cancellationToken = default)
-        => CallApiAsync<SheetLayout>(new(HttpMethod.Get, $"/sheet_layouts/{sheetId}"), cancellationToken);
+        => CallApiAsync<SheetLayout>(new(HttpMethod.Get, $"sheet_layouts/{sheetId}"), cancellationToken);
     #endregion レイアウト設定
 
     #region メンバー情報
     /// <inheritdoc/>
     public ValueTask<IReadOnlyCollection<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync<MemberData>("/members", "member_data", cancellationToken);
+        => CallFetchListApiAsync<MemberData>("members", "member_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> AddMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Post, "/members", new ApiResult<MemberData>(payload), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, "members", new ApiResult<MemberData>(payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, "/members", new ApiResult<MemberData>(payload), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "members", new ApiResult<MemberData>(payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> UpdateMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(new("PATCH"), "/members", new ApiResult<MemberData>(payload), cancellationToken);
+        => CallTaskApiAsync(new("PATCH"), "members", new ApiResult<MemberData>(payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> OverWriteMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, "/members/overwrite", new ApiResult<MemberData>(payload), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", new ApiResult<MemberData>(payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> DeleteMemberDataAsync(IReadOnlyCollection<string> codes, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Post, "/members/delete", new DeleteMemberDataPayload(codes), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, "members/delete", new DeleteMemberDataPayload(codes), cancellationToken);
     private record DeleteMemberDataPayload(IReadOnlyCollection<string> Codes);
     #endregion メンバー情報
 
     #region シート情報
     /// <inheritdoc/>
     public ValueTask<IReadOnlyCollection<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync<SheetData>($"/sheets/{sheetId:D}", "member_data", cancellationToken);
+        => CallFetchListApiAsync<SheetData>($"sheets/{sheetId:D}", "member_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, $"/sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, $"sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(new("PATCH"), $"/sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
+        => CallTaskApiAsync(new("PATCH"), $"sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Post, $"/sheets/{sheetId:D}/add", new ApiResult<SheetData>(payload), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, $"sheets/{sheetId:D}/add", new ApiResult<SheetData>(payload), cancellationToken);
     #endregion シート情報
 
     #region 所属ツリー
     /// <inheritdoc/>
     public ValueTask<IReadOnlyCollection<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync<DepartmentTree>("/departments", "department_data", cancellationToken);
+        => CallFetchListApiAsync<DepartmentTree>("departments", "department_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyCollection<DepartmentTree> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, "/departments", new DepartmentsResult(payload), cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "departments", new DepartmentsResult(payload), cancellationToken);
     private record DepartmentsResult(IReadOnlyCollection<DepartmentTree> DepartmentData);
     #endregion 所属ツリー
 
     #region ユーザー情報
     /// <inheritdoc/>
     public ValueTask<IReadOnlyCollection<UserWithLoginAt>> FetchUsersAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync<UserWithLoginAt>("/users", "user_data", cancellationToken);
+        => CallFetchListApiAsync<UserWithLoginAt>("users", "user_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
-        => CallApiAsync<User>(new(HttpMethod.Post, "/users")
+        => CallApiAsync<User>(new(HttpMethod.Post, "users")
         {
             Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
         }, cancellationToken);
@@ -220,12 +220,12 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<UserWithLoginAt> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
-        => CallApiAsync<UserWithLoginAt>(new(HttpMethod.Get, $"/users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken);
+        => CallApiAsync<UserWithLoginAt>(new(HttpMethod.Get, $"users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
-        => CallApiAsync<User>(new(new("PATCH"), $"/users/{ThrowIfNegative(userId, nameof(userId)):D}")
+        => CallApiAsync<User>(new(new("PATCH"), $"users/{ThrowIfNegative(userId, nameof(userId)):D}")
         {
             Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
         }, cancellationToken);
@@ -233,29 +233,29 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
     public async ValueTask DeleteUserAsync(int userId, CancellationToken cancellationToken = default)
-        => await CallApiAsync(new(HttpMethod.Delete, $"/users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken).ConfigureAwait(false);
+        => await CallApiAsync(new(HttpMethod.Delete, $"users/{ThrowIfNegative(userId, nameof(userId)):D}"), cancellationToken).ConfigureAwait(false);
     #endregion ユーザー情報
 
     #region ロール
     /// <inheritdoc/>
     public ValueTask<IReadOnlyCollection<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync<Role>("/roles", "role_data", cancellationToken);
+        => CallFetchListApiAsync<Role>("roles", "role_data", cancellationToken);
     #endregion ロール
 
     #region マスター管理
     /// <inheritdoc/>
     public ValueTask<IReadOnlyCollection<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync<EnumOption>("/enum_options", "custom_field_data", cancellationToken);
+        => CallFetchListApiAsync<EnumOption>("enum_options", "custom_field_data", cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default)
-        => CallApiAsync<EnumOption>(new(HttpMethod.Get, $"/enum_options/{customFieldId}"), cancellationToken);
+        => CallApiAsync<EnumOption>(new(HttpMethod.Get, $"enum_options/{customFieldId}"), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyCollection<(int?, string)> payload, CancellationToken cancellationToken = default)
         => CallTaskApiAsync(
             HttpMethod.Put,
-            $"/enum_options/{customFieldId}",
+            $"enum_options/{customFieldId}",
             new EnumOptionPayload(payload.Select(d => new EnumOptionPayload.Data(d.Item1, d.Item2)).ToArray()),
             cancellationToken);
     private record EnumOptionPayload(IReadOnlyCollection<EnumOptionPayload.Data> EnumOptionData)
