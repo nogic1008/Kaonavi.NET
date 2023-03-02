@@ -67,7 +67,7 @@ public class UserTest
             EMail: "example@kaonavi.jp",
             MemberCode: "12345",
             Role: new(1, "システム管理者", "Adm"),
-            LastLoginAt: new(2021, 11, 1, 12, 0, 0)
+            LastLoginAt: new DateTimeOffset(2021, 11, 1, 12, 0, 0, TimeSpan.Zero).LocalDateTime
         ));
     }
 }
