@@ -15,10 +15,11 @@ public class KaonaviV2Service : IKaonaviService
     /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
     private const int UpdateRequestLimit = 5;
 
-    /// <summary>更新リクエストがリセットされる時間(ミリ秒)</summary>
+    /// <summary>更新リクエストがリセットされる時間(秒)</summary>
     /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
-    private const int UpdateLimitWaitTime = 60 * 1000;
+    private const int WaitSecondsForUpdateLimit = 60;
 
+    /// <summary>PATCHリクエスト</summary>
     private static readonly HttpMethod _patchMethod
 #if NET5_0_OR_GREATER
         = HttpMethod.Patch;
@@ -85,6 +86,8 @@ public class KaonaviV2Service : IKaonaviService
         }
     }
 
+    /// <summary>更新リクエストを最後に呼び出した日時</summary>
+    private DateTime _lastUpdateApiCalled;
     /// <summary>
     /// 更新リクエストの呼び出し回数
     /// </summary>
@@ -337,9 +340,12 @@ public class KaonaviV2Service : IKaonaviService
     {
         if (UpdateRequestCount >= UpdateRequestLimit)
         {
-            await Task.Delay(UpdateLimitWaitTime, cancellationToken);
+            var timeSpan = _lastUpdateApiCalled.AddSeconds(WaitSecondsForUpdateLimit) - _lastUpdateApiCalled;
+            if (timeSpan > TimeSpan.Zero)
+                await Task.Delay(timeSpan, cancellationToken);
             UpdateRequestCount -= UpdateRequestLimit;
         }
+        _lastUpdateApiCalled = DateTime.Now;
         return (await CallApiAsync<JsonElement>(new(method, uri)
         {
             Content = JsonContent.Create(payload, options: Options)
