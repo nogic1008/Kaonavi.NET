@@ -286,6 +286,57 @@ public class KaonaviV2ServiceTest
         }, Times.Once());
         handler.VerifyRequest(res => res.RequestUri?.PathAndQuery != "/token", Times.Never());
     }
+
+    /// <summary>
+    /// 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。")]
+    public async Task UpdateApi_Waits_UpdateLimit()
+    {
+        // Arrange
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
+            .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+        // Act - Assert
+        var sut = CreateSut(handler, accessToken: "token");
+        _ = sut.UpdateRequestCount.Should().Be(0);
+
+        // Normal calls (1-5)
+        for (int i = 1; i <= 5; i++)
+            await CallUpdateApiAndVerifyAsync(i);
+
+        // Extra call (Wait 1 minute and reset call count)
+        await CallUpdateApiAndVerifyAsync(1);
+
+        handler.VerifyAnyRequest(Times.Exactly(6));
+
+        async Task CallUpdateApiAndVerifyAsync(int expected)
+        {
+            _ = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+            _ = sut.UpdateRequestCount.Should().Be(expected);
+        }
+    }
+
+    /// <summary>
+    /// 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > API Caller > 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。")]
+    public async Task UpdateApi_DoesNotWaits_WhenInvalid()
+    {
+        // Arrange
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
+            .ReturnsResponse(HttpStatusCode.NotFound, /*lang=json,strict*/ "{\"errors\":[\"test\"]}", "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: "token");
+        Func<Task> act = async () => await sut.OverWriteMemberDataAsync(_memberDataPayload);
+
+        // Assert
+        _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
+        _ = sut.UpdateRequestCount.Should().Be(0);
+    }
     #endregion API Common Path
 
     /// <summary>

@@ -11,6 +11,22 @@ public class KaonaviV2Service : IKaonaviService
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
 
+    /// <summary>更新リクエストの制限数</summary>
+    /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
+    private const int UpdateRequestLimit = 5;
+
+    /// <summary>更新リクエストがリセットされる時間(秒)</summary>
+    /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
+    private const int WaitSecondsForUpdateLimit = 60;
+
+    /// <summary>PATCHリクエスト</summary>
+    private static readonly HttpMethod _patchMethod
+#if NET5_0_OR_GREATER
+        = HttpMethod.Patch;
+#else
+        = new("PATCH");
+#endif
+
     /// <summary>
     /// APIに送信するJSONペイロードのエンコード設定
     /// </summary>
@@ -69,6 +85,14 @@ public class KaonaviV2Service : IKaonaviService
                 _client.DefaultRequestHeaders.Add(DryRunHeader, "1");
         }
     }
+
+    /// <summary>更新リクエストを最後に呼び出した日時</summary>
+    private DateTime _lastUpdateApiCalled;
+    /// <summary>
+    /// 更新リクエストの呼び出し回数
+    /// </summary>
+    /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
+    public int UpdateRequestCount { get; private set; }
     #endregion Properties
 
     /// <summary>
@@ -163,7 +187,7 @@ public class KaonaviV2Service : IKaonaviService
 
     /// <inheritdoc/>
     public ValueTask<int> UpdateMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(new("PATCH"), "members", new ApiResult<MemberData>(payload), cancellationToken);
+        => CallTaskApiAsync(_patchMethod, "members", new ApiResult<MemberData>(payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> OverWriteMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
@@ -186,7 +210,7 @@ public class KaonaviV2Service : IKaonaviService
 
     /// <inheritdoc/>
     public ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(new("PATCH"), $"sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
+        => CallTaskApiAsync(_patchMethod, $"sheets/{sheetId:D}", new ApiResult<SheetData>(payload), cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
@@ -225,7 +249,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
-        => CallApiAsync<User>(new(new("PATCH"), $"users/{ThrowIfNegative(userId, nameof(userId)):D}")
+        => CallApiAsync<User>(new(_patchMethod, $"users/{ThrowIfNegative(userId, nameof(userId)):D}")
         {
             Content = JsonContent.Create(new UserJsonPayload(payload.EMail, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), options: Options)
         }, cancellationToken);
@@ -277,27 +301,29 @@ public class KaonaviV2Service : IKaonaviService
     /// </summary>
     /// <param name="request">APIに対するリクエスト</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <param name="isUpdateLimitApi">更新リクエスト制限の対象APIかどうか</param>
     /// <exception cref="ApplicationException">
     /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
     /// </exception>
-    private async ValueTask<HttpResponseMessage> CallApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    private async ValueTask<HttpResponseMessage> CallApiAsync(HttpRequestMessage request, CancellationToken cancellationToken, bool isUpdateLimitApi = false)
     {
         await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
         var response = await _client.SendAsync(request, cancellationToken: cancellationToken).ConfigureAwait(false);
         await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
+        if (isUpdateLimitApi)
+            UpdateRequestCount++;
         return response;
     }
 
     /// <summary>
     /// APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>に変換して返します。
     /// </summary>
-    /// <param name="request"><inheritdoc cref="CallApiAsync" path="/param[@name='request']"/></param>
-    /// <param name="cancellationToken"><inheritdoc cref="CallApiAsync" path="/param[@name='cancellationToken']"/></param>
+    /// <inheritdoc cref="CallApiAsync" path="/param"/>
     /// <typeparam name="T">JSONの型</typeparam>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
-    private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken)
+    private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, CancellationToken cancellationToken, bool isUpdateLimitApi = false)
     {
-        var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
+        var response = await CallApiAsync(request, cancellationToken, isUpdateLimitApi).ConfigureAwait(false);
         return (await response.Content.ReadFromJsonAsync<T>(Options, cancellationToken).ConfigureAwait(false))!;
     }
 
@@ -311,10 +337,20 @@ public class KaonaviV2Service : IKaonaviService
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, CancellationToken cancellationToken)
-        => (await CallApiAsync<JsonElement>(new(method, uri)
+    {
+        if (UpdateRequestCount >= UpdateRequestLimit)
+        {
+            var timeSpan = _lastUpdateApiCalled.AddSeconds(WaitSecondsForUpdateLimit) - _lastUpdateApiCalled;
+            if (timeSpan > TimeSpan.Zero)
+                await Task.Delay(timeSpan, cancellationToken);
+            UpdateRequestCount -= UpdateRequestLimit;
+        }
+        _lastUpdateApiCalled = DateTime.Now;
+        return (await CallApiAsync<JsonElement>(new(method, uri)
         {
             Content = JsonContent.Create(payload, options: Options)
-        }, cancellationToken).ConfigureAwait(false)).GetProperty("task_id").GetInt32();
+        }, cancellationToken, true).ConfigureAwait(false)).GetProperty("task_id").GetInt32();
+    }
 
     /// <summary>
     /// GET APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>の配列に変換して返します。
