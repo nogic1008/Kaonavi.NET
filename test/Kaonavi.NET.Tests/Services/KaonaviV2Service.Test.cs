@@ -304,29 +304,28 @@ public class KaonaviV2ServiceTest
         var sut = CreateSut(handler, accessToken: "token");
         _ = sut.UpdateRequestCount.Should().Be(0);
 
-        _ = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
-        _ = sut.UpdateRequestCount.Should().Be(1);
-        _ = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
-        _ = sut.UpdateRequestCount.Should().Be(2);
-        _ = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
-        _ = sut.UpdateRequestCount.Should().Be(3);
-        _ = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
-        _ = sut.UpdateRequestCount.Should().Be(4);
-        try
-        {
-            _ = await sut.OverWriteMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
-        }
-        catch (ApplicationException)
-        {
-        }
-        _ = sut.UpdateRequestCount.Should().Be(4);
-        _ = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
-        _ = sut.UpdateRequestCount.Should().Be(5);
+        // Normal calls (1-4)
+        for (int i = 1; i < 5; i++)
+            await CallUpdateApiAndVerifyAsync(i);
 
-        _ = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
-        _ = sut.UpdateRequestCount.Should().Be(1);
+        // Invalid call (no count)
+        Func<Task> act = async () => await sut.OverWriteMemberDataAsync(_memberDataPayload);
+        _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
+        _ = sut.UpdateRequestCount.Should().Be(4);
+
+        // Normal call (5)
+        await CallUpdateApiAndVerifyAsync(5);
+
+        // Extra call (Wait 1 minute and reset call count)
+        await CallUpdateApiAndVerifyAsync(1);
 
         handler.VerifyAnyRequest(Times.Exactly(7));
+
+        async Task CallUpdateApiAndVerifyAsync(int expected)
+        {
+            _ = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+            _ = sut.UpdateRequestCount.Should().Be(expected);
+        }
     }
     #endregion API Common Path
 
