@@ -255,11 +255,10 @@
       },
       "Nogic.JsonConverters": {
         "type": "Transitive",
-        "resolved": "0.1.0",
-        "contentHash": "grIGFkODAjQmZFtAHzxc3KNQnOAVG+06sKPy1EBxNGSbUiJbtg7Azk+hK3OjmCjiMmWKUA2Dt4/Yz3+aRAQcjw==",
+        "resolved": "0.2.0",
+        "contentHash": "pPM624hDAcQErGqp7xtDcnC/GCwXDjOdTEbDYOvt59w2SMktjZOk8m72Vd2aawXwF7NJCRAC7q0iYbyuxDFSqg==",
         "dependencies": {
-          "Portable.System.DateTimeOnly": "6.0.0",
-          "System.Text.Json": "6.0.1"
+          "Portable.System.DateTimeOnly": "7.0.0"
         }
       },
       "NuGet.Frameworks": {
@@ -1215,7 +1214,7 @@
       "kaonavi.net": {
         "type": "Project",
         "dependencies": {
-          "Nogic.JsonConverters": "[0.1.0, )",
+          "Nogic.JsonConverters": "[0.2.0, )",
           "Portable.System.DateTimeOnly": "[7.0.0, )",
           "System.Net.Http.Json": "[6.0.0, )",
           "System.Text.Json": "[6.0.6, )",
@@ -1468,8 +1467,8 @@
       },
       "Nogic.JsonConverters": {
         "type": "Transitive",
-        "resolved": "0.1.0",
-        "contentHash": "grIGFkODAjQmZFtAHzxc3KNQnOAVG+06sKPy1EBxNGSbUiJbtg7Azk+hK3OjmCjiMmWKUA2Dt4/Yz3+aRAQcjw=="
+        "resolved": "0.2.0",
+        "contentHash": "pPM624hDAcQErGqp7xtDcnC/GCwXDjOdTEbDYOvt59w2SMktjZOk8m72Vd2aawXwF7NJCRAC7q0iYbyuxDFSqg=="
       },
       "NuGet.Frameworks": {
         "type": "Transitive",
@@ -2409,7 +2408,7 @@
       "kaonavi.net": {
         "type": "Project",
         "dependencies": {
-          "Nogic.JsonConverters": "[0.1.0, )"
+          "Nogic.JsonConverters": "[0.2.0, )"
         }
       }
     }
