@@ -1928,13 +1928,14 @@ public class KaonaviV2ServiceTest
         + "\"url\": \"https://example.com/\","
         + "\"events\": ["
         + "\"member_created\","
-        + "\"member_updated\""
+        + "\"member_updated\","
+        + "\"member_deleted\""
         + "],"
         + "\"secret_token\": \"token\""
         + "}";
-        var payload = new WebhookConfigPayload(_baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated }, "token");
+        var payload = new WebhookConfigPayload(_baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted }, "token");
         const string expectedJson = "{\"url\":\"https://example.com/\","
-        + "\"events\":[\"member_created\",\"member_updated\"],"
+        + "\"events\":[\"member_created\",\"member_updated\",\"member_deleted\"],"
         + "\"secret_token\":\"token\"}";
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1978,14 +1979,15 @@ public class KaonaviV2ServiceTest
         + "\"url\": \"https://example.com/\","
         + "\"events\": ["
         + "\"member_created\","
-        + "\"member_updated\""
+        + "\"member_updated\","
+        + "\"member_deleted\""
         + "],"
         + "\"secret_token\": \"token\""
         + "}";
         string tokenString = GenerateRandomString();
-        var payload = new WebhookConfig(webhookId, _baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated }, "token");
+        var payload = new WebhookConfig(webhookId, _baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted }, "token");
         const string expectedJson = "{\"id\":1,\"url\":\"https://example.com/\","
-        + "\"events\":[\"member_created\",\"member_updated\"],"
+        + "\"events\":[\"member_created\",\"member_updated\",\"member_deleted\"],"
         + "\"secret_token\":\"token\"}";
 
         var handler = new Mock<HttpMessageHandler>();

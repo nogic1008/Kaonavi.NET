@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Kaonavi.Net.Entities;
 
 /// <summary>
@@ -39,6 +41,7 @@ public enum WebhookEvent
 /// <summary>
 /// <see cref="JsonConverter"/> for <see cref="WebhookEvent"/>
 /// </summary>
+[ExcludeFromCodeCoverage]
 internal class WebhookEventJsonConverter : JsonConverter<WebhookEvent>
 {
     private const string MemberCreatedValue = "member_created";
@@ -68,7 +71,7 @@ internal class WebhookEventJsonConverter : JsonConverter<WebhookEvent>
                 writer.WriteStringValue(MemberDeletedValue);
                 break;
             default:
-                return;
+                throw new JsonException();
         }
     }
 }
