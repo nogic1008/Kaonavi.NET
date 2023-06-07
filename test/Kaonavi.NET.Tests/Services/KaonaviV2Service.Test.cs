@@ -1858,4 +1858,219 @@ public class KaonaviV2ServiceTest
         }, Times.Once());
     }
     #endregion マスター管理 API
+
+    #region Webhook設定 API
+    /// <summary>
+    /// <see cref="KaonaviV2Service.FetchWebhookConfigListAsync"/>は、"/webhook"にGETリクエストを行う。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchWebhookConfigListAsync)} > GET /webhook をコールする。")]
+    public async Task FetchWebhookConfigListAsync_Calls_GetApi()
+    {
+        // Arrange
+        #region JSON
+        const string responseJson = "{"
+        + "\"webhook_data\": ["
+        + "  {"
+        + "    \"id\": 1,"
+        + "    \"url\": \"https://example.com/\","
+        + "    \"events\": [\"member_created\",\"member_deleted\"],"
+        + "    \"secret_token\": \"string\","
+        + "    \"updated_at\": \"2021-12-01 12:00:00\","
+        + "    \"created_at\": \"2021-11-01 12:00:00\""
+        + "  },"
+        + "  {"
+        + "    \"id\": 2,"
+        + "    \"url\": \"https://example.com/\","
+        + "    \"events\": [\"member_updated\"],"
+        + "    \"secret_token\": \"string\","
+        + "    \"updated_at\": \"2021-12-01 12:00:00\","
+        + "    \"created_at\": \"2021-11-01 12:00:00\""
+        + "  }"
+        + "]"
+        + "}";
+        #endregion JSON
+        string tokenString = GenerateRandomString();
+
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/webhook")
+            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        var entities = await sut.FetchWebhookConfigListAsync().ConfigureAwait(false);
+
+        // Assert
+        _ = entities.Should().HaveCount(2);
+
+        handler.VerifyRequest(req =>
+        {
+            // End point
+            _ = req.Method.Should().Be(HttpMethod.Get);
+            _ = (req.RequestUri?.PathAndQuery.Should().Be("/webhook"));
+
+            // Header
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            return true;
+        }, Times.Once());
+    }
+
+    /// <summary>
+    /// <see cref="KaonaviV2Service.AddWebhookConfigAsync"/>は、"/webhook"にPOSTリクエストを行う。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.AddWebhookConfigAsync)} > POST /webhook をコールする。")]
+    public async Task AddWebhookConfigAsync_Calls_PostApi()
+    {
+        // Arrange
+        string tokenString = GenerateRandomString();
+        const string responseJson = "{"
+        + "\"id\": 1,"
+        + "\"url\": \"https://example.com/\","
+        + "\"events\": ["
+        + "\"member_created\","
+        + "\"member_updated\","
+        + "\"member_deleted\""
+        + "],"
+        + "\"secret_token\": \"token\""
+        + "}";
+        var payload = new WebhookConfigPayload(_baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted }, "token");
+        const string expectedJson = "{\"url\":\"https://example.com/\","
+        + "\"events\":[\"member_created\",\"member_updated\",\"member_deleted\"],"
+        + "\"secret_token\":\"token\"}";
+
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/webhook")
+            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        var user = await sut.AddWebhookConfigAsync(payload).ConfigureAwait(false);
+
+        // Assert
+        _ = user.Should().NotBeNull();
+
+        handler.VerifyRequest(async req =>
+        {
+            // End point
+            _ = req.Method.Should().Be(HttpMethod.Post);
+            _ = (req.RequestUri?.PathAndQuery.Should().Be("/webhook"));
+
+            // Header
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            _ = receivedJson.Should().Be(expectedJson);
+
+            return true;
+        }, Times.Once());
+    }
+
+    /// <summary>
+    /// <see cref="KaonaviV2Service.UpdateWebhookConfigAsync"/>は、"/webhook/{userId}"にPATCHリクエストを行う。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.UpdateWebhookConfigAsync)} > PATCH /users/:userId をコールする。")]
+    public async Task UpdateWebhookConfigAsync_Calls_PatchApi()
+    {
+        // Arrange
+        const int webhookId = 1;
+        const string responseJson = "{"
+        + "\"id\": 1,"
+        + "\"url\": \"https://example.com/\","
+        + "\"events\": ["
+        + "\"member_created\","
+        + "\"member_updated\","
+        + "\"member_deleted\""
+        + "],"
+        + "\"secret_token\": \"token\""
+        + "}";
+        string tokenString = GenerateRandomString();
+        var payload = new WebhookConfig(webhookId, _baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted }, "token");
+        const string expectedJson = "{\"id\":1,\"url\":\"https://example.com/\","
+        + "\"events\":[\"member_created\",\"member_updated\",\"member_deleted\"],"
+        + "\"secret_token\":\"token\"}";
+
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
+            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        var user = await sut.UpdateWebhookConfigAsync(payload).ConfigureAwait(false);
+
+        // Assert
+        _ = user.Should().NotBeNull();
+
+        handler.VerifyRequest(async req =>
+        {
+            // End point
+            _ = req.Method.Should().Be(HttpMethod.Patch);
+            _ = (req.RequestUri?.PathAndQuery.Should().Be($"/webhook/{webhookId}"));
+
+            // Header
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            _ = receivedJson.Should().Be(expectedJson);
+
+            return true;
+        }, Times.Once());
+    }
+
+    /// <summary>
+    /// <inheritdoc cref="KaonaviV2Service.DeleteWebhookConfigAsync" path="/param[@name='webhookId']"/>が<c>0</c>未満のとき、
+    /// <see cref="KaonaviV2Service.DeleteWebhookConfigAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.DeleteWebhookConfigAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    public async Task DeleteWebhookConfigAsync_Throws_ArgumentOutOfRangeException()
+    {
+        // Arrange
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+
+        // Act
+        var sut = CreateSut(handler);
+        Func<Task> act = async () => await sut.DeleteWebhookConfigAsync(-1).ConfigureAwait(false);
+
+        // Assert
+        _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
+            .WithMessage("*webhookId*")
+            .ConfigureAwait(false);
+
+        handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+    }
+
+    /// <summary>
+    /// <see cref="KaonaviV2Service.DeleteWebhookConfigAsync"/>は、"/webhook/{webhookId}"にDELETEリクエストを行う。
+    /// </summary>
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.DeleteWebhookConfigAsync)} > DELETE /webhook/:webhookId をコールする。")]
+    public async Task DeleteWebhookConfigAsync_Calls_DeleteApi()
+    {
+        // Arrange
+        const int webhookId = 1;
+        string tokenString = GenerateRandomString();
+
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
+            .ReturnsResponse(HttpStatusCode.NoContent);
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        await sut.DeleteWebhookConfigAsync(webhookId).ConfigureAwait(false);
+
+        // Assert
+        handler.VerifyRequest(req =>
+        {
+            // End point
+            _ = req.Method.Should().Be(HttpMethod.Delete);
+            _ = (req.RequestUri?.PathAndQuery.Should().Be($"/webhook/{webhookId}"));
+
+            // Header
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            return true;
+        }, Times.Once());
+    }
+    #endregion Webhook設定 API
 }

@@ -288,6 +288,25 @@ public class KaonaviV2Service : IKaonaviService
     }
     #endregion マスター管理
 
+    #region Webhook設定
+    /// <inheritdoc/>
+    public ValueTask<IReadOnlyCollection<WebhookConfig>> FetchWebhookConfigListAsync(CancellationToken cancellationToken = default)
+        => CallFetchListApiAsync<WebhookConfig>("webhook", "webhook_data", cancellationToken);
+
+    /// <inheritdoc/>
+    public ValueTask<WebhookConfig> AddWebhookConfigAsync(WebhookConfigPayload payload, CancellationToken cancellationToken = default)
+        => CallApiAsync<WebhookConfig>(new(HttpMethod.Post, "webhook") { Content = JsonContent.Create(payload, options: Options) }, cancellationToken);
+
+    /// <inheritdoc/>
+    public ValueTask<WebhookConfig> UpdateWebhookConfigAsync(WebhookConfig payload, CancellationToken cancellationToken = default)
+        => CallApiAsync<WebhookConfig>(new(_patchMethod, $"webhook/{payload.Id}") { Content = JsonContent.Create(payload, options: Options) }, cancellationToken);
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="webhookId"/>が0より小さい場合にスローされます。</exception>
+    public async ValueTask DeleteWebhookConfigAsync(int webhookId, CancellationToken cancellationToken = default)
+        => await CallApiAsync(new(HttpMethod.Delete, $"webhook/{ThrowIfNegative(webhookId, nameof(webhookId)):D}"), cancellationToken).ConfigureAwait(false);
+    #endregion Webhook設定
+
     #region Common Method
     /// <summary>APIコール前に必要な認証を行います。</summary>
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
