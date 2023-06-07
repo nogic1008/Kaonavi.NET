@@ -249,7 +249,7 @@ public interface IKaonaviService
 
     /// <summary>
     /// <paramref name="userId"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を更新します。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get"/>
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/patch"/>
     /// </summary>
     /// <param name="userId"><inheritdoc cref="User" path="/param[@name='Id']/text()"/></param>
     /// <param name="payload">リクエスト</param>
@@ -323,4 +323,37 @@ public interface IKaonaviService
     /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
     ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyCollection<(int? id, string name)> payload, CancellationToken cancellationToken = default);
     #endregion マスター管理
+
+    #region Webhook設定
+    /// <summary>
+    /// 登録した<inheritdoc cref="WebhookConfig" path="/summary"/>の一覧を取得します。
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/Webhook/paths/~1webhook/get"/>
+    /// </summary>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']"/></param>
+    ValueTask<IReadOnlyCollection<WebhookConfig>> FetchWebhookConfigListAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// <inheritdoc cref="WebhookConfig" path="/summary"/>を登録します。
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/Webhook/paths/~1webhook/post"/>
+    /// </summary>
+    /// <param name="payload">リクエスト</param>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']"/></param>
+    ValueTask<WebhookConfig> AddWebhookConfigAsync(WebhookConfigPayload payload, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// <see cref="WebhookConfig.Id"/>と一致する<inheritdoc cref="WebhookConfig" path="/summary"/>情報を更新します。
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/Webhook/paths/~1webhook~1{webhook_id}/patch"/>
+    /// </summary>
+    /// <param name="payload">リクエスト</param>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']"/></param>
+    ValueTask<WebhookConfig> UpdateWebhookConfigAsync(WebhookConfig payload, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// <paramref name="webhookId"/>と一致する<inheritdoc cref="WebhookConfig" path="/summary"/>を削除します。
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/Webhook/paths/~1webhook~1{webhook_id}/delete"/>
+    /// </summary>
+    /// <param name="webhookId"><inheritdoc cref="WebhookConfig" path="/param[@name='Id']"/></param>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']"/></param>
+    ValueTask DeleteWebhookConfigAsync(int webhookId, CancellationToken cancellationToken = default);
+    #endregion Webhook設定
 }
