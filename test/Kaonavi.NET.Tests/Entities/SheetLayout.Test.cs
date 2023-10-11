@@ -13,31 +13,32 @@ public class SheetLayoutTest
     [Fact(DisplayName = $"{nameof(SheetLayout)} > JSONからデシリアライズできる。")]
     public void CanDeserializeJSON()
     {
-        #region JSON
-        const string jsonString = "{"
-        + "\"id\": 12,"
-        + "\"name\": \"住所・連絡先\","
-        + "\"record_type\": 1,"
-        + "\"custom_fields\": ["
-        + "  {"
-        + "    \"id\": 1000,"
-        + "    \"name\": \"住所\","
-        + "    \"required\": false,"
-        + "    \"type\": \"string\","
-        + "    \"max_length\": 250,"
-        + "    \"enum\": []"
-        + "  },"
-        + "  {"
-        + "    \"id\": 1001,"
-        + "    \"name\": \"電話番号\","
-        + "    \"required\": false,"
-        + "    \"type\": \"string\","
-        + "    \"max_length\": 50,"
-        + "    \"enum\": []"
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string jsonString = """
+        {
+            "id": 12,
+            "name": "住所・連絡先",
+            "record_type": 1,
+            "custom_fields": [
+                {
+                    "id": 1000,
+                    "name": "住所",
+                    "required": false,
+                    "type": "string",
+                    "max_length": 250,
+                    "enum": []
+                },
+                {
+                    "id": 1001,
+                    "name": "電話番号",
+                    "required": false,
+                    "type": "string",
+                    "max_length": 50,
+                    "enum": []
+                }
+            ]
+        }
+        """;
 
         // Act
         var layout = JsonSerializer.Deserialize<SheetLayout>(jsonString, JsonConfig.Default);

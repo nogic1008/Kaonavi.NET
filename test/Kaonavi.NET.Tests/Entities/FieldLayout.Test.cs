@@ -8,11 +8,35 @@ namespace Kaonavi.Net.Tests.Entities;
 public class FieldLayoutTest
 {
     /*lang=json,strict*/
-    private const string FieldJson1 = "{\"name\":\"社員番号\",\"required\":true,\"type\":\"string\",\"max_length\":50,\"enum\":[]}";
+    private const string FieldJson1 = """
+    {
+        "name": "社員番号",
+        "required": true,
+        "type": "string",
+        "max_length": 50,
+        "enum": []
+    }
+    """;
     /*lang=json,strict*/
-    private const string FieldJson2 = "{\"name\":\"入社日\",\"required\":false,\"type\":\"date\",\"max_length\":null,\"enum\":[]}";
+    private const string FieldJson2 = """
+    {
+        "name": "入社日",
+        "required": false,
+        "type": "date",
+        "max_length": null,
+        "enum": []
+    }
+    """;
     /*lang=json,strict*/
-    private const string FieldJson3 = "{\"name\":\"性別\",\"required\":false,\"type\":\"enum\",\"max_length\":null,\"enum\":[\"男性\",\"女性\"]}";
+    private const string FieldJson3 = """
+    {
+        "name": "性別",
+        "required": false,
+        "type": "enum",
+        "max_length": null,
+        "enum": ["男性", "女性"]
+    }
+    """;
 
     /// <summary>
     /// JSONから<see cref="FieldLayout"/>にデシリアライズできる。
@@ -48,14 +72,17 @@ public class FieldLayoutTest
     public void CustomField_CanDeserializeJSON()
     {
         // Arrange
-        const string jsonString = "{"
-        + "\"id\": 100,"
-        + "\"name\": \"血液型\","
-        + "\"required\": false,"
-        + "\"type\": \"enum\","
-        + "\"max_length\": null,"
-        + "\"enum\": [\"A\", \"B\", \"O\", \"AB\"]"
-        + "}";
+        /*lang=json,strict*/
+        const string jsonString = """
+        {
+            "id": 100,
+            "name": "血液型",
+            "required": false,
+            "type": "enum",
+            "max_length": null,
+            "enum": ["A", "B", "O", "AB"]
+        }
+        """;
 
         // Act
         var customField = JsonSerializer.Deserialize<CustomFieldLayout>(jsonString, JsonConfig.Default);

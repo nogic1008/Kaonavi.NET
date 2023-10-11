@@ -8,11 +8,17 @@ namespace Kaonavi.Net.Tests.Entities;
 public class MemberDepartmentTest
 {
     /*lang=json,strict*/
-    private const string SimpleJson = "{\"code\":\"所属コード\"}";
+    private const string SimpleJson = """{ "code": "所属コード" }""";
     /*lang=json,strict*/
-    private const string SingleDepJson = "{\"code\": \"1000\",\"name\":\"取締役会\",\"names\":[\"取締役会\"]}";
+    private const string SingleDepJson = """{ "code": "1000", "name":"取締役会", "names": ["取締役会"] }""";
     /*lang=json,strict*/
-    private const string MultipleJson = "{\"code\":\"2000\",\"name\":\"営業本部 第一営業部 ITグループ\",\"names\":[\"営業本部\",\"第一営業部\",\"ITグループ\"]}";
+    private const string MultipleJson = """
+    {
+        "code": "2000",
+        "name": "営業本部 第一営業部 ITグループ",
+        "names": ["営業本部", "第一営業部", "ITグループ"]
+    }
+    """;
 
     /// <summary>
     /// JSONからデシリアライズできる。

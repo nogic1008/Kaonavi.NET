@@ -8,11 +8,38 @@ namespace Kaonavi.Net.Tests.Entities;
 public class DepartmentTreeTest
 {
     /*lang=json,strict*/
-    private const string SimpleJson = "{\"code\": \"1000\",\"name\": \"取締役会\",\"parent_code\": null,\"leader_member_code\": \"A0002\",\"order\": 1,\"memo\": \"\"}";
+    private const string SimpleJson = """
+    {
+        "code": "1000",
+        "name": "取締役会",
+        "parent_code": null,
+        "leader_member_code": "A0002",
+        "order": 1,
+        "memo": ""
+    }
+    """;
     /*lang=json,strict*/
-    private const string NoLeaderJson = "{\"code\": \"1200\",\"name\": \"営業本部\",\"parent_code\": null,\"leader_member_code\": null,\"order\": 2,\"memo\": null}";
+    private const string NoLeaderJson = """
+    {
+        "code": "1200",
+        "name": "営業本部",
+        "parent_code": null,
+        "leader_member_code": null,
+        "order": 2,
+        "memo": null
+    }
+    """;
     /*lang=json,strict*/
-    private const string ChildJson = "{\"code\": \"2000\",\"name\": \"ITグループ\",\"parent_code\": \"1500\",\"leader_member_code\": \"A0001\",\"order\": 1,\"memo\": \"example\"}";
+    private const string ChildJson = """
+    {
+        "code": "2000",
+        "name": "ITグループ",
+        "parent_code": "1500",
+        "leader_member_code": "A0001",
+        "order": 1,
+        "memo": "example"
+    }
+    """;
 
     /// <summary>
     /// JSONからデシリアライズできる。

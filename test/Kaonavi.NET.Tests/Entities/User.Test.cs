@@ -3,14 +3,36 @@ using Kaonavi.Net.Entities;
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary>
-/// <see cref="User"/>の単体テスト
+/// <see cref="User"/>, <see cref="UserWithLoginAt"/>の単体テスト
 /// </summary>
 public class UserTest
 {
     /*lang=json,strict*/
-    private const string MemberJson = "{\"id\": 1,\"email\":\"taro@kaonavi.jp\",\"member_code\":\"A0002\",\"role\":{\"id\":1,\"name\":\"システム管理者\",\"type\":\"Adm\"}}";
+    private const string MemberJson = """
+    {
+        "id": 1,
+        "email":"taro@kaonavi.jp",
+        "member_code":"A0002",
+        "role":{
+            "id":1,
+            "name":"システム管理者",
+            "type":"Adm"
+        }
+    }
+    """;
     /*lang=json,strict*/
-    private const string NonMemberJson = "{\"id\": 2,\"email\": \"hanako@kaonavi.jp\",\"member_code\": null,\"role\": {\"id\": 2,\"name\": \"マネージャ\",\"type\": \"一般\"}}";
+    private const string NonMemberJson = """
+    {
+        "id": 2,
+        "email": "hanako@kaonavi.jp",
+        "member_code": null,
+        "role": {
+            "id": 2,
+            "name": "マネージャ",
+            "type": "一般"
+        }
+    }
+    """;
 
     /// <summary>
     /// JSONから<see cref="User"/>にデシリアライズできる。
@@ -46,17 +68,20 @@ public class UserTest
     public void UserWithLoginAt_CanDeserializeJSON()
     {
         // Arrange
-        const string json = "{"
-        + "\"id\": 1,"
-        + "\"email\": \"example@kaonavi.jp\","
-        + "\"member_code\": \"12345\","
-        + "\"role\": {"
-        + "  \"id\": 1,"
-        + "  \"name\": \"システム管理者\","
-        + "  \"type\": \"Adm\""
-        + "},"
-        + "\"last_login_at\": \"2021-11-01 12:00:00Z\""
-        + "}";
+        /*lang=json,strict*/
+        const string json = """
+        {
+            "id": 1,
+            "email": "example@kaonavi.jp",
+            "member_code": "12345",
+            "role": {
+                "id": 1,
+                "name": "システム管理者",
+                "type": "Adm"
+            },
+            "last_login_at": "2021-11-01 12:00:00"
+        }
+        """;
 
         // Act
         var user = JsonSerializer.Deserialize<UserWithLoginAt>(json, JsonConfig.Default);

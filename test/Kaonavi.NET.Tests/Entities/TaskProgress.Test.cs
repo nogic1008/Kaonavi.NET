@@ -8,11 +8,13 @@ namespace Kaonavi.Net.Tests.Entities;
 public class TaskProgressTest
 {
     /*lang=json,strict*/
-    private const string TaskOkJson = "{\"id\": 1,\"status\": \"OK\",\"messages\": []}";
+    private const string TaskOkJson = """{ "id": 1, "status": "OK", "messages": [] }""";
     /*lang=json,strict*/
-    private const string TaskRunningJson = "{\"id\": 2,\"status\": \"RUNNING\"}";
+    private const string TaskRunningJson = """{ "id": 2, "status": "RUNNING" }""";
     /*lang=json,strict*/
-    private const string TaskErrorJson = "{\"id\": 3,\"status\": \"NG\",\"messages\": [\"エラーメッセージ1\",\"エラーメッセージ2\"]}";
+    private const string TaskErrorJson = """
+    { "id": 3, "status": "NG", "messages": ["エラーメッセージ1","エラーメッセージ2"] }
+    """;
 
     /// <summary>
     /// JSONからデシリアライズできる。
