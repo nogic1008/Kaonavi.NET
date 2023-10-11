@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -20,13 +20,8 @@
 
   <ItemGroup>
     <PackageReference Include="Nogic.JsonConverters" Version="0.2.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)'!='net6.0'">
-    <PackageReference Include="Portable.System.DateTimeOnly" Version="7.0.1" />
-    <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
-    <PackageReference Include="System.Text.Json" Version="6.0.6" />
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.0-rc.2.23479.6" Condition="'$(TargetFramework)'!='net8.0'" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0-rc.2.23479.6" Condition="'$(TargetFramework)'!='net8.0'" />
   </ItemGroup>
 
 </Project>
