@@ -236,7 +236,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, key, secret);
-        Func<Task> act = async () => await sut.AuthenticateAsync();
+        var act = async () => await sut.AuthenticateAsync();
 
         _ = (await act.Should().ThrowExactlyAsync<ApplicationException>())
             .WithMessage(message)
@@ -260,7 +260,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, key, secret);
-        Func<Task> act = async () => await sut.FetchMemberLayoutAsync();
+        var act = async () => await sut.FetchMemberLayoutAsync();
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
@@ -331,7 +331,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: "token");
-        Func<Task> act = async () => await sut.OverWriteMemberDataAsync(_memberDataPayload);
+        var act = async () => await sut.OverWriteMemberDataAsync(_memberDataPayload);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
@@ -397,7 +397,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.FetchTaskProgressAsync(-1);
+        var act = async () => _ = await sut.FetchTaskProgressAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -1445,7 +1445,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.FetchUserAsync(-1);
+        var act = async () => _ = await sut.FetchUserAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -1508,7 +1508,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.UpdateUserAsync(-1, null!);
+        var act = async () => _ = await sut.UpdateUserAsync(-1, null!);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -1586,7 +1586,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => await sut.DeleteUserAsync(-1);
+        var act = async () => await sut.DeleteUserAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -1815,8 +1815,8 @@ public class KaonaviV2ServiceTest
         var sut = CreateSut(handler, accessToken: tokenString);
         int taskId = await sut.UpdateEnumOptionAsync(10, new (int?, string)[]
         {
-                (1, "value1"),
-                (null, "value2"),
+            (1, "value1"),
+            (null, "value2"),
         });
 
         // Assert
@@ -2022,7 +2022,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => await sut.DeleteWebhookConfigAsync(-1);
+        var act = async () => await sut.DeleteWebhookConfigAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
