@@ -1,4 +1,5 @@
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 

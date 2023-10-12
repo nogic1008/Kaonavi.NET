@@ -1,6 +1,8 @@
+using System.Text.Json.Serialization.Metadata;
+using Kaonavi.Net.Entities;
 using Kaonavi.Net.Services;
 
-namespace Kaonavi.Net.Entities;
+namespace Kaonavi.Net.Json;
 
 [JsonSerializable(typeof(IReadOnlyCollection<DepartmentTree>))]
 [JsonSerializable(typeof(IReadOnlyCollection<EnumOption>))]
@@ -25,7 +27,8 @@ namespace Kaonavi.Net.Entities;
 [JsonSourceGenerationOptions(
     JsonSerializerDefaults.Web,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-    PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower
+    PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower,
+    UseStringEnumConverter = true
 )]
 internal partial class Context : JsonSerializerContext
 {

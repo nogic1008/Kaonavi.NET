@@ -1,8 +1,8 @@
 using System.Globalization;
 
-namespace Kaonavi.Net;
+namespace Kaonavi.Net.Json;
 
-/// <summary>"yyyy-MM-dd hh:mm:ss" - <see cref="DateTime"/>変換</summary>
+/// <summary>"yyyy-MM-dd HH:mm:ss" - <see cref="DateTime"/>変換</summary>
 public class DateTimeConverter : JsonConverter<DateTime>
 {
     private const string Format = "yyyy-MM-dd HH:mm:ss";

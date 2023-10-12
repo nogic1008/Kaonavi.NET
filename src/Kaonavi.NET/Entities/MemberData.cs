@@ -1,3 +1,5 @@
+using Kaonavi.Net.Json;
+
 namespace Kaonavi.Net.Entities;
 
 /// <summary>メンバー情報(基本情報/所属(主務)/兼務情報)</summary>

@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization.Metadata;
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Services;
 

@@ -1,5 +1,6 @@
 using System.Text;
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Json;
 using Kaonavi.Net.Services;
 using Moq;
 using Moq.Contrib.HttpClient;
@@ -406,6 +407,7 @@ public class KaonaviV2ServiceTest
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
 
+    private static readonly string[] _messages = new[] { "エラーメッセージ1", "エラーメッセージ2" };
     /// <summary>
     /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
     /// </summary>
@@ -415,7 +417,7 @@ public class KaonaviV2ServiceTest
         // Arrange
         const int taskId = 1;
         string tokenString = GenerateRandomString();
-        var response = new TaskProgress(taskId, "NG", new[] { "エラーメッセージ1", "エラーメッセージ2" });
+        var response = new TaskProgress(taskId, "NG", _messages);
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
@@ -446,6 +448,9 @@ public class KaonaviV2ServiceTest
     #endregion タスク進捗状況 API
 
     #region レイアウト設定 API
+    private static readonly string[] _gender = new[] { "男性", "女性" };
+    private static readonly string[] _bloodType = new[] { "A", "B", "O", "AB" };
+    private static readonly string?[] _roles = new[] { "部長", "課長", "マネージャー", null };
     /// <summary>
     /// <see cref="KaonaviV2Service.FetchMemberLayoutAsync"/>は、"/member_layouts"にGETリクエストを行う。
     /// </summary>
@@ -460,14 +465,14 @@ public class KaonaviV2ServiceTest
             new FieldLayout("メールアドレス", false, FieldType.String, 100, Array.Empty<string?>()),
             new FieldLayout("入社日", false, FieldType.Date, null, Array.Empty<string?>()),
             new FieldLayout("退職日", false, FieldType.Date, null, Array.Empty<string?>()),
-            new FieldLayout("性別", false, FieldType.Enum, null, new[] { "男性", "女性" }),
+            new FieldLayout("性別", false, FieldType.Enum, null, _gender),
             new FieldLayout("生年月日", false, FieldType.Date, null, Array.Empty<string?>()),
             new FieldLayout("所属", false, FieldType.Department, null, Array.Empty<string?>()),
             new FieldLayout("兼務情報", false, FieldType.DepartmentArray, null, Array.Empty<string?>()),
             new CustomFieldLayout[]
             {
-                new(100, "血液型", false, FieldType.Enum, null, new[] { "A", "B", "O", "AB" }),
-                new(200, "役職", false, FieldType.Enum, null, new[] { "部長", "課長", "マネージャー", null }),
+                new(100, "血液型", false, FieldType.Enum, null, _bloodType),
+                new(200, "役職", false, FieldType.Enum, null, _roles),
             }
         );
 

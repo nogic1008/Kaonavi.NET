@@ -1,3 +1,5 @@
+using Kaonavi.Net.Json;
+
 namespace Kaonavi.Net.Entities;
 
 /// <summary>ログインユーザー情報</summary>

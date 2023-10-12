@@ -1,4 +1,4 @@
-namespace Kaonavi.Net;
+namespace Kaonavi.Net.Json;
 
 /// <summary>
 /// <c>""</c>を<c>null</c>とみなす<see cref="Nullable{T}"/>用のJsonConverter実装。
