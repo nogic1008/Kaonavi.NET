@@ -236,9 +236,9 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, key, secret);
-        Func<Task> act = async () => await sut.AuthenticateAsync().ConfigureAwait(false);
+        Func<Task> act = async () => await sut.AuthenticateAsync();
 
-        _ = (await act.Should().ThrowExactlyAsync<ApplicationException>().ConfigureAwait(false))
+        _ = (await act.Should().ThrowExactlyAsync<ApplicationException>())
             .WithMessage(message)
             .WithInnerExceptionExactly<HttpRequestException>();
     }
@@ -260,10 +260,10 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, key, secret);
-        Func<Task> act = async () => await sut.FetchMemberLayoutAsync().ConfigureAwait(false);
+        Func<Task> act = async () => await sut.FetchMemberLayoutAsync();
 
         // Assert
-        _ = await act.Should().ThrowExactlyAsync<ApplicationException>().ConfigureAwait(false);
+        _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
 
         handler.VerifyRequest(async req =>
         {
@@ -279,7 +279,7 @@ public class KaonaviV2ServiceTest
 
             // Body
             _ = req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
-            string body = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string body = await req.Content!.ReadAsStringAsync();
             _ = body.Should().Be("grant_type=client_credentials");
 
             return true;
@@ -313,7 +313,7 @@ public class KaonaviV2ServiceTest
 
         async Task CallUpdateApiAndVerifyAsync(int expected)
         {
-            _ = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+            _ = await sut.AddMemberDataAsync(_memberDataPayload);
             _ = sut.UpdateRequestCount.Should().Be(expected);
         }
     }
@@ -357,7 +357,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, key, secret);
-        var token = await sut.AuthenticateAsync().ConfigureAwait(false);
+        var token = await sut.AuthenticateAsync();
 
         // Assert
         _ = token.Should().Be(response);
@@ -376,7 +376,7 @@ public class KaonaviV2ServiceTest
 
             // Body
             _ = req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
-            string body = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string body = await req.Content!.ReadAsStringAsync();
             _ = body.Should().Be("grant_type=client_credentials");
 
             return true;
@@ -397,12 +397,11 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.FetchTaskProgressAsync(-1).ConfigureAwait(false);
+        Func<Task> act = async () => _ = await sut.FetchTaskProgressAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*taskId*")
-            .ConfigureAwait(false);
+            .WithMessage("*taskId*");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
@@ -424,7 +423,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var task = await sut.FetchTaskProgressAsync(taskId).ConfigureAwait(false);
+        var task = await sut.FetchTaskProgressAsync(taskId);
 
         // Assert
         _ = task.Should().NotBeNull();
@@ -478,7 +477,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var layout = await sut.FetchMemberLayoutAsync().ConfigureAwait(false);
+        var layout = await sut.FetchMemberLayoutAsync();
 
         // Assert
         _ = layout.Should().NotBeNull();
@@ -551,7 +550,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var layouts = await sut.FetchSheetLayoutsAsync().ConfigureAwait(false);
+        var layouts = await sut.FetchSheetLayoutsAsync();
 
         // Assert
         _ = layouts.Should().HaveCount(1);
@@ -595,7 +594,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var layout = await sut.FetchSheetLayoutAsync(12).ConfigureAwait(false);
+        var layout = await sut.FetchSheetLayoutAsync(12);
 
         // Assert
         _ = layout.Should().NotBeNull();
@@ -762,7 +761,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var members = await sut.FetchMembersDataAsync().ConfigureAwait(false);
+        var members = await sut.FetchMembersDataAsync();
 
         // Assert
         _ = members.Should().HaveCount(2);
@@ -796,7 +795,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.AddMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+        int taskId = await sut.AddMemberDataAsync(_memberDataPayload);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -811,7 +810,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -834,7 +833,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.ReplaceMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+        int taskId = await sut.ReplaceMemberDataAsync(_memberDataPayload);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -849,7 +848,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -872,7 +871,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.UpdateMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+        int taskId = await sut.UpdateMemberDataAsync(_memberDataPayload);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -887,7 +886,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -910,7 +909,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.OverWriteMemberDataAsync(_memberDataPayload).ConfigureAwait(false);
+        int taskId = await sut.OverWriteMemberDataAsync(_memberDataPayload);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -925,7 +924,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -949,7 +948,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.DeleteMemberDataAsync(codes).ConfigureAwait(false);
+        int taskId = await sut.DeleteMemberDataAsync(codes);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -964,7 +963,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1082,7 +1081,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var members = await sut.FetchSheetDataListAsync(sheetId).ConfigureAwait(false);
+        var members = await sut.FetchSheetDataListAsync(sheetId);
 
         // Assert
         _ = members.Should().HaveCount(2);
@@ -1117,7 +1116,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.ReplaceSheetDataAsync(sheetId, _sheetDataPayload).ConfigureAwait(false);
+        int taskId = await sut.ReplaceSheetDataAsync(sheetId, _sheetDataPayload);
 
         // Assert
         _ = taskId.Should().Be(sheetId);
@@ -1132,7 +1131,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1156,7 +1155,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.UpdateSheetDataAsync(sheetId, _sheetDataPayload).ConfigureAwait(false);
+        int taskId = await sut.UpdateSheetDataAsync(sheetId, _sheetDataPayload);
 
         // Assert
         _ = taskId.Should().Be(sheetId);
@@ -1171,7 +1170,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1195,7 +1194,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.AddSheetDataAsync(sheetId, _sheetDataPayload).ConfigureAwait(false);
+        int taskId = await sut.AddSheetDataAsync(sheetId, _sheetDataPayload);
 
         // Assert
         _ = taskId.Should().Be(sheetId);
@@ -1210,7 +1209,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1272,7 +1271,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var departments = await sut.FetchDepartmentsAsync().ConfigureAwait(false);
+        var departments = await sut.FetchDepartmentsAsync();
 
         // Assert
         _ = departments.Should().HaveCount(4);
@@ -1314,7 +1313,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.ReplaceDepartmentsAsync(payload).ConfigureAwait(false);
+        int taskId = await sut.ReplaceDepartmentsAsync(payload);
 
         // Assert
         _ = taskId.Should().Be(sheetId);
@@ -1329,7 +1328,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1381,7 +1380,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var users = await sut.FetchUsersAsync().ConfigureAwait(false);
+        var users = await sut.FetchUsersAsync();
 
         // Assert
         _ = users.Should().AllBeAssignableTo<UserWithLoginAt>()
@@ -1430,7 +1429,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.AddUserAsync(payload).ConfigureAwait(false);
+        var user = await sut.AddUserAsync(payload);
 
         // Assert
         _ = user.Should().NotBeNull();
@@ -1445,7 +1444,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1465,7 +1464,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.FetchUserAsync(-1).ConfigureAwait(false);
+        Func<Task> act = async () => _ = await sut.FetchUserAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -1497,7 +1496,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.FetchUserAsync(userId).ConfigureAwait(false);
+        var user = await sut.FetchUserAsync(userId);
 
         // Assert
         _ = user.Should().Be(responseUser);
@@ -1528,12 +1527,11 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.UpdateUserAsync(-1, null!).ConfigureAwait(false);
+        Func<Task> act = async () => _ = await sut.UpdateUserAsync(-1, null!);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*userId*")
-            .ConfigureAwait(false);
+            .WithMessage("*userId*");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
@@ -1569,7 +1567,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.UpdateUserAsync(userId, payload).ConfigureAwait(false);
+        var user = await sut.UpdateUserAsync(userId, payload);
 
         // Assert
         _ = user.Should().NotBeNull();
@@ -1584,7 +1582,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1604,12 +1602,11 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => await sut.DeleteUserAsync(-1).ConfigureAwait(false);
+        Func<Task> act = async () => await sut.DeleteUserAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*userId*")
-            .ConfigureAwait(false);
+            .WithMessage("*userId*");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
@@ -1630,7 +1627,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        await sut.DeleteUserAsync(userId).ConfigureAwait(false);
+        await sut.DeleteUserAsync(userId);
 
         // Assert
         handler.VerifyRequest(req =>
@@ -1679,7 +1676,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var roles = await sut.FetchRolesAsync().ConfigureAwait(false);
+        var roles = await sut.FetchRolesAsync();
 
         // Assert
         _ = roles.Should().HaveCount(2);
@@ -1751,7 +1748,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var entities = await sut.FetchEnumOptionsAsync().ConfigureAwait(false);
+        var entities = await sut.FetchEnumOptionsAsync();
 
         // Assert
         _ = entities.Should().HaveCount(3);
@@ -1796,7 +1793,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var entity = await sut.FetchEnumOptionAsync(10).ConfigureAwait(false);
+        var entity = await sut.FetchEnumOptionAsync(10);
 
         // Assert
         _ = entity.Should().NotBeNull();
@@ -1833,7 +1830,7 @@ public class KaonaviV2ServiceTest
         {
                 (1, "value1"),
                 (null, "value2"),
-        }).ConfigureAwait(false);
+        });
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -1848,7 +1845,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be("{\"enum_option_data\":["
             + "{\"id\":1,\"name\":\"value1\"},"
             + "{\"name\":\"value2\"}"
@@ -1897,7 +1894,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var entities = await sut.FetchWebhookConfigListAsync().ConfigureAwait(false);
+        var entities = await sut.FetchWebhookConfigListAsync();
 
         // Assert
         _ = entities.Should().HaveCount(2);
@@ -1944,7 +1941,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.AddWebhookConfigAsync(payload).ConfigureAwait(false);
+        var user = await sut.AddWebhookConfigAsync(payload);
 
         // Assert
         _ = user.Should().NotBeNull();
@@ -1959,7 +1956,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -1996,7 +1993,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.UpdateWebhookConfigAsync(payload).ConfigureAwait(false);
+        var user = await sut.UpdateWebhookConfigAsync(payload);
 
         // Assert
         _ = user.Should().NotBeNull();
@@ -2011,7 +2008,7 @@ public class KaonaviV2ServiceTest
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
 
             // Body
-            string receivedJson = await req.Content!.ReadAsStringAsync().ConfigureAwait(false);
+            string receivedJson = await req.Content!.ReadAsStringAsync();
             _ = receivedJson.Should().Be(expectedJson);
 
             return true;
@@ -2031,12 +2028,11 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => await sut.DeleteWebhookConfigAsync(-1).ConfigureAwait(false);
+        Func<Task> act = async () => await sut.DeleteWebhookConfigAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*webhookId*")
-            .ConfigureAwait(false);
+            .WithMessage("*webhookId*");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
@@ -2057,7 +2053,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        await sut.DeleteWebhookConfigAsync(webhookId).ConfigureAwait(false);
+        await sut.DeleteWebhookConfigAsync(webhookId);
 
         // Assert
         handler.VerifyRequest(req =>
