@@ -26,10 +26,10 @@ public class FieldTypeTest
     public void CannotSerializeJSON_IfInvalidValue(int invalidValue)
     {
         // Arrange
-        _ = Enum.IsDefined(typeof(FieldType), invalidValue).Should().BeFalse();
+        _ = Enum.IsDefined((FieldType)invalidValue).Should().BeFalse();
 
         // Act - Assert
-        var action = () => JsonSerializer.Serialize((FieldType)invalidValue);
+        var action = () => JsonSerializer.Serialize((FieldType)invalidValue, Context.Default.FieldType);
         _ = action.Should().ThrowExactly<JsonException>();
     }
 
@@ -44,7 +44,7 @@ public class FieldTypeTest
     [InlineData("\"department\"", FieldType.Department)]
     [InlineData("\"department[]\"", FieldType.DepartmentArray)]
     public void CanDeserializeJSON(string json, FieldType expected)
-        => JsonSerializer.Deserialize<FieldType>(json, JsonConfig.Default).Should().Be(expected);
+        => JsonSerializer.Deserialize(json, Context.Default.FieldType).Should().Be(expected);
 
     /// <summary>無効なJSONの場合、JsonExceptionをスローする。</summary>
     /// <param name="json">JSON文字列</param>
@@ -54,7 +54,7 @@ public class FieldTypeTest
     [InlineData("\"string,number\"")]
     public void CannotDeserializeJSON_IfInvalidJson(string json)
     {
-        var action = () => JsonSerializer.Deserialize<FieldType>(json);
+        var action = () => JsonSerializer.Deserialize(json, Context.Default.FieldType);
         _ = action.Should().ThrowExactly<JsonException>();
     }
 }

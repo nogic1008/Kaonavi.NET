@@ -47,12 +47,12 @@ public class UserTest
     public void User_CanDeserializeJSON(string json, int id, string email, string? memberCode)
     {
         // Arrange - Act
-        var user = JsonSerializer.Deserialize<User>(json, JsonConfig.Default);
+        var user = JsonSerializer.Deserialize(json, Context.Default.User);
 
         // Assert
         _ = user.Should().NotBeNull();
         _ = user!.Id.Should().Be(id);
-        _ = user.EMail.Should().Be(email);
+        _ = user.Email.Should().Be(email);
         _ = user.MemberCode.Should().Be(memberCode);
 
         _ = user.Role.Should().BeAssignableTo<Role>();
@@ -84,15 +84,15 @@ public class UserTest
         """;
 
         // Act
-        var user = JsonSerializer.Deserialize<UserWithLoginAt>(json, JsonConfig.Default);
+        var user = JsonSerializer.Deserialize(json, Context.Default.UserWithLoginAt);
 
         // Assert
         _ = user.Should().Be(new UserWithLoginAt(
             Id: 1,
-            EMail: "example@kaonavi.jp",
+            Email: "example@kaonavi.jp",
             MemberCode: "12345",
             Role: new(1, "システム管理者", "Adm"),
-            LastLoginAt: new DateTimeOffset(2021, 11, 1, 12, 0, 0, TimeSpan.Zero).LocalDateTime
+            LastLoginAt: new DateTime(2021, 11, 1, 12, 0, 0)
         ));
     }
 }

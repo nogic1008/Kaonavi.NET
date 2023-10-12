@@ -25,7 +25,7 @@ public class WebhookConfigTest
         """;
 
         // Act
-        var config = JsonSerializer.Deserialize<WebhookConfig>(json, JsonConfig.Default);
+        var config = JsonSerializer.Deserialize(json, Context.Default.WebhookConfig);
 
         // Assert
         _ = config.Should().NotBeNull();

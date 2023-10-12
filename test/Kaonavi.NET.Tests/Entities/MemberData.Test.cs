@@ -101,7 +101,7 @@ public class MemberDataTest
     public void CanDeserializeJSON(string json, string code, string? name, string? nameKana, string? mail, string? enteredDate, string? retiredDate, string? gender, string? birthday, string departmentCode)
     {
         // Arrange - Act
-        var memberData = JsonSerializer.Deserialize<MemberData>(json, JsonConfig.Default);
+        var memberData = JsonSerializer.Deserialize(json, Context.Default.MemberData);
 
         // Assert
         _ = memberData.Should().NotBeNull();

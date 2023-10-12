@@ -18,6 +18,6 @@ public class RoleTest
     [InlineData(/*lang=json,strict*/ """{ "id": 1, "name": "カオナビ管理者", "type": "Adm" }""", 1, "カオナビ管理者", "Adm")]
     [InlineData(/*lang=json,strict*/ """{ "id": 2, "name": "カオナビマネージャー", "type": "一般" }""", 2, "カオナビマネージャー", "一般")]
     public void CanDeserializeJSON(string json, int id, string name, string type)
-        => JsonSerializer.Deserialize<Role>(json, JsonConfig.Default)
+        => JsonSerializer.Deserialize(json, Context.Default.Role)
             .Should().Be(new Role(id, name, type));
 }

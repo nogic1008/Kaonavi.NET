@@ -41,7 +41,7 @@ public class SheetLayoutTest
         """;
 
         // Act
-        var layout = JsonSerializer.Deserialize<SheetLayout>(jsonString, JsonConfig.Default);
+        var layout = JsonSerializer.Deserialize(jsonString, Context.Default.SheetLayout);
 
         // Assert
         _ = layout.Should().NotBeNull();

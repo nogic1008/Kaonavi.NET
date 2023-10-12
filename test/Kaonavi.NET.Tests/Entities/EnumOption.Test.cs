@@ -25,7 +25,7 @@ public class EnumOptionTest
         """;
 
         // Act
-        var enumOption = JsonSerializer.Deserialize<EnumOption>(jsonString, JsonConfig.Default);
+        var enumOption = JsonSerializer.Deserialize(jsonString, Context.Default.EnumOption);
 
         // Assert
         _ = enumOption.Should().NotBeNull();

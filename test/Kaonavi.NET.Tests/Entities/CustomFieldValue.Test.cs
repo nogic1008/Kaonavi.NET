@@ -21,7 +21,7 @@ public class CustomFieldValueTest
     public void CanDeserializeJSON(string json, int id, string? name, params string[] values)
     {
         // Arrange - Act
-        var fieldValue = JsonSerializer.Deserialize<CustomFieldValue>(json, JsonConfig.Default);
+        var fieldValue = JsonSerializer.Deserialize(json, Context.Default.CustomFieldValue);
 
         // Assert
         _ = fieldValue.Should().NotBeNull();

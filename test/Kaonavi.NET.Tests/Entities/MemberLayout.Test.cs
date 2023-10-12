@@ -109,7 +109,7 @@ public class MemberLayoutTest
         """;
 
         // Act
-        var layout = JsonSerializer.Deserialize<MemberLayout>(jsonString, JsonConfig.Default);
+        var layout = JsonSerializer.Deserialize(jsonString, Context.Default.MemberLayout);
 
         // Assert
         _ = layout.Should().NotBeNull();

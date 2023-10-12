@@ -56,6 +56,6 @@ public class DepartmentTreeTest
     [InlineData(NoLeaderJson, "1200", "営業本部", null, null, 2, null)]
     [InlineData(ChildJson, "2000", "ITグループ", "1500", "A0001", 1, "example")]
     public void CanDeserializeJSON(string json, string code, string name, string? parentCode, string? leaderMemberCode, int order, string? memo)
-        => JsonSerializer.Deserialize<DepartmentTree>(json, JsonConfig.Default)
+        => JsonSerializer.Deserialize(json, Context.Default.DepartmentTree)
             .Should().Be(new DepartmentTree(code, name, parentCode, leaderMemberCode, order, memo));
 }

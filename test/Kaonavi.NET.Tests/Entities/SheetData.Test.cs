@@ -33,7 +33,7 @@ public class SheetDataTest
         """;
 
         // Act
-        var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString, JsonConfig.Default);
+        var sheetData = JsonSerializer.Deserialize(jsonString, Context.Default.SheetData);
 
         // Assert
         _ = sheetData.Should().NotBeNull();
@@ -87,7 +87,7 @@ public class SheetDataTest
         """;
 
         // Act
-        var sheetData = JsonSerializer.Deserialize<SheetData>(jsonString, JsonConfig.Default);
+        var sheetData = JsonSerializer.Deserialize(jsonString, Context.Default.SheetData);
 
         // Assert
         _ = sheetData.Should().NotBeNull();

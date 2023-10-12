@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nogic.JsonConverters" Version="0.2.0" />
     <PackageReference Include="System.Net.Http.Json" Version="8.0.0-rc.2.23479.6" Condition="'$(TargetFramework)'!='net8.0'" />
     <PackageReference Include="System.Text.Json" Version="8.0.0-rc.2.23479.6" Condition="'$(TargetFramework)'!='net8.0'" />
   </ItemGroup>

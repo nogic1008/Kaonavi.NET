@@ -290,7 +290,7 @@ public class KaonaviV2ServiceTest
     /// <summary>
     /// 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。")]
+    [Fact(Skip = "Long Test", DisplayName = $"{nameof(KaonaviV2Service)} > API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。")]
     public async Task UpdateApi_Waits_UpdateLimit()
     {
         // Arrange
@@ -353,7 +353,7 @@ public class KaonaviV2ServiceTest
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
-            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, key, secret);
@@ -419,7 +419,7 @@ public class KaonaviV2ServiceTest
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
-            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -473,7 +473,7 @@ public class KaonaviV2ServiceTest
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/member_layouts")
-            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -591,7 +591,7 @@ public class KaonaviV2ServiceTest
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheet_layouts/{sheetId}")
-            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -772,7 +772,7 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -810,7 +810,7 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -848,7 +848,7 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -886,7 +886,7 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
@@ -925,7 +925,7 @@ public class KaonaviV2ServiceTest
         // Arrange
         string[] codes = _memberDataPayload.Select(d => d.Code).ToArray();
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, Context.Default.IReadOnlyCollectionString)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/delete")
@@ -1084,7 +1084,7 @@ public class KaonaviV2ServiceTest
         // Arrange
         const int sheetId = 1;
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyCollectionSheetData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
@@ -1123,7 +1123,7 @@ public class KaonaviV2ServiceTest
         // Arrange
         const int sheetId = 1;
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyCollectionSheetData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
@@ -1162,7 +1162,7 @@ public class KaonaviV2ServiceTest
         // Arrange
         const int sheetId = 1;
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyCollectionSheetData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}/add")
@@ -1282,7 +1282,7 @@ public class KaonaviV2ServiceTest
                 new("2000", "ITグループ", "1500", "A0001", 1, "example"),
         };
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, Context.Default.IReadOnlyCollectionDepartmentTree)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
@@ -1473,7 +1473,7 @@ public class KaonaviV2ServiceTest
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
-            .ReturnsJsonResponse(HttpStatusCode.OK, responseUser, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, responseUser, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);

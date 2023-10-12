@@ -306,11 +306,6 @@
         "resolved": "8.0.0-rc.2.23479.6",
         "contentHash": "I3fTiDmV+2cCR3VjH+oz49AMgrAqX1cmNiWXmEAituAI7jCLA16uXzvYQTwxhQzov5BTdPVXKGNTxsMb1GpcLQ=="
       },
-      "Nogic.JsonConverters": {
-        "type": "Transitive",
-        "resolved": "0.2.0",
-        "contentHash": "pPM624hDAcQErGqp7xtDcnC/GCwXDjOdTEbDYOvt59w2SMktjZOk8m72Vd2aawXwF7NJCRAC7q0iYbyuxDFSqg=="
-      },
       "System.Diagnostics.DiagnosticSource": {
         "type": "Transitive",
         "resolved": "8.0.0-rc.2.23479.6",
@@ -344,10 +339,7 @@
         }
       },
       "kaonavi.net": {
-        "type": "Project",
-        "dependencies": {
-          "Nogic.JsonConverters": "[0.2.0, )"
-        }
+        "type": "Project"
       }
     }
   }
