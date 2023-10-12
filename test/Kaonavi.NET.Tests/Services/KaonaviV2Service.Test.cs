@@ -290,7 +290,7 @@ public class KaonaviV2ServiceTest
     /// <summary>
     /// 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。
     /// </summary>
-    [Fact(Skip = "Long Test", DisplayName = $"{nameof(KaonaviV2Service)} > API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。")]
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。")]
     public async Task UpdateApi_Waits_UpdateLimit()
     {
         // Arrange
