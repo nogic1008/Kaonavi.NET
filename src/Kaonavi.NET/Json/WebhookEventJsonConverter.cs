@@ -9,34 +9,22 @@ namespace Kaonavi.Net.Json;
 [ExcludeFromCodeCoverage]
 internal class WebhookEventJsonConverter : JsonConverter<WebhookEvent>
 {
-    private const string MemberCreatedValue = "member_created";
-    private const string MemberUpdatedValue = "member_updated";
-    private const string MemberDeletedValue = "member_deleted";
+    private static ReadOnlySpan<byte> MemberCreated => "member_created"u8;
+    private static ReadOnlySpan<byte> MemberUpdated => "member_updated"u8;
+    private static ReadOnlySpan<byte> MemberDeleted => "member_deleted"u8;
 
     public override WebhookEvent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => reader.GetString() switch
-        {
-            MemberCreatedValue => WebhookEvent.MemberCreated,
-            MemberUpdatedValue => WebhookEvent.MemberUpdated,
-            MemberDeletedValue => WebhookEvent.MemberDeleted,
-            _ => throw new JsonException(),
-        };
+        => reader.ValueSpan.SequenceEqual(MemberCreated) ? WebhookEvent.MemberCreated
+        : reader.ValueSpan.SequenceEqual(MemberUpdated) ? WebhookEvent.MemberUpdated
+        : reader.ValueSpan.SequenceEqual(MemberDeleted) ? WebhookEvent.MemberDeleted
+        : throw new JsonException();
 
     public override void Write(Utf8JsonWriter writer, WebhookEvent value, JsonSerializerOptions options)
-    {
-        switch (value)
+        => writer.WriteStringValue(value switch
         {
-            case WebhookEvent.MemberCreated:
-                writer.WriteStringValue(MemberCreatedValue);
-                break;
-            case WebhookEvent.MemberUpdated:
-                writer.WriteStringValue(MemberUpdatedValue);
-                break;
-            case WebhookEvent.MemberDeleted:
-                writer.WriteStringValue(MemberDeletedValue);
-                break;
-            default:
-                throw new JsonException();
-        }
-    }
+            WebhookEvent.MemberCreated => MemberCreated,
+            WebhookEvent.MemberUpdated => MemberUpdated,
+            WebhookEvent.MemberDeleted => MemberDeleted,
+            _ => throw new JsonException(),
+        });
 }
