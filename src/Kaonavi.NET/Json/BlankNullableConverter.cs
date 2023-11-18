@@ -17,6 +17,8 @@ public class BlankNullableConverterFactory : JsonConverterFactory
 
     private class BlankNullableConverter<T> : JsonConverter<T?> where T : struct
     {
+        public override bool HandleNull => true;
+
         private static readonly JsonConverter<T> _defaultConverter
             = (JsonConverter<T>)JsonSerializerOptions.Default.GetConverter(typeof(T));
 
