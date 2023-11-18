@@ -1,4 +1,5 @@
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
@@ -10,19 +11,22 @@ public class EnumOptionTest
     public void CanDeserializeJSON()
     {
         // Arrange
-        const string jsonString = "{"
-        + "\"sheet_name\": \"役職情報\","
-        + "\"id\": 10,"
-        + "\"name\": \"役職\","
-        + "\"enum_option_data\": ["
-        + "  { \"id\": 1, \"name\": \"社長\" },"
-        + "  { \"id\": 2, \"name\": \"部長\" },"
-        + "  { \"id\": 3, \"name\": \"課長\" }"
-        + "]"
-        + "}";
+        /*lang=json,strict*/
+        const string jsonString = """
+        {
+            "sheet_name": "役職情報",
+            "id": 10,
+            "name": "役職",
+            "enum_option_data": [
+                { "id": 1, "name": "社長" },
+                { "id": 2, "name": "部長" },
+                { "id": 3, "name": "課長" }
+            ]
+        }
+        """;
 
         // Act
-        var enumOption = JsonSerializer.Deserialize<EnumOption>(jsonString, JsonConfig.Default);
+        var enumOption = JsonSerializer.Deserialize(jsonString, Context.Default.EnumOption);
 
         // Assert
         _ = enumOption.Should().NotBeNull();

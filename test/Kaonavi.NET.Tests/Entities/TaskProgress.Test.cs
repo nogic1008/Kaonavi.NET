@@ -1,4 +1,5 @@
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
@@ -8,11 +9,13 @@ namespace Kaonavi.Net.Tests.Entities;
 public class TaskProgressTest
 {
     /*lang=json,strict*/
-    private const string TaskOkJson = "{\"id\": 1,\"status\": \"OK\",\"messages\": []}";
+    private const string TaskOkJson = """{ "id": 1, "status": "OK", "messages": [] }""";
     /*lang=json,strict*/
-    private const string TaskRunningJson = "{\"id\": 2,\"status\": \"RUNNING\"}";
+    private const string TaskRunningJson = """{ "id": 2, "status": "RUNNING" }""";
     /*lang=json,strict*/
-    private const string TaskErrorJson = "{\"id\": 3,\"status\": \"NG\",\"messages\": [\"エラーメッセージ1\",\"エラーメッセージ2\"]}";
+    private const string TaskErrorJson = """
+    { "id": 3, "status": "NG", "messages": ["エラーメッセージ1","エラーメッセージ2"] }
+    """;
 
     /// <summary>
     /// JSONからデシリアライズできる。
@@ -28,7 +31,7 @@ public class TaskProgressTest
     public void CanDeserializeJSON(string json, int id, string status, params string[] messages)
     {
         // Arrange - Act
-        var task = JsonSerializer.Deserialize<TaskProgress>(json, JsonConfig.Default);
+        var task = JsonSerializer.Deserialize(json, Context.Default.TaskProgress);
 
         // Assert
         _ = task.Should().NotBeNull();

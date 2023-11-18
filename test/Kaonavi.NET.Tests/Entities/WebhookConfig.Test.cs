@@ -1,4 +1,5 @@
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
@@ -15,10 +16,17 @@ public class WebhookConfigTest
     {
         // Arrange
         /*lang=json,strict*/
-        const string json = "{\"id\": 1, \"url\": \"https://example.com\", \"events\": [\"member_created\", \"member_updated\", \"member_deleted\"],\"secret_token\": \"string\"}";
+        const string json = """
+        {
+            "id": 1,
+            "url": "https://example.com",
+            "events": ["member_created", "member_updated", "member_deleted"],
+            "secret_token": "string"
+        }
+        """;
 
         // Act
-        var config = JsonSerializer.Deserialize<WebhookConfig>(json, JsonConfig.Default);
+        var config = JsonSerializer.Deserialize(json, Context.Default.WebhookConfig);
 
         // Assert
         _ = config.Should().NotBeNull();

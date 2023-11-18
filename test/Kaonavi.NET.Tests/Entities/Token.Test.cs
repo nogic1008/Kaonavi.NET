@@ -1,4 +1,5 @@
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
@@ -14,14 +15,17 @@ public class TokenTest
     public void CanDeserializeJSON()
     {
         // Arrange
-        const string jsonString = "{"
-        + "\"access_token\": \"25396f58-10f8-c228-7f0f-818b1d666b2e\","
-        + "\"token_type\": \"Bearer\","
-        + "\"expires_in\": 3600"
-        + "}";
+        /*lang=json,strict*/
+        const string jsonString = """
+        {
+            "access_token": "25396f58-10f8-c228-7f0f-818b1d666b2e",
+            "token_type": "Bearer",
+            "expires_in": 3600
+        }
+        """;
 
         // Act
-        var token = JsonSerializer.Deserialize<Token>(jsonString, JsonConfig.Default);
+        var token = JsonSerializer.Deserialize(jsonString, Context.Default.Token);
 
         // Assert
         _ = token.Should().NotBeNull();

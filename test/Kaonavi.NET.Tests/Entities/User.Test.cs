@@ -1,16 +1,39 @@
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary>
-/// <see cref="User"/>の単体テスト
+/// <see cref="User"/>, <see cref="UserWithLoginAt"/>の単体テスト
 /// </summary>
 public class UserTest
 {
     /*lang=json,strict*/
-    private const string MemberJson = "{\"id\": 1,\"email\":\"taro@kaonavi.jp\",\"member_code\":\"A0002\",\"role\":{\"id\":1,\"name\":\"システム管理者\",\"type\":\"Adm\"}}";
+    private const string MemberJson = """
+    {
+        "id": 1,
+        "email":"taro@kaonavi.jp",
+        "member_code":"A0002",
+        "role":{
+            "id":1,
+            "name":"システム管理者",
+            "type":"Adm"
+        }
+    }
+    """;
     /*lang=json,strict*/
-    private const string NonMemberJson = "{\"id\": 2,\"email\": \"hanako@kaonavi.jp\",\"member_code\": null,\"role\": {\"id\": 2,\"name\": \"マネージャ\",\"type\": \"一般\"}}";
+    private const string NonMemberJson = """
+    {
+        "id": 2,
+        "email": "hanako@kaonavi.jp",
+        "member_code": null,
+        "role": {
+            "id": 2,
+            "name": "マネージャ",
+            "type": "一般"
+        }
+    }
+    """;
 
     /// <summary>
     /// JSONから<see cref="User"/>にデシリアライズできる。
@@ -25,12 +48,12 @@ public class UserTest
     public void User_CanDeserializeJSON(string json, int id, string email, string? memberCode)
     {
         // Arrange - Act
-        var user = JsonSerializer.Deserialize<User>(json, JsonConfig.Default);
+        var user = JsonSerializer.Deserialize(json, Context.Default.User);
 
         // Assert
         _ = user.Should().NotBeNull();
         _ = user!.Id.Should().Be(id);
-        _ = user.EMail.Should().Be(email);
+        _ = user.Email.Should().Be(email);
         _ = user.MemberCode.Should().Be(memberCode);
 
         _ = user.Role.Should().BeAssignableTo<Role>();
@@ -46,28 +69,31 @@ public class UserTest
     public void UserWithLoginAt_CanDeserializeJSON()
     {
         // Arrange
-        const string json = "{"
-        + "\"id\": 1,"
-        + "\"email\": \"example@kaonavi.jp\","
-        + "\"member_code\": \"12345\","
-        + "\"role\": {"
-        + "  \"id\": 1,"
-        + "  \"name\": \"システム管理者\","
-        + "  \"type\": \"Adm\""
-        + "},"
-        + "\"last_login_at\": \"2021-11-01 12:00:00Z\""
-        + "}";
+        /*lang=json,strict*/
+        const string json = """
+        {
+            "id": 1,
+            "email": "example@kaonavi.jp",
+            "member_code": "12345",
+            "role": {
+                "id": 1,
+                "name": "システム管理者",
+                "type": "Adm"
+            },
+            "last_login_at": "2021-11-01 12:00:00"
+        }
+        """;
 
         // Act
-        var user = JsonSerializer.Deserialize<UserWithLoginAt>(json, JsonConfig.Default);
+        var user = JsonSerializer.Deserialize(json, Context.Default.UserWithLoginAt);
 
         // Assert
         _ = user.Should().Be(new UserWithLoginAt(
             Id: 1,
-            EMail: "example@kaonavi.jp",
+            Email: "example@kaonavi.jp",
             MemberCode: "12345",
             Role: new(1, "システム管理者", "Adm"),
-            LastLoginAt: new DateTimeOffset(2021, 11, 1, 12, 0, 0, TimeSpan.Zero).LocalDateTime
+            LastLoginAt: new DateTime(2021, 11, 1, 12, 0, 0)
         ));
     }
 }

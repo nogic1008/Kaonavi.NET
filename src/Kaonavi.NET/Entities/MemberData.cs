@@ -1,3 +1,5 @@
+using Kaonavi.Net.Json;
+
 namespace Kaonavi.Net.Entities;
 
 /// <summary>メンバー情報(基本情報/所属(主務)/兼務情報)</summary>
@@ -17,8 +19,8 @@ public record MemberData(
     string? Name = null,
     string? NameKana = null,
     string? Mail = null,
-    DateOnly? EnteredDate = default,
-    DateOnly? RetiredDate = default,
+    [property: JsonConverter(typeof(BlankNullableConverterFactory))] DateOnly? EnteredDate = default,
+    [property: JsonConverter(typeof(BlankNullableConverterFactory))] DateOnly? RetiredDate = default,
     string? Gender = null,
     DateOnly? Birthday = default,
     MemberDepartment? Department = null,

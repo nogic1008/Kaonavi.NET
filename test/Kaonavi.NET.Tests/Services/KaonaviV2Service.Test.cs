@@ -1,5 +1,6 @@
 using System.Text;
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Json;
 using Kaonavi.Net.Services;
 using Moq;
 using Moq.Contrib.HttpClient;
@@ -16,7 +17,7 @@ public class KaonaviV2ServiceTest
 
     /// <summary>タスク結果JSON</summary>
     /*lang=json,strict*/
-    private const string TaskJson = "{\"task_id\":1}";
+    private const string TaskJson = """{"task_id":1}""";
 
     /// <summary>ランダムな文字列を生成します。</summary>
     private static string GenerateRandomString() => Guid.NewGuid().ToString();
@@ -220,8 +221,8 @@ public class KaonaviV2ServiceTest
     /// <param name="message">エラーメッセージ</param>
     /// <param name="mediaType">MediaType</param>
     [Theory(DisplayName = $"{nameof(KaonaviV2Service)} > API Caller > ApplicationExceptionをスローする。")]
-    [InlineData(401, "{{\"errors\":[\"{0}\"]}}", "consumer_keyとconsumer_secretの組み合わせが不正です。", "application/json")]
-    [InlineData(429, "{{\"errors\":[\"{0}\"]}}", "1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。", "application/json")]
+    [InlineData(401, """{{"errors":["{0}"]}}""", "consumer_keyとconsumer_secretの組み合わせが不正です。", "application/json")]
+    [InlineData(429, """{{"errors":["{0}"]}}""", "1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。", "application/json")]
     [InlineData(500, "{0}", "Error", "plain/text")]
     public async Task ApiCaller_Throws_ApplicationException(int statusCode, string contentFormat, string message, string? mediaType)
     {
@@ -236,7 +237,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, key, secret);
-        Func<Task> act = async () => await sut.AuthenticateAsync();
+        var act = async () => await sut.AuthenticateAsync();
 
         _ = (await act.Should().ThrowExactlyAsync<ApplicationException>())
             .WithMessage(message)
@@ -260,7 +261,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, key, secret);
-        Func<Task> act = async () => await sut.FetchMemberLayoutAsync();
+        var act = async () => await sut.FetchMemberLayoutAsync();
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
@@ -327,11 +328,11 @@ public class KaonaviV2ServiceTest
         // Arrange
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
-            .ReturnsResponse(HttpStatusCode.NotFound, /*lang=json,strict*/ "{\"errors\":[\"test\"]}", "application/json");
+            .ReturnsResponse(HttpStatusCode.NotFound, /*lang=json,strict*/ """{"errors":["test"]}""", "application/json");
 
         // Act
         var sut = CreateSut(handler, accessToken: "token");
-        Func<Task> act = async () => await sut.OverWriteMemberDataAsync(_memberDataPayload);
+        var act = async () => await sut.OverWriteMemberDataAsync(_memberDataPayload);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
@@ -353,7 +354,7 @@ public class KaonaviV2ServiceTest
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
-            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, key, secret);
@@ -397,7 +398,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.FetchTaskProgressAsync(-1);
+        var act = async () => _ = await sut.FetchTaskProgressAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -406,6 +407,7 @@ public class KaonaviV2ServiceTest
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
 
+    private static readonly string[] _messages = new[] { "エラーメッセージ1", "エラーメッセージ2" };
     /// <summary>
     /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
     /// </summary>
@@ -415,11 +417,11 @@ public class KaonaviV2ServiceTest
         // Arrange
         const int taskId = 1;
         string tokenString = GenerateRandomString();
-        var response = new TaskProgress(taskId, "NG", new[] { "エラーメッセージ1", "エラーメッセージ2" });
+        var response = new TaskProgress(taskId, "NG", _messages);
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
-            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -446,6 +448,9 @@ public class KaonaviV2ServiceTest
     #endregion タスク進捗状況 API
 
     #region レイアウト設定 API
+    private static readonly string[] _gender = new[] { "男性", "女性" };
+    private static readonly string[] _bloodType = new[] { "A", "B", "O", "AB" };
+    private static readonly string?[] _roles = new[] { "部長", "課長", "マネージャー", null };
     /// <summary>
     /// <see cref="KaonaviV2Service.FetchMemberLayoutAsync"/>は、"/member_layouts"にGETリクエストを行う。
     /// </summary>
@@ -460,20 +465,20 @@ public class KaonaviV2ServiceTest
             new FieldLayout("メールアドレス", false, FieldType.String, 100, Array.Empty<string?>()),
             new FieldLayout("入社日", false, FieldType.Date, null, Array.Empty<string?>()),
             new FieldLayout("退職日", false, FieldType.Date, null, Array.Empty<string?>()),
-            new FieldLayout("性別", false, FieldType.Enum, null, new[] { "男性", "女性" }),
+            new FieldLayout("性別", false, FieldType.Enum, null, _gender),
             new FieldLayout("生年月日", false, FieldType.Date, null, Array.Empty<string?>()),
             new FieldLayout("所属", false, FieldType.Department, null, Array.Empty<string?>()),
             new FieldLayout("兼務情報", false, FieldType.DepartmentArray, null, Array.Empty<string?>()),
             new CustomFieldLayout[]
             {
-                new(100, "血液型", false, FieldType.Enum, null, new[] { "A", "B", "O", "AB" }),
-                new(200, "役職", false, FieldType.Enum, null, new[] { "部長", "課長", "マネージャー", null }),
+                new(100, "血液型", false, FieldType.Enum, null, _bloodType),
+                new(200, "役職", false, FieldType.Enum, null, _roles),
             }
         );
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/member_layouts")
-            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -513,35 +518,36 @@ public class KaonaviV2ServiceTest
     public async Task FetchSheetLayoutsAsync_Calls_GetApi()
     {
         // Arrange
-        #region JSON
-        const string responseJson = "{"
-        + "\"sheets\": ["
-        + "  {"
-        + "    \"id\": 12,"
-        + "    \"name\": \"住所・連絡先\","
-        + "    \"record_type\": 1,"
-        + "    \"custom_fields\": ["
-        + "      {"
-        + "        \"id\": 1000,"
-        + "        \"name\": \"住所\","
-        + "        \"required\": false,"
-        + "        \"type\": \"string\","
-        + "        \"max_length\": 250,"
-        + "        \"enum\": []"
-        + "      },"
-        + "      {"
-        + "        \"id\": 1001,"
-        + "        \"name\": \"電話番号\","
-        + "        \"required\": false,"
-        + "        \"type\": \"string\","
-        + "        \"max_length\": 50,"
-        + "        \"enum\": []"
-        + "      }"
-        + "    ]"
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "sheets": [
+                {
+                    "id": 12,
+                    "name": "住所・連絡先",
+                    "record_type": 1,
+                    "custom_fields": [
+                        {
+                            "id": 1000,
+                            "name": "住所",
+                            "required": false,
+                            "type": "string",
+                            "max_length": 250,
+                            "enum": []
+                        },
+                        {
+                            "id": 1001,
+                            "name": "電話番号",
+                            "required": false,
+                            "type": "string",
+                            "max_length": 50,
+                            "enum": []
+                        }
+                    ]
+                }
+            ]
+        }
+        """;
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -590,7 +596,7 @@ public class KaonaviV2ServiceTest
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheet_layouts/{sheetId}")
-            .ReturnsJsonResponse(HttpStatusCode.OK, response, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -663,96 +669,80 @@ public class KaonaviV2ServiceTest
     public async Task FetchMembersDataAsync_Calls_GetApi()
     {
         // Arrange
-        #region JSON
-        const string responseJson = "{"
-        + "\"updated_at\": \"2020-10-01 01:23:45\","
-        + "\"member_data\": ["
-        + "  {"
-        + "    \"code\": \"A0002\","
-        + "    \"name\": \"カオナビ 太郎\","
-        + "    \"name_kana\": \"カオナビ タロウ\","
-        + "    \"mail\": \"taro@kaonavi.jp\","
-        + "    \"entered_date\": \"2005-09-20\","
-        + "    \"retired_date\": \"\","
-        + "    \"gender\": \"男性\","
-        + "    \"birthday\": \"1984-05-15\","
-        + "    \"age\": 36,"
-        + "    \"years_of_service\": \"15年5ヵ月\","
-        + "    \"department\": {"
-        + "      \"code\": \"1000\","
-        + "      \"name\": \"取締役会\","
-        + "      \"names\": ["
-        + "        \"取締役会\""
-        + "      ]"
-        + "    },"
-        + "    \"sub_departments\": [],"
-        + "    \"custom_fields\": ["
-        + "      {"
-        + "        \"id\": 100,"
-        + "        \"name\": \"血液型\","
-        + "        \"values\": ["
-        + "          \"A\""
-        + "        ]"
-        + "      }"
-        + "    ]"
-        + "  },"
-        + "  {"
-        + "    \"code\": \"A0001\","
-        + "    \"name\": \"カオナビ 花子\","
-        + "    \"name_kana\": \"カオナビ ハナコ\","
-        + "    \"mail\": \"hanako@kaonavi.jp\","
-        + "    \"entered_date\": \"2013-05-07\","
-        + "    \"retired_date\": \"\","
-        + "    \"gender\": \"女性\","
-        + "    \"birthday\": \"1986-05-16\","
-        + "    \"age\": 36,"
-        + "    \"years_of_service\": \"7年9ヵ月\","
-        + "    \"department\": {"
-        + "      \"code\": \"2000\","
-        + "      \"name\": \"営業本部 第一営業部 ITグループ\","
-        + "      \"names\": ["
-        + "        \"営業本部\","
-        + "        \"第一営業部\","
-        + "        \"ITグループ\""
-        + "      ]"
-        + "    },"
-        + "    \"sub_departments\": ["
-        + "      {"
-        + "        \"code\": \"3000\","
-        + "        \"name\": \"企画部\","
-        + "        \"names\": ["
-        + "          \"企画部\""
-        + "        ]"
-        + "      },"
-        + "      {"
-        + "        \"code\": \"4000\","
-        + "        \"name\": \"管理部\","
-        + "        \"names\": ["
-        + "          \"管理部\""
-        + "        ]"
-        + "      }"
-        + "    ],"
-        + "    \"custom_fields\": ["
-        + "      {"
-        + "        \"id\": 100,"
-        + "        \"name\": \"血液型\","
-        + "        \"values\": ["
-        + "          \"O\""
-        + "        ]"
-        + "      },"
-        + "      {"
-        + "        \"id\": 200,"
-        + "        \"name\": \"役職\","
-        + "        \"values\": ["
-        + "          \"部長\","
-        + "          \"マネージャー\""
-        + "        ]"
-        + "      }"
-        + "    ]"
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "updated_at": "2020-10-01 01:23:45",
+            "member_data": [
+                {
+                    "code": "A0002",
+                    "name": "カオナビ 太郎",
+                    "name_kana": "カオナビ タロウ",
+                    "mail": "taro@kaonavi.jp",
+                    "entered_date": "2005-09-20",
+                    "retired_date": "",
+                    "gender": "男性",
+                    "birthday": "1984-05-15",
+                    "age": 36,
+                    "years_of_service": "15年5ヵ月",
+                    "department": {
+                        "code": "1000",
+                        "name": "取締役会",
+                        "names": ["取締役会"]
+                    },
+                    "sub_departments": [],
+                    "custom_fields": [
+                        {
+                            "id": 100,
+                            "name": "血液型",
+                            "values": ["A"]
+                        }
+                    ]
+                },
+                {
+                    "code": "A0001",
+                    "name": "カオナビ 花子",
+                    "name_kana": "カオナビ ハナコ",
+                    "mail": "hanako@kaonavi.jp",
+                    "entered_date": "2013-05-07",
+                    "retired_date": "",
+                    "gender": "女性",
+                    "birthday": "1986-05-16",
+                    "age": 36,
+                    "years_of_service": "7年9ヵ月",
+                    "department": {
+                        "code": "2000",
+                        "name": "営業本部 第一営業部 ITグループ",
+                        "names": ["営業本部", "第一営業部", "ITグループ"]
+                    },
+                    "sub_departments": [
+                        {
+                            "code": "3000",
+                            "name": "企画部",
+                            "names": ["企画部"]
+                        },
+                        {
+                            "code": "4000",
+                            "name": "管理部",
+                            "names": ["管理部"]
+                        }
+                    ],
+                    "custom_fields": [
+                        {
+                            "id": 100,
+                            "name": "血液型",
+                            "values": ["O"]
+                        },
+                        {
+                            "id": 200,
+                            "name": "役職",
+                            "values": ["部長", "マネージャー"]
+                        }
+                    ]
+                }
+            ]
+        }
+        """;
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -787,7 +777,7 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -825,7 +815,7 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -863,7 +853,7 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -901,7 +891,7 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
@@ -940,7 +930,7 @@ public class KaonaviV2ServiceTest
         // Arrange
         string[] codes = _memberDataPayload.Select(d => d.Code).ToArray();
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, Context.Default.IReadOnlyCollectionString)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/delete")
@@ -1006,73 +996,64 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         const int sheetId = 1;
-        #region JSON
-        const string responseJson = "{"
-        + "  \"id\": 12,"
-        + "  \"name\": \"住所・連絡先\","
-        + "  \"record_type\": 1,"
-        + "  \"updated_at\": \"2020-10-01 01:23:45\","
-        + "  \"member_data\": ["
-        + "    {"
-        + "      \"code\": \"A0002\","
-        + "      \"records\": ["
-        + "        {"
-        + "          \"custom_fields\": ["
-        + "            {"
-        + "              \"id\": 1000,"
-        + "              \"name\": \"住所\","
-        + "              \"values\": ["
-        + "                \"東京都港区x-x-x\""
-        + "              ]"
-        + "            }"
-        + "          ]"
-        + "        }"
-        + "      ]"
-        + "    },"
-        + "    {"
-        + "      \"code\": \"A0001\","
-        + "      \"records\": ["
-        + "        {"
-        + "          \"custom_fields\": ["
-        + "            {"
-        + "              \"id\": 1000,"
-        + "              \"name\": \"住所\","
-        + "              \"values\": ["
-        + "                \"大阪府大阪市y番y号\""
-        + "              ]"
-        + "            },"
-        + "            {"
-        + "              \"id\": 1001,"
-        + "              \"name\": \"電話番号\","
-        + "              \"values\": ["
-        + "                \"06-yyyy-yyyy\""
-        + "              ]"
-        + "            }"
-        + "          ]"
-        + "        },"
-        + "        {"
-        + "          \"custom_fields\": ["
-        + "            {"
-        + "              \"id\": 1000,"
-        + "              \"name\": \"住所\","
-        + "              \"values\": ["
-        + "                \"愛知県名古屋市z丁目z番z号\""
-        + "              ]"
-        + "            },"
-        + "            {"
-        + "              \"id\": 1001,"
-        + "              \"name\": \"電話番号\","
-        + "              \"values\": ["
-        + "                \"052-zzzz-zzzz\""
-        + "              ]"
-        + "            }"
-        + "          ]"
-        + "        }"
-        + "      ]"
-        + "    }"
-        + "  ]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "id": 12,
+            "name": "住所・連絡先",
+            "record_type": 1,
+            "updated_at": "2020-10-01 01:23:45",
+            "member_data": [
+                {
+                    "code": "A0002",
+                    "records": [
+                        {
+                            "custom_fields": [
+                                {
+                                    "id": 1000,
+                                    "name": "住所",
+                                    "values": ["東京都港区x-x-x"]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "code": "A0001",
+                    "records": [
+                        {
+                            "custom_fields": [
+                                {
+                                    "id": 1000,
+                                    "name": "住所",
+                                    "values": ["大阪府大阪市y番y号"]
+                                },
+                                {
+                                    "id": 1001,
+                                    "name": "電話番号",
+                                    "values": ["06-yyyy-yyyy"]
+                                }
+                            ]
+                        },
+                        {
+                            "custom_fields": [
+                                {
+                                    "id": 1000,
+                                    "name": "住所",
+                                    "values": ["愛知県名古屋市z丁目z番z号"]
+                                },
+                                {
+                                    "id": 1001,
+                                    "name": "電話番号",
+                                    "values": ["052-zzzz-zzzz"]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+        """;
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1108,7 +1089,7 @@ public class KaonaviV2ServiceTest
         // Arrange
         const int sheetId = 1;
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyCollectionSheetData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
@@ -1147,7 +1128,7 @@ public class KaonaviV2ServiceTest
         // Arrange
         const int sheetId = 1;
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyCollectionSheetData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
@@ -1186,7 +1167,7 @@ public class KaonaviV2ServiceTest
         // Arrange
         const int sheetId = 1;
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyCollectionSheetData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}/add")
@@ -1225,44 +1206,45 @@ public class KaonaviV2ServiceTest
     public async Task FetchDepartmentsAsync_Calls_GetApi()
     {
         // Arrange
-        #region JSON
-        const string responseJson = "{"
-        + "\"department_data\": ["
-        + "  {"
-        + "    \"code\": \"1000\","
-        + "    \"name\": \"取締役会\","
-        + "    \"parent_code\": null,"
-        + "    \"leader_member_code\": \"A0002\","
-        + "    \"order\": 1,"
-        + "    \"memo\": \"\""
-        + "  },"
-        + "  {"
-        + "    \"code\": \"1200\","
-        + "    \"name\": \"営業本部\","
-        + "    \"parent_code\": null,"
-        + "    \"leader_member_code\": null,"
-        + "    \"order\": 2,"
-        + "    \"memo\": \"\""
-        + "  },"
-        + "  {"
-        + "    \"code\": \"1500\","
-        + "    \"name\": \"第一営業部\","
-        + "    \"parent_code\": \"1200\","
-        + "    \"leader_member_code\": null,"
-        + "    \"order\": 1,"
-        + "    \"memo\": \"\""
-        + "  },"
-        + "  {"
-        + "    \"code\": \"2000\","
-        + "    \"name\": \"ITグループ\","
-        + "    \"parent_code\": \"1500\","
-        + "    \"leader_member_code\": \"A0001\","
-        + "    \"order\": 1,"
-        + "    \"memo\": \"example\""
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "department_data": [
+                {
+                    "code": "1000",
+                    "name": "取締役会",
+                    "parent_code": null,
+                    "leader_member_code": "A0002",
+                    "order": 1,
+                    "memo": ""
+                },
+                {
+                    "code": "1200",
+                    "name": "営業本部",
+                    "parent_code": null,
+                    "leader_member_code": null,
+                    "order": 2,
+                    "memo": ""
+                },
+                {
+                    "code": "1500",
+                    "name": "第一営業部",
+                    "parent_code": "1200",
+                    "leader_member_code": null,
+                    "order": 1,
+                    "memo": ""
+                },
+                {
+                    "code": "2000",
+                    "name": "ITグループ",
+                    "parent_code": "1500",
+                    "leader_member_code": "A0001",
+                    "order": 1,
+                    "memo": "example"
+                }
+            ]
+        }
+        """;
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1305,7 +1287,7 @@ public class KaonaviV2ServiceTest
                 new("2000", "ITグループ", "1500", "A0001", 1, "example"),
         };
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, JsonConfig.Default)}}}";
+        string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, Context.Default.IReadOnlyCollectionDepartmentTree)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
@@ -1344,34 +1326,35 @@ public class KaonaviV2ServiceTest
     public async Task FetchUsersAsync_Calls_GetApi()
     {
         // Arrange
-        #region JSON
-        const string responseJson = "{"
-        + "\"user_data\": ["
-        + "  {"
-        + "    \"id\": 1,"
-        + "    \"email\": \"taro@kaonavi.jp\","
-        + "    \"member_code\": \"A0002\","
-        + "    \"role\": {"
-        + "      \"id\": 1,"
-        + "      \"name\": \"システム管理者\","
-        + "      \"type\": \"Adm\""
-        + "    },"
-        + "    \"last_login_at\": \"2021-11-01 12:00:00\""
-        + "  },"
-        + "  {"
-        + "    \"id\": 2,"
-        + "    \"email\": \"hanako@kaonavi.jp\","
-        + "    \"member_code\": \"A0001\","
-        + "    \"role\": {"
-        + "      \"id\": 2,"
-        + "      \"name\": \"マネージャ\","
-        + "      \"type\": \"一般\""
-        + "    },"
-        + "    \"last_login_at\": null"
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "user_data": [
+                {
+                    "id": 1,
+                    "email": "taro@kaonavi.jp",
+                    "member_code": "A0002",
+                    "role": {
+                        "id": 1,
+                        "name": "システム管理者",
+                        "type": "Adm"
+                    },
+                    "last_login_at": "2021-11-01 12:00:00"
+                },
+                {
+                    "id": 2,
+                    "email": "hanako@kaonavi.jp",
+                    "member_code": "A0001",
+                    "role": {
+                        "id": 2,
+                        "name": "マネージャ",
+                        "type": "一般"
+                    },
+                    "last_login_at": null
+                }
+            ]
+        }
+        """;
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1407,21 +1390,24 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        const string responseJson = "{"
-        + "\"id\": 1,"
-        + "\"email\": \"user1@example.com\","
-        + "\"member_code\": \"00001\","
-        + "\"role\": {"
-        + "  \"id\": 1,"
-        + "  \"name\": \"システム管理者\","
-        + "  \"type\": \"Adm\""
-        + "}"
-        + "}";
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "id": 1,
+            "email": "user1@example.com",
+            "member_code": "00001",
+            "role": {
+                "id": 1,
+                "name": "システム管理者",
+                "type": "Adm"
+            }
+        }
+        """;
         var payload = new UserPayload("user1@example.com", "00001", "password", 1);
-        const string expectedJson = "{\"email\":\"user1@example.com\","
-        + "\"member_code\":\"00001\","
-        + "\"password\":\"password\","
-        + "\"role\":{\"id\":1}}";
+        /*lang=json,strict*/
+        const string expectedJson = """
+        {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1}}
+        """;
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
@@ -1464,7 +1450,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.FetchUserAsync(-1);
+        var act = async () => _ = await sut.FetchUserAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -1492,7 +1478,7 @@ public class KaonaviV2ServiceTest
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
-            .ReturnsJsonResponse(HttpStatusCode.OK, responseUser, KaonaviV2Service.Options);
+            .ReturnsJsonResponse(HttpStatusCode.OK, responseUser, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
@@ -1527,7 +1513,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => _ = await sut.UpdateUserAsync(-1, null!);
+        var act = async () => _ = await sut.UpdateUserAsync(-1, null!);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -1544,22 +1530,25 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         const int userId = 1;
-        const string responseJson = "{"
-        + "\"id\": 1,"
-        + "\"email\": \"user1@example.com\","
-        + "\"member_code\": \"00001\","
-        + "\"role\": {"
-        + "  \"id\": 1,"
-        + "  \"name\": \"システム管理者\","
-        + "  \"type\": \"Adm\""
-        + "}"
-        + "}";
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "id": 1,
+            "email": "user1@example.com",
+            "member_code": "00001",
+            "role": {
+                "id": 1,
+                "name": "システム管理者",
+                "type": "Adm"
+            }
+        }
+        """;
         string tokenString = GenerateRandomString();
         var payload = new UserPayload("user1@example.com", "00001", "password", 1);
-        const string expectedJson = "{\"email\":\"user1@example.com\","
-        + "\"member_code\":\"00001\","
-        + "\"password\":\"password\","
-        + "\"role\":{\"id\":1}}";
+        /*lang=json,strict*/
+        const string expectedJson = """
+        {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1}}
+        """;
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
@@ -1602,7 +1591,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => await sut.DeleteUserAsync(-1);
+        var act = async () => await sut.DeleteUserAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -1652,22 +1641,23 @@ public class KaonaviV2ServiceTest
     public async Task FetchRolesAsync_Calls_GetApi()
     {
         // Arrange
-        #region JSON
-        const string responseJson = "{"
-        + "\"role_data\": ["
-        + "  {"
-        + "    \"id\": 1,"
-        + "    \"name\": \"カオナビ管理者\","
-        + "    \"type\": \"Adm\""
-        + "  },"
-        + "  {"
-        + "    \"id\": 2,"
-        + "    \"name\": \"カオナビマネージャー\","
-        + "    \"type\": \"一般\""
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "role_data": [
+                {
+                    "id": 1,
+                    "name": "カオナビ管理者",
+                    "type": "Adm"
+                },
+                {
+                    "id": 2,
+                    "name": "カオナビマネージャー",
+                    "type": "一般"
+                }
+            ]
+        }
+        """;
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1703,43 +1693,44 @@ public class KaonaviV2ServiceTest
     public async Task FetchEnumOptionsAsync_Calls_GetApi()
     {
         // Arrange
-        #region JSON
-        const string responseJson = "{"
-        + "\"custom_field_data\": ["
-        + "  {"
-        + "    \"sheet_name\": \"役職情報\","
-        + "    \"id\": 10,"
-        + "    \"name\": \"役職\","
-        + "    \"enum_option_data\": ["
-        + "      { \"id\": 1, \"name\": \"社長\" },"
-        + "      { \"id\": 2, \"name\": \"部長\" },"
-        + "      { \"id\": 3, \"name\": \"課長\" }"
-        + "    ]"
-        + "  },"
-        + "  {"
-        + "    \"sheet_name\": \"家族情報\","
-        + "    \"id\": 20,"
-        + "    \"name\": \"続柄区分\","
-        + "    \"enum_option_data\": ["
-        + "      { \"id\": 4, \"name\": \"父\" },"
-        + "      { \"id\": 5, \"name\": \"母\" },"
-        + "      { \"id\": 6, \"name\": \"兄\" },"
-        + "      { \"id\": 7, \"name\": \"姉\" }"
-        + "    ]"
-        + "  },"
-        + "  {"
-        + "    \"sheet_name\": \"学歴情報\","
-        + "    \"id\": 30,"
-        + "    \"name\": \"学歴区分\","
-        + "    \"enum_option_data\": ["
-        + "      { \"id\": 8, \"name\": \"高校\" },"
-        + "      { \"id\": 9, \"name\": \"大学\" },"
-        + "      { \"id\": 10, \"name\": \"大学院\" }"
-        + "    ]"
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "custom_field_data": [
+                {
+                    "sheet_name": "役職情報",
+                    "id": 10,
+                    "name": "役職",
+                    "enum_option_data": [
+                        { "id": 1, "name": "社長" },
+                        { "id": 2, "name": "部長" },
+                        { "id": 3, "name": "課長" }
+                    ]
+                },
+                {
+                    "sheet_name": "家族情報",
+                    "id": 20,
+                    "name": "続柄区分",
+                    "enum_option_data": [
+                        { "id": 4, "name": "父" },
+                        { "id": 5, "name": "母" },
+                        { "id": 6, "name": "兄" },
+                        { "id": 7, "name": "姉" }
+                    ]
+                },
+                {
+                    "sheet_name": "学歴情報",
+                    "id": 30,
+                    "name": "学歴区分",
+                    "enum_option_data": [
+                        { "id": 8, "name": "高校" },
+                        { "id": 9, "name": "大学" },
+                        { "id": 10, "name": "大学院" }
+                    ]
+                }
+            ]
+        }
+        """;
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1773,18 +1764,19 @@ public class KaonaviV2ServiceTest
     public async Task FetchEnumOptionAsync_Calls_GetApi()
     {
         // Arrange
-        #region JSON
-        const string responseJson = "{"
-        + "\"sheet_name\": \"役職情報\","
-        + "\"id\": 10,"
-        + "\"name\": \"役職\","
-        + "\"enum_option_data\": ["
-        + "  { \"id\": 1, \"name\": \"社長\" },"
-        + "  { \"id\": 2, \"name\": \"部長\" },"
-        + "  { \"id\": 3, \"name\": \"課長\" }"
-        + "]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "sheet_name": "役職情報",
+            "id": 10,
+            "name": "役職",
+            "enum_option_data": [
+                { "id": 1, "name": "社長" },
+                { "id": 2, "name": "部長" },
+                { "id": 3, "name": "課長" }
+            ]
+        }
+        """;
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1828,8 +1820,8 @@ public class KaonaviV2ServiceTest
         var sut = CreateSut(handler, accessToken: tokenString);
         int taskId = await sut.UpdateEnumOptionAsync(10, new (int?, string)[]
         {
-                (1, "value1"),
-                (null, "value2"),
+            (1, "value1"),
+            (null, "value2"),
         });
 
         // Assert
@@ -1846,10 +1838,8 @@ public class KaonaviV2ServiceTest
 
             // Body
             string receivedJson = await req.Content!.ReadAsStringAsync();
-            _ = receivedJson.Should().Be("{\"enum_option_data\":["
-            + "{\"id\":1,\"name\":\"value1\"},"
-            + "{\"name\":\"value2\"}"
-            + "]}");
+            _ = receivedJson.Should()
+                .Be(/*lang=json,strict*/ """{"enum_option_data":[{"id":1,"name":"value1"},{"name":"value2"}]}""");
 
             return true;
         }, Times.Once());
@@ -1864,28 +1854,29 @@ public class KaonaviV2ServiceTest
     public async Task FetchWebhookConfigListAsync_Calls_GetApi()
     {
         // Arrange
-        #region JSON
-        const string responseJson = "{"
-        + "\"webhook_data\": ["
-        + "  {"
-        + "    \"id\": 1,"
-        + "    \"url\": \"https://example.com/\","
-        + "    \"events\": [\"member_created\",\"member_deleted\"],"
-        + "    \"secret_token\": \"string\","
-        + "    \"updated_at\": \"2021-12-01 12:00:00\","
-        + "    \"created_at\": \"2021-11-01 12:00:00\""
-        + "  },"
-        + "  {"
-        + "    \"id\": 2,"
-        + "    \"url\": \"https://example.com/\","
-        + "    \"events\": [\"member_updated\"],"
-        + "    \"secret_token\": \"string\","
-        + "    \"updated_at\": \"2021-12-01 12:00:00\","
-        + "    \"created_at\": \"2021-11-01 12:00:00\""
-        + "  }"
-        + "]"
-        + "}";
-        #endregion JSON
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "webhook_data": [
+                {
+                    "id": 1,
+                    "url": "https://example.com/",
+                    "events": ["member_created","member_deleted"],
+                    "secret_token": "string",
+                    "updated_at": "2021-12-01 12:00:00",
+                    "created_at": "2021-11-01 12:00:00"
+                },
+                {
+                    "id": 2,
+                    "url": "https://example.com/",
+                    "events": ["member_updated"],
+                    "secret_token": "string",
+                    "updated_at": "2021-12-01 12:00:00",
+                    "created_at": "2021-11-01 12:00:00"
+                }
+            ]
+        }
+        """;
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1920,20 +1911,24 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        const string responseJson = "{"
-        + "\"id\": 1,"
-        + "\"url\": \"https://example.com/\","
-        + "\"events\": ["
-        + "\"member_created\","
-        + "\"member_updated\","
-        + "\"member_deleted\""
-        + "],"
-        + "\"secret_token\": \"token\""
-        + "}";
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "id": 1,
+            "url": "https://example.com/",
+            "events": [
+                "member_created",
+                "member_updated",
+                "member_deleted"
+            ],
+            "secret_token": "token"
+        }
+        """;
         var payload = new WebhookConfigPayload(_baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted }, "token");
-        const string expectedJson = "{\"url\":\"https://example.com/\","
-        + "\"events\":[\"member_created\",\"member_updated\",\"member_deleted\"],"
-        + "\"secret_token\":\"token\"}";
+        /*lang=json,strict*/
+        const string expectedJson = """
+        {"url":"https://example.com/","events":["member_created","member_updated","member_deleted"],"secret_token":"token"}
+        """;
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/webhook")
@@ -1971,21 +1966,25 @@ public class KaonaviV2ServiceTest
     {
         // Arrange
         const int webhookId = 1;
-        const string responseJson = "{"
-        + "\"id\": 1,"
-        + "\"url\": \"https://example.com/\","
-        + "\"events\": ["
-        + "\"member_created\","
-        + "\"member_updated\","
-        + "\"member_deleted\""
-        + "],"
-        + "\"secret_token\": \"token\""
-        + "}";
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+            "id": 1,
+            "url": "https://example.com/",
+            "events": [
+                "member_created",
+                "member_updated",
+                "member_deleted"
+            ],
+            "secret_token": "token"
+        }
+        """;
         string tokenString = GenerateRandomString();
         var payload = new WebhookConfig(webhookId, _baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted }, "token");
-        const string expectedJson = "{\"id\":1,\"url\":\"https://example.com/\","
-        + "\"events\":[\"member_created\",\"member_updated\",\"member_deleted\"],"
-        + "\"secret_token\":\"token\"}";
+        /*lang=json,strict*/
+        const string expectedJson = """
+        {"id":1,"url":"https://example.com/","events":["member_created","member_updated","member_deleted"],"secret_token":"token"}
+        """;
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
@@ -2028,7 +2027,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        Func<Task> act = async () => await sut.DeleteWebhookConfigAsync(-1);
+        var act = async () => await sut.DeleteWebhookConfigAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
