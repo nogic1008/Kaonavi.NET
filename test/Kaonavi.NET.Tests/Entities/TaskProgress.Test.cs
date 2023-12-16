@@ -28,7 +28,7 @@ public class TaskProgressTest
     [InlineData(TaskOkJson, 1, "OK")]
     [InlineData(TaskRunningJson, 2, "RUNNING", null)]
     [InlineData(TaskErrorJson, 3, "NG", "エラーメッセージ1", "エラーメッセージ2")]
-    public void CanDeserializeJSON(string json, int id, string status, params string[] messages)
+    public void CanDeserializeJSON(string json, int id, string status, params string?[] messages)
     {
         // Arrange - Act
         var task = JsonSerializer.Deserialize(json, Context.Default.TaskProgress);
