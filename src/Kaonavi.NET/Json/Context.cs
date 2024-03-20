@@ -1,9 +1,9 @@
-using System.Text.Json.Serialization.Metadata;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Services;
 
 namespace Kaonavi.Net.Json;
 
+[JsonSerializable(typeof(IReadOnlyCollection<AdvancedPermission>))]
 [JsonSerializable(typeof(IReadOnlyCollection<DepartmentTree>))]
 [JsonSerializable(typeof(IReadOnlyCollection<EnumOption>))]
 [JsonSerializable(typeof(IReadOnlyCollection<JsonElement>))]
