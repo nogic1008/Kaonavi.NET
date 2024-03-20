@@ -223,8 +223,8 @@
       },
       "System.Text.Json": {
         "type": "Transitive",
-        "resolved": "8.0.2",
-        "contentHash": "29KA2StjWDYp32FvREifawRtNpTziLE1xyuDV9pVQ+MsaE9bIcIieP0io/eZZeLMxR+Nx9zI55RtUtpVpEIdeg==",
+        "resolved": "8.0.3",
+        "contentHash": "hpagS9joOwv6efWfrMmV9MjQXpiXZH72PgN067Ysfr6AWMSD1/1hEcvh/U5mUpPLezEWsOJSuVrmqDIVD958iA==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0",
           "System.Text.Encodings.Web": "8.0.0"
@@ -274,7 +274,7 @@
         "type": "Project",
         "dependencies": {
           "System.Net.Http.Json": "[8.0.0, )",
-          "System.Text.Json": "[8.0.2, )"
+          "System.Text.Json": "[8.0.3, )"
         }
       }
     },
