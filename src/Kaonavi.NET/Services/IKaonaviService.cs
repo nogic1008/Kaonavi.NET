@@ -283,26 +283,6 @@ public interface IKaonaviService
     ValueTask<IReadOnlyCollection<Role>> FetchRolesAsync(CancellationToken cancellationToken = default);
     #endregion ロール
 
-    #region 拡張アクセス設定
-    /// <summary>
-    /// <inheritdoc cref="AdvancedPermission" path="/summary/text()"/>の一覧を取得します。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%8B%A1%E5%BC%B5%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E8%A8%AD%E5%AE%9A/paths/~1advanced_permissions~1{advanced_type}/get"/>
-    /// </summary>
-    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyCollection<AdvancedPermission>> FetchAdvancedPermissionListAsync(AdvancedType type, CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// 現在登録されている<inheritdoc cref="AdvancedPermission" path="/summary/text()"/>を全て、リクエストしたデータで入れ替えます。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%8B%A1%E5%BC%B5%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E8%A8%AD%E5%AE%9A/paths/~1advanced_permissions~1{advanced_type}/put"/>
-    /// </summary>
-    /// <remarks>更新リクエスト制限の対象APIです。</remarks>
-    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
-    /// <param name="payload">入れ替え対象となるデータ</param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<int> ReplaceAdvancedPermissionAsync(AdvancedType type, IReadOnlyCollection<AdvancedPermission> payload, CancellationToken cancellationToken = default);
-    #endregion 拡張アクセス設定
-
     #region マスター管理
     /// <summary>
     /// マスター管理で編集可能な項目のうち、APIv2 で編集可能な<inheritdoc cref="EnumOption" path="/summary/text()"/>の一覧を取得します。
