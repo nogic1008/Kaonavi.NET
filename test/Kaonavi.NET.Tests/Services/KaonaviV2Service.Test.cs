@@ -1702,14 +1702,14 @@ public sealed class KaonaviV2ServiceTest
 
     #region 拡張アクセス設定 API
     /// <summary>
-    /// <paramref name="type"/>が不正な値であるとき、<see cref="KaonaviV2Service.FetchAdvancedPermissionListAsync"/>は、ArgumentOutOfRangeExceptionをスローする。
+    /// <paramref name="type"/>が不正な値であるとき、<see cref="KaonaviV2Service.AdvancedPermission.ListAsync"/>は、ArgumentOutOfRangeExceptionをスローする。
     /// </summary>
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
-    [TestMethod($"{nameof(KaonaviV2Service.FetchAdvancedPermissionListAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
-    [DataRow(10, DisplayName = $"{nameof(KaonaviV2Service)}.{nameof(KaonaviV2Service.FetchAdvancedPermissionListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
-    [DataRow(-1, DisplayName = $"{nameof(KaonaviV2Service)}.{nameof(KaonaviV2Service.FetchAdvancedPermissionListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
-    public async Task WhenInvalidType_FetchAdvancedPermissionListAsync_Throws_ArgumentOutOfRangeException(int type)
+    [DataRow(10, DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
+    [DataRow(-1, DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
+    public async Task WhenInvalidType_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(int type)
     {
         // Arrange
         string tokenString = GenerateRandomString();
@@ -1718,22 +1718,22 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var act = async () => await sut.FetchAdvancedPermissionListAsync((AdvancedType)type);
+        var act = async () => await sut.AdvancedPermission.ListAsync((AdvancedType)type);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>().WithParameterName(nameof(type));
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchAdvancedPermissionListAsync"/>は、"/advanced_permissions/{advanced_type}"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.AdvancedPermission.ListAsync"/>は、"/advanced_permissions/{advanced_type}"にGETリクエストを行う。
     /// </summary>
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
     /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
-    [TestMethod($"{nameof(KaonaviV2Service.FetchAdvancedPermissionListAsync)} > GET /advanced_permissions/<advanced_type> をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)} > GET /advanced_permissions/<advanced_type> をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
-    [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviV2Service)}.{nameof(KaonaviV2Service.FetchAdvancedPermissionListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > GET /advanced_permissions/member をコールする。")]
-    [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviV2Service)}.{nameof(KaonaviV2Service.FetchAdvancedPermissionListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > GET /advanced_permissions/department をコールする。")]
-    public async Task FetchAdvancedPermissionListAsync_Calls_GetApi(AdvancedType type, string endpoint)
+    [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > GET /advanced_permissions/member をコールする。")]
+    [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > GET /advanced_permissions/department をコールする。")]
+    public async Task AdvancedPermission_ListAsync_Calls_GetApi(AdvancedType type, string endpoint)
     {
         // Arrange
         /*lang=json,strict*/
@@ -1777,7 +1777,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var permissions = await sut.FetchAdvancedPermissionListAsync(type);
+        var permissions = await sut.AdvancedPermission.ListAsync(type);
 
         // Assert
         _ = permissions.Should().HaveCount(2);
@@ -1796,15 +1796,15 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchAdvancedPermissionListAsync"/>は、"/advanced_permissions/{advanced_type}"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.AdvancedPermission.ReplaceAsync"/>は、"/advanced_permissions/{advanced_type}"にGETリクエストを行う。
     /// </summary>
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
     /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
-    [TestMethod($"{nameof(KaonaviV2Service.ReplaceAdvancedPermissionAsync)} > PUT /advanced_permissions/<advanced_type> をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ReplaceAsync)} > PUT /advanced_permissions/<advanced_type> をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("拡張アクセス設定")]
-    [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviV2Service.ReplaceAdvancedPermissionAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > PUT /advanced_permissions/member をコールする。")]
-    [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviV2Service.ReplaceAdvancedPermissionAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > PUT /advanced_permissions/department をコールする。")]
-    public async Task ReplaceAdvancedPermissionAsync_Calls_PutApi(AdvancedType type, string endpoint)
+    [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > PUT /advanced_permissions/member をコールする。")]
+    [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > PUT /advanced_permissions/department をコールする。")]
+    public async Task AdvancedPermission_ReplaceAsync_Calls_PutApi(AdvancedType type, string endpoint)
     {
         // Arrange
         string tokenString = GenerateRandomString();
@@ -1815,10 +1815,10 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.ReplaceAdvancedPermissionAsync(type,
+        int taskId = await sut.AdvancedPermission.ReplaceAsync(type,
         [
-            new AdvancedPermission(1, ["1"], []),
-            new AdvancedPermission(2, ["2"], ["1", "3"]),
+            new(1, ["1"], []),
+            new(2, ["2"], ["1", "3"]),
         ]);
 
         // Assert

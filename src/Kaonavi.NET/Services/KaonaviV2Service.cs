@@ -9,7 +9,7 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService, IWebhook
+public class KaonaviV2Service : IKaonaviService, IWebhook, IAdvancedPermission
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -236,33 +236,31 @@ public class KaonaviV2Service : IKaonaviService, IWebhook
         => (await CallApiAsync(new(HttpMethod.Get, "roles"), Context.Default.ApiListResultRole, cancellationToken)).Values;
     #endregion ロール
 
-    #region 拡張アクセス設定
+    #region IAdvancedPermission
+    /// <summary>
+    /// <see cref="AdvancedType"/> -&gt; <see langword="string"/>変換
+    /// </summary>
+    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
+    /// <param name="argument">引数</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
     private static string AdvancedTypeToString(AdvancedType type, [CallerArgumentExpression(nameof(type))] string? argument = null) => type switch
     {
         AdvancedType.Member => "member",
         AdvancedType.Department => "department",
         _ => throw new ArgumentOutOfRangeException(argument),
     };
-    /// <summary>
-    /// <inheritdoc cref="AdvancedPermission" path="/summary/text()"/>の一覧を取得します。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%8B%A1%E5%BC%B5%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E8%A8%AD%E5%AE%9A/paths/~1advanced_permissions~1{advanced_type}/get"/>
-    /// </summary>
-    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    public async ValueTask<IReadOnlyCollection<AdvancedPermission>> FetchAdvancedPermissionListAsync(AdvancedType type, CancellationToken cancellationToken = default)
+
+    /// <inheritdoc cref="IAdvancedPermission"/>
+    public IAdvancedPermission AdvancedPermission => this;
+
+    /// <inheritdoc/>
+    async ValueTask<IReadOnlyCollection<AdvancedPermission>> IAdvancedPermission.ListAsync(AdvancedType type, CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, $"advanced_permissions/{AdvancedTypeToString(type)}"), Context.Default.ApiListResultAdvancedPermission, cancellationToken)).Values;
 
-    /// <summary>
-    /// 現在登録されている<inheritdoc cref="AdvancedPermission" path="/summary/text()"/>を全て、リクエストしたデータで入れ替えます。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%8B%A1%E5%BC%B5%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E8%A8%AD%E5%AE%9A/paths/~1advanced_permissions~1{advanced_type}/put"/>
-    /// </summary>
-    /// <remarks>更新リクエスト制限の対象APIです。</remarks>
-    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
-    /// <param name="payload">入れ替え対象となるデータ</param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    public ValueTask<int> ReplaceAdvancedPermissionAsync(AdvancedType type, IReadOnlyCollection<AdvancedPermission> payload, CancellationToken cancellationToken = default)
+    /// <inheritdoc/>
+    ValueTask<int> IAdvancedPermission.ReplaceAsync(AdvancedType type, IReadOnlyCollection<AdvancedPermission> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, $"advanced_permissions/{AdvancedTypeToString(type)}", new("advanced_permission_data", payload), Context.Default.ApiListResultAdvancedPermission, cancellationToken);
-    #endregion 拡張アクセス設定
+    #endregion IAdvancedPermission
 
     #region マスター管理
     /// <inheritdoc/>
