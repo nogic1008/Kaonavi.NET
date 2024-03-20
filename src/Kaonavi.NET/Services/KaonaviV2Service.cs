@@ -9,7 +9,7 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService, IWebhook, IAdvancedPermission
+public class KaonaviV2Service : IKaonaviService, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -262,25 +262,29 @@ public class KaonaviV2Service : IKaonaviService, IWebhook, IAdvancedPermission
         => CallTaskApiAsync(HttpMethod.Put, $"advanced_permissions/{AdvancedTypeToString(type)}", new("advanced_permission_data", payload), Context.Default.ApiListResultAdvancedPermission, cancellationToken);
     #endregion IAdvancedPermission
 
-    #region マスター管理
+    #region IEnumOption
+    /// <inheritdoc cref="IEnumOption" />
+    public IEnumOption EnumOption => this;
+
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
+    async ValueTask<IReadOnlyCollection<EnumOption>> IEnumOption.ListAsync(CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, "enum_options"), Context.Default.ApiListResultEnumOption, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    public ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default)
-        => CallApiAsync(new(HttpMethod.Get, $"enum_options/{ThrowIfNegative(customFieldId):D}"), Context.Default.EnumOption, cancellationToken);
+    ValueTask<EnumOption> IEnumOption.ReadAsync(int id, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"enum_options/{ThrowIfNegative(id):D}"), Context.Default.EnumOption, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyCollection<(int?, string)> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IEnumOption.UpdateAsync(int id, IReadOnlyList<(int? id, string name)> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(
             HttpMethod.Put,
-            $"enum_options/{ThrowIfNegative(customFieldId):D}",
-            new("enum_option_data", payload.Select(d => new EnumOptionPayloadData(d.Item1, d.Item2)).ToArray()),
+            $"enum_options/{ThrowIfNegative(id):D}",
+            new("enum_option_data", payload.Select(d => new EnumOptionPayloadData(d.id, d.name)).ToArray()),
             Context.Default.ApiListResultEnumOptionPayloadData,
             cancellationToken);
+
     internal record EnumOptionPayloadData(int? Id, string Name);
-    #endregion マスター管理
+    #endregion IEnumOption
 
     #region IWebhook
     /// <inheritdoc cref="IWebhook"/>
