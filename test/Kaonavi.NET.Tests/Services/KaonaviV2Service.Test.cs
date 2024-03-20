@@ -1781,14 +1781,14 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AdvancedPermission.ReplaceAsync"/>は、"/advanced_permissions/{advanced_type}"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.AdvancedPermission.ReplaceAsync"/>は、"/advanced_permissions/{advanced_type}"にPUTリクエストを行う。
     /// </summary>
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
     /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
-    [Theory(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.AdvancedPermission)} > {nameof(KaonaviV2Service.AdvancedPermission.ReplaceAsync)} > PUT /advanced_permissions/<advanced_type> をコールする。")]
+    [Theory(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.AdvancedPermission)} > {nameof(KaonaviV2Service.AdvancedPermission.ReplaceAsync)} > PUT /advanced_permissions/:advancedType をコールする。")]
     [InlineData(AdvancedType.Member, "/advanced_permissions/member")]
     [InlineData(AdvancedType.Department, "/advanced_permissions/department")]
-    public async Task ReplaceAdvancedPermissionAsync_Calls_PutApi(AdvancedType type, string endpoint)
+    public async Task AdvancedPermission_ReplaceAsync_Calls_PutApi(AdvancedType type, string endpoint)
     {
         // Arrange
         string tokenString = GenerateRandomString();
@@ -1830,48 +1830,48 @@ public class KaonaviV2ServiceTest
 
     #region マスター管理 API
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchEnumOptionsAsync"/>は、"/enum_options"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.EnumOption.ListAsync"/>は、"/enum_options"にGETリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchEnumOptionsAsync)} > GET /enum_options をコールする。")]
-    public async Task FetchEnumOptionsAsync_Calls_GetApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.EnumOption)} > {nameof(KaonaviV2Service.EnumOption.ListAsync)} > GET /enum_options をコールする。")]
+    public async Task EnumOption_ListAsync_Calls_GetApi()
     {
         // Arrange
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "custom_field_data": [
-                {
-                    "sheet_name": "役職情報",
-                    "id": 10,
-                    "name": "役職",
-                    "enum_option_data": [
-                        { "id": 1, "name": "社長" },
-                        { "id": 2, "name": "部長" },
-                        { "id": 3, "name": "課長" }
-                    ]
-                },
-                {
-                    "sheet_name": "家族情報",
-                    "id": 20,
-                    "name": "続柄区分",
-                    "enum_option_data": [
-                        { "id": 4, "name": "父" },
-                        { "id": 5, "name": "母" },
-                        { "id": 6, "name": "兄" },
-                        { "id": 7, "name": "姉" }
-                    ]
-                },
-                {
-                    "sheet_name": "学歴情報",
-                    "id": 30,
-                    "name": "学歴区分",
-                    "enum_option_data": [
-                        { "id": 8, "name": "高校" },
-                        { "id": 9, "name": "大学" },
-                        { "id": 10, "name": "大学院" }
-                    ]
-                }
-            ]
+          "custom_field_data": [
+            {
+              "sheet_name": "役職情報",
+              "id": 10,
+              "name": "役職",
+              "enum_option_data": [
+                { "id": 1, "name": "社長" },
+                { "id": 2, "name": "部長" },
+                { "id": 3, "name": "課長" }
+              ]
+            },
+            {
+              "sheet_name": "家族情報",
+              "id": 20,
+              "name": "続柄区分",
+              "enum_option_data": [
+                { "id": 4, "name": "父" },
+                { "id": 5, "name": "母" },
+                { "id": 6, "name": "兄" },
+                { "id": 7, "name": "姉" }
+              ]
+            },
+            {
+              "sheet_name": "学歴情報",
+              "id": 30,
+              "name": "学歴区分",
+              "enum_option_data": [
+                { "id": 8, "name": "高校" },
+                { "id": 9, "name": "大学" },
+                { "id": 10, "name": "大学院" }
+              ]
+            }
+          ]
         }
         """;
         string tokenString = GenerateRandomString();
@@ -1882,7 +1882,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var entities = await sut.FetchEnumOptionsAsync();
+        var entities = await sut.EnumOption.ListAsync();
 
         // Assert
         _ = entities.Should().HaveCount(3);
@@ -1901,23 +1901,23 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchEnumOptionAsync"/>は、"/enum_options/{id}"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.EnumOption.ReadAsync"/>は、"/enum_options/{id}"にGETリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchEnumOptionAsync)} > GET /enum_options/:id をコールする。")]
-    public async Task FetchEnumOptionAsync_Calls_GetApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.EnumOption)} > {nameof(KaonaviV2Service.EnumOption.ReadAsync)} > GET /enum_options/:id をコールする。")]
+    public async Task EnumOption_ReadAsync_Calls_GetApi()
     {
         // Arrange
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "sheet_name": "役職情報",
-            "id": 10,
-            "name": "役職",
-            "enum_option_data": [
-                { "id": 1, "name": "社長" },
-                { "id": 2, "name": "部長" },
-                { "id": 3, "name": "課長" }
-            ]
+          "sheet_name": "役職情報",
+          "id": 10,
+          "name": "役職",
+          "enum_option_data": [
+            { "id": 1, "name": "社長" },
+            { "id": 2, "name": "部長" },
+            { "id": 3, "name": "課長" }
+          ]
         }
         """;
         string tokenString = GenerateRandomString();
@@ -1928,7 +1928,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var entity = await sut.FetchEnumOptionAsync(10);
+        var entity = await sut.EnumOption.ReadAsync(10);
 
         // Assert
         _ = entity.Should().NotBeNull();
@@ -1947,10 +1947,10 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.UpdateEnumOptionAsync"/>は、"/enum_options/{id}"にPUTリクエストを行う。
+    /// <see cref="KaonaviV2Service.EnumOption.UpdateAsync"/>は、"/enum_options/{id}"にPUTリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.UpdateEnumOptionAsync)} > PUT /enum_options/:id をコールする。")]
-    public async Task UpdateEnumOptionAsync_Calls_PutApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.EnumOption)} > {nameof(KaonaviV2Service.EnumOption.UpdateAsync)} > PUT /enum_options/:id をコールする。")]
+    public async Task EnumOption_UpdateAsync_Calls_PutApi()
     {
         // Arrange
         string tokenString = GenerateRandomString();
@@ -1961,7 +1961,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.UpdateEnumOptionAsync(10, new (int?, string)[]
+        int taskId = await sut.EnumOption.UpdateAsync(10, new (int?, string)[]
         {
             (1, "value1"),
             (null, "value2"),
