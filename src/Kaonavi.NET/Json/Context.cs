@@ -1,11 +1,23 @@
-using System.Text.Json.Serialization.Metadata;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Services;
+using static Kaonavi.Net.Services.KaonaviV2Service;
 
 namespace Kaonavi.Net.Json;
 
+[JsonSerializable(typeof(ApiListResult<string>))]
+[JsonSerializable(typeof(ApiListResult<AdvancedPermission>))]
+[JsonSerializable(typeof(ApiListResult<DepartmentTree>))]
+[JsonSerializable(typeof(ApiListResult<MemberData>))]
+[JsonSerializable(typeof(ApiListResult<EnumOption>))]
+[JsonSerializable(typeof(ApiListResult<EnumOptionPayloadData>))]
+[JsonSerializable(typeof(ApiListResult<Role>))]
+[JsonSerializable(typeof(ApiListResult<SheetData>))]
+[JsonSerializable(typeof(ApiListResult<SheetLayout>))]
+[JsonSerializable(typeof(ApiListResult<UserWithLoginAt>))]
+[JsonSerializable(typeof(ApiListResult<WebhookConfig>))]
+[JsonSerializable(typeof(IReadOnlyCollection<AdvancedPermission>))]
 [JsonSerializable(typeof(IReadOnlyCollection<DepartmentTree>))]
 [JsonSerializable(typeof(IReadOnlyCollection<EnumOption>))]
+[JsonSerializable(typeof(IReadOnlyCollection<EnumOptionPayloadData>))]
 [JsonSerializable(typeof(IReadOnlyCollection<JsonElement>))]
 [JsonSerializable(typeof(IReadOnlyCollection<MemberData>))]
 [JsonSerializable(typeof(IReadOnlyCollection<Role>))]
@@ -18,12 +30,7 @@ namespace Kaonavi.Net.Json;
 [JsonSerializable(typeof(Token))]
 [JsonSerializable(typeof(User))]
 [JsonSerializable(typeof(WebhookConfigPayload))]
-[JsonSerializable(typeof(KaonaviV2Service.ApiResult<MemberData>))]
-[JsonSerializable(typeof(KaonaviV2Service.ApiResult<SheetData>))]
-[JsonSerializable(typeof(KaonaviV2Service.DeleteMemberDataPayload))]
-[JsonSerializable(typeof(KaonaviV2Service.DepartmentsResult))]
-[JsonSerializable(typeof(KaonaviV2Service.EnumOptionPayload))]
-[JsonSerializable(typeof(KaonaviV2Service.UserJsonPayload))]
+[JsonSerializable(typeof(UserJsonPayload))]
 [JsonSourceGenerationOptions(
     JsonSerializerDefaults.Web,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
