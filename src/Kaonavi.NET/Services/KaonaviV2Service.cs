@@ -2,13 +2,14 @@ using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization.Metadata;
+using Kaonavi.Net.Api;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService
+public class KaonaviV2Service : IKaonaviService, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -283,30 +284,32 @@ public class KaonaviV2Service : IKaonaviService
     internal record EnumOptionPayloadData(int? Id, string Name);
     #endregion マスター管理
 
-    #region Webhook設定
-    /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<WebhookConfig>> FetchWebhookConfigListAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync(new(HttpMethod.Get, "webhook"), Context.Default.ApiListResultWebhookConfig, cancellationToken)).Values;
+    #region IWebhook
+    /// <inheritdoc cref="IWebhook"/>
+    public IWebhook Webhook => this;
 
     /// <inheritdoc/>
-    public ValueTask<WebhookConfig> AddWebhookConfigAsync(WebhookConfigPayload payload, CancellationToken cancellationToken = default)
+    async ValueTask<IReadOnlyCollection<WebhookConfig>> IWebhook.ListAsync(CancellationToken cancellationToken)
+                => (await CallApiAsync(new(HttpMethod.Get, "webhook"), Context.Default.ApiListResultWebhookConfig, cancellationToken)).Values;
+
+    /// <inheritdoc/>
+    ValueTask<WebhookConfig> IWebhook.CreateAsync(WebhookConfigPayload payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Post, "webhook")
         {
             Content = JsonContent.Create(payload, Context.Default.WebhookConfigPayload)
         }, Context.Default.WebhookConfig, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<WebhookConfig> UpdateWebhookConfigAsync(WebhookConfig payload, CancellationToken cancellationToken = default)
+    ValueTask<WebhookConfig> IWebhook.UpdateAsync(WebhookConfig payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Patch, $"webhook/{payload.Id}")
         {
             Content = JsonContent.Create(payload, Context.Default.WebhookConfig)
         }, Context.Default.WebhookConfig, cancellationToken);
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="webhookId"/>が0より小さい場合にスローされます。</exception>
-    public async ValueTask DeleteWebhookConfigAsync(int webhookId, CancellationToken cancellationToken = default)
+    async ValueTask IWebhook.DeleteAsync(int webhookId, CancellationToken cancellationToken)
         => await CallApiAsync(new(HttpMethod.Delete, $"webhook/{ThrowIfNegative(webhookId):D}"), cancellationToken).ConfigureAwait(false);
-    #endregion Webhook設定
+    #endregion IWebhook
 
     #region Common Method
     /// <summary>APIコール前に必要な認証を行います。</summary>

@@ -1,4 +1,5 @@
 using System.Text;
+using Kaonavi.Net.Api;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 using Kaonavi.Net.Services;
@@ -2008,11 +2009,11 @@ public sealed class KaonaviV2ServiceTest
 
     #region Webhook設定 API
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchWebhookConfigListAsync"/>は、"/webhook"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.Webhook.ListAsync"/>は、"/webhook"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.FetchWebhookConfigListAsync)} > GET /webhook をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.ListAsync)} > GET /webhook をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("Webhook設定")]
-    public async Task FetchWebhookConfigListAsync_Calls_GetApi()
+    public async Task Webhook_ListAsync_Calls_GetApi()
     {
         // Arrange
         /*lang=json,strict*/
@@ -2046,7 +2047,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var entities = await sut.FetchWebhookConfigListAsync();
+        var entities = await sut.Webhook.ListAsync();
 
         // Assert
         _ = entities.Should().HaveCount(2);
@@ -2065,11 +2066,11 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AddWebhookConfigAsync"/>は、"/webhook"にPOSTリクエストを行う。
+    /// <see cref="KaonaviV2Service.Webhook.CreateAsync"/>は、"/webhook"にPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.AddWebhookConfigAsync)} > POST /webhook をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.CreateAsync)} > POST /webhook をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("Webhook設定")]
-    public async Task AddWebhookConfigAsync_Calls_PostApi()
+    public async Task Webhook_CreateAsync_Calls_PostApi()
     {
         // Arrange
         string tokenString = GenerateRandomString();
@@ -2098,7 +2099,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.AddWebhookConfigAsync(payload);
+        var user = await sut.Webhook.CreateAsync(payload);
 
         // Assert
         _ = user.Should().NotBeNull();
@@ -2121,11 +2122,11 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.UpdateWebhookConfigAsync"/>は、"/webhook/{userId}"にPATCHリクエストを行う。
+    /// <see cref="KaonaviV2Service.Webhook.UpdateAsync"/>は、"/webhook/{userId}"にPATCHリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.UpdateWebhookConfigAsync)} > PATCH /users/:userId をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.UpdateAsync)} > PATCH /users/:userId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("Webhook設定")]
-    public async Task UpdateWebhookConfigAsync_Calls_PatchApi()
+    public async Task Webhook_UpdateAsync_Calls_PatchApi()
     {
         // Arrange
         const int webhookId = 1;
@@ -2155,7 +2156,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.UpdateWebhookConfigAsync(payload);
+        var user = await sut.Webhook.UpdateAsync(payload);
 
         // Assert
         _ = user.Should().NotBeNull();
@@ -2178,12 +2179,12 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="KaonaviV2Service.DeleteWebhookConfigAsync" path="/param[@name='webhookId']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.DeleteWebhookConfigAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <inheritdoc cref="IWebhook.DeleteAsync" path="/param[@name='webhookId']"/>が<c>0</c>未満のとき、
+    /// <see cref="KaonaviV2Service.Webhook.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.DeleteWebhookConfigAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("Webhook設定")]
-    public async Task When_WebhookId_IsLowerThan0_DeleteWebhookConfigAsync_Throws_ArgumentOutOfRangeException()
+    public async Task When_WebhookId_IsLowerThan0_Webhook_DeleteAsync_Throws_ArgumentOutOfRangeException()
     {
         // Arrange
         var handler = new Mock<HttpMessageHandler>();
@@ -2191,7 +2192,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        var act = async () => await sut.DeleteWebhookConfigAsync(-1);
+        var act = async () => await sut.Webhook.DeleteAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -2201,11 +2202,11 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.DeleteWebhookConfigAsync"/>は、"/webhook/{webhookId}"にDELETEリクエストを行う。
+    /// <see cref="KaonaviV2Service.Webhook.DeleteAsync"/>は、"/webhook/{webhookId}"にDELETEリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.DeleteWebhookConfigAsync)} > DELETE /webhook/:webhookId をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.DeleteAsync)} > DELETE /webhook/:webhookId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("Webhook設定")]
-    public async Task DeleteWebhookConfigAsync_Calls_DeleteApi()
+    public async Task Webhook_DeleteAsync_Calls_DeleteApi()
     {
         // Arrange
         const int webhookId = 1;
@@ -2217,7 +2218,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        await sut.DeleteWebhookConfigAsync(webhookId);
+        await sut.Webhook.DeleteAsync(webhookId);
 
         // Assert
         handler.VerifyRequest(req =>
