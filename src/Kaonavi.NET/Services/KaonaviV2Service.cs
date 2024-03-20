@@ -129,8 +129,8 @@ public class KaonaviV2Service : IKaonaviService
         => CallApiAsync(new(HttpMethod.Get, "member_layouts"), Context.Default.MemberLayout, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyCollection<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync("sheet_layouts", "sheets", Context.Default.IReadOnlyCollectionSheetLayout, cancellationToken);
+    public async ValueTask<IReadOnlyCollection<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
+        => (await CallApiAsync(new(HttpMethod.Get, "sheet_layouts"), Context.Default.ApiListResultSheetLayout, cancellationToken)).Values;
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
@@ -140,68 +140,67 @@ public class KaonaviV2Service : IKaonaviService
 
     #region メンバー情報
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyCollection<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync("members", "member_data", Context.Default.IReadOnlyCollectionMemberData, cancellationToken);
+    public async ValueTask<IReadOnlyCollection<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
+        => (await CallApiAsync(new(HttpMethod.Get, "members"), Context.Default.ApiListResultMemberData, cancellationToken)).Values;
 
     /// <inheritdoc/>
     public ValueTask<int> AddMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Post, "members", new(payload), Context.Default.ApiResultMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, "members", new(payload), Context.Default.ApiResultMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> UpdateMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Patch, "members", new(payload), Context.Default.ApiResultMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Patch, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> OverWriteMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", new(payload), Context.Default.ApiResultMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
     public ValueTask<int> DeleteMemberDataAsync(IReadOnlyCollection<string> codes, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Post, "members/delete", new(codes), Context.Default.DeleteMemberDataPayload, cancellationToken);
-    internal record DeleteMemberDataPayload(IReadOnlyCollection<string> Codes);
+        => CallTaskApiAsync(HttpMethod.Post, "members/delete", new("codes", codes), Context.Default.ApiListResultString, cancellationToken);
     #endregion メンバー情報
 
     #region シート情報
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<IReadOnlyCollection<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync($"sheets/{ThrowIfNegative(sheetId):D}", "member_data", Context.Default.IReadOnlyCollectionSheetData, cancellationToken);
+    async public ValueTask<IReadOnlyCollection<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
+         => (await CallApiAsync(new(HttpMethod.Get, $"sheets/{ThrowIfNegative(sheetId):D}"), Context.Default.ApiListResultSheetData, cancellationToken)).Values;
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, $"sheets/{ThrowIfNegative(sheetId):D}", new(payload), Context.Default.ApiResultSheetData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, $"sheets/{ThrowIfNegative(sheetId):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Patch, $"sheets/{ThrowIfNegative(sheetId):D}", new(payload), Context.Default.ApiResultSheetData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Patch, $"sheets/{ThrowIfNegative(sheetId):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
     public ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Post, $"sheets/{ThrowIfNegative(sheetId):D}/add", new(payload), Context.Default.ApiResultSheetData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, $"sheets/{ThrowIfNegative(sheetId):D}/add", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
     #endregion シート情報
 
     #region 所属ツリー
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyCollection<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync("departments", "department_data", Context.Default.IReadOnlyCollectionDepartmentTree, cancellationToken);
+    public async ValueTask<IReadOnlyCollection<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
+          => (await CallApiAsync(new(HttpMethod.Get, "departments"), Context.Default.ApiListResultDepartmentTree, cancellationToken)).Values;
 
     /// <inheritdoc/>
     public ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyCollection<DepartmentTree> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, "departments", new(payload), Context.Default.DepartmentsResult, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "departments", new("department_data", payload), Context.Default.ApiListResultDepartmentTree, cancellationToken);
     internal record DepartmentsResult(IReadOnlyCollection<DepartmentTree> DepartmentData);
     #endregion 所属ツリー
 
     #region ユーザー情報
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyCollection<UserWithLoginAt>> FetchUsersAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync("users", "user_data", Context.Default.IReadOnlyCollectionUserWithLoginAt, cancellationToken);
+    public async ValueTask<IReadOnlyCollection<UserWithLoginAt>> FetchUsersAsync(CancellationToken cancellationToken = default)
+        => (await CallApiAsync(new(HttpMethod.Get, "users"), Context.Default.ApiListResultUserWithLoginAt, cancellationToken)).Values;
 
     /// <inheritdoc/>
     public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
@@ -232,14 +231,42 @@ public class KaonaviV2Service : IKaonaviService
 
     #region ロール
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyCollection<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync("roles", "role_data", Context.Default.IReadOnlyCollectionRole, cancellationToken);
+    public async ValueTask<IReadOnlyCollection<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
+        => (await CallApiAsync(new(HttpMethod.Get, "roles"), Context.Default.ApiListResultRole, cancellationToken)).Values;
     #endregion ロール
+
+    #region 拡張アクセス設定
+    private static string AdvancedTypeToString(AdvancedType type, [CallerArgumentExpression(nameof(type))] string? argument = null) => type switch
+    {
+        AdvancedType.Member => "member",
+        AdvancedType.Department => "department",
+        _ => throw new ArgumentOutOfRangeException(argument),
+    };
+    /// <summary>
+    /// <inheritdoc cref="AdvancedPermission" path="/summary/text()"/>の一覧を取得します。
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%8B%A1%E5%BC%B5%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E8%A8%AD%E5%AE%9A/paths/~1advanced_permissions~1{advanced_type}/get"/>
+    /// </summary>
+    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    public async ValueTask<IReadOnlyCollection<AdvancedPermission>> FetchAdvancedPermissionListAsync(AdvancedType type, CancellationToken cancellationToken = default)
+        => (await CallApiAsync(new(HttpMethod.Get, $"advanced_permissions/{AdvancedTypeToString(type)}"), Context.Default.ApiListResultAdvancedPermission, cancellationToken)).Values;
+
+    /// <summary>
+    /// 現在登録されている<inheritdoc cref="AdvancedPermission" path="/summary/text()"/>を全て、リクエストしたデータで入れ替えます。
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%8B%A1%E5%BC%B5%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E8%A8%AD%E5%AE%9A/paths/~1advanced_permissions~1{advanced_type}/put"/>
+    /// </summary>
+    /// <remarks>更新リクエスト制限の対象APIです。</remarks>
+    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
+    /// <param name="payload">入れ替え対象となるデータ</param>
+    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    public ValueTask<int> ReplaceAdvancedPermissionAsync(AdvancedType type, IReadOnlyCollection<AdvancedPermission> payload, CancellationToken cancellationToken = default)
+        => CallTaskApiAsync(HttpMethod.Put, $"advanced_permissions/{AdvancedTypeToString(type)}", new("advanced_permission_data", payload), Context.Default.ApiListResultAdvancedPermission, cancellationToken);
+    #endregion 拡張アクセス設定
 
     #region マスター管理
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyCollection<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync("enum_options", "custom_field_data", Context.Default.IReadOnlyCollectionEnumOption, cancellationToken);
+    public async ValueTask<IReadOnlyCollection<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
+        => (await CallApiAsync(new(HttpMethod.Get, "enum_options"), Context.Default.ApiListResultEnumOption, cancellationToken)).Values;
 
     /// <inheritdoc/>
     public ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default)
@@ -250,19 +277,16 @@ public class KaonaviV2Service : IKaonaviService
         => CallTaskApiAsync(
             HttpMethod.Put,
             $"enum_options/{ThrowIfNegative(customFieldId):D}",
-            new EnumOptionPayload(payload.Select(d => new EnumOptionPayload.EnumOptionPayloadData(d.Item1, d.Item2)).ToArray()),
-            Context.Default.EnumOptionPayload,
+            new("enum_option_data", payload.Select(d => new EnumOptionPayloadData(d.Item1, d.Item2)).ToArray()),
+            Context.Default.ApiListResultEnumOptionPayloadData,
             cancellationToken);
-    internal record EnumOptionPayload(IReadOnlyCollection<EnumOptionPayload.EnumOptionPayloadData> EnumOptionData)
-    {
-        internal record EnumOptionPayloadData(int? Id, string Name);
-    }
+    internal record EnumOptionPayloadData(int? Id, string Name);
     #endregion マスター管理
 
     #region Webhook設定
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyCollection<WebhookConfig>> FetchWebhookConfigListAsync(CancellationToken cancellationToken = default)
-        => CallFetchListApiAsync("webhook", "webhook_data", Context.Default.IReadOnlyCollectionWebhookConfig, cancellationToken);
+    public async ValueTask<IReadOnlyCollection<WebhookConfig>> FetchWebhookConfigListAsync(CancellationToken cancellationToken = default)
+        => (await CallApiAsync(new(HttpMethod.Get, "webhook"), Context.Default.ApiListResultWebhookConfig, cancellationToken)).Values;
 
     /// <inheritdoc/>
     public ValueTask<WebhookConfig> AddWebhookConfigAsync(WebhookConfigPayload payload, CancellationToken cancellationToken = default)
@@ -289,8 +313,6 @@ public class KaonaviV2Service : IKaonaviService
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
     private async ValueTask FetchTokenAsync(CancellationToken cancellationToken)
         => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
-
-    internal record ApiResult<T>(IReadOnlyCollection<T> MemberData);
 
     /// <summary>
     /// APIを呼び出します。
@@ -349,17 +371,6 @@ public class KaonaviV2Service : IKaonaviService
     }
 
     /// <summary>
-    /// GET APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>の配列に変換して返します。
-    /// </summary>
-    /// <param name="uri">リクエストURI</param>
-    /// <param name="propertyName">レスポンスJSONに含まれる、配列のプロパティ名</param>
-    /// <param name="cancellationToken"><inheritdoc cref="CallApiAsync" path="/param[@name='cancellationToken']"/></param>
-    /// <typeparam name="T">JSONの配列型</typeparam>
-    private async ValueTask<IReadOnlyCollection<T>> CallFetchListApiAsync<T>(string uri, string propertyName, JsonTypeInfo<IReadOnlyCollection<T>> typeInfo, CancellationToken cancellationToken)
-        => (await CallApiAsync(new(HttpMethod.Get, uri), Context.Default.JsonElement, cancellationToken).ConfigureAwait(false))
-            .GetProperty(propertyName).Deserialize(typeInfo)!;
-
-    /// <summary>
     /// APIが正しく終了したかどうかを検証します。
     /// エラーが返ってきた場合は、エラーメッセージを取得し例外をスローします。
     /// </summary>
@@ -377,11 +388,8 @@ public class KaonaviV2Service : IKaonaviService
         catch (HttpRequestException ex)
         {
             string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
-                ? string.Join("\n",
-                    (await response.Content.ReadFromJsonAsync(Context.Default.JsonElement, cancellationToken).ConfigureAwait(false))
-                        .GetProperty("errors").EnumerateArray().Select(el => el.GetString())
-                )
-                    : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                ? string.Join("\n", (await response.Content.ReadFromJsonAsync(Context.Default.ApiListResultString, cancellationToken))!.Values)
+                : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             throw new ApplicationException(errorMessage, ex);
         }
     }

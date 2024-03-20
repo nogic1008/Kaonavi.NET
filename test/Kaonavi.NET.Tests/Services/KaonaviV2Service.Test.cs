@@ -37,18 +37,19 @@ public class KaonaviV2ServiceTest
     /// </summary>
     /// <param name="consumerKey"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
     /// <param name="consumerSecret"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
+    /// <param name="paramName">例外の原因となったパラメータ名</param>
     [Theory(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > ArgumentNullExceptionをスローする。")]
-    [InlineData(null, "foo")]
-    [InlineData("foo", null)]
-    public void Constractor_Throws_ArgumentNullException_WhenKeyIsNull(string? consumerKey, string? consumerSecret)
-        => Constractor(new(), consumerKey, consumerSecret).Should().ThrowExactly<ArgumentNullException>();
+    [InlineData(null, "foo", "consumerKey")]
+    [InlineData("foo", null, "consumerSecret")]
+    public void WhenKeyIsNull_Constractor_Throws_ArgumentNullException(string? consumerKey, string? consumerSecret, string paramName)
+        => Constractor(new(), consumerKey, consumerSecret).Should().ThrowExactly<ArgumentNullException>().WithParameterName(paramName);
 
     /// <summary>
     /// HttpClientが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(Constractor)} > ArgumentNullExceptionをスローする。")]
-    public void Constractor_Throws_ArgumentNullException_WhenClientIsNull()
-        => Constractor(null, "foo", "bar").Should().ThrowExactly<ArgumentNullException>();
+    public void WhenClientIsNull_Constractor_Throws_ArgumentNullException()
+        => Constractor(null, "foo", "bar").Should().ThrowExactly<ArgumentNullException>().WithParameterName("client");
 
     /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>のとき、既定値をセットする。
@@ -1684,6 +1685,147 @@ public class KaonaviV2ServiceTest
         }, Times.Once());
     }
     #endregion ロール API
+
+    #region 拡張アクセス設定 API
+    /// <summary>
+    /// <paramref name="type"/>が不正な値であるとき、<see cref="KaonaviV2Service.FetchAdvancedPermissionListAsync"/>は、ArgumentOutOfRangeExceptionをスローする。
+    /// </summary>
+    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
+    [Theory(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchAdvancedPermissionListAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [InlineData(10)]
+    [InlineData(-1)]
+    public async Task WhenInvalidType_FetchAdvancedPermissionListAsync_Throws_ArgumentOutOfRangeException(int type)
+    {
+        // Arrange
+        string tokenString = GenerateRandomString();
+
+        var handler = new Mock<HttpMessageHandler>();
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        var act = async () => await sut.FetchAdvancedPermissionListAsync((AdvancedType)type);
+
+        // Assert
+        _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>().WithParameterName(nameof(type));
+    }
+
+    /// <summary>
+    /// <see cref="KaonaviV2Service.FetchAdvancedPermissionListAsync"/>は、"/advanced_permissions/{advanced_type}"にGETリクエストを行う。
+    /// </summary>
+    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
+    /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
+    [Theory(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchAdvancedPermissionListAsync)} > GET /advanced_permissions/<advanced_type> をコールする。")]
+    [InlineData(AdvancedType.Member, "/advanced_permissions/member")]
+    [InlineData(AdvancedType.Department, "/advanced_permissions/department")]
+    public async Task FetchAdvancedPermissionListAsync_Calls_GetApi(AdvancedType type, string endpoint)
+    {
+        // Arrange
+        /*lang=json,strict*/
+        const string responseJson = """
+        {
+          "advanced_permission_data": [
+            {
+              "user_id": 1,
+              "add_codes": [
+                "0001",
+                "0002",
+                "0003"
+              ],
+              "exclusion_codes": [
+                "0001",
+                "0002",
+                "0003"
+              ]
+            },
+            {
+              "user_id": 2,
+              "add_codes": [
+                "0001",
+                "0002",
+                "0003"
+              ],
+              "exclusion_codes": [
+                "0001",
+                "0002",
+                "0003"
+              ]
+            }
+          ]
+        }
+        """;
+        string tokenString = GenerateRandomString();
+
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == endpoint)
+            .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        var permissions = await sut.FetchAdvancedPermissionListAsync(type);
+
+        // Assert
+        _ = permissions.Should().HaveCount(2);
+
+        handler.VerifyRequest(req =>
+        {
+            // End point
+            _ = req.Method.Should().Be(HttpMethod.Get);
+            _ = (req.RequestUri?.PathAndQuery.Should().Be(endpoint));
+
+            // Header
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            return true;
+        }, Times.Once());
+    }
+
+    /// <summary>
+    /// <see cref="KaonaviV2Service.FetchAdvancedPermissionListAsync"/>は、"/advanced_permissions/{advanced_type}"にGETリクエストを行う。
+    /// </summary>
+    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
+    /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
+    [Theory(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.ReplaceAdvancedPermissionAsync)} > PUT /advanced_permissions/<advanced_type> をコールする。")]
+    [InlineData(AdvancedType.Member, "/advanced_permissions/member")]
+    [InlineData(AdvancedType.Department, "/advanced_permissions/department")]
+    public async Task ReplaceAdvancedPermissionAsync_Calls_PutApi(AdvancedType type, string endpoint)
+    {
+        // Arrange
+        string tokenString = GenerateRandomString();
+
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == endpoint)
+            .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+        // Act
+        var sut = CreateSut(handler, accessToken: tokenString);
+        int taskId = await sut.ReplaceAdvancedPermissionAsync(type, new[]
+        {
+            new AdvancedPermission(1, new[]{ "1" }, Array.Empty<string>()),
+            new AdvancedPermission(2, new[]{ "2" }, new[]{ "1", "3" }),
+        });
+
+        // Assert
+        _ = taskId.Should().Be(1);
+
+        handler.VerifyRequest(async req =>
+        {
+            // End point
+            _ = req.Method.Should().Be(HttpMethod.Put);
+            _ = (req.RequestUri?.PathAndQuery.Should().Be(endpoint));
+
+            // Header
+            _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
+
+            // Body
+            string receivedJson = await req.Content!.ReadAsStringAsync();
+            _ = receivedJson.Should()
+                .Be(/*lang=json,strict*/ """{"advanced_permission_data":[{"user_id":1,"add_codes":["1"],"exclusion_codes":[]},{"user_id":2,"add_codes":["2"],"exclusion_codes":["1","3"]}]}""");
+
+            return true;
+        }, Times.Once());
+    }
+    #endregion 拡張アクセス設定 API
+
 
     #region マスター管理 API
     /// <summary>
