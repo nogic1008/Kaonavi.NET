@@ -989,70 +989,70 @@ public sealed class KaonaviV2ServiceTest
     ];
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchSheetDataListAsync"/>は、"/sheets/{sheetId}"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.Sheet.ListAsync"/>は、"/sheets/{sheetId}"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.FetchSheetDataListAsync)} > GET /sheets/:sheetId をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.ListAsync)} > GET /sheets/:sheetId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("シート情報")]
-    public async Task FetchSheetDataListAsync_Calls_GetApi()
+    public async Task Sheet_ListAsync_Calls_GetApi()
     {
         // Arrange
         const int sheetId = 1;
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "id": 12,
-            "name": "住所・連絡先",
-            "record_type": 1,
-            "updated_at": "2020-10-01 01:23:45",
-            "member_data": [
+          "id": 12,
+          "name": "住所・連絡先",
+          "record_type": 1,
+          "updated_at": "2020-10-01 01:23:45",
+          "member_data": [
+            {
+              "code": "A0002",
+              "records": [
                 {
-                    "code": "A0002",
-                    "records": [
-                        {
-                            "custom_fields": [
-                                {
-                                    "id": 1000,
-                                    "name": "住所",
-                                    "values": ["東京都港区x-x-x"]
-                                }
-                            ]
-                        }
-                    ]
+                  "custom_fields": [
+                    {
+                      "id": 1000,
+                      "name": "住所",
+                      "values": ["東京都港区x-x-x"]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "code": "A0001",
+              "records": [
+                {
+                  "custom_fields": [
+                    {
+                      "id": 1000,
+                      "name": "住所",
+                      "values": ["大阪府大阪市y番y号"]
+                    },
+                    {
+                      "id": 1001,
+                      "name": "電話番号",
+                      "values": ["06-yyyy-yyyy"]
+                    }
+                  ]
                 },
                 {
-                    "code": "A0001",
-                    "records": [
-                        {
-                            "custom_fields": [
-                                {
-                                    "id": 1000,
-                                    "name": "住所",
-                                    "values": ["大阪府大阪市y番y号"]
-                                },
-                                {
-                                    "id": 1001,
-                                    "name": "電話番号",
-                                    "values": ["06-yyyy-yyyy"]
-                                }
-                            ]
-                        },
-                        {
-                            "custom_fields": [
-                                {
-                                    "id": 1000,
-                                    "name": "住所",
-                                    "values": ["愛知県名古屋市z丁目z番z号"]
-                                },
-                                {
-                                    "id": 1001,
-                                    "name": "電話番号",
-                                    "values": ["052-zzzz-zzzz"]
-                                }
-                            ]
-                        }
-                    ]
+                  "custom_fields": [
+                    {
+                      "id": 1000,
+                      "name": "住所",
+                      "values": ["愛知県名古屋市z丁目z番z号"]
+                    },
+                    {
+                      "id": 1001,
+                      "name": "電話番号",
+                      "values": ["052-zzzz-zzzz"]
+                    }
+                  ]
                 }
-            ]
+              ]
+            }
+          ]
         }
         """;
         string tokenString = GenerateRandomString();
@@ -1063,7 +1063,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var members = await sut.FetchSheetDataListAsync(sheetId);
+        var members = await sut.Sheet.ListAsync(sheetId);
 
         // Assert
         _ = members.Should().HaveCount(2);
@@ -1082,11 +1082,11 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.ReplaceSheetDataAsync"/>は、"/sheets/{sheetId}"にPUTリクエストを行う。
+    /// <see cref="KaonaviV2Service.Sheet.ReplaceAsync"/>は、"/sheets/{sheetId}"にPUTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.ReplaceSheetDataAsync)} > PUT /sheets/:sheetId をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.ReplaceAsync)} > PUT /sheets/:sheetId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("シート情報")]
-    public async Task ReplaceSheetDataAsync_Calls_PutApi()
+    public async Task Sheet_ReplaceAsync_Calls_PutApi()
     {
         // Arrange
         const int sheetId = 1;
@@ -1099,7 +1099,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.ReplaceSheetDataAsync(sheetId, _sheetDataPayload);
+        int taskId = await sut.Sheet.ReplaceAsync(sheetId, _sheetDataPayload);
 
         // Assert
         _ = taskId.Should().Be(sheetId);
@@ -1122,11 +1122,11 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.UpdateSheetDataAsync"/>は、"/sheets/{sheetId}"にPATCHリクエストを行う。
+    /// <see cref="KaonaviV2Service.Sheet.UpdateAsync"/>は、"/sheets/{sheetId}"にPATCHリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.UpdateSheetDataAsync)} > PATCH /sheets/:sheetId をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.UpdateAsync)} > PATCH /sheets/:sheetId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("シート情報")]
-    public async Task UpdateSheetDataAsync_Calls_PatchApi()
+    public async Task Sheet_UpdateAsync_Calls_PatchApi()
     {
         // Arrange
         const int sheetId = 1;
@@ -1139,7 +1139,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.UpdateSheetDataAsync(sheetId, _sheetDataPayload);
+        int taskId = await sut.Sheet.UpdateAsync(sheetId, _sheetDataPayload);
 
         // Assert
         _ = taskId.Should().Be(sheetId);
@@ -1162,11 +1162,11 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AddSheetDataAsync"/>は、"/sheets/{sheetId}/add"にPOSTリクエストを行う。
+    /// <see cref="KaonaviV2Service.Sheet.CreateAsync"/>は、"/sheets/{sheetId}/add"にPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.AddSheetDataAsync)} > POST /sheets/:sheetId/add をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.CreateAsync)} > POST /sheets/:sheetId/add をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("シート情報")]
-    public async Task AddSheetDataAsync_Calls_PostApi()
+    public async Task Sheet_CreateAsync_Calls_PostApi()
     {
         // Arrange
         const int sheetId = 1;
@@ -1179,7 +1179,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.AddSheetDataAsync(sheetId, _sheetDataPayload);
+        int taskId = await sut.Sheet.CreateAsync(sheetId, _sheetDataPayload);
 
         // Assert
         _ = taskId.Should().Be(sheetId);
@@ -1200,6 +1200,30 @@ public sealed class KaonaviV2ServiceTest
             return true;
         }, Times.Once());
     }
+
+    /// <summary>
+    /// <inheritdoc cref="IUser.CreateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <see cref="KaonaviV2Service.Sheet.CreateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// </summary>
+    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.CreateAsync)} > ArgumentOutOfRangeException をスローする。")]
+    [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("シート情報")]
+    public async Task WhenNegative_Sheet_CreateAsync_Throws_ArgumentOutOfRangeException()
+    {
+        // Arrange
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+
+        // Act
+        var sut = CreateSut(handler);
+        var act = async () => _ = await sut.Sheet.CreateAsync(-1, _sheetDataPayload);
+
+        // Assert
+        _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
+            .WithParameterName("id");
+
+        handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+    }
+
     #endregion シート情報 API
 
     #region 所属ツリー API
@@ -1445,7 +1469,7 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IUser.ReadAsync" path="/param[@name='userId']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="IUser.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviV2Service.User.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
