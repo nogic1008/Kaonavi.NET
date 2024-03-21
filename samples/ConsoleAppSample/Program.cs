@@ -25,7 +25,7 @@ var app = builder.Build();
 
 app.AddCommand("layout", "メンバー情報のレイアウトを取得します。", async (ConsoleAppContext ctx, IKaonaviService service) =>
 {
-    var memberLayout = await service.FetchMemberLayoutAsync(ctx.CancellationToken).ConfigureAwait(false);
+    var memberLayout = await service.Layout.ReadMemberLayoutAsync(ctx.CancellationToken).ConfigureAwait(false);
     ctx.Logger.LogInformation("Received Layout: {memberLayout}", memberLayout);
 });
 app.AddCommand("download", "メンバー情報を全取得します。", async (ConsoleAppContext ctx, IKaonaviService service) =>
@@ -43,6 +43,6 @@ app.AddCommand("upload", "メンバー情報を更新します。", async (Conso
 });
 app.AddCommand("progress", "タスクの進捗状況を取得します。", async (ConsoleAppContext ctx, IKaonaviService service, [Option("t", "タスクID")] int taskId) =>
 {
-    var progress = await service.FetchTaskProgressAsync(taskId, ctx.CancellationToken).ConfigureAwait(false);
+    var progress = await service.Task.ReadAsync(taskId, ctx.CancellationToken).ConfigureAwait(false);
     ctx.Logger.LogInformation("Received Progress: {progress}", progress);
 });

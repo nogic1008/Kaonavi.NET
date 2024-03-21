@@ -263,7 +263,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, key, secret);
-        var act = async () => await sut.FetchMemberLayoutAsync();
+        var act = async () => await sut.Layout.ReadMemberLayoutAsync();
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
@@ -404,7 +404,7 @@ public class KaonaviV2ServiceTest
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*taskId*");
+            .WithParameterName("id");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
@@ -454,10 +454,10 @@ public class KaonaviV2ServiceTest
     private static readonly string[] _bloodType = new[] { "A", "B", "O", "AB" };
     private static readonly string?[] _roles = new[] { "部長", "課長", "マネージャー", null };
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchMemberLayoutAsync"/>は、"/member_layouts"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.Layout.ReadMemberLayoutAsync"/>は、"/member_layouts"にGETリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchMemberLayoutAsync)} > GET /member_layouts をコールする。")]
-    public async Task FetchMemberLayoutAsync_Calls_GetApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Layout)} > {nameof(KaonaviV2Service.Layout.ReadMemberLayoutAsync)} > GET /member_layouts をコールする。")]
+    public async Task Layout_ReadMemberLayoutAsync_Calls_GetApi()
     {
         string tokenString = GenerateRandomString();
         var response = new MemberLayout(
@@ -484,7 +484,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var layout = await sut.FetchMemberLayoutAsync();
+        var layout = await sut.Layout.ReadMemberLayoutAsync();
 
         // Assert
         _ = layout.Should().NotBeNull();
@@ -514,40 +514,40 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchSheetLayoutsAsync"/>は、"/sheet_layouts"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.Layout.ListAsync"/>は、"/sheet_layouts"にGETリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchSheetLayoutsAsync)} > GET /sheet_layouts をコールする。")]
-    public async Task FetchSheetLayoutsAsync_Calls_GetApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Layout)} > {nameof(KaonaviV2Service.Layout.ListAsync)} > GET /sheet_layouts をコールする。")]
+    public async Task Layout_ListAsync_Calls_GetApi()
     {
         // Arrange
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "sheets": [
+          "sheets": [
+            {
+              "id": 12,
+              "name": "住所・連絡先",
+              "record_type": 1,
+              "custom_fields": [
                 {
-                    "id": 12,
-                    "name": "住所・連絡先",
-                    "record_type": 1,
-                    "custom_fields": [
-                        {
-                            "id": 1000,
-                            "name": "住所",
-                            "required": false,
-                            "type": "string",
-                            "max_length": 250,
-                            "enum": []
-                        },
-                        {
-                            "id": 1001,
-                            "name": "電話番号",
-                            "required": false,
-                            "type": "string",
-                            "max_length": 50,
-                            "enum": []
-                        }
-                    ]
+                  "id": 1000,
+                  "name": "住所",
+                  "required": false,
+                  "type": "string",
+                  "max_length": 250,
+                  "enum": []
+                },
+                {
+                  "id": 1001,
+                  "name": "電話番号",
+                  "required": false,
+                  "type": "string",
+                  "max_length": 50,
+                  "enum": []
                 }
-            ]
+              ]
+            }
+          ]
         }
         """;
         string tokenString = GenerateRandomString();
@@ -558,7 +558,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var layouts = await sut.FetchSheetLayoutsAsync();
+        var layouts = await sut.Layout.ListAsync();
 
         // Assert
         _ = layouts.Should().HaveCount(1);
@@ -577,10 +577,10 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchSheetLayoutAsync"/>は、"/sheet_layouts/{sheetId}"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.Layout.ReadAsync"/>は、"/sheet_layouts/{sheetId}"にGETリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchSheetLayoutsAsync)} > GET /sheet_layouts/:sheetId をコールする。")]
-    public async Task FetchSheetLayoutAsync_Calls_GetApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Layout)} > {nameof(KaonaviV2Service.Layout.ReadAsync)} > GET /sheet_layouts/:sheetId をコールする。")]
+    public async Task Layout_ReadAsync_Calls_GetApi()
     {
         // Arrange
         const int sheetId = 12;
@@ -602,7 +602,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var layout = await sut.FetchSheetLayoutAsync(12);
+        var layout = await sut.Layout.ReadAsync(12);
 
         // Assert
         _ = layout.Should().NotBeNull();
