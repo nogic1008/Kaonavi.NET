@@ -32,10 +32,10 @@ public interface IWebhook
     ValueTask<WebhookConfig> UpdateAsync(WebhookConfig payload, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// <paramref name="webhookId"/>と一致する<inheritdoc cref="WebhookConfig" path="/summary"/>を削除します。
+    /// <paramref name="id"/>と一致する<inheritdoc cref="WebhookConfig" path="/summary"/>を削除します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/Webhook/paths/~1webhook~1{webhook_id}/delete"/>
     /// </summary>
-    /// <param name="webhookId"><inheritdoc cref="WebhookConfig" path="/param[@name='Id']"/></param>
+    /// <param name="id"><inheritdoc cref="WebhookConfig" path="/param[@name='Id']"/></param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    ValueTask DeleteAsync(int webhookId, CancellationToken cancellationToken = default);
+    ValueTask DeleteAsync(int id, CancellationToken cancellationToken = default);
 }
