@@ -30,7 +30,7 @@ app.AddCommand("layout", "メンバー情報のレイアウトを取得します
 });
 app.AddCommand("download", "メンバー情報を全取得します。", async (ConsoleAppContext ctx, IKaonaviService service) =>
 {
-    var employees = (await service.FetchMembersDataAsync(ctx.CancellationToken).ConfigureAwait(false))
+    var employees = (await service.Member.ListAsync(ctx.CancellationToken).ConfigureAwait(false))
         .Select(m => new EmployeeData(m));
     ctx.Logger.LogInformation("Received Data: {employees}", employees);
 });
@@ -38,7 +38,7 @@ app.AddCommand("upload", "メンバー情報を更新します。", async (Conso
 {
     var employees = Enumerable.Range(1, 9)
         .Select(i => new EmployeeData($"100{i}", $"User {i}", $"User {i}", $"{i}000", $"100{i}@example.com", "男", new(1990, 1, 1), "A", new(2012, 4, 1)));
-    int taskId = await service.UpdateMemberDataAsync(employees.Select(e => e.ToMemberData()).ToArray(), ctx.CancellationToken).ConfigureAwait(false);
+    int taskId = await service.Member.UpdateAsync(employees.Select(e => e.ToMemberData()).ToArray(), ctx.CancellationToken).ConfigureAwait(false);
     ctx.Logger.LogInformation("Start task at (TaskId: {taskId})", taskId);
 });
 app.AddCommand("progress", "タスクの進捗状況を取得します。", async (ConsoleAppContext ctx, IKaonaviService service, [Option("t", "タスクID")] int taskId) =>

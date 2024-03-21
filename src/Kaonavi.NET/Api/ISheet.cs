@@ -13,7 +13,7 @@ public interface ISheet
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}/get"/>
     /// </summary>
     /// <param name="id"><inheritdoc cref="SheetLayout" path="/param[@name='Id']/text()"/></param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     ValueTask<IReadOnlyCollection<SheetData>> ListAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -25,7 +25,7 @@ public interface ISheet
     /// <remarks>更新リクエスト制限の対象APIです。</remarks>
     /// <param name="id"><inheritdoc cref="SheetLayout" path="/param[@name='Id']/text()"/></param>
     /// <param name="payload">一括更新するデータ</param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     ValueTask<int> ReplaceAsync(int id, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
 
@@ -56,7 +56,7 @@ public interface ISheet
     /// <remarks>更新リクエスト制限の対象APIです。</remarks>
     /// <param name="id"><inheritdoc cref="SheetLayout" path="/param[@name='Id']/text()"/></param>
     /// <param name="payload">更新するデータ</param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     ValueTask<int> UpdateAsync(int id, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
 
@@ -68,7 +68,7 @@ public interface ISheet
     /// <remarks>更新リクエスト制限の対象APIです。</remarks>
     /// <param name="id"><inheritdoc cref="SheetLayout" path="/param[@name='Id']/text()"/></param>
     /// <param name="payload">追加するデータ</param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     ValueTask<int> CreateAsync(int id, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
 }

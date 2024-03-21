@@ -316,7 +316,7 @@ public class KaonaviV2ServiceTest
 
         async Task CallUpdateApiAndVerifyAsync(int expected)
         {
-            _ = await sut.AddMemberDataAsync(_memberDataPayload);
+            _ = await sut.Member.CreateAsync(_memberDataPayload);
             _ = sut.UpdateRequestCount.Should().Be(expected);
         }
     }
@@ -334,7 +334,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: "token");
-        var act = async () => await sut.OverWriteMemberDataAsync(_memberDataPayload);
+        var act = async () => await sut.Member.OverWriteAsync(_memberDataPayload);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
@@ -665,84 +665,84 @@ public class KaonaviV2ServiceTest
     };
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchMembersDataAsync"/>は、"/members"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.Member.ListAsync"/>は、"/members"にGETリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchMembersDataAsync)} > GET /members をコールする。")]
-    public async Task FetchMembersDataAsync_Calls_GetApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Member)} > {nameof(KaonaviV2Service.Member.ListAsync)} > GET /members をコールする。")]
+    public async Task Member_ListAsync_Calls_GetApi()
     {
         // Arrange
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "updated_at": "2020-10-01 01:23:45",
-            "member_data": [
+          "updated_at": "2020-10-01 01:23:45",
+          "member_data": [
+            {
+              "code": "A0002",
+              "name": "カオナビ 太郎",
+              "name_kana": "カオナビ タロウ",
+              "mail": "taro@kaonavi.jp",
+              "entered_date": "2005-09-20",
+              "retired_date": "",
+              "gender": "男性",
+              "birthday": "1984-05-15",
+              "age": 36,
+              "years_of_service": "15年5ヵ月",
+              "department": {
+                "code": "1000",
+                "name": "取締役会",
+                "names": ["取締役会"]
+              },
+              "sub_departments": [],
+              "custom_fields": [
                 {
-                    "code": "A0002",
-                    "name": "カオナビ 太郎",
-                    "name_kana": "カオナビ タロウ",
-                    "mail": "taro@kaonavi.jp",
-                    "entered_date": "2005-09-20",
-                    "retired_date": "",
-                    "gender": "男性",
-                    "birthday": "1984-05-15",
-                    "age": 36,
-                    "years_of_service": "15年5ヵ月",
-                    "department": {
-                        "code": "1000",
-                        "name": "取締役会",
-                        "names": ["取締役会"]
-                    },
-                    "sub_departments": [],
-                    "custom_fields": [
-                        {
-                            "id": 100,
-                            "name": "血液型",
-                            "values": ["A"]
-                        }
-                    ]
+                  "id": 100,
+                  "name": "血液型",
+                  "values": ["A"]
+                }
+              ]
+            },
+            {
+              "code": "A0001",
+              "name": "カオナビ 花子",
+              "name_kana": "カオナビ ハナコ",
+              "mail": "hanako@kaonavi.jp",
+              "entered_date": "2013-05-07",
+              "retired_date": "",
+              "gender": "女性",
+              "birthday": "1986-05-16",
+              "age": 36,
+              "years_of_service": "7年9ヵ月",
+              "department": {
+                "code": "2000",
+                "name": "営業本部 第一営業部 ITグループ",
+                "names": ["営業本部", "第一営業部", "ITグループ"]
+              },
+              "sub_departments": [
+                {
+                  "code": "3000",
+                  "name": "企画部",
+                  "names": ["企画部"]
                 },
                 {
-                    "code": "A0001",
-                    "name": "カオナビ 花子",
-                    "name_kana": "カオナビ ハナコ",
-                    "mail": "hanako@kaonavi.jp",
-                    "entered_date": "2013-05-07",
-                    "retired_date": "",
-                    "gender": "女性",
-                    "birthday": "1986-05-16",
-                    "age": 36,
-                    "years_of_service": "7年9ヵ月",
-                    "department": {
-                        "code": "2000",
-                        "name": "営業本部 第一営業部 ITグループ",
-                        "names": ["営業本部", "第一営業部", "ITグループ"]
-                    },
-                    "sub_departments": [
-                        {
-                            "code": "3000",
-                            "name": "企画部",
-                            "names": ["企画部"]
-                        },
-                        {
-                            "code": "4000",
-                            "name": "管理部",
-                            "names": ["管理部"]
-                        }
-                    ],
-                    "custom_fields": [
-                        {
-                            "id": 100,
-                            "name": "血液型",
-                            "values": ["O"]
-                        },
-                        {
-                            "id": 200,
-                            "name": "役職",
-                            "values": ["部長", "マネージャー"]
-                        }
-                    ]
+                  "code": "4000",
+                  "name": "管理部",
+                  "names": ["管理部"]
                 }
-            ]
+              ],
+              "custom_fields": [
+                {
+                  "id": 100,
+                  "name": "血液型",
+                  "values": ["O"]
+                },
+                {
+                  "id": 200,
+                  "name": "役職",
+                  "values": ["部長", "マネージャー"]
+                }
+              ]
+            }
+          ]
         }
         """;
         string tokenString = GenerateRandomString();
@@ -753,7 +753,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var members = await sut.FetchMembersDataAsync();
+        var members = await sut.Member.ListAsync();
 
         // Assert
         _ = members.Should().HaveCount(2);
@@ -772,10 +772,10 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AddMemberDataAsync"/>は、"/members"にPOSTリクエストを行う。
+    /// <see cref="KaonaviV2Service.Member.CreateAsync"/>は、"/members"にPOSTリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.AddMemberDataAsync)} > POST /members をコールする。")]
-    public async Task AddMemberDataAsync_Calls_PostApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Member)} > {nameof(KaonaviV2Service.Member.CreateAsync)} > POST /members をコールする。")]
+    public async Task Member_CreateAsync_Calls_PostApi()
     {
         // Arrange
         string tokenString = GenerateRandomString();
@@ -787,7 +787,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.AddMemberDataAsync(_memberDataPayload);
+        int taskId = await sut.Member.CreateAsync(_memberDataPayload);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -810,10 +810,10 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.ReplaceMemberDataAsync"/>は、"/members"にPUTリクエストを行う。
+    /// <see cref="KaonaviV2Service.Member.ReplaceAsync"/>は、"/members"にPUTリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.ReplaceMemberDataAsync)} > PUT /members をコールする。")]
-    public async Task ReplaceMemberDataAsync_Calls_PutApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Member)} > {nameof(KaonaviV2Service.Member.ReplaceAsync)} > PUT /members をコールする。")]
+    public async Task Member_ReplaceAsync_Calls_PutApi()
     {
         // Arrange
         string tokenString = GenerateRandomString();
@@ -825,7 +825,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.ReplaceMemberDataAsync(_memberDataPayload);
+        int taskId = await sut.Member.ReplaceAsync(_memberDataPayload);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -848,10 +848,10 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.UpdateMemberDataAsync"/>は、"/members"にPATCHリクエストを行う。
+    /// <see cref="KaonaviV2Service.Member.UpdateAsync"/>は、"/members"にPATCHリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.UpdateMemberDataAsync)} > PATCH /members をコールする。")]
-    public async Task UpdateMemberDataAsync_Calls_PatchApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Member)} > {nameof(KaonaviV2Service.Member.UpdateAsync)} > PATCH /members をコールする。")]
+    public async Task Member_UpdateAsync_Calls_PatchApi()
     {
         // Arrange
         string tokenString = GenerateRandomString();
@@ -863,7 +863,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.UpdateMemberDataAsync(_memberDataPayload);
+        int taskId = await sut.Member.UpdateAsync(_memberDataPayload);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -886,10 +886,10 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.OverWriteMemberDataAsync"/>は、"/members/overwrite"にPUTリクエストを行う。
+    /// <see cref="KaonaviV2Service.Member.OverWriteAsync"/>は、"/members/overwrite"にPUTリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.OverWriteMemberDataAsync)} > PUT /members/overwrite をコールする。")]
-    public async Task OverWriteMemberDataAsync_Calls_PutApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Member)} > {nameof(KaonaviV2Service.Member.OverWriteAsync)} > PUT /members/overwrite をコールする。")]
+    public async Task Member_OverWriteAsync_Calls_PutApi()
     {
         // Arrange
         string tokenString = GenerateRandomString();
@@ -901,7 +901,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.OverWriteMemberDataAsync(_memberDataPayload);
+        int taskId = await sut.Member.OverWriteAsync(_memberDataPayload);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -924,10 +924,10 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.DeleteMemberDataAsync"/>は、"/members/delete"にPOSTリクエストを行う。
+    /// <see cref="KaonaviV2Service.Member.DeleteAsync"/>は、"/members/delete"にPOSTリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.DeleteMemberDataAsync)} > POST /members/delete をコールする。")]
-    public async Task DeleteMemberDataAsync_Calls_PostApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Member)} > {nameof(KaonaviV2Service.Member.DeleteAsync)} > POST /members/delete をコールする。")]
+    public async Task Member_DeleteAsync_Calls_PostApi()
     {
         // Arrange
         string[] codes = _memberDataPayload.Select(d => d.Code).ToArray();
@@ -940,7 +940,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.DeleteMemberDataAsync(codes);
+        int taskId = await sut.Member.DeleteAsync(codes);
 
         // Assert
         _ = taskId.Should().Be(1);
