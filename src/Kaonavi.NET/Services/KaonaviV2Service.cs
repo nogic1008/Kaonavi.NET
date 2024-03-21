@@ -9,7 +9,7 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
+public class KaonaviV2Service : IKaonaviService, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -165,30 +165,33 @@ public class KaonaviV2Service : IKaonaviService, IDepartment, IUser, IRole, IAdv
         => CallTaskApiAsync(HttpMethod.Post, "members/delete", new("codes", codes), Context.Default.ApiListResultString, cancellationToken);
     #endregion メンバー情報
 
-    #region シート情報
+    #region ISheet
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    async public ValueTask<IReadOnlyCollection<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
-         => (await CallApiAsync(new(HttpMethod.Get, $"sheets/{ThrowIfNegative(sheetId):D}"), Context.Default.ApiListResultSheetData, cancellationToken)).Values;
+    public ISheet Sheet => this;
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, $"sheets/{ThrowIfNegative(sheetId):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    async ValueTask<IReadOnlyCollection<SheetData>> ISheet.ListAsync(int id, CancellationToken cancellationToken)
+         => (await CallApiAsync(new(HttpMethod.Get, $"sheets/{ThrowIfNegative(id):D}"), Context.Default.ApiListResultSheetData, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Patch, $"sheets/{ThrowIfNegative(sheetId):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<int> ISheet.ReplaceAsync(int id, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken)
+        => CallTaskApiAsync(HttpMethod.Put, $"sheets/{ThrowIfNegative(id):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Post, $"sheets/{ThrowIfNegative(sheetId):D}/add", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
-    #endregion シート情報
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<int> ISheet.UpdateAsync(int id, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken)
+        => CallTaskApiAsync(HttpMethod.Patch, $"sheets/{ThrowIfNegative(id):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<int> ISheet.CreateAsync(int id, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken)
+        => CallTaskApiAsync(HttpMethod.Post, $"sheets/{ThrowIfNegative(id):D}/add", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
+    #endregion ISheet
 
     #region IDepartment
-    /// <inheritdoc cref="IDepartment"/>
+    /// <inheritdoc/>
     public IDepartment Department => this;
 
     /// <inheritdoc/>
@@ -201,7 +204,7 @@ public class KaonaviV2Service : IKaonaviService, IDepartment, IUser, IRole, IAdv
     #endregion IDepartment
 
     #region IUser
-    /// <inheritdoc cref="IUser"/>
+    /// <inheritdoc/>
     public IUser User => this;
 
     /// <inheritdoc/>
@@ -237,7 +240,7 @@ public class KaonaviV2Service : IKaonaviService, IDepartment, IUser, IRole, IAdv
     #endregion IUser
 
     #region IRole
-    /// <inheritdoc cref="IRole"/>
+    /// <inheritdoc/>
     public IRole Role => this;
 
     /// <inheritdoc/>
@@ -246,6 +249,19 @@ public class KaonaviV2Service : IKaonaviService, IDepartment, IUser, IRole, IAdv
     #endregion IRole
 
     #region IAdvancedPermission
+    /// <inheritdoc/>
+    public IAdvancedPermission AdvancedPermission => this;
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
+    async ValueTask<IReadOnlyCollection<AdvancedPermission>> IAdvancedPermission.ListAsync(AdvancedType type, CancellationToken cancellationToken)
+        => (await CallApiAsync(new(HttpMethod.Get, $"advanced_permissions/{AdvancedTypeToString(type)}"), Context.Default.ApiListResultAdvancedPermission, cancellationToken)).Values;
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
+    ValueTask<int> IAdvancedPermission.ReplaceAsync(AdvancedType type, IReadOnlyCollection<AdvancedPermission> payload, CancellationToken cancellationToken)
+        => CallTaskApiAsync(HttpMethod.Put, $"advanced_permissions/{AdvancedTypeToString(type)}", new("advanced_permission_data", payload), Context.Default.ApiListResultAdvancedPermission, cancellationToken);
+
     /// <summary>
     /// <see cref="AdvancedType"/> -&gt; <see langword="string"/>変換
     /// </summary>
@@ -258,23 +274,10 @@ public class KaonaviV2Service : IKaonaviService, IDepartment, IUser, IRole, IAdv
         AdvancedType.Department => "department",
         _ => throw new ArgumentOutOfRangeException(argument),
     };
-
-    /// <inheritdoc cref="IAdvancedPermission"/>
-    public IAdvancedPermission AdvancedPermission => this;
-
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
-    async ValueTask<IReadOnlyCollection<AdvancedPermission>> IAdvancedPermission.ListAsync(AdvancedType type, CancellationToken cancellationToken)
-        => (await CallApiAsync(new(HttpMethod.Get, $"advanced_permissions/{AdvancedTypeToString(type)}"), Context.Default.ApiListResultAdvancedPermission, cancellationToken)).Values;
-
-    /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
-    ValueTask<int> IAdvancedPermission.ReplaceAsync(AdvancedType type, IReadOnlyCollection<AdvancedPermission> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, $"advanced_permissions/{AdvancedTypeToString(type)}", new("advanced_permission_data", payload), Context.Default.ApiListResultAdvancedPermission, cancellationToken);
     #endregion IAdvancedPermission
 
     #region IEnumOption
-    /// <inheritdoc cref="IEnumOption" />
+    /// <inheritdoc/>
     public IEnumOption EnumOption => this;
 
     /// <inheritdoc/>
@@ -300,7 +303,7 @@ public class KaonaviV2Service : IKaonaviService, IDepartment, IUser, IRole, IAdv
     #endregion IEnumOption
 
     #region IWebhook
-    /// <inheritdoc cref="IWebhook"/>
+    /// <inheritdoc/>
     public IWebhook Webhook => this;
 
     /// <inheritdoc/>
