@@ -9,7 +9,7 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService, ITask, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
+public class KaonaviV2Service : IKaonaviService, ITask, ILayout, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -127,20 +127,23 @@ public class KaonaviV2Service : IKaonaviService, ITask, IMember, ISheet, IDepart
         => CallApiAsync(new(HttpMethod.Get, $"tasks/{ThrowIfNegative(id):D}"), Context.Default.TaskProgress, cancellationToken);
     #endregion ITask
 
-    #region レイアウト設定
+    #region ILayout
     /// <inheritdoc/>
-    public ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
+    public ILayout Layout => this;
+
+    /// <inheritdoc/>
+    ValueTask<MemberLayout> ILayout.ReadMemberLayoutAsync(CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Get, "member_layouts"), Context.Default.MemberLayout, cancellationToken);
 
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
+    async ValueTask<IReadOnlyCollection<SheetLayout>> ILayout.ListAsync(CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, "sheet_layouts"), Context.Default.ApiListResultSheetLayout, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<SheetLayout> FetchSheetLayoutAsync(int sheetId, CancellationToken cancellationToken = default)
-        => CallApiAsync(new(HttpMethod.Get, $"sheet_layouts/{ThrowIfNegative(sheetId):D}"), Context.Default.SheetLayout, cancellationToken);
-    #endregion レイアウト設定
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<SheetLayout> ILayout.ReadAsync(int id, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"sheet_layouts/{ThrowIfNegative(id):D}"), Context.Default.SheetLayout, cancellationToken);
+    #endregion ILayout
 
     #region IMember
     /// <inheritdoc/>
