@@ -9,7 +9,7 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService, IAdvancedPermission, IEnumOption, IWebhook
+public class KaonaviV2Service : IKaonaviService, IRole, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -230,11 +230,14 @@ public class KaonaviV2Service : IKaonaviService, IAdvancedPermission, IEnumOptio
         => await CallApiAsync(new(HttpMethod.Delete, $"users/{ThrowIfNegative(userId):D}"), cancellationToken).ConfigureAwait(false);
     #endregion ユーザー情報
 
-    #region ロール
+    #region IRole
+    /// <inheritdoc cref="IRole"/>
+    public IRole Role => this;
+
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
+    async ValueTask<IReadOnlyCollection<Role>> IRole.ListAsync(CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, "roles"), Context.Default.ApiListResultRole, cancellationToken)).Values;
-    #endregion ロール
+    #endregion IRole
 
     #region IAdvancedPermission
     /// <summary>

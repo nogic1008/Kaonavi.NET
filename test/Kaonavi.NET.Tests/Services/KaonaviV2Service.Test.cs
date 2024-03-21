@@ -1649,28 +1649,28 @@ public sealed class KaonaviV2ServiceTest
 
     #region ロール API
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchRolesAsync"/>は、"/roles"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.Role.ListAsync"/>は、"/roles"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.FetchRolesAsync)} > GET /roles をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.Role)}.{nameof(KaonaviV2Service.Role.ListAsync)} > GET /roles をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ロール")]
-    public async Task FetchRolesAsync_Calls_GetApi()
+    public async Task Role_ListAsync_Calls_GetApi()
     {
         // Arrange
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "role_data": [
-                {
-                    "id": 1,
-                    "name": "カオナビ管理者",
-                    "type": "Adm"
-                },
-                {
-                    "id": 2,
-                    "name": "カオナビマネージャー",
-                    "type": "一般"
-                }
-            ]
+          "role_data": [
+            {
+              "id": 1,
+              "name": "カオナビ管理者",
+              "type": "Adm"
+            },
+            {
+              "id": 2,
+              "name": "カオナビマネージャー",
+              "type": "一般"
+            }
+          ]
         }
         """;
         string tokenString = GenerateRandomString();
@@ -1681,7 +1681,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var roles = await sut.FetchRolesAsync();
+        var roles = await sut.Role.ListAsync();
 
         // Assert
         _ = roles.Should().HaveCount(2);
