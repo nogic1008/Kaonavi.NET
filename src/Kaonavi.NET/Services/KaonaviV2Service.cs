@@ -9,7 +9,7 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
+public class KaonaviV2Service : IKaonaviService, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -139,31 +139,34 @@ public class KaonaviV2Service : IKaonaviService, ISheet, IDepartment, IUser, IRo
         => CallApiAsync(new(HttpMethod.Get, $"sheet_layouts/{ThrowIfNegative(sheetId):D}"), Context.Default.SheetLayout, cancellationToken);
     #endregion レイアウト設定
 
-    #region メンバー情報
+    #region IMember
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
+    public IMember Member => this;
+
+    /// <inheritdoc/>
+    async ValueTask<IReadOnlyCollection<MemberData>> IMember.ListAsync(CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, "members"), Context.Default.ApiListResultMemberData, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    public ValueTask<int> AddMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.CreateAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Post, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> ReplaceMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.ReplaceAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> UpdateMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.UpdateAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Patch, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> OverWriteMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.OverWriteAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> DeleteMemberDataAsync(IReadOnlyCollection<string> codes, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.DeleteAsync(IReadOnlyCollection<string> codes, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Post, "members/delete", new("codes", codes), Context.Default.ApiListResultString, cancellationToken);
-    #endregion メンバー情報
+    #endregion IMember
 
     #region ISheet
     /// <inheritdoc/>
