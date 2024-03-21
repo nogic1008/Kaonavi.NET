@@ -9,7 +9,7 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
+public class KaonaviV2Service : IKaonaviService, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -187,16 +187,18 @@ public class KaonaviV2Service : IKaonaviService, IUser, IRole, IAdvancedPermissi
         => CallTaskApiAsync(HttpMethod.Post, $"sheets/{ThrowIfNegative(sheetId):D}/add", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
     #endregion シート情報
 
-    #region 所属ツリー
+    #region IDepartment
+    /// <inheritdoc cref="IDepartment"/>
+    public IDepartment Department => this;
+
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
+    async ValueTask<IReadOnlyCollection<DepartmentTree>> IDepartment.ListAsync(CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, "departments"), Context.Default.ApiListResultDepartmentTree, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    public ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyCollection<DepartmentTree> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IDepartment.ReplaceAsync(IReadOnlyCollection<DepartmentTree> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, "departments", new("department_data", payload), Context.Default.ApiListResultDepartmentTree, cancellationToken);
-    internal record DepartmentsResult(IReadOnlyCollection<DepartmentTree> DepartmentData);
-    #endregion 所属ツリー
+    #endregion IDepartment
 
     #region IUser
     /// <inheritdoc cref="IUser"/>
