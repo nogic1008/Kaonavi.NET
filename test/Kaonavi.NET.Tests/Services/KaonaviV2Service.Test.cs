@@ -388,11 +388,11 @@ public class KaonaviV2ServiceTest
 
     #region タスク進捗状況 API
     /// <summary>
-    /// <inheritdoc cref="KaonaviV2Service.FetchTaskProgressAsync" path="/param[@name='taskId']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <inheritdoc cref="ITask.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <see cref="KaonaviV2Service.Task.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchTaskProgressAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-    public async Task FetchTaskProgressAsync_Throws_ArgumentOutOfRangeException()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Task)} > {nameof(KaonaviV2Service.Task.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    public async Task Task_ReadAsync_Throws_ArgumentOutOfRangeException()
     {
         // Arrange
         var handler = new Mock<HttpMessageHandler>();
@@ -400,7 +400,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        var act = async () => _ = await sut.FetchTaskProgressAsync(-1);
+        var act = async () => _ = await sut.Task.ReadAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
@@ -411,10 +411,10 @@ public class KaonaviV2ServiceTest
 
     private static readonly string[] _messages = new[] { "エラーメッセージ1", "エラーメッセージ2" };
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchTaskProgressAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.Task.ReadAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchTaskProgressAsync)} > GET /tasks/:taskId をコールする。")]
-    public async Task FetchTaskProgressAsync_Calls_GetApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Task)} > {nameof(KaonaviV2Service.Task.ReadAsync)} > GET /tasks/:taskId をコールする。")]
+    public async Task Task_ReadAsync_Calls_GetApi()
     {
         // Arrange
         const int taskId = 1;
@@ -427,7 +427,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var task = await sut.FetchTaskProgressAsync(taskId);
+        var task = await sut.Task.ReadAsync(taskId);
 
         // Assert
         _ = task.Should().NotBeNull();
@@ -1082,7 +1082,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IUser.ListAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="ISheet.ListAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviV2Service.Sheet.ListAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Sheet)} > {nameof(KaonaviV2Service.Sheet.ListAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
@@ -1143,7 +1143,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IUser.ReplaceAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="ISheet.ReplaceAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviV2Service.Sheet.ReplaceAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Sheet)} > {nameof(KaonaviV2Service.Sheet.ReplaceAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
@@ -1204,7 +1204,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IUser.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="ISheet.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviV2Service.Sheet.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Sheet)} > {nameof(KaonaviV2Service.Sheet.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
@@ -1265,7 +1265,7 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IUser.CreateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="ISheet.CreateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviV2Service.Sheet.CreateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Sheet)} > {nameof(KaonaviV2Service.Sheet.CreateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]

@@ -9,7 +9,7 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net.Services;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
+public class KaonaviV2Service : IKaonaviService, ITask, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -117,12 +117,15 @@ public class KaonaviV2Service : IKaonaviService, IMember, ISheet, IDepartment, I
         return token!;
     }
 
-    #region タスク進捗状況
+    #region ITask
+    /// <inheritdoc/>
+    public ITask Task => this;
+
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
-        => CallApiAsync(new(HttpMethod.Get, $"tasks/{ThrowIfNegative(taskId):D}"), Context.Default.TaskProgress, cancellationToken);
-    #endregion タスク進捗状況
+    ValueTask<TaskProgress> ITask.ReadAsync(int id, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"tasks/{ThrowIfNegative(id):D}"), Context.Default.TaskProgress, cancellationToken);
+    #endregion ITask
 
     #region レイアウト設定
     /// <inheritdoc/>
@@ -385,7 +388,7 @@ public class KaonaviV2Service : IKaonaviService, IMember, ISheet, IDepartment, I
         {
             var timeSpan = _lastUpdateApiCalled.AddSeconds(WaitSecondsForUpdateLimit) - _lastUpdateApiCalled;
             if (timeSpan > TimeSpan.Zero)
-                await Task.Delay(timeSpan, cancellationToken);
+                await System.Threading.Tasks.Task.Delay(timeSpan, cancellationToken);
             UpdateRequestCount -= UpdateRequestLimit;
         }
         _lastUpdateApiCalled = DateTime.Now;
