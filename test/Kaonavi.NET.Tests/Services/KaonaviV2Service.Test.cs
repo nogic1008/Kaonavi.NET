@@ -1326,40 +1326,40 @@ public sealed class KaonaviV2ServiceTest
 
     #region ユーザー情報 API
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchUsersAsync"/>は、"/users"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.User.ListAsync"/>は、"/users"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.FetchUsersAsync)} > GET /users をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.ListAsync)} > GET /users をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
-    public async Task FetchUsersAsync_Calls_GetApi()
+    public async Task User_ListAsync_Calls_GetApi()
     {
         // Arrange
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "user_data": [
-                {
-                    "id": 1,
-                    "email": "taro@kaonavi.jp",
-                    "member_code": "A0002",
-                    "role": {
-                        "id": 1,
-                        "name": "システム管理者",
-                        "type": "Adm"
-                    },
-                    "last_login_at": "2021-11-01 12:00:00"
-                },
-                {
-                    "id": 2,
-                    "email": "hanako@kaonavi.jp",
-                    "member_code": "A0001",
-                    "role": {
-                        "id": 2,
-                        "name": "マネージャ",
-                        "type": "一般"
-                    },
-                    "last_login_at": null
-                }
-            ]
+          "user_data": [
+            {
+              "id": 1,
+              "email": "taro@kaonavi.jp",
+              "member_code": "A0002",
+              "role": {
+                "id": 1,
+                "name": "システム管理者",
+                "type": "Adm"
+              },
+              "last_login_at": "2021-11-01 12:00:00"
+            },
+            {
+              "id": 2,
+              "email": "hanako@kaonavi.jp",
+              "member_code": "A0001",
+              "role": {
+                "id": 2,
+                "name": "マネージャ",
+                "type": "一般"
+              },
+              "last_login_at": null
+            }
+          ]
         }
         """;
         string tokenString = GenerateRandomString();
@@ -1370,7 +1370,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var users = await sut.FetchUsersAsync();
+        var users = await sut.User.ListAsync();
 
         // Assert
         _ = users.Should().AllBeAssignableTo<UserWithLoginAt>()
@@ -1390,25 +1390,25 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AddUserAsync"/>は、"/users"にPOSTリクエストを行う。
+    /// <see cref="KaonaviV2Service.User.CreateAsync"/>は、"/users"にPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.AddUserAsync)} > POST /users をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.CreateAsync)} > POST /users をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("ユーザー情報")]
-    public async Task AddUserAsync_Calls_PostApi()
+    public async Task User_CreateAsync_Calls_PostApi()
     {
         // Arrange
         string tokenString = GenerateRandomString();
         /*lang=json,strict*/
         const string responseJson = """
         {
+          "id": 1,
+          "email": "user1@example.com",
+          "member_code": "00001",
+          "role": {
             "id": 1,
-            "email": "user1@example.com",
-            "member_code": "00001",
-            "role": {
-                "id": 1,
-                "name": "システム管理者",
-                "type": "Adm"
-            }
+            "name": "システム管理者",
+            "type": "Adm"
+          }
         }
         """;
         var payload = new UserPayload("user1@example.com", "00001", "password", 1);
@@ -1423,7 +1423,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.AddUserAsync(payload);
+        var user = await sut.User.CreateAsync(payload);
 
         // Assert
         _ = user.Should().NotBeNull();
@@ -1446,12 +1446,12 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="KaonaviV2Service.FetchUserAsync" path="/param[@name='userId']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.FetchUserAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <inheritdoc cref="IUser.ReadAsync" path="/param[@name='userId']"/>が<c>0</c>未満のとき、
+    /// <see cref="KaonaviV2Service.User.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.FetchUserAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
-    public async Task When_UserId_IsLowerThan0_FetchUserAsync_Throws_ArgumentOutOfRangeException()
+    public async Task When_UserId_IsLowerThan0_User_ReadAsync_Throws_ArgumentOutOfRangeException()
     {
         // Arrange
         var handler = new Mock<HttpMessageHandler>();
@@ -1459,21 +1459,21 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        var act = async () => _ = await sut.FetchUserAsync(-1);
+        var act = async () => _ = await sut.User.ReadAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*userId*");
+            .WithParameterName("id");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchUserAsync"/>は、"/users/{userId}"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.User.ReadAsync"/>は、"/users/{userId}"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.FetchUserAsync)} > GET /users/:userId をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.ReadAsync)} > GET /users/:userId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
-    public async Task FetchUserAsync_Calls_GetApi()
+    public async Task User_ReadAsync_Calls_GetApi()
     {
         // Arrange
         const int userId = 1;
@@ -1492,7 +1492,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.FetchUserAsync(userId);
+        var user = await sut.User.ReadAsync(userId);
 
         // Assert
         _ = user.Should().Be(responseUser);
@@ -1511,12 +1511,12 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="KaonaviV2Service.UpdateUserAsync" path="/param[@name='userId']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.UpdateUserAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <inheritdoc cref="IUser.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <see cref="KaonaviV2Service.User.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.UpdateUserAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("ユーザー情報")]
-    public async Task When_UserId_IsLowerThan0_UpdateUserAsync_Throws_ArgumentOutOfRangeException()
+    public async Task When_UserId_IsLowerThan0_User_UpdateAsync_Throws_ArgumentOutOfRangeException()
     {
         // Arrange
         var handler = new Mock<HttpMessageHandler>();
@@ -1524,35 +1524,35 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        var act = async () => _ = await sut.UpdateUserAsync(-1, null!);
+        var act = async () => _ = await sut.User.UpdateAsync(-1, null!);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*userId*");
+            .WithParameterName("id");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.UpdateUserAsync"/>は、"/users/{userId}"にPATCHリクエストを行う。
+    /// <see cref="KaonaviV2Service.User.UpdateAsync"/>は、"/users/{userId}"にPATCHリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.UpdateUserAsync)} > PATCH /users/:userId をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.UpdateAsync)} > PATCH /users/:userId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("ユーザー情報")]
-    public async Task UpdateUserAsync_Calls_PatchApi()
+    public async Task User_UpdateAsync_Calls_PatchApi()
     {
         // Arrange
         const int userId = 1;
         /*lang=json,strict*/
         const string responseJson = """
         {
+          "id": 1,
+          "email": "user1@example.com",
+          "member_code": "00001",
+          "role": {
             "id": 1,
-            "email": "user1@example.com",
-            "member_code": "00001",
-            "role": {
-                "id": 1,
-                "name": "システム管理者",
-                "type": "Adm"
-            }
+            "name": "システム管理者",
+            "type": "Adm"
+          }
         }
         """;
         string tokenString = GenerateRandomString();
@@ -1568,7 +1568,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var user = await sut.UpdateUserAsync(userId, payload);
+        var user = await sut.User.UpdateAsync(userId, payload);
 
         // Assert
         _ = user.Should().NotBeNull();
@@ -1591,12 +1591,12 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="KaonaviV2Service.DeleteUserAsync" path="/param[@name='userId']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.DeleteUserAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <inheritdoc cref="IUser.DeleteAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <see cref="KaonaviV2Service.User.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.DeleteUserAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("ユーザー情報")]
-    public async Task When_UserId_IsLowerThan0_DeleteUserAsync_Throws_ArgumentOutOfRangeException()
+    public async Task When_UserId_IsLowerThan0_User_DeleteAsync_Throws_ArgumentOutOfRangeException()
     {
         // Arrange
         var handler = new Mock<HttpMessageHandler>();
@@ -1604,21 +1604,21 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler);
-        var act = async () => await sut.DeleteUserAsync(-1);
+        var act = async () => await sut.User.DeleteAsync(-1);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*userId*");
+            .WithParameterName("id");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.DeleteUserAsync"/>は、"/users/{userId}"にDELETEリクエストを行う。
+    /// <see cref="KaonaviV2Service.User.DeleteAsync"/>は、"/users/{userId}"にDELETEリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.DeleteUserAsync)} > DELETE /users/:userId をコールする。")]
+    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.DeleteAsync)} > DELETE /users/:userId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("ユーザー情報")]
-    public async Task DeleteUserAsync_Calls_DeleteApi()
+    public async Task User_DeleteAsync_Calls_DeleteApi()
     {
         // Arrange
         const int userId = 1;
@@ -1630,7 +1630,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        await sut.DeleteUserAsync(userId);
+        await sut.User.DeleteAsync(userId);
 
         // Assert
         handler.VerifyRequest(req =>
@@ -1722,6 +1722,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>().WithParameterName(nameof(type));
+        handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
 
     /// <summary>
@@ -2015,24 +2016,24 @@ public sealed class KaonaviV2ServiceTest
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "webhook_data": [
-                {
-                    "id": 1,
-                    "url": "https://example.com/",
-                    "events": ["member_created","member_deleted"],
-                    "secret_token": "string",
-                    "updated_at": "2021-12-01 12:00:00",
-                    "created_at": "2021-11-01 12:00:00"
-                },
-                {
-                    "id": 2,
-                    "url": "https://example.com/",
-                    "events": ["member_updated"],
-                    "secret_token": "string",
-                    "updated_at": "2021-12-01 12:00:00",
-                    "created_at": "2021-11-01 12:00:00"
-                }
-            ]
+          "webhook_data": [
+            {
+              "id": 1,
+              "url": "https://example.com/",
+              "events": ["member_created","member_deleted"],
+              "secret_token": "string",
+              "updated_at": "2021-12-01 12:00:00",
+              "created_at": "2021-11-01 12:00:00"
+            },
+            {
+              "id": 2,
+              "url": "https://example.com/",
+              "events": ["member_updated"],
+              "secret_token": "string",
+              "updated_at": "2021-12-01 12:00:00",
+              "created_at": "2021-11-01 12:00:00"
+            }
+          ]
         }
         """;
         string tokenString = GenerateRandomString();
@@ -2073,14 +2074,14 @@ public sealed class KaonaviV2ServiceTest
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "id": 1,
-            "url": "https://example.com/",
-            "events": [
-                "member_created",
-                "member_updated",
-                "member_deleted"
-            ],
-            "secret_token": "token"
+          "id": 1,
+          "url": "https://example.com/",
+          "events": [
+            "member_created",
+            "member_updated",
+            "member_deleted"
+          ],
+          "secret_token": "token"
         }
         """;
         var payload = new WebhookConfigPayload(_baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
@@ -2125,29 +2126,29 @@ public sealed class KaonaviV2ServiceTest
     public async Task Webhook_UpdateAsync_Calls_PatchApi()
     {
         // Arrange
-        const int webhookId = 1;
+        const int id = 1;
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "id": 1,
-            "url": "https://example.com/",
-            "events": [
-                "member_created",
-                "member_updated",
-                "member_deleted"
-            ],
-            "secret_token": "token"
+          "id": 1,
+          "url": "https://example.com/",
+          "events": [
+            "member_created",
+            "member_updated",
+            "member_deleted"
+          ],
+          "secret_token": "token"
         }
         """;
         string tokenString = GenerateRandomString();
-        var payload = new WebhookConfig(webhookId, _baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
+        var payload = new WebhookConfig(id, _baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
         /*lang=json,strict*/
         const string expectedJson = """
         {"id":1,"url":"https://example.com/","events":["member_created","member_updated","member_deleted"],"secret_token":"token"}
         """;
 
         var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{id}")
             .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
         // Act
@@ -2161,7 +2162,7 @@ public sealed class KaonaviV2ServiceTest
         {
             // End point
             _ = req.Method.Should().Be(HttpMethod.Patch);
-            _ = (req.RequestUri?.PathAndQuery.Should().Be($"/webhook/{webhookId}"));
+            _ = (req.RequestUri?.PathAndQuery.Should().Be($"/webhook/{id}"));
 
             // Header
             _ = req.Headers.GetValues("Kaonavi-Token").First().Should().Be(tokenString);
@@ -2192,7 +2193,7 @@ public sealed class KaonaviV2ServiceTest
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-            .WithMessage("*webhookId*");
+            .WithParameterName("id");
 
         handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
     }
