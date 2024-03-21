@@ -1202,49 +1202,49 @@ public class KaonaviV2ServiceTest
 
     #region 所属ツリー API
     /// <summary>
-    /// <see cref="KaonaviV2Service.FetchDepartmentsAsync"/>は、"/departments"にGETリクエストを行う。
+    /// <see cref="KaonaviV2Service.Department.ListAsync"/>は、"/departments"にGETリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.FetchDepartmentsAsync)} > GET /departments をコールする。")]
-    public async Task FetchDepartmentsAsync_Calls_GetApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Department)} > {nameof(KaonaviV2Service.Department.ListAsync)} > GET /departments をコールする。")]
+    public async Task Department_ListAsync_Calls_GetApi()
     {
         // Arrange
         /*lang=json,strict*/
         const string responseJson = """
         {
-            "department_data": [
-                {
-                    "code": "1000",
-                    "name": "取締役会",
-                    "parent_code": null,
-                    "leader_member_code": "A0002",
-                    "order": 1,
-                    "memo": ""
-                },
-                {
-                    "code": "1200",
-                    "name": "営業本部",
-                    "parent_code": null,
-                    "leader_member_code": null,
-                    "order": 2,
-                    "memo": ""
-                },
-                {
-                    "code": "1500",
-                    "name": "第一営業部",
-                    "parent_code": "1200",
-                    "leader_member_code": null,
-                    "order": 1,
-                    "memo": ""
-                },
-                {
-                    "code": "2000",
-                    "name": "ITグループ",
-                    "parent_code": "1500",
-                    "leader_member_code": "A0001",
-                    "order": 1,
-                    "memo": "example"
-                }
-            ]
+          "department_data": [
+            {
+              "code": "1000",
+              "name": "取締役会",
+              "parent_code": null,
+              "leader_member_code": "A0002",
+              "order": 1,
+              "memo": ""
+            },
+            {
+              "code": "1200",
+              "name": "営業本部",
+              "parent_code": null,
+              "leader_member_code": null,
+              "order": 2,
+              "memo": ""
+            },
+            {
+              "code": "1500",
+              "name": "第一営業部",
+              "parent_code": "1200",
+              "leader_member_code": null,
+              "order": 1,
+              "memo": ""
+            },
+            {
+              "code": "2000",
+              "name": "ITグループ",
+              "parent_code": "1500",
+              "leader_member_code": "A0001",
+              "order": 1,
+              "memo": "example"
+            }
+          ]
         }
         """;
         string tokenString = GenerateRandomString();
@@ -1255,7 +1255,7 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var departments = await sut.FetchDepartmentsAsync();
+        var departments = await sut.Department.ListAsync();
 
         // Assert
         _ = departments.Should().HaveCount(4);
@@ -1274,19 +1274,18 @@ public class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.ReplaceDepartmentsAsync"/>は、"/departments"にPUTリクエストを行う。
+    /// <see cref="KaonaviV2Service.Department.ReplaceAsync"/>は、"/departments"にPUTリクエストを行う。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.ReplaceDepartmentsAsync)} > PUT /departments をコールする。")]
-    public async Task ReplaceDepartmentsAsync_Calls_PutApi()
+    [Fact(DisplayName = $"{nameof(KaonaviV2Service)} > {nameof(KaonaviV2Service.Department)} > {nameof(KaonaviV2Service.Department.ReplaceAsync)} > PUT /departments をコールする。")]
+    public async Task Department_ReplaceAsync_Calls_PutApi()
     {
         // Arrange
-        const int sheetId = 1;
         var payload = new DepartmentTree[]
         {
-                new("1000", "取締役会", null, "A0002", 1, ""),
-                new("1200", "営業本部", null, null, 2, ""),
-                new("1500", "第一営業部", "1200", null, 1, ""),
-                new("2000", "ITグループ", "1500", "A0001", 1, "example"),
+            new("1000", "取締役会", null, "A0002", 1, ""),
+            new("1200", "営業本部", null, null, 2, ""),
+            new("1500", "第一営業部", "1200", null, 1, ""),
+            new("2000", "ITグループ", "1500", "A0001", 1, "example"),
         };
         string tokenString = GenerateRandomString();
         string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, Context.Default.IReadOnlyCollectionDepartmentTree)}}}";
@@ -1297,10 +1296,10 @@ public class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.ReplaceDepartmentsAsync(payload);
+        int taskId = await sut.Department.ReplaceAsync(payload);
 
         // Assert
-        _ = taskId.Should().Be(sheetId);
+        _ = taskId.Should().Be(1);
 
         handler.VerifyRequest(async (req) =>
         {

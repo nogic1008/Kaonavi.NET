@@ -189,24 +189,4 @@ public interface IKaonaviService
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
     #endregion シート情報
-
-    #region 所属ツリー
-    /// <summary>
-    /// <inheritdoc cref="DepartmentTree" path="/summary/text()"/>の情報を取得します。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get"/>
-    /// </summary>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyCollection<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// <inheritdoc cref="DepartmentTree" path="/summary/text()"/>を一括更新します。
-    /// <paramref name="payload"/>に含まれていない情報は削除されます。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/put"/>
-    /// </summary>
-    /// <remarks>更新リクエスト制限の対象APIです。</remarks>
-    /// <param name="payload">一括更新するデータ</param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyCollection<DepartmentTree> payload, CancellationToken cancellationToken = default);
-    #endregion 所属ツリー
 }
