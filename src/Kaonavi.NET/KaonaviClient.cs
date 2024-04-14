@@ -6,10 +6,10 @@ using Kaonavi.Net.Api;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 
-namespace Kaonavi.Net.Services;
+namespace Kaonavi.Net;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService, ITask, ILayout, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
+public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -22,13 +22,13 @@ public class KaonaviV2Service : IKaonaviService, ITask, ILayout, IMember, ISheet
     /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
     private const int WaitSecondsForUpdateLimit = 60;
 
-    /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[1]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient.KaonaviClient" path="/param[1]"/></summary>
     private readonly HttpClient _client;
 
-    /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[2]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient.KaonaviClient" path="/param[2]"/></summary>
     private readonly string _consumerKey;
 
-    /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[3]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient.KaonaviClient" path="/param[3]"/></summary>
     private readonly string _consumerSecret;
 
     #region Properties
@@ -75,7 +75,7 @@ public class KaonaviV2Service : IKaonaviService, ITask, ILayout, IMember, ISheet
     #endregion Properties
 
     /// <summary>
-    /// KaonaviV2Serviceの新しいインスタンスを生成します。
+    /// KaonaviClientの新しいインスタンスを生成します。
     /// </summary>
     /// <param name="client">APIコール時に利用する<see cref="HttpClient"/>のインスタンス</param>
     /// <param name="consumerKey">Consumer Key</param>
@@ -83,7 +83,7 @@ public class KaonaviV2Service : IKaonaviService, ITask, ILayout, IMember, ISheet
     /// <exception cref="ArgumentNullException">
     /// <paramref name="client"/>, <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<see langword="null"/>の場合にスローされます。
     /// </exception>
-    public KaonaviV2Service(HttpClient client, string consumerKey, string consumerSecret)
+    public KaonaviClient(HttpClient client, string consumerKey, string consumerSecret)
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(consumerKey);

@@ -1,7 +1,7 @@
 namespace ConsoleAppSample;
 
 /// <summary>
-/// <see cref="Kaonavi.Net.Services.KaonaviV2Service"/>に渡す設定項目。
+/// <see cref="Kaonavi.Net.KaonaviClient"/>に渡す設定項目。
 /// </summary>
 public class KaonaviOptions
 {
@@ -12,7 +12,7 @@ public class KaonaviOptions
     public string ConsumerSecret { get; set; }
 #nullable restore
     /// <summary>
-    /// <see cref="Kaonavi.Net.Services.KaonaviV2Service.UseDryRun"/>
+    /// <see cref="Kaonavi.Net.KaonaviClient.UseDryRun"/>
     /// </summary>
     public bool UseDryRun { get; set; }
 }

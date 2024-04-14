@@ -1,5 +1,4 @@
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Services;
 
 namespace Kaonavi.Net.Api;
 

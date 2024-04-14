@@ -1,5 +1,5 @@
 using Kaonavi.Net.Entities;
-using static Kaonavi.Net.Services.KaonaviV2Service;
+using static Kaonavi.Net.KaonaviClient;
 
 namespace Kaonavi.Net.Json;
 

@@ -2,15 +2,15 @@ using System.Text;
 using Kaonavi.Net.Api;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
-using Kaonavi.Net.Services;
+using Kaonavi.Net;
 using Moq;
 using Moq.Contrib.HttpClient;
 
-namespace Kaonavi.Net.Tests.Services;
+namespace Kaonavi.Net.Tests;
 
-/// <summary><see cref="KaonaviV2Service"/>の単体テスト</summary>
+/// <summary><see cref="KaonaviClient"/>の単体テスト</summary>
 [TestClass]
-public sealed class KaonaviV2ServiceTest
+public sealed class KaonaviClientTest
 {
     /// <summary>テスト用の<see cref="HttpClient.BaseAddress"/></summary>
     private static readonly Uri _baseUri = new("https://example.com/");
@@ -26,35 +26,35 @@ public sealed class KaonaviV2ServiceTest
     /// <summary>
     /// コンストラクターを呼び出す<see cref="Action"/>を生成します。
     /// </summary>
-    /// <param name="client"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='client']"/></param>
-    /// <param name="consumerKey"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
-    /// <param name="consumerSecret"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
+    /// <param name="client"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='client']"/></param>
+    /// <param name="consumerKey"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
+    /// <param name="consumerSecret"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
     private static Action Constructor(HttpClient? client, string? consumerKey, string? consumerSecret)
-        => () => _ = new KaonaviV2Service(client!, consumerKey!, consumerSecret!);
+        => () => _ = new KaonaviClient(client!, consumerKey!, consumerSecret!);
 
     /// <summary>
     /// <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
-    /// <param name="consumerKey"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
-    /// <param name="consumerSecret"><inheritdoc cref="KaonaviV2Service(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
+    /// <param name="consumerKey"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
+    /// <param name="consumerSecret"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
     /// <param name="paramName">例外の原因となったパラメータ名</param>
-    [TestMethod($"{nameof(KaonaviV2Service)}(constructor) > {nameof(ArgumentNullException)}をスローする。"), TestCategory("Constructor")]
-    [DataRow(null, "foo", "consumerKey", DisplayName = $"{nameof(KaonaviV2Service)}({nameof(HttpClient)}, null, \"foo\") > {nameof(ArgumentNullException)}(consumerKey)をスローする。")]
-    [DataRow("foo", null, "consumerSecret", DisplayName = $"{nameof(KaonaviV2Service)}({nameof(HttpClient)}, \"foo\", null) > {nameof(ArgumentNullException)}(consumerSecret)をスローする。")]
+    [TestMethod($"{nameof(KaonaviClient)}(constructor) > {nameof(ArgumentNullException)}をスローする。"), TestCategory("Constructor")]
+    [DataRow(null, "foo", "consumerKey", DisplayName = $"{nameof(KaonaviClient)}({nameof(HttpClient)}, null, \"foo\") > {nameof(ArgumentNullException)}(consumerKey)をスローする。")]
+    [DataRow("foo", null, "consumerSecret", DisplayName = $"{nameof(KaonaviClient)}({nameof(HttpClient)}, \"foo\", null) > {nameof(ArgumentNullException)}(consumerSecret)をスローする。")]
     public void WhenParamIsNull_Constructor_Throws_ArgumentNullException(string? consumerKey, string? consumerSecret, string paramName)
         => Constructor(new(), consumerKey, consumerSecret).Should().ThrowExactly<ArgumentNullException>().WithParameterName(paramName);
 
     /// <summary>
     /// HttpClientが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service)}(null, \"foo\", \"bar\") > ArgumentNullException(client)をスローする。"), TestCategory("Constructor")]
+    [TestMethod($"{nameof(KaonaviClient)}(null, \"foo\", \"bar\") > ArgumentNullException(client)をスローする。"), TestCategory("Constructor")]
     public void WhenClientIsNull_Constructor_Throws_ArgumentNullException()
         => Constructor(null, "foo", "bar").Should().ThrowExactly<ArgumentNullException>().WithParameterName("client");
 
     /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>のとき、既定値をセットする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullのとき、既定値をセットする。"), TestCategory("Constructor")]
+    [TestMethod($"{nameof(KaonaviClient)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullのとき、既定値をセットする。"), TestCategory("Constructor")]
     public void Constructor_Sets_BaseAddress_WhenIsNull()
     {
         // Arrange
@@ -62,7 +62,7 @@ public sealed class KaonaviV2ServiceTest
         _ = client.BaseAddress.Should().BeNull();
 
         // Act
-        _ = new KaonaviV2Service(client, "foo", "bar");
+        _ = new KaonaviClient(client, "foo", "bar");
 
         // Assert
         _ = client.BaseAddress.Should().NotBeNull();
@@ -71,7 +71,7 @@ public sealed class KaonaviV2ServiceTest
     /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>でないときは、既定値をセットしない。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullでないときは、既定値をセットしない。"), TestCategory("Constructor")]
+    [TestMethod($"{nameof(KaonaviClient)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullでないときは、既定値をセットしない。"), TestCategory("Constructor")]
     public void Constructor_DoesNotSet_BaseAddress_WhenNotNull()
     {
         // Arrange
@@ -81,7 +81,7 @@ public sealed class KaonaviV2ServiceTest
         };
 
         // Act
-        _ = new KaonaviV2Service(client, "foo", "bar");
+        _ = new KaonaviClient(client, "foo", "bar");
 
         // Assert
         _ = client.BaseAddress.Should().Be(_baseUri);
@@ -90,9 +90,9 @@ public sealed class KaonaviV2ServiceTest
 
     #region Properties
     /// <summary>
-    /// <see cref="KaonaviV2Service.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を返す。
+    /// <see cref="KaonaviClient.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を返す。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.AccessToken)}(get) > Kaonavi-Tokenヘッダーの値を返す。"), TestCategory("Properties")]
+    [TestMethod($"{nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Tokenヘッダーの値を返す。"), TestCategory("Properties")]
     public void AccessToken_Returns_Header_KaonaviToken_Value()
     {
         // Arrange
@@ -101,29 +101,29 @@ public sealed class KaonaviV2ServiceTest
         client.DefaultRequestHeaders.Add("Kaonavi-Token", headerValue);
 
         // Act
-        var sut = new KaonaviV2Service(client, "foo", "bar");
+        var sut = new KaonaviClient(client, "foo", "bar");
 
         // Assert
         _ = sut.AccessToken.Should().Be(headerValue);
     }
 
     /// <summary>
-    /// Kaonavi-Tokenヘッダーがないとき、<see cref="KaonaviV2Service.AccessToken"/>は、<see langword="null"/>を返す。
+    /// Kaonavi-Tokenヘッダーがないとき、<see cref="KaonaviClient.AccessToken"/>は、<see langword="null"/>を返す。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.AccessToken)}(get) > Kaonavi-Tokenヘッダーがないとき、nullを返す。"), TestCategory("Properties")]
+    [TestMethod($"{nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Tokenヘッダーがないとき、nullを返す。"), TestCategory("Properties")]
     public void When_Header_KaonaviToken_IsNull_AccessToken_Returns_Null()
     {
         // Arrange - Act
-        var sut = new KaonaviV2Service(new(), "foo", "bar");
+        var sut = new KaonaviClient(new(), "foo", "bar");
 
         // Assert
         _ = sut.AccessToken.Should().BeNull();
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を設定する。
+    /// <see cref="KaonaviClient.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を設定する。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.AccessToken)}(set) > Kaonavi-Tokenヘッダーの値を設定する。"), TestCategory("Properties")]
+    [TestMethod($"{nameof(KaonaviClient.AccessToken)}(set) > Kaonavi-Tokenヘッダーの値を設定する。"), TestCategory("Properties")]
     public void AccessToken_Sets_Header_KaonaviToken()
     {
         // Arrange
@@ -131,7 +131,7 @@ public sealed class KaonaviV2ServiceTest
         string headerValue = GenerateRandomString();
 
         // Act
-        _ = new KaonaviV2Service(client, "foo", "bar")
+        _ = new KaonaviClient(client, "foo", "bar")
         {
             AccessToken = headerValue
         };
@@ -142,15 +142,15 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.UseDryRun"/>は、HttpClientのDry-Runヘッダーが"1"かどうかを返す。
+    /// <see cref="KaonaviClient.UseDryRun"/>は、HttpClientのDry-Runヘッダーが"1"かどうかを返す。
     /// </summary>
     /// <param name="headerValue">Dry-Runヘッダーに設定する値</param>
-    /// <param name="expected"><see cref="KaonaviV2Service.UseDryRun"/></param>
-    [TestMethod($"{nameof(KaonaviV2Service.UseDryRun)}(get) > Dry-Run: 1 かどうかを返す。"), TestCategory("Properties")]
-    [DataRow(null, false, DisplayName = $"{nameof(KaonaviV2Service.UseDryRun)} > Headerに Dry-Runの設定がない場合、 falseを返す。")]
-    [DataRow("0", false, DisplayName = $"{nameof(KaonaviV2Service.UseDryRun)} > Headerに Dry-Run: 0 の設定がある場合、 falseを返す。")]
-    [DataRow("1", true, DisplayName = $"{nameof(KaonaviV2Service.UseDryRun)} > Headerに Dry-Run: 1 の設定がある場合、 trueを返す。")]
-    [DataRow("foo", false, DisplayName = $"{nameof(KaonaviV2Service.UseDryRun)} > Headerに Dry-Run: foo の設定がある場合、 falseを返す。")]
+    /// <param name="expected"><see cref="KaonaviClient.UseDryRun"/></param>
+    [TestMethod($"{nameof(KaonaviClient.UseDryRun)}(get) > Dry-Run: 1 かどうかを返す。"), TestCategory("Properties")]
+    [DataRow(null, false, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Runの設定がない場合、 falseを返す。")]
+    [DataRow("0", false, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Run: 0 の設定がある場合、 falseを返す。")]
+    [DataRow("1", true, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Run: 1 の設定がある場合、 trueを返す。")]
+    [DataRow("foo", false, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Run: foo の設定がある場合、 falseを返す。")]
     public void UseDryRun_Returns_Header_DryRun_Is1(string? headerValue, bool expected)
     {
         // Arrange
@@ -159,16 +159,16 @@ public sealed class KaonaviV2ServiceTest
             client.DefaultRequestHeaders.Add("Dry-Run", headerValue);
 
         // Act
-        var sut = new KaonaviV2Service(client, "foo", "bar");
+        var sut = new KaonaviClient(client, "foo", "bar");
 
         // Assert
         _ = sut.UseDryRun.Should().Be(expected);
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.UseDryRun"/>は、HttpClientのDry-Runヘッダー値を追加/削除する。
+    /// <see cref="KaonaviClient.UseDryRun"/>は、HttpClientのDry-Runヘッダー値を追加/削除する。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.UseDryRun)}(set) > Dry-Runヘッダーを追加/削除する。"), TestCategory("Properties")]
+    [TestMethod($"{nameof(KaonaviClient.UseDryRun)}(set) > Dry-Runヘッダーを追加/削除する。"), TestCategory("Properties")]
     public void UseDryRun_Sets_Header_DryRun()
     {
         // Arrange
@@ -176,7 +176,7 @@ public sealed class KaonaviV2ServiceTest
 
         #region UseDryRun = true
         // Act
-        var sut = new KaonaviV2Service(client, "foo", "bar")
+        var sut = new KaonaviClient(client, "foo", "bar")
         {
             UseDryRun = true
         };
@@ -197,13 +197,13 @@ public sealed class KaonaviV2ServiceTest
     #endregion Properties
 
     /// <summary>
-    /// テスト対象(System Under Test)となる<see cref="KaonaviV2Service"/>のインスタンスを生成します。
+    /// テスト対象(System Under Test)となる<see cref="KaonaviClient"/>のインスタンスを生成します。
     /// </summary>
     /// <param name="handler">HttpClientをモックするためのHandlerオブジェクト</param>
     /// <param name="key">Consumer Key</param>
     /// <param name="secret">Consumer Secret</param>
     /// <param name="accessToken">アクセストークン</param>
-    private static KaonaviV2Service CreateSut(Mock<HttpMessageHandler> handler, string key = "Key", string secret = "Secret", string? accessToken = null)
+    private static KaonaviClient CreateSut(Mock<HttpMessageHandler> handler, string key = "Key", string secret = "Secret", string? accessToken = null)
     {
         var client = handler.CreateClient();
         client.BaseAddress = _baseUri;
@@ -246,9 +246,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AccessToken"/>が<see langword="null"/>のとき、<see cref="KaonaviV2Service.AuthenticateAsync(CancellationToken)"/>を呼び出す。
+    /// <see cref="KaonaviClient.AccessToken"/>が<see langword="null"/>のとき、<see cref="KaonaviClient.AuthenticateAsync(CancellationToken)"/>を呼び出す。
     /// </summary>
-    [TestMethod($"API Caller > {nameof(KaonaviV2Service.AuthenticateAsync)}を呼び出す。"), TestCategory("API")]
+    [TestMethod($"API Caller > {nameof(KaonaviClient.AuthenticateAsync)}を呼び出す。"), TestCategory("API")]
     public async Task When_AccessToken_IsNull_ApiCaller_Calls_AuthenticateAsync()
     {
         // Arrange
@@ -342,9 +342,9 @@ public sealed class KaonaviV2ServiceTest
     #endregion API Common Path
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AuthenticateAsync"/>は、"/token"にBase64文字列のPOSTリクエストを行う。
+    /// <see cref="KaonaviClient.AuthenticateAsync"/>は、"/token"にBase64文字列のPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.AuthenticateAsync)} > POST /token をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.AuthenticateAsync)} > POST /token をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("アクセストークン")]
     public async Task AuthenticateAsync_Calls_PostApi()
     {
@@ -389,9 +389,9 @@ public sealed class KaonaviV2ServiceTest
     #region タスク進捗状況 API
     /// <summary>
     /// <inheritdoc cref="ITask.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.Task.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <see cref="KaonaviClient.Task.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Task)}.{nameof(KaonaviV2Service.Task.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("タスク進捗状況")]
     public async Task When_TaskId_IsNegative_Task_ReadAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -411,9 +411,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Task.ReadAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Task.ReadAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Task)}.{nameof(KaonaviV2Service.Task.ReadAsync)} > GET /tasks/:taskId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > GET /tasks/:taskId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("タスク進捗状況")]
     public async Task Task_ReadAsync_Calls_GetApi()
     {
@@ -452,9 +452,9 @@ public sealed class KaonaviV2ServiceTest
 
     #region レイアウト設定 API
     /// <summary>
-    /// <see cref="KaonaviV2Service.Layout.ReadMemberLayoutAsync"/>は、"/member_layouts"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Layout.ReadMemberLayoutAsync"/>は、"/member_layouts"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Layout)}.{nameof(KaonaviV2Service.Layout.ReadMemberLayoutAsync)} > GET /member_layouts をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadMemberLayoutAsync)} > GET /member_layouts をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
     public async Task Layout_ReadMemberLayoutAsync_Calls_GetApi()
     {
@@ -512,9 +512,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Layout.ListAsync"/>は、"/sheet_layouts"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Layout.ListAsync"/>は、"/sheet_layouts"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Layout)}.{nameof(KaonaviV2Service.Layout.ListAsync)} > GET /sheet_layouts をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)} > GET /sheet_layouts をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
     public async Task Layout_ListAsync_Calls_GetApi()
     {
@@ -576,9 +576,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Layout.ReadAsync"/>は、"/sheet_layouts/{sheetId}"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Layout.ReadAsync"/>は、"/sheet_layouts/{sheetId}"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Layout)}.{nameof(KaonaviV2Service.Layout.ReadAsync)} > GET /sheet_layouts/:sheetId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)} > GET /sheet_layouts/:sheetId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
     public async Task Layout_ReadAsync_Calls_GetApi()
     {
@@ -663,9 +663,9 @@ public sealed class KaonaviV2ServiceTest
     ];
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Member.ListAsync"/>は、"/members"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Member.ListAsync"/>は、"/members"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Member)}.{nameof(KaonaviV2Service.Member.ListAsync)} > GET /members をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ListAsync)} > GET /members をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("メンバー情報")]
     public async Task Member_ListAsync_Calls_GetApi()
     {
@@ -771,9 +771,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Member.CreateAsync"/>は、"/members"にPOSTリクエストを行う。
+    /// <see cref="KaonaviClient.Member.CreateAsync"/>は、"/members"にPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Member)}.{nameof(KaonaviV2Service.Member.CreateAsync)} > POST /members をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.CreateAsync)} > POST /members をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("メンバー情報")]
     public async Task Member_CreateAsync_Calls_PostApi()
     {
@@ -810,9 +810,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Member.ReplaceAsync"/>は、"/members"にPUTリクエストを行う。
+    /// <see cref="KaonaviClient.Member.ReplaceAsync"/>は、"/members"にPUTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Member)}.{nameof(KaonaviV2Service.Member.ReplaceAsync)} > PUT /members をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ReplaceAsync)} > PUT /members をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("メンバー情報")]
     public async Task Member_ReplaceAsync_Calls_PutApi()
     {
@@ -849,9 +849,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Member.UpdateAsync"/>は、"/members"にPATCHリクエストを行う。
+    /// <see cref="KaonaviClient.Member.UpdateAsync"/>は、"/members"にPATCHリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Member)}.{nameof(KaonaviV2Service.Member.UpdateAsync)} > PATCH /members をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateAsync)} > PATCH /members をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("メンバー情報")]
     public async Task Member_UpdateAsync_Calls_PatchApi()
     {
@@ -888,9 +888,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Member.OverWriteAsync"/>は、"/members/overwrite"にPUTリクエストを行う。
+    /// <see cref="KaonaviClient.Member.OverWriteAsync"/>は、"/members/overwrite"にPUTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Member)}.{nameof(KaonaviV2Service.Member.OverWriteAsync)} > PUT /members/overwrite をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.OverWriteAsync)} > PUT /members/overwrite をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("メンバー情報")]
     public async Task Member_OverWriteAsync_Calls_PutApi()
     {
@@ -927,9 +927,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Member.DeleteAsync"/>は、"/members/delete"にPOSTリクエストを行う。
+    /// <see cref="KaonaviClient.Member.DeleteAsync"/>は、"/members/delete"にPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Member)}.{nameof(KaonaviV2Service.Member.DeleteAsync)} > POST /members/delete をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.DeleteAsync)} > POST /members/delete をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("メンバー情報")]
     public async Task Member_DeleteAsync_Calls_PostApi()
     {
@@ -990,9 +990,9 @@ public sealed class KaonaviV2ServiceTest
     ];
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Sheet.ListAsync"/>は、"/sheets/{sheetId}"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Sheet.ListAsync"/>は、"/sheets/{sheetId}"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.ListAsync)} > GET /sheets/:sheetId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListAsync)} > GET /sheets/:sheetId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("シート情報")]
     public async Task Sheet_ListAsync_Calls_GetApi()
     {
@@ -1084,9 +1084,9 @@ public sealed class KaonaviV2ServiceTest
 
     /// <summary>
     /// <inheritdoc cref="ISheet.ListAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.Sheet.ListAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <see cref="KaonaviClient.Sheet.ListAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.ListAsync)} > ArgumentOutOfRangeException をスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListAsync)} > ArgumentOutOfRangeException をスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("シート情報")]
     public async Task WhenNegative_Sheet_ListAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -1106,9 +1106,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Sheet.ReplaceAsync"/>は、"/sheets/{sheetId}"にPUTリクエストを行う。
+    /// <see cref="KaonaviClient.Sheet.ReplaceAsync"/>は、"/sheets/{sheetId}"にPUTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.ReplaceAsync)} > PUT /sheets/:sheetId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ReplaceAsync)} > PUT /sheets/:sheetId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("シート情報")]
     public async Task Sheet_ReplaceAsync_Calls_PutApi()
     {
@@ -1147,9 +1147,9 @@ public sealed class KaonaviV2ServiceTest
 
     /// <summary>
     /// <inheritdoc cref="ISheet.ReplaceAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.Sheet.ReplaceAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <see cref="KaonaviClient.Sheet.ReplaceAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.ReplaceAsync)} > ArgumentOutOfRangeException をスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ReplaceAsync)} > ArgumentOutOfRangeException をスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("シート情報")]
     public async Task WhenNegative_Sheet_ReplaceAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -1169,9 +1169,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Sheet.UpdateAsync"/>は、"/sheets/{sheetId}"にPATCHリクエストを行う。
+    /// <see cref="KaonaviClient.Sheet.UpdateAsync"/>は、"/sheets/{sheetId}"にPATCHリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.UpdateAsync)} > PATCH /sheets/:sheetId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateAsync)} > PATCH /sheets/:sheetId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("シート情報")]
     public async Task Sheet_UpdateAsync_Calls_PatchApi()
     {
@@ -1210,9 +1210,9 @@ public sealed class KaonaviV2ServiceTest
 
     /// <summary>
     /// <inheritdoc cref="ISheet.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.Sheet.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <see cref="KaonaviClient.Sheet.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.UpdateAsync)} > ArgumentOutOfRangeException をスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateAsync)} > ArgumentOutOfRangeException をスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("シート情報")]
     public async Task WhenNegative_Sheet_UpdateAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -1232,9 +1232,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Sheet.CreateAsync"/>は、"/sheets/{sheetId}/add"にPOSTリクエストを行う。
+    /// <see cref="KaonaviClient.Sheet.CreateAsync"/>は、"/sheets/{sheetId}/add"にPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.CreateAsync)} > POST /sheets/:sheetId/add をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.CreateAsync)} > POST /sheets/:sheetId/add をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("シート情報")]
     public async Task Sheet_CreateAsync_Calls_PostApi()
     {
@@ -1273,9 +1273,9 @@ public sealed class KaonaviV2ServiceTest
 
     /// <summary>
     /// <inheritdoc cref="ISheet.CreateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.Sheet.CreateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <see cref="KaonaviClient.Sheet.CreateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Sheet)}.{nameof(KaonaviV2Service.Sheet.CreateAsync)} > ArgumentOutOfRangeException をスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.CreateAsync)} > ArgumentOutOfRangeException をスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("シート情報")]
     public async Task WhenNegative_Sheet_CreateAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -1298,9 +1298,9 @@ public sealed class KaonaviV2ServiceTest
 
     #region 所属ツリー API
     /// <summary>
-    /// <see cref="KaonaviV2Service.Department.ListAsync"/>は、"/departments"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Department.ListAsync"/>は、"/departments"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Department)}.{nameof(KaonaviV2Service.Department.ListAsync)} > GET /departments をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ListAsync)} > GET /departments をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("所属ツリー")]
     public async Task Department_ListAsync_Calls_GetApi()
     {
@@ -1371,9 +1371,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Department.ReplaceAsync"/>は、"/departments"にPUTリクエストを行う。
+    /// <see cref="KaonaviClient.Department.ReplaceAsync"/>は、"/departments"にPUTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Department)}.{nameof(KaonaviV2Service.Department.ReplaceAsync)} > PUT /departments をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ReplaceAsync)} > PUT /departments をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("所属ツリー")]
     public async Task Department_ReplaceAsync_Calls_PutApi()
     {
@@ -1419,9 +1419,9 @@ public sealed class KaonaviV2ServiceTest
 
     #region ユーザー情報 API
     /// <summary>
-    /// <see cref="KaonaviV2Service.User.ListAsync"/>は、"/users"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.User.ListAsync"/>は、"/users"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.ListAsync)} > GET /users をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ListAsync)} > GET /users をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
     public async Task User_ListAsync_Calls_GetApi()
     {
@@ -1483,9 +1483,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.User.CreateAsync"/>は、"/users"にPOSTリクエストを行う。
+    /// <see cref="KaonaviClient.User.CreateAsync"/>は、"/users"にPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.CreateAsync)} > POST /users をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.CreateAsync)} > POST /users をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("ユーザー情報")]
     public async Task User_CreateAsync_Calls_PostApi()
     {
@@ -1540,9 +1540,9 @@ public sealed class KaonaviV2ServiceTest
 
     /// <summary>
     /// <inheritdoc cref="IUser.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.User.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <see cref="KaonaviClient.User.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
     public async Task When_UserId_IsLowerThan0_User_ReadAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -1562,9 +1562,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.User.ReadAsync"/>は、"/users/{userId}"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.User.ReadAsync"/>は、"/users/{userId}"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.ReadAsync)} > GET /users/:userId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > GET /users/:userId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
     public async Task User_ReadAsync_Calls_GetApi()
     {
@@ -1605,9 +1605,9 @@ public sealed class KaonaviV2ServiceTest
 
     /// <summary>
     /// <inheritdoc cref="IUser.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.User.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <see cref="KaonaviClient.User.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("ユーザー情報")]
     public async Task When_UserId_IsLowerThan0_User_UpdateAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -1627,9 +1627,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.User.UpdateAsync"/>は、"/users/{userId}"にPATCHリクエストを行う。
+    /// <see cref="KaonaviClient.User.UpdateAsync"/>は、"/users/{userId}"にPATCHリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.UpdateAsync)} > PATCH /users/:userId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > PATCH /users/:userId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("ユーザー情報")]
     public async Task User_UpdateAsync_Calls_PatchApi()
     {
@@ -1685,9 +1685,9 @@ public sealed class KaonaviV2ServiceTest
 
     /// <summary>
     /// <inheritdoc cref="IUser.DeleteAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.User.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <see cref="KaonaviClient.User.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("ユーザー情報")]
     public async Task When_UserId_IsLowerThan0_User_DeleteAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -1707,9 +1707,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.User.DeleteAsync"/>は、"/users/{userId}"にDELETEリクエストを行う。
+    /// <see cref="KaonaviClient.User.DeleteAsync"/>は、"/users/{userId}"にDELETEリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.User)}.{nameof(KaonaviV2Service.User.DeleteAsync)} > DELETE /users/:userId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > DELETE /users/:userId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("ユーザー情報")]
     public async Task User_DeleteAsync_Calls_DeleteApi()
     {
@@ -1742,9 +1742,9 @@ public sealed class KaonaviV2ServiceTest
 
     #region ロール API
     /// <summary>
-    /// <see cref="KaonaviV2Service.Role.ListAsync"/>は、"/roles"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Role.ListAsync"/>は、"/roles"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Role)}.{nameof(KaonaviV2Service.Role.ListAsync)} > GET /roles をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Role)}.{nameof(KaonaviClient.Role.ListAsync)} > GET /roles をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ロール")]
     public async Task Role_ListAsync_Calls_GetApi()
     {
@@ -1795,13 +1795,13 @@ public sealed class KaonaviV2ServiceTest
 
     #region 拡張アクセス設定 API
     /// <summary>
-    /// <paramref name="type"/>が不正な値であるとき、<see cref="KaonaviV2Service.AdvancedPermission.ListAsync"/>は、ArgumentOutOfRangeExceptionをスローする。
+    /// <paramref name="type"/>が不正な値であるとき、<see cref="KaonaviClient.AdvancedPermission.ListAsync"/>は、ArgumentOutOfRangeExceptionをスローする。
     /// </summary>
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
-    [TestMethod($"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
-    [DataRow(10, DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
-    [DataRow(-1, DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
+    [DataRow(10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
+    [DataRow(-1, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
     public async Task WhenInvalidType_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(int type)
     {
         // Arrange
@@ -1819,14 +1819,14 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AdvancedPermission.ListAsync"/>は、"/advanced_permissions/:advancedType"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.AdvancedPermission.ListAsync"/>は、"/advanced_permissions/:advancedType"にGETリクエストを行う。
     /// </summary>
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
     /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
-    [TestMethod($"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)} > GET /advanced_permissions/:advancedType をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)} > GET /advanced_permissions/:advancedType をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
-    [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > GET /advanced_permissions/member をコールする。")]
-    [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > GET /advanced_permissions/department をコールする。")]
+    [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > GET /advanced_permissions/member をコールする。")]
+    [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > GET /advanced_permissions/department をコールする。")]
     public async Task AdvancedPermission_ListAsync_Calls_GetApi(AdvancedType type, string endpoint)
     {
         // Arrange
@@ -1890,14 +1890,14 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.AdvancedPermission.ReplaceAsync"/>は、"/advanced_permissions/:advancedType"にPUTリクエストを行う。
+    /// <see cref="KaonaviClient.AdvancedPermission.ReplaceAsync"/>は、"/advanced_permissions/:advancedType"にPUTリクエストを行う。
     /// </summary>
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
     /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
-    [TestMethod($"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ReplaceAsync)} > PUT /advanced_permissions/:advancedType をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)} > PUT /advanced_permissions/:advancedType をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("拡張アクセス設定")]
-    [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > PUT /advanced_permissions/member をコールする。")]
-    [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviV2Service.AdvancedPermission)}.{nameof(KaonaviV2Service.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > PUT /advanced_permissions/department をコールする。")]
+    [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > PUT /advanced_permissions/member をコールする。")]
+    [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > PUT /advanced_permissions/department をコールする。")]
     public async Task AdvancedPermission_ReplaceAsync_Calls_PutApi(AdvancedType type, string endpoint)
     {
         // Arrange
@@ -1939,9 +1939,9 @@ public sealed class KaonaviV2ServiceTest
 
     #region マスター管理 API
     /// <summary>
-    /// <see cref="KaonaviV2Service.EnumOption.ListAsync"/>は、"/enum_options"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.EnumOption.ListAsync"/>は、"/enum_options"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.EnumOption)}.{nameof(KaonaviV2Service.EnumOption.ListAsync)} > GET /enum_options をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ListAsync)} > GET /enum_options をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("マスター管理")]
     public async Task EnumOption_ListAsync_Calls_GetApi()
     {
@@ -2011,9 +2011,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.EnumOption.ReadAsync"/>は、"/enum_options/{id}"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.EnumOption.ReadAsync"/>は、"/enum_options/{id}"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.EnumOption)}.{nameof(KaonaviV2Service.EnumOption.ReadAsync)} > GET /enum_options/:id をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ReadAsync)} > GET /enum_options/:id をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("マスター管理")]
     public async Task EnumOption_ReadAsync_Calls_GetApi()
     {
@@ -2058,9 +2058,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.EnumOption.UpdateAsync"/>は、"/enum_options/{id}"にPUTリクエストを行う。
+    /// <see cref="KaonaviClient.EnumOption.UpdateAsync"/>は、"/enum_options/{id}"にPUTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.EnumOption)}.{nameof(KaonaviV2Service.EnumOption.UpdateAsync)} > PUT /enum_options/:id をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.UpdateAsync)} > PUT /enum_options/:id をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("マスター管理")]
     public async Task EnumOption_UpdateAsync_Calls_PutApi()
     {
@@ -2099,9 +2099,9 @@ public sealed class KaonaviV2ServiceTest
 
     #region Webhook設定 API
     /// <summary>
-    /// <see cref="KaonaviV2Service.Webhook.ListAsync"/>は、"/webhook"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Webhook.ListAsync"/>は、"/webhook"にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.ListAsync)} > GET /webhook をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.ListAsync)} > GET /webhook をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("Webhook設定")]
     public async Task Webhook_ListAsync_Calls_GetApi()
     {
@@ -2156,9 +2156,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Webhook.CreateAsync"/>は、"/webhook"にPOSTリクエストを行う。
+    /// <see cref="KaonaviClient.Webhook.CreateAsync"/>は、"/webhook"にPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.CreateAsync)} > POST /webhook をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.CreateAsync)} > POST /webhook をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("Webhook設定")]
     public async Task Webhook_CreateAsync_Calls_PostApi()
     {
@@ -2212,9 +2212,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Webhook.UpdateAsync"/>は、"/webhook/{userId}"にPATCHリクエストを行う。
+    /// <see cref="KaonaviClient.Webhook.UpdateAsync"/>は、"/webhook/{userId}"にPATCHリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.UpdateAsync)} > PATCH /users/:userId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.UpdateAsync)} > PATCH /users/:userId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("Webhook設定")]
     public async Task Webhook_UpdateAsync_Calls_PatchApi()
     {
@@ -2270,9 +2270,9 @@ public sealed class KaonaviV2ServiceTest
 
     /// <summary>
     /// <inheritdoc cref="IWebhook.DeleteAsync" path="/param[@name='webhookId']"/>が<c>0</c>未満のとき、
-    /// <see cref="KaonaviV2Service.Webhook.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+    /// <see cref="KaonaviClient.Webhook.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("Webhook設定")]
     public async Task When_WebhookId_IsLowerThan0_Webhook_DeleteAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -2292,9 +2292,9 @@ public sealed class KaonaviV2ServiceTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviV2Service.Webhook.DeleteAsync"/>は、"/webhook/{webhookId}"にDELETEリクエストを行う。
+    /// <see cref="KaonaviClient.Webhook.DeleteAsync"/>は、"/webhook/{webhookId}"にDELETEリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviV2Service.Webhook)}.{nameof(KaonaviV2Service.Webhook.DeleteAsync)} > DELETE /webhook/:webhookId をコールする。")]
+    [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)} > DELETE /webhook/:webhookId をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("Webhook設定")]
     public async Task Webhook_DeleteAsync_Calls_DeleteApi()
     {

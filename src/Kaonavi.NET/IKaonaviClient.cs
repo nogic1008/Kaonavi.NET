@@ -1,9 +1,9 @@
 using Kaonavi.Net.Api;
 
-namespace Kaonavi.Net.Services;
+namespace Kaonavi.Net;
 
 /// <summary>カオナビ API v2の抽象化</summary>
-public interface IKaonaviService
+public interface IKaonaviClient
 {
     /// <inheritdoc cref="ITask"/>
     ITask Task { get; }
