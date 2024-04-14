@@ -3,15 +3,14 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary>
-/// <see cref="WebhookConfig"/>の単体テスト
-/// </summary>
-public class WebhookConfigTest
+/// <summary><see cref="WebhookConfig"/>の単体テスト</summary>
+[TestClass, TestCategory("Entities")]
+public sealed class WebhookConfigTest
 {
     /// <summary>
     /// JSONから<see cref="WebhookConfig"/>にデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(WebhookConfig)} > JSONからデシリアライズできる。")]
+    [TestMethod($"{nameof(WebhookConfig)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void WebhookConfig_CanDeserializeJSON()
     {
         // Arrange

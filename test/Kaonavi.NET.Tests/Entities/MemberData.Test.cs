@@ -3,13 +3,12 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary>
-/// <see cref="MemberData"/>の単体テスト
-/// </summary>
-public class MemberDataTest
+/// <summary><see cref="MemberData"/>の単体テスト</summary>
+[TestClass, TestCategory("Entities")]
+public sealed class MemberDataTest
 {
     /*lang=json,strict*/
-    private const string SampleJson1 = """
+    private const string SingleJson = """
     {
         "code": "A0002",
         "name": "カオナビ 太郎",
@@ -37,7 +36,7 @@ public class MemberDataTest
     }
     """;
     /*lang=json,strict*/
-    private const string SampleJson2 = """
+    private const string MultipleJson = """
     {
         "code": "A0001",
         "name": "カオナビ 花子",
@@ -83,22 +82,24 @@ public class MemberDataTest
     }
     """;
 
+    private const string TestName = $"{nameof(MemberData)} > JSONからデシリアライズできる。";
+
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
     /// <param name="json">JSON文字列</param>
-    /// <param name="code"><see cref="MemberData.Code"/></param>
-    /// <param name="name"><see cref="MemberData.Name"/></param>
-    /// <param name="nameKana"><see cref="MemberData.NameKana"/></param>
-    /// <param name="mail"><see cref="MemberData.Mail"/></param>
+    /// <param name="code"><inheritdoc cref="MemberData.Code" path="/summary"/></param>
+    /// <param name="name"><inheritdoc cref="MemberData.Name" path="/summary"/></param>
+    /// <param name="nameKana"><inheritdoc cref="MemberData.NameKana" path="/summary"/></param>
+    /// <param name="mail"><inheritdoc cref="MemberData.Mail" path="/summary"/></param>
     /// <param name="enteredDate"><see cref="MemberData.EnteredDate"/>の文字列表現</param>
     /// <param name="retiredDate"><see cref="MemberData.RetiredDate"/>の文字列表現</param>
-    /// <param name="gender"><see cref="MemberData.Gender"/></param>
+    /// <param name="gender"><inheritdoc cref="MemberData.Gender" path="/summary"/></param>
     /// <param name="birthday"><see cref="MemberData.Birthday"/>の文字列表現</param>
-    /// <param name="departmentCode"><see cref="MemberDepartment.Code"/></param>
-    [Theory(DisplayName = $"{nameof(MemberData)} > JSONからデシリアライズできる。")]
-    [InlineData(SampleJson1, "A0002", "カオナビ 太郎", "カオナビ タロウ", "taro@example.com", "2005/09/20", null, "男性", null, "1000")]
-    [InlineData(SampleJson2, "A0001", "カオナビ 花子", "カオナビ ハナコ", "hanako@example.com", "2013/05/07", "2020/03/31", "女性", "1986/05/16", "2000")]
+    /// <param name="departmentCode"><inheritdoc cref="MemberDepartment.Code" path="/summary"/></param>
+    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [DataRow(SingleJson, "A0002", "カオナビ 太郎", "カオナビ タロウ", "taro@example.com", "2005/09/20", null, "男性", null, "1000", DisplayName = TestName)]
+    [DataRow(MultipleJson, "A0001", "カオナビ 花子", "カオナビ ハナコ", "hanako@example.com", "2013/05/07", "2020/03/31", "女性", "1986/05/16", "2000", DisplayName = TestName)]
     public void CanDeserializeJSON(string json, string code, string? name, string? nameKana, string? mail, string? enteredDate, string? retiredDate, string? gender, string? birthday, string departmentCode)
     {
         // Arrange - Act

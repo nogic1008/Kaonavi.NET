@@ -3,13 +3,12 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary>
-/// <see cref="FieldLayout"/>および<see cref="CustomFieldLayout"/>の単体テスト
-/// </summary>
-public class FieldLayoutTest
+/// <summary><see cref="FieldLayout"/>および<see cref="CustomFieldLayout"/>の単体テスト</summary>
+[TestClass, TestCategory("Entities")]
+public sealed class FieldLayoutTest
 {
     /*lang=json,strict*/
-    private const string FieldJson1 = """
+    private const string StringFieldJson = """
     {
         "name": "社員番号",
         "required": true,
@@ -19,7 +18,7 @@ public class FieldLayoutTest
     }
     """;
     /*lang=json,strict*/
-    private const string FieldJson2 = """
+    private const string DateFieldJson = """
     {
         "name": "入社日",
         "required": false,
@@ -29,7 +28,7 @@ public class FieldLayoutTest
     }
     """;
     /*lang=json,strict*/
-    private const string FieldJson3 = """
+    private const string EnumFieldJson = """
     {
         "name": "性別",
         "required": false,
@@ -38,6 +37,8 @@ public class FieldLayoutTest
         "enum": ["男性", "女性"]
     }
     """;
+
+    private const string TestName = $"{nameof(FieldLayout)} > JSONからデシリアライズできる。";
 
     /// <summary>
     /// JSONから<see cref="FieldLayout"/>にデシリアライズできる。
@@ -48,10 +49,10 @@ public class FieldLayoutTest
     /// <param name="type"><inheritdoc cref="FieldLayout.Type" path="/summary"/></param>
     /// <param name="maxLength"><inheritdoc cref="FieldLayout.MaxLength" path="/summary"/></param>
     /// <param name="enums"><inheritdoc cref="FieldLayout.Enum" path="/summary"/></param>
-    [Theory(DisplayName = $"{nameof(FieldLayout)} > JSONからデシリアライズできる。")]
-    [InlineData(FieldJson1, "社員番号", true, FieldType.String, 50)]
-    [InlineData(FieldJson2, "入社日", false, FieldType.Date, null)]
-    [InlineData(FieldJson3, "性別", false, FieldType.Enum, null, "男性", "女性")]
+    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [DataRow(StringFieldJson, "社員番号", true, FieldType.String, 50, DisplayName = TestName)]
+    [DataRow(DateFieldJson, "入社日", false, FieldType.Date, null, DisplayName = TestName)]
+    [DataRow(EnumFieldJson, "性別", false, FieldType.Enum, null, "男性", "女性", DisplayName = TestName)]
     public void Field_CanDeserializeJSON(string json, string name, bool required, FieldType type, int? maxLength, params string[] enums)
     {
         // Arrange - Act
@@ -69,7 +70,7 @@ public class FieldLayoutTest
     /// <summary>
     /// JSONから<see cref="CustomFieldLayout"/>にデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(CustomFieldLayout)} > JSONからデシリアライズできる。")]
+    [TestMethod($"{nameof(CustomFieldLayout)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CustomField_CanDeserializeJSON()
     {
         // Arrange

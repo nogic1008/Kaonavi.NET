@@ -4,10 +4,11 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="EnumOption"/>の単体テスト</summary>
-public class EnumOptionTest
+[TestClass, TestCategory("Entities")]
+public sealed class EnumOptionTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [Fact(DisplayName = $"{nameof(EnumOption)} > JSONからデシリアライズできる。")]
+    [TestMethod($"{nameof(EnumOption)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeJSON()
     {
         // Arrange
