@@ -3,10 +3,9 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary>
-/// <see cref="DepartmentTree"/>の単体テスト
-/// </summary>
-public class DepartmentTreeTest
+/// <summary><see cref="DepartmentTree"/>の単体テスト</summary>
+[TestClass, TestCategory("Entities")]
+public sealed class DepartmentTreeTest
 {
     /*lang=json,strict*/
     private const string SimpleJson = """
@@ -42,9 +41,9 @@ public class DepartmentTreeTest
     }
     """;
 
-    /// <summary>
-    /// JSONからデシリアライズできる。
-    /// </summary>
+    private const string TestName = $"{nameof(DepartmentTree)} > JSONからデシリアライズできる。";
+
+    /// <summary>JSONからデシリアライズできる。</summary>
     /// <param name="json">JSON文字列</param>
     /// <param name="code"><inheritdoc cref="DepartmentTree" path="/param[@name='Code']"/></param>
     /// <param name="name"><inheritdoc cref="DepartmentTree" path="/param[@name='Name']"/></param>
@@ -52,10 +51,10 @@ public class DepartmentTreeTest
     /// <param name="leaderMemberCode"><inheritdoc cref="DepartmentTree" path="/param[@name='LeaderMemberCode']"/></param>
     /// <param name="order"><inheritdoc cref="DepartmentTree" path="/param[@name='Order']"/></param>
     /// <param name="memo"><inheritdoc cref="DepartmentTree" path="/param[@name='Memo']"/></param>
-    [Theory(DisplayName = $"{nameof(DepartmentTree)} > JSONからデシリアライズできる。")]
-    [InlineData(SimpleJson, "1000", "取締役会", null, "A0002", 1, "")]
-    [InlineData(NoLeaderJson, "1200", "営業本部", null, null, 2, null)]
-    [InlineData(ChildJson, "2000", "ITグループ", "1500", "A0001", 1, "example")]
+    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [DataRow(SimpleJson, "1000", "取締役会", null, "A0002", 1, "", DisplayName = TestName)]
+    [DataRow(NoLeaderJson, "1200", "営業本部", null, null, 2, null, DisplayName = TestName)]
+    [DataRow(ChildJson, "2000", "ITグループ", "1500", "A0001", 1, "example", DisplayName = TestName)]
     public void CanDeserializeJSON(string json, string code, string name, string? parentCode, string? leaderMemberCode, int order, string? memo)
         => JsonSerializer.Deserialize(json, Context.Default.DepartmentTree)
             .Should().Be(new DepartmentTree(code, name, parentCode, leaderMemberCode, order, memo));

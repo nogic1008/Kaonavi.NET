@@ -3,13 +3,12 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary>
-/// <see cref="User"/>, <see cref="UserWithLoginAt"/>の単体テスト
-/// </summary>
-public class UserTest
+/// <summary><see cref="User"/>, <see cref="UserWithLoginAt"/>の単体テスト</summary>
+[TestClass, TestCategory("Entities")]
+public sealed class UserTest
 {
     /*lang=json,strict*/
-    private const string MemberJson = """
+    private const string AdminUserJson = """
     {
         "id": 1,
         "email":"taro@kaonavi.jp",
@@ -35,6 +34,8 @@ public class UserTest
     }
     """;
 
+    private const string UserTestName = $"{nameof(User)} > JSONからデシリアライズできる。";
+
     /// <summary>
     /// JSONから<see cref="User"/>にデシリアライズできる。
     /// </summary>
@@ -42,9 +43,9 @@ public class UserTest
     /// <param name="id"><see cref="User.Id"/></param>
     /// <param name="email"><see cref="User.EMail"/></param>
     /// <param name="memberCode"><see cref="User.MemberCode"/></param>
-    [Theory(DisplayName = $"{nameof(User)} > JSONからデシリアライズできる。")]
-    [InlineData(MemberJson, 1, "taro@kaonavi.jp", "A0002")]
-    [InlineData(NonMemberJson, 2, "hanako@kaonavi.jp", null)]
+    [TestMethod(UserTestName), TestCategory("JSON Deserialize")]
+    [DataRow(AdminUserJson, 1, "taro@kaonavi.jp", "A0002", DisplayName = UserTestName)]
+    [DataRow(NonMemberJson, 2, "hanako@kaonavi.jp", null, DisplayName = UserTestName)]
     public void User_CanDeserializeJSON(string json, int id, string email, string? memberCode)
     {
         // Arrange - Act
@@ -65,7 +66,7 @@ public class UserTest
     /// <summary>
     /// JSONから<see cref="UserWithLoginAt"/>にデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(UserWithLoginAt)} > JSONからデシリアライズできる。")]
+    [TestMethod($"{nameof(UserWithLoginAt)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void UserWithLoginAt_CanDeserializeJSON()
     {
         // Arrange

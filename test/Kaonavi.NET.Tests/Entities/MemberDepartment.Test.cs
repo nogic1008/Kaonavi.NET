@@ -6,10 +6,11 @@ namespace Kaonavi.Net.Tests.Entities;
 /// <summary>
 /// <see cref="MemberDepartment"/>の単体テスト
 /// </summary>
-public class MemberDepartmentTest
+[TestClass, TestCategory("Entities")]
+public sealed class MemberDepartmentTest
 {
     /*lang=json,strict*/
-    private const string SimpleJson = """{ "code": "所属コード" }""";
+    private const string SimpleJson = """{ "code": "1000" }""";
     /*lang=json,strict*/
     private const string SingleDepJson = """{ "code": "1000", "name":"取締役会", "names": ["取締役会"] }""";
     /*lang=json,strict*/
@@ -21,6 +22,8 @@ public class MemberDepartmentTest
     }
     """;
 
+    private const string TestName = $"{nameof(MemberDepartment)} > JSONからデシリアライズできる。";
+
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
@@ -28,11 +31,11 @@ public class MemberDepartmentTest
     /// <param name="code"><inheritdoc cref="MemberDepartment.Code" path="/summary"/></param>
     /// <param name="name"><inheritdoc cref="MemberDepartment.Name" path="/summary"/></param>
     /// <param name="names"><inheritdoc cref="MemberDepartment.Names" path="/summary"/></param>
-    [Theory(DisplayName = $"{nameof(MemberDepartment)} > JSONからデシリアライズできる。")]
-    [InlineData(SimpleJson, "所属コード", null, null)]
-    [InlineData(SingleDepJson, "1000", "取締役会", "取締役会")]
-    [InlineData(MultipleJson, "2000", "営業本部 第一営業部 ITグループ", "営業本部", "第一営業部", "ITグループ")]
-    public void CanDeserializeJSON(string json, string code, string? name, params string?[] names)
+    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [DataRow(SimpleJson, "1000", null, null, DisplayName = TestName)]
+    [DataRow(SingleDepJson, "1000", "取締役会", new[] { "取締役会" }, DisplayName = TestName)]
+    [DataRow(MultipleJson, "2000", "営業本部 第一営業部 ITグループ", new[] { "営業本部", "第一営業部", "ITグループ" }, DisplayName = TestName)]
+    public void CanDeserializeJSON(string json, string code, string? name, string[]? names)
     {
         // Arrange - Act
         var department = JsonSerializer.Deserialize(json, Context.Default.MemberDepartment);

@@ -3,15 +3,14 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary>
-/// <see cref="Token"/>の単体テスト
-/// </summary>
-public class TokenTest
+/// <summary><see cref="Token"/>の単体テスト</summary>
+[TestClass, TestCategory("Entities")]
+public sealed class TokenTest
 {
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(Token)} > JSONからデシリアライズできる。")]
+    [TestMethod($"{nameof(Token)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeJSON()
     {
         // Arrange

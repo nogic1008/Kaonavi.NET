@@ -3,10 +3,9 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary>
-/// <see cref="TaskProgress"/>の単体テスト
-/// </summary>
-public class TaskProgressTest
+/// <summary><see cref="TaskProgress"/>の単体テスト</summary>
+[TestClass, TestCategory("Entities")]
+public sealed class TaskProgressTest
 {
     /*lang=json,strict*/
     private const string TaskOkJson = """{ "id": 1, "status": "OK", "messages": [] }""";
@@ -17,6 +16,8 @@ public class TaskProgressTest
     { "id": 3, "status": "NG", "messages": ["エラーメッセージ1","エラーメッセージ2"] }
     """;
 
+    private const string TestName = $"{nameof(TaskProgress)} > JSONからデシリアライズできる。";
+
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
@@ -24,11 +25,11 @@ public class TaskProgressTest
     /// <param name="id"><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></param>
     /// <param name="status"><inheritdoc cref="TaskProgress" path="/param[@name='Status']"/></param>
     /// <param name="messages"><inheritdoc cref="TaskProgress" path="/param[@name='Messages']"/></param>
-    [Theory(DisplayName = $"{nameof(TaskProgress)} > JSONからデシリアライズできる。")]
-    [InlineData(TaskOkJson, 1, "OK")]
-    [InlineData(TaskRunningJson, 2, "RUNNING", null)]
-    [InlineData(TaskErrorJson, 3, "NG", "エラーメッセージ1", "エラーメッセージ2")]
-    public void CanDeserializeJSON(string json, int id, string status, params string?[] messages)
+    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [DataRow(TaskOkJson, 1, "OK", new string[0], DisplayName = TestName)]
+    [DataRow(TaskRunningJson, 2, "RUNNING", null, DisplayName = TestName)]
+    [DataRow(TaskErrorJson, 3, "NG", new[] { "エラーメッセージ1", "エラーメッセージ2" }, DisplayName = TestName)]
+    public void CanDeserializeJSON(string json, int id, string status, string[]? messages)
     {
         // Arrange - Act
         var task = JsonSerializer.Deserialize(json, Context.Default.TaskProgress);

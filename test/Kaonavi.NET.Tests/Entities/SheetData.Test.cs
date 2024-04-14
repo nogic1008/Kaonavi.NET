@@ -3,15 +3,14 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary>
-/// <see cref="SheetData"/>の単体テスト
-/// </summary>
-public class SheetDataTest
+/// <summary><see cref="SheetData"/>の単体テスト</summary>
+[TestClass, TestCategory("Entities")]
+public sealed class SheetDataTest
 {
     /// <summary>
     /// <see cref="RecordType.Single"/>のJSONからデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(SheetData)} > 単一レコードのJSONからデシリアライズできる。")]
+    [TestMethod($"{nameof(SheetData)} > 単一レコードのJSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeSingleJSON()
     {
         // Arrange
@@ -46,7 +45,7 @@ public class SheetDataTest
     /// <summary>
     /// <see cref="RecordType.Multiple"/>のJSONからデシリアライズできる。
     /// </summary>
-    [Fact(DisplayName = $"{nameof(SheetData)} > 複数レコードのJSONからデシリアライズできる。")]
+    [TestMethod($"{nameof(SheetData)} > 複数レコードのJSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeMultipleJSON()
     {
         // Arrange
