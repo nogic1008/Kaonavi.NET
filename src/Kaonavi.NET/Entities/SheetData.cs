@@ -9,7 +9,7 @@ public record SheetData
     /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
     /// <param name="customFields">設定値</param>
     public SheetData(string code, IReadOnlyCollection<CustomFieldValue> customFields)
-        : this(code, new[] { customFields }) { }
+        : this(code, [customFields]) { }
 
     /// <summary>
     /// 複数レコードシート向けに、SheetDataの新しいインスタンスを生成します。

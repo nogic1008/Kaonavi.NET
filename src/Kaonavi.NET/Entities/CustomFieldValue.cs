@@ -42,7 +42,7 @@ public record CustomFieldValue
     /// <remarks>チェックボックスの場合にのみ複数の値が返却されます。</remarks>
     public IReadOnlyCollection<string> Values
     {
-        get => _values ??= new[] { _value! };
+        get => _values ??= [_value!];
         init => _values = value;
     }
 }

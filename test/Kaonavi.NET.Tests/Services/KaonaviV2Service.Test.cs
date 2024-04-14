@@ -418,7 +418,7 @@ public sealed class KaonaviV2ServiceTest
         // Arrange
         const int taskId = 1;
         string tokenString = GenerateRandomString();
-        var response = new TaskProgress(taskId, "NG", new[] { "エラーメッセージ1", "エラーメッセージ2" });
+        var response = new TaskProgress(taskId, "NG", ["エラーメッセージ1", "エラーメッセージ2"]);
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
@@ -464,15 +464,14 @@ public sealed class KaonaviV2ServiceTest
             new FieldLayout("メールアドレス", false, FieldType.String, 100, Array.Empty<string?>()),
             new FieldLayout("入社日", false, FieldType.Date, null, Array.Empty<string?>()),
             new FieldLayout("退職日", false, FieldType.Date, null, Array.Empty<string?>()),
-            new FieldLayout("性別", false, FieldType.Enum, null, new[] { "男性", "女性" }),
+            new FieldLayout("性別", false, FieldType.Enum, null, ["男性", "女性"]),
             new FieldLayout("生年月日", false, FieldType.Date, null, Array.Empty<string?>()),
             new FieldLayout("所属", false, FieldType.Department, null, Array.Empty<string?>()),
             new FieldLayout("兼務情報", false, FieldType.DepartmentArray, null, Array.Empty<string?>()),
-            new CustomFieldLayout[]
-            {
-                new(100, "血液型", false, FieldType.Enum, null, new[] { "A", "B", "O", "AB" }),
-                new(200, "役職", false, FieldType.Enum, null, new[] { "部長", "課長", "マネージャー", null }),
-            }
+            [
+                new(100, "血液型", false, FieldType.Enum, null, ["A", "B", "O", "AB"]),
+                new(200, "役職", false, FieldType.Enum, null, ["部長", "課長", "マネージャー", null]),
+            ]
         );
 
         var handler = new Mock<HttpMessageHandler>();
@@ -588,11 +587,10 @@ public sealed class KaonaviV2ServiceTest
             sheetId,
             "住所・連絡先",
             RecordType.Multiple,
-            new CustomFieldLayout[]
-            {
+            [
                 new(1000, "住所", false, FieldType.String, 250, Array.Empty<string?>()),
                 new(1001, "電話番号", false, FieldType.String, 50, Array.Empty<string?>()),
-            }
+            ]
         );
 
         var handler = new Mock<HttpMessageHandler>();
@@ -626,8 +624,8 @@ public sealed class KaonaviV2ServiceTest
 
     #region メンバー情報 API
     /// <summary>Member APIのリクエストPayload</summary>
-    private static readonly MemberData[] _memberDataPayload = new MemberData[]
-    {
+    private static readonly MemberData[] _memberDataPayload =
+    [
             new (
                 Code: "A0002",
                 Name: "カオナビ 太郎",
@@ -638,10 +636,10 @@ public sealed class KaonaviV2ServiceTest
                 Birthday: new(1984, 5, 15),
                 Department: new("1000"),
                 SubDepartments: Array.Empty<MemberDepartment>(),
-                CustomFields: new CustomFieldValue[]
-                {
+                CustomFields:
+                [
                     new(100, "A")
-                }
+                ]
             ),
             new (
                 Code: "A0001",
@@ -652,16 +650,16 @@ public sealed class KaonaviV2ServiceTest
                 Gender: "女性",
                 Birthday: new(1986, 5, 16),
                 Department: new("2000"),
-                SubDepartments: new MemberDepartment[]
-                {
+                SubDepartments:
+                [
                     new("3000"), new("4000")
-                },
-                CustomFields: new CustomFieldValue[]
-                {
-                    new(100, "O"), new(200, new[]{ "部長", "マネージャー" })
-                }
+                ],
+                CustomFields:
+                [
+                    new(100, "O"), new(200, ["部長", "マネージャー"])
+                ]
             )
-    };
+    ];
 
     /// <summary>
     /// <see cref="KaonaviV2Service.FetchMembersDataAsync"/>は、"/members"にGETリクエストを行う。
@@ -970,8 +968,8 @@ public sealed class KaonaviV2ServiceTest
 
     #region シート情報 API
     /// <summary>Sheet APIのリクエストPayload</summary>
-    private static readonly SheetData[] _sheetDataPayload = new SheetData[]
-    {
+    private static readonly SheetData[] _sheetDataPayload =
+    [
             new (
                 "A0002",
                 new CustomFieldValue[]
@@ -981,19 +979,17 @@ public sealed class KaonaviV2ServiceTest
             ),
             new (
                 "A0001",
-                new CustomFieldValue[]
-                {
+                [
                     new(1000, "大阪府大阪市y番y号"),
                     new(1001, "06-yyyy-yyyy")
-                }
+                ]
                 ,
-                new CustomFieldValue[]
-                {
+                [
                     new(1000, "愛知県名古屋市z丁目z番z号"),
                     new(1001, "052-zzzz-zzzz")
-                }
+                ]
             )
-    };
+    ];
 
     /// <summary>
     /// <see cref="KaonaviV2Service.FetchSheetDataListAsync"/>は、"/sheets/{sheetId}"にGETリクエストを行う。
@@ -1822,11 +1818,11 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.ReplaceAdvancedPermissionAsync(type, new[]
-        {
-            new AdvancedPermission(1, new[]{ "1" }, Array.Empty<string>()),
-            new AdvancedPermission(2, new[]{ "2" }, new[]{ "1", "3" }),
-        });
+        int taskId = await sut.ReplaceAdvancedPermissionAsync(type,
+        [
+            new AdvancedPermission(1, ["1"], Array.Empty<string>()),
+            new AdvancedPermission(2, ["2"], ["1", "3"]),
+        ]);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -1986,11 +1982,11 @@ public sealed class KaonaviV2ServiceTest
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        int taskId = await sut.UpdateEnumOptionAsync(10, new (int?, string)[]
-        {
+        int taskId = await sut.UpdateEnumOptionAsync(10,
+        [
             (1, "value1"),
             (null, "value2"),
-        });
+        ]);
 
         // Assert
         _ = taskId.Should().Be(1);
@@ -2094,7 +2090,7 @@ public sealed class KaonaviV2ServiceTest
             "secret_token": "token"
         }
         """;
-        var payload = new WebhookConfigPayload(_baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted }, "token");
+        var payload = new WebhookConfigPayload(_baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
         /*lang=json,strict*/
         const string expectedJson = """
         {"url":"https://example.com/","events":["member_created","member_updated","member_deleted"],"secret_token":"token"}
@@ -2151,7 +2147,7 @@ public sealed class KaonaviV2ServiceTest
         }
         """;
         string tokenString = GenerateRandomString();
-        var payload = new WebhookConfig(webhookId, _baseUri, new[] { WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted }, "token");
+        var payload = new WebhookConfig(webhookId, _baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
         /*lang=json,strict*/
         const string expectedJson = """
         {"id":1,"url":"https://example.com/","events":["member_created","member_updated","member_deleted"],"secret_token":"token"}

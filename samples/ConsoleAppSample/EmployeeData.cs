@@ -60,6 +60,6 @@ public record EmployeeData(
             Gender,
             Birthday,
             new(DepartmentCode),
-            CustomFields: new CustomFieldValue[] { new(101, BloodType) }
+            CustomFields: [new(101, BloodType)]
         );
 }
