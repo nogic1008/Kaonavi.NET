@@ -458,16 +458,16 @@ public sealed class KaonaviV2ServiceTest
     {
         string tokenString = GenerateRandomString();
         var response = new MemberLayout(
-            new FieldLayout("社員番号", true, FieldType.String, 50, Array.Empty<string?>()),
-            new FieldLayout("氏名", false, FieldType.String, 100, Array.Empty<string?>()),
-            new FieldLayout("フリガナ", false, FieldType.String, 100, Array.Empty<string?>()),
-            new FieldLayout("メールアドレス", false, FieldType.String, 100, Array.Empty<string?>()),
-            new FieldLayout("入社日", false, FieldType.Date, null, Array.Empty<string?>()),
-            new FieldLayout("退職日", false, FieldType.Date, null, Array.Empty<string?>()),
+            new FieldLayout("社員番号", true, FieldType.String, 50, []),
+            new FieldLayout("氏名", false, FieldType.String, 100, []),
+            new FieldLayout("フリガナ", false, FieldType.String, 100, []),
+            new FieldLayout("メールアドレス", false, FieldType.String, 100, []),
+            new FieldLayout("入社日", false, FieldType.Date, null, []),
+            new FieldLayout("退職日", false, FieldType.Date, null, []),
             new FieldLayout("性別", false, FieldType.Enum, null, ["男性", "女性"]),
-            new FieldLayout("生年月日", false, FieldType.Date, null, Array.Empty<string?>()),
-            new FieldLayout("所属", false, FieldType.Department, null, Array.Empty<string?>()),
-            new FieldLayout("兼務情報", false, FieldType.DepartmentArray, null, Array.Empty<string?>()),
+            new FieldLayout("生年月日", false, FieldType.Date, null, []),
+            new FieldLayout("所属", false, FieldType.Department, null, []),
+            new FieldLayout("兼務情報", false, FieldType.DepartmentArray, null, []),
             [
                 new(100, "血液型", false, FieldType.Enum, null, ["A", "B", "O", "AB"]),
                 new(200, "役職", false, FieldType.Enum, null, ["部長", "課長", "マネージャー", null]),
@@ -588,8 +588,8 @@ public sealed class KaonaviV2ServiceTest
             "住所・連絡先",
             RecordType.Multiple,
             [
-                new(1000, "住所", false, FieldType.String, 250, Array.Empty<string?>()),
-                new(1001, "電話番号", false, FieldType.String, 50, Array.Empty<string?>()),
+                new(1000, "住所", false, FieldType.String, 250, []),
+                new(1001, "電話番号", false, FieldType.String, 50, []),
             ]
         );
 
@@ -626,39 +626,38 @@ public sealed class KaonaviV2ServiceTest
     /// <summary>Member APIのリクエストPayload</summary>
     private static readonly MemberData[] _memberDataPayload =
     [
-            new (
-                Code: "A0002",
-                Name: "カオナビ 太郎",
-                NameKana: "カオナビ タロウ",
-                Mail: "taro@example.com",
-                EnteredDate: new(2005, 9, 20),
-                Gender: "男性",
-                Birthday: new(1984, 5, 15),
-                Department: new("1000"),
-                SubDepartments: Array.Empty<MemberDepartment>(),
-                CustomFields:
-                [
-                    new(100, "A")
-                ]
-            ),
-            new (
-                Code: "A0001",
-                Name: "カオナビ 花子",
-                NameKana: "カオナビ ハナコ",
-                Mail: "hanako@kaonavi.jp",
-                EnteredDate: new(2013, 5, 7),
-                Gender: "女性",
-                Birthday: new(1986, 5, 16),
-                Department: new("2000"),
-                SubDepartments:
-                [
-                    new("3000"), new("4000")
-                ],
-                CustomFields:
-                [
-                    new(100, "O"), new(200, ["部長", "マネージャー"])
-                ]
-            )
+        new(
+            Code: "A0002",
+            Name: "カオナビ 太郎",
+            NameKana: "カオナビ タロウ",
+            Mail: "taro@example.com",
+            EnteredDate: new(2005, 9, 20),
+            Gender: "男性",
+            Birthday: new(1984, 5, 15),
+            Department: new("1000"),
+            SubDepartments: [],
+            CustomFields: [new(100, "A")]
+        ),
+        new(
+            Code: "A0001",
+            Name: "カオナビ 花子",
+            NameKana: "カオナビ ハナコ",
+            Mail: "hanako@kaonavi.jp",
+            EnteredDate: new(2013, 5, 7),
+            Gender: "女性",
+            Birthday: new(1986, 5, 16),
+            Department: new("2000"),
+            SubDepartments:
+            [
+                new("3000"),
+                new("4000")
+            ],
+            CustomFields:
+            [
+                new(100, "O"),
+                new(200, ["部長", "マネージャー"])
+            ]
+        )
     ];
 
     /// <summary>
@@ -970,25 +969,22 @@ public sealed class KaonaviV2ServiceTest
     /// <summary>Sheet APIのリクエストPayload</summary>
     private static readonly SheetData[] _sheetDataPayload =
     [
-            new (
-                "A0002",
-                new CustomFieldValue[]
-                {
-                    new(1000, "東京都港区x-x-x")
-                }
-            ),
-            new (
-                "A0001",
-                [
-                    new(1000, "大阪府大阪市y番y号"),
-                    new(1001, "06-yyyy-yyyy")
-                ]
-                ,
-                [
-                    new(1000, "愛知県名古屋市z丁目z番z号"),
-                    new(1001, "052-zzzz-zzzz")
-                ]
-            )
+        new(
+            "A0002",
+            [new CustomFieldValue(1000, "東京都港区x-x-x")]
+        ),
+        new(
+            "A0001",
+            [
+                new(1000, "大阪府大阪市y番y号"),
+                new(1001, "06-yyyy-yyyy")
+            ]
+            ,
+            [
+                new(1000, "愛知県名古屋市z丁目z番z号"),
+                new(1001, "052-zzzz-zzzz")
+            ]
+        )
     ];
 
     /// <summary>
@@ -1820,7 +1816,7 @@ public sealed class KaonaviV2ServiceTest
         var sut = CreateSut(handler, accessToken: tokenString);
         int taskId = await sut.ReplaceAdvancedPermissionAsync(type,
         [
-            new AdvancedPermission(1, ["1"], Array.Empty<string>()),
+            new AdvancedPermission(1, ["1"], []),
             new AdvancedPermission(2, ["2"], ["1", "3"]),
         ]);
 
