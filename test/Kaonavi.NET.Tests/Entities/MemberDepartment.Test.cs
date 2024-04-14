@@ -34,7 +34,7 @@ public sealed class MemberDepartmentTest
     [TestMethod(TestName), TestCategory("JSON Deserialize")]
     [DataRow(SimpleJson, "1000", null, null, DisplayName = TestName)]
     [DataRow(SingleDepJson, "1000", "取締役会", new[] { "取締役会" }, DisplayName = TestName)]
-    [DataRow(MultipleJson, "2000", "営業本部 第一営業部 ITグループ", new[]{ "営業本部", "第一営業部", "ITグループ" }, DisplayName = TestName)]
+    [DataRow(MultipleJson, "2000", "営業本部 第一営業部 ITグループ", new[] { "営業本部", "第一営業部", "ITグループ" }, DisplayName = TestName)]
     public void CanDeserializeJSON(string json, string code, string? name, string[]? names)
     {
         // Arrange - Act
