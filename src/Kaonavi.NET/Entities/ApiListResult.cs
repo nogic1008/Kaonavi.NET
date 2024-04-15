@@ -29,9 +29,9 @@ internal class ApiListResultConverterFactory : JsonConverterFactory
         /// <inheritdoc/>
         public override ApiListResult<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var json = JsonSerializer.Deserialize(ref reader, Context.Default.JsonElement);
+            var json = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
             var prop = json.EnumerateObject().First(d => d.Value.ValueKind == JsonValueKind.Array);
-            return new(prop.Name, (prop.Value.Deserialize(typeof(IReadOnlyList<T>), Context.Default) as IReadOnlyList<T>)!);
+            return new(prop.Name, prop.Value.Deserialize<IReadOnlyList<T>>(options)!);
         }
 
         /// <inheritdoc/>
@@ -39,7 +39,7 @@ internal class ApiListResultConverterFactory : JsonConverterFactory
         {
             writer.WriteStartObject();
             writer.WritePropertyName(value.PropertyName);
-            JsonSerializer.Serialize(writer, value.Values, typeof(ApiListResult<T>), Context.Default);
+            JsonSerializer.Serialize(writer, value.Values, options);
             writer.WriteEndObject();
         }
     }
