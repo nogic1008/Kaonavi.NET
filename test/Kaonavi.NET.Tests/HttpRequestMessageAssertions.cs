@@ -2,11 +2,6 @@ using FluentAssertions.Primitives;
 
 namespace Kaonavi.Net.Tests;
 
-public static class HttpRequestMessageExtensions
-{
-    public static HttpRequestMessageAssertions Should(this HttpRequestMessage instance) => new(instance);
-}
-
 /// <summary>
 /// Contains assertions for <see cref="HttpRequestMessage"/> instances.
 /// </summary>
