@@ -6,7 +6,6 @@ namespace Kaonavi.Net.Api;
 /// レイアウト設定 API
 /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E8%A8%AD%E5%AE%9A"/>
 /// </summary>
-
 public interface ILayout
 {
     /// <summary>

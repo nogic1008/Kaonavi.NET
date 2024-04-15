@@ -6,7 +6,6 @@ namespace Kaonavi.Net.Api;
 /// タスク進捗状況 API
 /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%BF%E3%82%B9%E3%82%AF%E9%80%B2%E6%8D%97%E7%8A%B6%E6%B3%81"/>
 /// </summary>
-
 public interface ITask
 {
     /// <summary>
