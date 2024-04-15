@@ -23,5 +23,5 @@ public record MemberLayout(
     FieldLayout Birthday,
     FieldLayout Department,
     FieldLayout SubDepartments,
-    IReadOnlyCollection<CustomFieldLayout> CustomFields
+    IReadOnlyList<CustomFieldLayout> CustomFields
 );

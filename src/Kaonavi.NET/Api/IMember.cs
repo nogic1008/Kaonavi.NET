@@ -13,7 +13,7 @@ public interface IMember
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get"/>
     /// </summary>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    ValueTask<IReadOnlyCollection<MemberData>> ListAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyList<MemberData>> ListAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// メンバー登録と、合わせて基本情報・所属(主務)・兼務情報を登録します。
@@ -22,7 +22,7 @@ public interface IMember
     /// <remarks>更新リクエスト制限の対象APIです。</remarks>
     /// <param name="payload">追加するデータ</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    ValueTask<int> CreateAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> CreateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 全てのメンバーの基本情報・所属(主務)・兼務情報を一括更新します。
@@ -38,7 +38,7 @@ public interface IMember
     /// <param name="payload">一括更新するデータ</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> ReplaceAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> ReplaceAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 送信されたメンバーの基本情報・所属(主務)・兼務情報のみを更新します。
@@ -50,7 +50,7 @@ public interface IMember
     /// <param name="payload">更新するデータ</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> UpdateAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> UpdateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 現在登録されているメンバーとそれに紐づく基本情報・所属(主務)・兼務情報を全て、<paramref name="payload"/>で入れ替えます。
@@ -70,7 +70,7 @@ public interface IMember
     /// <param name="payload">入れ替え対象となるデータ</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> OverWriteAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> OverWriteAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 送信されたメンバーを削除します。
@@ -85,5 +85,5 @@ public interface IMember
     /// <param name="codes">削除する<inheritdoc cref="MemberData" path="/param[@name='Code']/text()"/>のリスト</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> DeleteAsync(IReadOnlyCollection<string> codes, CancellationToken cancellationToken = default);
+    ValueTask<int> DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default);
 }

@@ -15,5 +15,5 @@ public record FieldLayout(
     bool Required,
     FieldType Type,
     int? MaxLength,
-    IReadOnlyCollection<string?> Enum
+    IReadOnlyList<string?> Enum
 );

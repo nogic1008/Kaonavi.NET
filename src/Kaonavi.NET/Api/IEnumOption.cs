@@ -17,7 +17,7 @@ public interface IEnumOption
     /// ただし、データ連携中の項目はマスター管理で編集不可能なため、上記のパーツ種別であっても取得は出来ません。
     /// </remarks>
     /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    ValueTask<IReadOnlyCollection<EnumOption>> ListAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyList<EnumOption>> ListAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="id"/>と一致する<inheritdoc cref="EnumOption" path="/summary/text()"/>を取得します。

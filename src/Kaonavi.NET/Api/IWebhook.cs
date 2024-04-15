@@ -13,7 +13,7 @@ public interface IWebhook
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/Webhook/paths/~1webhook/get"/>
     /// </summary>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    ValueTask<IReadOnlyCollection<WebhookConfig>> ListAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyList<WebhookConfig>> ListAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <inheritdoc cref="WebhookConfig" path="/summary"/>を登録します。

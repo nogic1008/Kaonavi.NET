@@ -14,14 +14,14 @@ namespace Kaonavi.Net.Entities;
 /// 検証用トークン
 /// WebhookのHTTPリクエスト送信時にリクエストヘッダーのKaonavi-Tokenに入る値を指定できます。
 /// </param>
-public record WebhookConfigPayload(Uri Url, IReadOnlyCollection<WebhookEvent> Events, string SecretToken);
+public record WebhookConfigPayload(Uri Url, IReadOnlyList<WebhookEvent> Events, string SecretToken);
 
 /// <summary>
 /// Webhook設定
 /// </summary>
 /// <param name="Id">Webhook ID</param>
 /// <inheritdoc cref="WebhookConfigPayload" path="/param" />
-public record WebhookConfig(int Id, Uri Url, IReadOnlyCollection<WebhookEvent> Events, string SecretToken)
+public record WebhookConfig(int Id, Uri Url, IReadOnlyList<WebhookEvent> Events, string SecretToken)
     : WebhookConfigPayload(Url, Events, SecretToken);
 
 /// <summary>

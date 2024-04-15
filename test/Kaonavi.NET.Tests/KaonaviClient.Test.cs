@@ -779,7 +779,7 @@ public sealed class KaonaviClientTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -818,7 +818,7 @@ public sealed class KaonaviClientTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -857,7 +857,7 @@ public sealed class KaonaviClientTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -896,7 +896,7 @@ public sealed class KaonaviClientTest
     {
         // Arrange
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyCollectionMemberData)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
@@ -936,7 +936,7 @@ public sealed class KaonaviClientTest
         // Arrange
         string[] codes = _memberDataPayload.Select(d => d.Code).ToArray();
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, Context.Default.IReadOnlyCollectionString)}}}";
+        string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, Context.Default.IReadOnlyListString)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/delete")
@@ -1115,7 +1115,7 @@ public sealed class KaonaviClientTest
         // Arrange
         const int sheetId = 1;
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyCollectionSheetData)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyListSheetData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
@@ -1178,7 +1178,7 @@ public sealed class KaonaviClientTest
         // Arrange
         const int sheetId = 1;
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyCollectionSheetData)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyListSheetData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
@@ -1241,7 +1241,7 @@ public sealed class KaonaviClientTest
         // Arrange
         const int sheetId = 1;
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyCollectionSheetData)}}}";
+        string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyListSheetData)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}/add")
@@ -1386,7 +1386,7 @@ public sealed class KaonaviClientTest
             new("2000", "ITグループ", "1500", "A0001", 1, "example"),
         };
         string tokenString = GenerateRandomString();
-        string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, Context.Default.IReadOnlyCollectionDepartmentTree)}}}";
+        string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, Context.Default.IReadOnlyListDepartmentTree)}}}";
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")

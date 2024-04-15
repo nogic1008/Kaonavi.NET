@@ -14,7 +14,7 @@ public interface ISheet
     /// </summary>
     /// <param name="id"><inheritdoc cref="SheetLayout" path="/param[@name='Id']/text()"/></param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    ValueTask<IReadOnlyCollection<SheetData>> ListAsync(int id, CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyList<SheetData>> ListAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="id"/>と一致する<inheritdoc cref="SheetData" path="/summary/text()"/>を一括更新します。
@@ -27,7 +27,7 @@ public interface ISheet
     /// <param name="payload">一括更新するデータ</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> ReplaceAsync(int id, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> ReplaceAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="id"/>と一致する<inheritdoc cref="SheetData" path="/summary/text()"/>の一部を更新します。
@@ -58,7 +58,7 @@ public interface ISheet
     /// <param name="payload">更新するデータ</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> UpdateAsync(int id, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> UpdateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <paramref name="id"/>と一致する<inheritdoc cref="RecordType.Multiple"/>にレコードを追加します。
@@ -70,5 +70,5 @@ public interface ISheet
     /// <param name="payload">追加するデータ</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> CreateAsync(int id, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
 }

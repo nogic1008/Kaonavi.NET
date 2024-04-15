@@ -1,3 +1,5 @@
+using Kaonavi.Net.Json;
+
 namespace Kaonavi.Net.Entities;
 
 /// <summary>シート情報</summary>
@@ -8,7 +10,7 @@ public record SheetData
     /// </summary>
     /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
     /// <param name="customFields">設定値</param>
-    public SheetData(string code, IReadOnlyCollection<CustomFieldValue> customFields)
+    public SheetData(string code, IReadOnlyList<CustomFieldValue> customFields)
         : this(code, [customFields]) { }
 
     /// <summary>
@@ -16,12 +18,12 @@ public record SheetData
     /// </summary>
     /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
     /// <param name="records"><inheritdoc cref="Records" path="/summary/text()"/></param>
-    public SheetData(string code, params IReadOnlyCollection<CustomFieldValue>[] records)
+    public SheetData(string code, params IReadOnlyList<CustomFieldValue>[] records)
         => (Code, Records) = (code, records);
 
-    /// <inheritdoc cref="SheetData(string, IReadOnlyCollection{CustomFieldValue}[])"/>
+    /// <inheritdoc cref="SheetData(string, IReadOnlyList{CustomFieldValue}[])"/>
     [JsonConstructor]
-    public SheetData(string code, IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>> records)
+    public SheetData(string code, IReadOnlyList<IReadOnlyList<CustomFieldValue>> records)
         => (Code, Records) = (code, records);
 
     /// <summary>社員コード</summary>
@@ -30,31 +32,31 @@ public record SheetData
     /// <summary>メンバーが持つ設定値のリスト</summary>
     /// <remarks><see cref="RecordType.Multiple"/>の場合にのみ複数の値が返却されます。</remarks>
     [JsonConverter(typeof(SheetRecordConverter))]
-    public IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>> Records { get; init; }
+    public IReadOnlyList<IReadOnlyList<CustomFieldValue>> Records { get; init; }
 }
 
-internal class SheetRecordConverter : JsonConverter<IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>>>
+internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>
 {
     private const string PropertyName = "custom_fields";
 
-    public override IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => JsonSerializer.Deserialize<IReadOnlyCollection<JsonElement>>(ref reader, options)!
-            .Select(d =>
+    public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        => (JsonSerializer.Deserialize(ref reader, typeof(IReadOnlyList<JsonElement>), Context.Default) as IReadOnlyList<JsonElement>)
+            !.Select(d =>
                 d.GetProperty(PropertyName)
                     .EnumerateArray()
-                    .Select(el => el.Deserialize<CustomFieldValue>(options)!)
+                    .Select(el => el.Deserialize(Context.Default.CustomFieldValue)!)
                     .ToArray()
             )
             .ToArray();
 
-    public override void Write(Utf8JsonWriter writer, IReadOnlyCollection<IReadOnlyCollection<CustomFieldValue>> value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, IReadOnlyList<IReadOnlyList<CustomFieldValue>> value, JsonSerializerOptions options)
     {
         writer.WriteStartArray();
         foreach (var record in value)
         {
             writer.WriteStartObject();
             writer.WritePropertyName(PropertyName);
-            JsonSerializer.Serialize(writer, record, options);
+            JsonSerializer.Serialize(writer, record, Context.Default.CustomFieldValue);
             writer.WriteEndObject();
         }
         writer.WriteEndArray();

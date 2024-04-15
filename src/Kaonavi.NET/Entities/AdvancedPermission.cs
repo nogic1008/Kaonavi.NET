@@ -13,6 +13,6 @@ public enum AdvancedType
 /// <param name="ExclusionCodes">閲覧除外の社員番号、もしくは所属コード</param>
 public record AdvancedPermission(
     int UserId,
-    IReadOnlyCollection<string> AddCodes,
-    IReadOnlyCollection<string> ExclusionCodes
+    IReadOnlyList<string> AddCodes,
+    IReadOnlyList<string> ExclusionCodes
 );

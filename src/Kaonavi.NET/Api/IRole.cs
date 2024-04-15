@@ -13,5 +13,5 @@ public interface IRole
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get"/>
     /// </summary>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    ValueTask<IReadOnlyCollection<Role>> ListAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyList<Role>> ListAsync(CancellationToken cancellationToken = default);
 }

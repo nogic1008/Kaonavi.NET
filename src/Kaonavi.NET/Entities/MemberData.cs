@@ -24,6 +24,6 @@ public record MemberData(
     string? Gender = null,
     DateOnly? Birthday = default,
     MemberDepartment? Department = null,
-    IReadOnlyCollection<MemberDepartment>? SubDepartments = null,
-    IReadOnlyCollection<CustomFieldValue>? CustomFields = null
+    IReadOnlyList<MemberDepartment>? SubDepartments = null,
+    IReadOnlyList<CustomFieldValue>? CustomFields = null
 );

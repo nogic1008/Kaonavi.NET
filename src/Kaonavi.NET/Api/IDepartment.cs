@@ -13,7 +13,7 @@ public interface IDepartment
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get"/>
     /// </summary>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    ValueTask<IReadOnlyCollection<DepartmentTree>> ListAsync(CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyList<DepartmentTree>> ListAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
     /// <inheritdoc cref="DepartmentTree" path="/summary/text()"/>を一括更新します。
@@ -24,5 +24,5 @@ public interface IDepartment
     /// <param name="payload">一括更新するデータ</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
-    ValueTask<int> ReplaceAsync(IReadOnlyCollection<DepartmentTree> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> ReplaceAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default);
 }

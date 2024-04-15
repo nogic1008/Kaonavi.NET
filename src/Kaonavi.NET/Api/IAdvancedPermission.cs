@@ -14,7 +14,7 @@ public interface IAdvancedPermission
     /// </summary>
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    ValueTask<IReadOnlyCollection<AdvancedPermission>> ListAsync(AdvancedType type, CancellationToken cancellationToken = default);
+    ValueTask<IReadOnlyList<AdvancedPermission>> ListAsync(AdvancedType type, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 現在登録されている<inheritdoc cref="AdvancedPermission" path="/summary/text()"/>を全て、リクエストしたデータで入れ替えます。
@@ -24,5 +24,5 @@ public interface IAdvancedPermission
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
     /// <param name="payload">入れ替え対象となるデータ</param>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    ValueTask<int> ReplaceAsync(AdvancedType type, IReadOnlyCollection<AdvancedPermission> payload, CancellationToken cancellationToken = default);
+    ValueTask<int> ReplaceAsync(AdvancedType type, IReadOnlyList<AdvancedPermission> payload, CancellationToken cancellationToken = default);
 }

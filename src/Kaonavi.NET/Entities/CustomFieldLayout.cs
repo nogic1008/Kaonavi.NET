@@ -9,5 +9,5 @@ public record CustomFieldLayout(
     bool Required,
     FieldType Type,
     int? MaxLength,
-    IReadOnlyCollection<string?> Enum
+    IReadOnlyList<string?> Enum
 ) : FieldLayout(Name, Required, Type, MaxLength, Enum);
