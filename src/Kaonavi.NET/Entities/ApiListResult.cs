@@ -1,5 +1,3 @@
-using Kaonavi.Net.Json;
-
 namespace Kaonavi.Net.Entities;
 
 /// <summary>
