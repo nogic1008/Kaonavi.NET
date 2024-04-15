@@ -93,6 +93,6 @@ public sealed class SheetDataTest
         _ = sheetData.Should().NotBeNull();
         _ = sheetData!.Code.Should().Be("A0001");
         _ = sheetData.Records.Should().HaveCount(2)
-            .And.AllBeAssignableTo<IReadOnlyCollection<CustomFieldValue>>();
+            .And.AllBeAssignableTo<IReadOnlyList<CustomFieldValue>>();
     }
 }

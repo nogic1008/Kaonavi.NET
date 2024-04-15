@@ -1,6 +1,4 @@
-using Kaonavi.Net.Entities;
-
-namespace Kaonavi.Net.Services;
+namespace Kaonavi.Net.Entities;
 
 /// <summary><see cref="User"/>の追加/更新APIに用いるpayload</summary>
 /// <param name="Email"><inheritdoc cref="User" path="/param[@name='EMail']"/></param>

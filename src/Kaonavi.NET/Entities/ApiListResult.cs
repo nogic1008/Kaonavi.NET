@@ -7,7 +7,7 @@ namespace Kaonavi.Net.Entities;
 /// <param name="PropertyName">配列が格納されたJSONのプロパティ名</param>
 /// <param name="Values">配列データ</param>
 [JsonConverter(typeof(ApiListResultConverterFactory))]
-internal record ApiListResult<T>(string PropertyName, IReadOnlyCollection<T> Values);
+internal record ApiListResult<T>(string PropertyName, IReadOnlyList<T> Values);
 
 /// <inheritdoc/>
 internal class ApiListResultConverterFactory : JsonConverterFactory
@@ -27,9 +27,9 @@ internal class ApiListResultConverterFactory : JsonConverterFactory
         /// <inheritdoc/>
         public override ApiListResult<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var json = JsonSerializer.Deserialize<JsonElement>(ref reader);
+            var json = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
             var prop = json.EnumerateObject().First(d => d.Value.ValueKind == JsonValueKind.Array);
-            return new(prop.Name, prop.Value.Deserialize<IReadOnlyCollection<T>>()!);
+            return new(prop.Name, prop.Value.Deserialize<IReadOnlyList<T>>(options)!);
         }
 
         /// <inheritdoc/>

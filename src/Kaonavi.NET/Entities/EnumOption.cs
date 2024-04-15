@@ -11,7 +11,7 @@ public record EnumOption(
     string SheetName,
     int Id,
     string Name,
-    IReadOnlyCollection<EnumOption.Data> EnumOptionData
+    IReadOnlyList<EnumOption.Data> EnumOptionData
 )
 {
     /// <summary>マスター項目値</summary>

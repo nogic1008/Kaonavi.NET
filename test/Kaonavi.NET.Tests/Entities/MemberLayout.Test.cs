@@ -124,6 +124,6 @@ public sealed class MemberLayoutTest
         _ = layout.Department.Type.Should().Be(FieldType.Department);
         _ = layout.SubDepartments.Type.Should().Be(FieldType.DepartmentArray);
         _ = layout.CustomFields.Should().HaveCount(2);
-        _ = layout.CustomFields.Last().Enum.Should().Equal("部長", "課長", "マネージャー", null);
+        _ = layout.CustomFields[layout.CustomFields.Count - 1].Enum.Should().Equal("部長", "課長", "マネージャー", null);
     }
 }

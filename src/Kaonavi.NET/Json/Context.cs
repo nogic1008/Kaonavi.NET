@@ -1,5 +1,5 @@
 using Kaonavi.Net.Entities;
-using static Kaonavi.Net.Services.KaonaviV2Service;
+using static Kaonavi.Net.KaonaviClient;
 
 namespace Kaonavi.Net.Json;
 
@@ -14,17 +14,17 @@ namespace Kaonavi.Net.Json;
 [JsonSerializable(typeof(ApiListResult<SheetLayout>))]
 [JsonSerializable(typeof(ApiListResult<UserWithLoginAt>))]
 [JsonSerializable(typeof(ApiListResult<WebhookConfig>))]
-[JsonSerializable(typeof(IReadOnlyCollection<AdvancedPermission>))]
-[JsonSerializable(typeof(IReadOnlyCollection<DepartmentTree>))]
-[JsonSerializable(typeof(IReadOnlyCollection<EnumOption>))]
-[JsonSerializable(typeof(IReadOnlyCollection<EnumOptionPayloadData>))]
-[JsonSerializable(typeof(IReadOnlyCollection<JsonElement>))]
-[JsonSerializable(typeof(IReadOnlyCollection<MemberData>))]
-[JsonSerializable(typeof(IReadOnlyCollection<Role>))]
-[JsonSerializable(typeof(IReadOnlyCollection<SheetData>))]
-[JsonSerializable(typeof(IReadOnlyCollection<SheetLayout>))]
-[JsonSerializable(typeof(IReadOnlyCollection<UserWithLoginAt>))]
-[JsonSerializable(typeof(IReadOnlyCollection<WebhookConfig>))]
+[JsonSerializable(typeof(IReadOnlyList<AdvancedPermission>))]
+[JsonSerializable(typeof(IReadOnlyList<DepartmentTree>))]
+[JsonSerializable(typeof(IReadOnlyList<EnumOption>))]
+[JsonSerializable(typeof(IReadOnlyList<EnumOptionPayloadData>))]
+[JsonSerializable(typeof(IReadOnlyList<JsonElement>))]
+[JsonSerializable(typeof(IReadOnlyList<MemberData>))]
+[JsonSerializable(typeof(IReadOnlyList<Role>))]
+[JsonSerializable(typeof(IReadOnlyList<SheetData>))]
+[JsonSerializable(typeof(IReadOnlyList<SheetLayout>))]
+[JsonSerializable(typeof(IReadOnlyList<UserWithLoginAt>))]
+[JsonSerializable(typeof(IReadOnlyList<WebhookConfig>))]
 [JsonSerializable(typeof(MemberLayout))]
 [JsonSerializable(typeof(TaskProgress))]
 [JsonSerializable(typeof(Token))]

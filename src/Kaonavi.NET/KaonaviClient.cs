@@ -2,13 +2,14 @@ using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization.Metadata;
+using Kaonavi.Net.Api;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 
-namespace Kaonavi.Net.Services;
+namespace Kaonavi.Net;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviV2Service : IKaonaviService
+public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -21,13 +22,13 @@ public class KaonaviV2Service : IKaonaviService
     /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
     private const int WaitSecondsForUpdateLimit = 60;
 
-    /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[1]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient.KaonaviClient" path="/param[1]"/></summary>
     private readonly HttpClient _client;
 
-    /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[2]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient.KaonaviClient" path="/param[2]"/></summary>
     private readonly string _consumerKey;
 
-    /// <summary><inheritdoc cref="KaonaviV2Service.KaonaviV2Service" path="/param[3]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient.KaonaviClient" path="/param[3]"/></summary>
     private readonly string _consumerSecret;
 
     #region Properties
@@ -74,7 +75,7 @@ public class KaonaviV2Service : IKaonaviService
     #endregion Properties
 
     /// <summary>
-    /// KaonaviV2Serviceの新しいインスタンスを生成します。
+    /// KaonaviClientの新しいインスタンスを生成します。
     /// </summary>
     /// <param name="client">APIコール時に利用する<see cref="HttpClient"/>のインスタンス</param>
     /// <param name="consumerKey">Consumer Key</param>
@@ -82,7 +83,7 @@ public class KaonaviV2Service : IKaonaviService
     /// <exception cref="ArgumentNullException">
     /// <paramref name="client"/>, <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<see langword="null"/>の場合にスローされます。
     /// </exception>
-    public KaonaviV2Service(HttpClient client, string consumerKey, string consumerSecret)
+    public KaonaviClient(HttpClient client, string consumerKey, string consumerSecret)
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(consumerKey);
@@ -116,197 +117,227 @@ public class KaonaviV2Service : IKaonaviService
         return token!;
     }
 
-    #region タスク進捗状況
+    #region ITask
+    /// <inheritdoc/>
+    public ITask Task => this;
+
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<TaskProgress> FetchTaskProgressAsync(int taskId, CancellationToken cancellationToken = default)
-        => CallApiAsync(new(HttpMethod.Get, $"tasks/{ThrowIfNegative(taskId):D}"), Context.Default.TaskProgress, cancellationToken);
-    #endregion タスク進捗状況
+    ValueTask<TaskProgress> ITask.ReadAsync(int id, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"tasks/{ThrowIfNegative(id):D}"), Context.Default.TaskProgress, cancellationToken);
+    #endregion ITask
 
-    #region レイアウト設定
+    #region ILayout
     /// <inheritdoc/>
-    public ValueTask<MemberLayout> FetchMemberLayoutAsync(CancellationToken cancellationToken = default)
+    public ILayout Layout => this;
+
+    /// <inheritdoc/>
+    ValueTask<MemberLayout> ILayout.ReadMemberLayoutAsync(CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Get, "member_layouts"), Context.Default.MemberLayout, cancellationToken);
 
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<SheetLayout>> FetchSheetLayoutsAsync(CancellationToken cancellationToken = default)
+    async ValueTask<IReadOnlyList<SheetLayout>> ILayout.ListAsync(CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, "sheet_layouts"), Context.Default.ApiListResultSheetLayout, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<SheetLayout> FetchSheetLayoutAsync(int sheetId, CancellationToken cancellationToken = default)
-        => CallApiAsync(new(HttpMethod.Get, $"sheet_layouts/{ThrowIfNegative(sheetId):D}"), Context.Default.SheetLayout, cancellationToken);
-    #endregion レイアウト設定
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<SheetLayout> ILayout.ReadAsync(int id, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"sheet_layouts/{ThrowIfNegative(id):D}"), Context.Default.SheetLayout, cancellationToken);
+    #endregion ILayout
 
-    #region メンバー情報
+    #region IMember
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<MemberData>> FetchMembersDataAsync(CancellationToken cancellationToken = default)
+    public IMember Member => this;
+
+    /// <inheritdoc/>
+    async ValueTask<IReadOnlyList<MemberData>> IMember.ListAsync(CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, "members"), Context.Default.ApiListResultMemberData, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    public ValueTask<int> AddMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.CreateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Post, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> ReplaceMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.ReplaceAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> UpdateMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.UpdateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Patch, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> OverWriteMemberDataAsync(IReadOnlyCollection<MemberData> payload, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.OverWriteAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> DeleteMemberDataAsync(IReadOnlyCollection<string> codes, CancellationToken cancellationToken = default)
+    ValueTask<int> IMember.DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Post, "members/delete", new("codes", codes), Context.Default.ApiListResultString, cancellationToken);
-    #endregion メンバー情報
+    #endregion IMember
 
-    #region シート情報
+    #region ISheet
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    async public ValueTask<IReadOnlyCollection<SheetData>> FetchSheetDataListAsync(int sheetId, CancellationToken cancellationToken = default)
-         => (await CallApiAsync(new(HttpMethod.Get, $"sheets/{ThrowIfNegative(sheetId):D}"), Context.Default.ApiListResultSheetData, cancellationToken)).Values;
+    public ISheet Sheet => this;
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> ReplaceSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, $"sheets/{ThrowIfNegative(sheetId):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    async ValueTask<IReadOnlyList<SheetData>> ISheet.ListAsync(int id, CancellationToken cancellationToken)
+         => (await CallApiAsync(new(HttpMethod.Get, $"sheets/{ThrowIfNegative(id):D}"), Context.Default.ApiListResultSheetData, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> UpdateSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Patch, $"sheets/{ThrowIfNegative(sheetId):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<int> ISheet.ReplaceAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
+        => CallTaskApiAsync(HttpMethod.Put, $"sheets/{ThrowIfNegative(id):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="sheetId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> AddSheetDataAsync(int sheetId, IReadOnlyCollection<SheetData> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Post, $"sheets/{ThrowIfNegative(sheetId):D}/add", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
-    #endregion シート情報
-
-    #region 所属ツリー
-    /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<DepartmentTree>> FetchDepartmentsAsync(CancellationToken cancellationToken = default)
-          => (await CallApiAsync(new(HttpMethod.Get, "departments"), Context.Default.ApiListResultDepartmentTree, cancellationToken)).Values;
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<int> ISheet.UpdateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
+        => CallTaskApiAsync(HttpMethod.Patch, $"sheets/{ThrowIfNegative(id):D}", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> ReplaceDepartmentsAsync(IReadOnlyCollection<DepartmentTree> payload, CancellationToken cancellationToken = default)
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<int> ISheet.CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
+        => CallTaskApiAsync(HttpMethod.Post, $"sheets/{ThrowIfNegative(id):D}/add", new("member_data", payload), Context.Default.ApiListResultSheetData, cancellationToken);
+    #endregion ISheet
+
+    #region IDepartment
+    /// <inheritdoc/>
+    public IDepartment Department => this;
+
+    /// <inheritdoc/>
+    async ValueTask<IReadOnlyList<DepartmentTree>> IDepartment.ListAsync(CancellationToken cancellationToken)
+        => (await CallApiAsync(new(HttpMethod.Get, "departments"), Context.Default.ApiListResultDepartmentTree, cancellationToken)).Values;
+
+    /// <inheritdoc/>
+    ValueTask<int> IDepartment.ReplaceAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, "departments", new("department_data", payload), Context.Default.ApiListResultDepartmentTree, cancellationToken);
-    internal record DepartmentsResult(IReadOnlyCollection<DepartmentTree> DepartmentData);
-    #endregion 所属ツリー
+    #endregion IDepartment
 
-    #region ユーザー情報
+    #region IUser
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<UserWithLoginAt>> FetchUsersAsync(CancellationToken cancellationToken = default)
+    public IUser User => this;
+
+    /// <inheritdoc/>
+    async ValueTask<IReadOnlyList<UserWithLoginAt>> IUser.ListAsync(CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, "users"), Context.Default.ApiListResultUserWithLoginAt, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    public ValueTask<User> AddUserAsync(UserPayload payload, CancellationToken cancellationToken = default)
+    ValueTask<User> IUser.CreateAsync(UserPayload payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Post, "users")
         {
             Content = JsonContent.Create(new(payload.Email, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), Context.Default.UserJsonPayload)
         }, Context.Default.User, cancellationToken);
-    internal record UserJsonPayload(string Email, string? MemberCode, string Password, Role Role);
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<UserWithLoginAt> FetchUserAsync(int userId, CancellationToken cancellationToken = default)
-        => CallApiAsync(new(HttpMethod.Get, $"users/{ThrowIfNegative(userId):D}"), Context.Default.UserWithLoginAt, cancellationToken);
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<UserWithLoginAt> IUser.ReadAsync(int id, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"users/{ThrowIfNegative(id):D}"), Context.Default.UserWithLoginAt, cancellationToken);
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<User> UpdateUserAsync(int userId, UserPayload payload, CancellationToken cancellationToken = default)
-        => CallApiAsync(new(HttpMethod.Patch, $"users/{ThrowIfNegative(userId):D}")
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<User> IUser.UpdateAsync(int id, UserPayload payload, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Patch, $"users/{ThrowIfNegative(id):D}")
         {
             Content = JsonContent.Create(new(payload.Email, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), Context.Default.UserJsonPayload)
         }, Context.Default.User, cancellationToken);
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="userId"/>が0より小さい場合にスローされます。</exception>
-    public async ValueTask DeleteUserAsync(int userId, CancellationToken cancellationToken = default)
-        => await CallApiAsync(new(HttpMethod.Delete, $"users/{ThrowIfNegative(userId):D}"), cancellationToken).ConfigureAwait(false);
-    #endregion ユーザー情報
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    async ValueTask IUser.DeleteAsync(int id, CancellationToken cancellationToken)
+        => await CallApiAsync(new(HttpMethod.Delete, $"users/{ThrowIfNegative(id):D}"), cancellationToken).ConfigureAwait(false);
 
-    #region ロール
+    internal record UserJsonPayload(string Email, string? MemberCode, string Password, Role Role);
+    #endregion IUser
+
+    #region IRole
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<Role>> FetchRolesAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync(new(HttpMethod.Get, "roles"), Context.Default.ApiListResultRole, cancellationToken)).Values;
-    #endregion ロール
+    public IRole Role => this;
 
-    #region 拡張アクセス設定
+    /// <inheritdoc/>
+    async ValueTask<IReadOnlyList<Role>> IRole.ListAsync(CancellationToken cancellationToken)
+        => (await CallApiAsync(new(HttpMethod.Get, "roles"), Context.Default.ApiListResultRole, cancellationToken)).Values;
+    #endregion IRole
+
+    #region IAdvancedPermission
+    /// <inheritdoc/>
+    public IAdvancedPermission AdvancedPermission => this;
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
+    async ValueTask<IReadOnlyList<AdvancedPermission>> IAdvancedPermission.ListAsync(AdvancedType type, CancellationToken cancellationToken)
+        => (await CallApiAsync(new(HttpMethod.Get, $"advanced_permissions/{AdvancedTypeToString(type)}"), Context.Default.ApiListResultAdvancedPermission, cancellationToken)).Values;
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
+    ValueTask<int> IAdvancedPermission.ReplaceAsync(AdvancedType type, IReadOnlyList<AdvancedPermission> payload, CancellationToken cancellationToken)
+        => CallTaskApiAsync(HttpMethod.Put, $"advanced_permissions/{AdvancedTypeToString(type)}", new("advanced_permission_data", payload), Context.Default.ApiListResultAdvancedPermission, cancellationToken);
+
+    /// <summary>
+    /// <see cref="AdvancedType"/> -&gt; <see langword="string"/>変換
+    /// </summary>
+    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
+    /// <param name="argument">引数</param>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
     private static string AdvancedTypeToString(AdvancedType type, [CallerArgumentExpression(nameof(type))] string? argument = null) => type switch
     {
         AdvancedType.Member => "member",
         AdvancedType.Department => "department",
         _ => throw new ArgumentOutOfRangeException(argument),
     };
-    /// <summary>
-    /// <inheritdoc cref="AdvancedPermission" path="/summary/text()"/>の一覧を取得します。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%8B%A1%E5%BC%B5%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E8%A8%AD%E5%AE%9A/paths/~1advanced_permissions~1{advanced_type}/get"/>
-    /// </summary>
-    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    public async ValueTask<IReadOnlyCollection<AdvancedPermission>> FetchAdvancedPermissionListAsync(AdvancedType type, CancellationToken cancellationToken = default)
-        => (await CallApiAsync(new(HttpMethod.Get, $"advanced_permissions/{AdvancedTypeToString(type)}"), Context.Default.ApiListResultAdvancedPermission, cancellationToken)).Values;
+    #endregion IAdvancedPermission
 
-    /// <summary>
-    /// 現在登録されている<inheritdoc cref="AdvancedPermission" path="/summary/text()"/>を全て、リクエストしたデータで入れ替えます。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%8B%A1%E5%BC%B5%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E8%A8%AD%E5%AE%9A/paths/~1advanced_permissions~1{advanced_type}/put"/>
-    /// </summary>
-    /// <remarks>更新リクエスト制限の対象APIです。</remarks>
-    /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary/text()"/></param>
-    /// <param name="payload">入れ替え対象となるデータ</param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    public ValueTask<int> ReplaceAdvancedPermissionAsync(AdvancedType type, IReadOnlyCollection<AdvancedPermission> payload, CancellationToken cancellationToken = default)
-        => CallTaskApiAsync(HttpMethod.Put, $"advanced_permissions/{AdvancedTypeToString(type)}", new("advanced_permission_data", payload), Context.Default.ApiListResultAdvancedPermission, cancellationToken);
-    #endregion 拡張アクセス設定
-
-    #region マスター管理
+    #region IEnumOption
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<EnumOption>> FetchEnumOptionsAsync(CancellationToken cancellationToken = default)
+    public IEnumOption EnumOption => this;
+
+    /// <inheritdoc/>
+    async ValueTask<IReadOnlyList<EnumOption>> IEnumOption.ListAsync(CancellationToken cancellationToken)
         => (await CallApiAsync(new(HttpMethod.Get, "enum_options"), Context.Default.ApiListResultEnumOption, cancellationToken)).Values;
 
     /// <inheritdoc/>
-    public ValueTask<EnumOption> FetchEnumOptionAsync(int customFieldId, CancellationToken cancellationToken = default)
-        => CallApiAsync(new(HttpMethod.Get, $"enum_options/{ThrowIfNegative(customFieldId):D}"), Context.Default.EnumOption, cancellationToken);
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<EnumOption> IEnumOption.ReadAsync(int id, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"enum_options/{ThrowIfNegative(id):D}"), Context.Default.EnumOption, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> UpdateEnumOptionAsync(int customFieldId, IReadOnlyCollection<(int?, string)> payload, CancellationToken cancellationToken = default)
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    ValueTask<int> IEnumOption.UpdateAsync(int id, IReadOnlyList<(int? id, string name)> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(
             HttpMethod.Put,
-            $"enum_options/{ThrowIfNegative(customFieldId):D}",
-            new("enum_option_data", payload.Select(d => new EnumOptionPayloadData(d.Item1, d.Item2)).ToArray()),
+            $"enum_options/{ThrowIfNegative(id):D}",
+            new("enum_option_data", payload.Select(d => new EnumOptionPayloadData(d.id, d.name)).ToArray()),
             Context.Default.ApiListResultEnumOptionPayloadData,
             cancellationToken);
+
     internal record EnumOptionPayloadData(int? Id, string Name);
-    #endregion マスター管理
+    #endregion IEnumOption
 
-    #region Webhook設定
+    #region IWebhook
     /// <inheritdoc/>
-    public async ValueTask<IReadOnlyCollection<WebhookConfig>> FetchWebhookConfigListAsync(CancellationToken cancellationToken = default)
-        => (await CallApiAsync(new(HttpMethod.Get, "webhook"), Context.Default.ApiListResultWebhookConfig, cancellationToken)).Values;
+    public IWebhook Webhook => this;
 
     /// <inheritdoc/>
-    public ValueTask<WebhookConfig> AddWebhookConfigAsync(WebhookConfigPayload payload, CancellationToken cancellationToken = default)
+    async ValueTask<IReadOnlyList<WebhookConfig>> IWebhook.ListAsync(CancellationToken cancellationToken)
+                => (await CallApiAsync(new(HttpMethod.Get, "webhook"), Context.Default.ApiListResultWebhookConfig, cancellationToken)).Values;
+
+    /// <inheritdoc/>
+    ValueTask<WebhookConfig> IWebhook.CreateAsync(WebhookConfigPayload payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Post, "webhook")
         {
             Content = JsonContent.Create(payload, Context.Default.WebhookConfigPayload)
         }, Context.Default.WebhookConfig, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<WebhookConfig> UpdateWebhookConfigAsync(WebhookConfig payload, CancellationToken cancellationToken = default)
+    ValueTask<WebhookConfig> IWebhook.UpdateAsync(WebhookConfig payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Patch, $"webhook/{payload.Id}")
         {
             Content = JsonContent.Create(payload, Context.Default.WebhookConfig)
         }, Context.Default.WebhookConfig, cancellationToken);
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="webhookId"/>が0より小さい場合にスローされます。</exception>
-    public async ValueTask DeleteWebhookConfigAsync(int webhookId, CancellationToken cancellationToken = default)
-        => await CallApiAsync(new(HttpMethod.Delete, $"webhook/{ThrowIfNegative(webhookId):D}"), cancellationToken).ConfigureAwait(false);
-    #endregion Webhook設定
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
+    async ValueTask IWebhook.DeleteAsync(int id, CancellationToken cancellationToken)
+        => await CallApiAsync(new(HttpMethod.Delete, $"webhook/{ThrowIfNegative(id):D}"), cancellationToken).ConfigureAwait(false);
+    #endregion IWebhook
 
     #region Common Method
     /// <summary>APIコール前に必要な認証を行います。</summary>
@@ -360,7 +391,7 @@ public class KaonaviV2Service : IKaonaviService
         {
             var timeSpan = _lastUpdateApiCalled.AddSeconds(WaitSecondsForUpdateLimit) - _lastUpdateApiCalled;
             if (timeSpan > TimeSpan.Zero)
-                await Task.Delay(timeSpan, cancellationToken);
+                await System.Threading.Tasks.Task.Delay(timeSpan, cancellationToken);
             UpdateRequestCount -= UpdateRequestLimit;
         }
         _lastUpdateApiCalled = DateTime.Now;
