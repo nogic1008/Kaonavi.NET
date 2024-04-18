@@ -136,13 +136,13 @@ public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, ID
         => CallApiAsync(new(HttpMethod.Get, "member_layouts"), Context.Default.MemberLayout, cancellationToken);
 
     /// <inheritdoc/>
-    async ValueTask<IReadOnlyList<SheetLayout>> ILayout.ListAsync(CancellationToken cancellationToken)
-        => (await CallApiAsync(new(HttpMethod.Get, "sheet_layouts"), Context.Default.ApiListResultSheetLayout, cancellationToken)).Values;
+    async ValueTask<IReadOnlyList<SheetLayout>> ILayout.ListAsync(bool getCalcType, CancellationToken cancellationToken)
+        => (await CallApiAsync(new(HttpMethod.Get, $"sheet_layouts{(getCalcType ? "?get_calc_type=true" : "")}"), Context.Default.ApiListResultSheetLayout, cancellationToken)).Values;
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    ValueTask<SheetLayout> ILayout.ReadAsync(int id, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, $"sheet_layouts/{ThrowIfNegative(id):D}"), Context.Default.SheetLayout, cancellationToken);
+    ValueTask<SheetLayout> ILayout.ReadAsync(int id, bool getCalcType, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"sheet_layouts/{ThrowIfNegative(id):D}{(getCalcType ? "?get_calc_type=true" : "")}"), Context.Default.SheetLayout, cancellationToken);
     #endregion ILayout
 
     #region IMember
@@ -398,7 +398,7 @@ public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, ID
         return (await CallApiAsync(new(method, uri)
         {
             Content = JsonContent.Create(payload, typeInfo)
-        }, Context.Default.JsonElement, cancellationToken, true).ConfigureAwait(false)).GetProperty("task_id").GetInt32();
+        }, Context.Default.JsonElement, cancellationToken, true).ConfigureAwait(false)).GetProperty("task_id"u8).GetInt32();
     }
 
     /// <summary>

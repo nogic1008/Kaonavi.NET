@@ -9,6 +9,7 @@ internal class FieldTypeJsonConverter : JsonConverter<FieldType>
     private static ReadOnlySpan<byte> FieldTypeNumber => "number"u8;
     private static ReadOnlySpan<byte> FieldTypeDate => "date"u8;
     private static ReadOnlySpan<byte> FieldTypeEnum => "enum"u8;
+    private static ReadOnlySpan<byte> FieldTypeCalc => "calc"u8;
     private static ReadOnlySpan<byte> FieldTypeDepartment => "department"u8;
     private static ReadOnlySpan<byte> FieldTypeDepartmentArray => "department[]"u8;
 
@@ -18,6 +19,7 @@ internal class FieldTypeJsonConverter : JsonConverter<FieldType>
         : reader.ValueSpan.SequenceEqual(FieldTypeNumber) ? FieldType.Number
         : reader.ValueSpan.SequenceEqual(FieldTypeDate) ? FieldType.Date
         : reader.ValueSpan.SequenceEqual(FieldTypeEnum) ? FieldType.Enum
+        : reader.ValueSpan.SequenceEqual(FieldTypeCalc) ? FieldType.Calc
         : reader.ValueSpan.SequenceEqual(FieldTypeDepartment) ? FieldType.Department
         : reader.ValueSpan.SequenceEqual(FieldTypeDepartmentArray) ? FieldType.DepartmentArray
         : throw new JsonException();
@@ -30,6 +32,7 @@ internal class FieldTypeJsonConverter : JsonConverter<FieldType>
             FieldType.Number => FieldTypeNumber,
             FieldType.Date => FieldTypeDate,
             FieldType.Enum => FieldTypeEnum,
+            FieldType.Calc => FieldTypeCalc,
             FieldType.Department => FieldTypeDepartment,
             FieldType.DepartmentArray => FieldTypeDepartmentArray,
             _ => throw new JsonException(),

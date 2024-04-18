@@ -37,6 +37,17 @@ public sealed class FieldLayoutTest
         "enum": ["男性", "女性"]
     }
     """;
+    /*lang=json,strict*/
+    private const string CalcFieldJson = """
+    {
+        "name": "勤続年数",
+        "required": false,
+        "type": "calc",
+        "max_length": null,
+        "enum": [],
+        "read_only": true
+    }
+    """;
 
     private const string TestName = $"{nameof(FieldLayout)} > JSONからデシリアライズできる。";
 
@@ -49,11 +60,13 @@ public sealed class FieldLayoutTest
     /// <param name="type"><inheritdoc cref="FieldLayout.Type" path="/summary"/></param>
     /// <param name="maxLength"><inheritdoc cref="FieldLayout.MaxLength" path="/summary"/></param>
     /// <param name="enums"><inheritdoc cref="FieldLayout.Enum" path="/summary"/></param>
+    /// <param name="readOnly"><inheritdoc cref="FieldLayout.ReadOnly path="/summary"/></param>
     [TestMethod(TestName), TestCategory("JSON Deserialize")]
-    [DataRow(StringFieldJson, "社員番号", true, FieldType.String, 50, DisplayName = TestName)]
-    [DataRow(DateFieldJson, "入社日", false, FieldType.Date, null, DisplayName = TestName)]
-    [DataRow(EnumFieldJson, "性別", false, FieldType.Enum, null, "男性", "女性", DisplayName = TestName)]
-    public void Field_CanDeserializeJSON(string json, string name, bool required, FieldType type, int? maxLength, params string[] enums)
+    [DataRow(StringFieldJson, "社員番号", true, FieldType.String, 50, new string[] { }, false, DisplayName = TestName)]
+    [DataRow(DateFieldJson, "入社日", false, FieldType.Date, null, new string[] { }, false, DisplayName = TestName)]
+    [DataRow(EnumFieldJson, "性別", false, FieldType.Enum, null, new[] { "男性", "女性" }, false, DisplayName = TestName)]
+    [DataRow(CalcFieldJson, "勤続年数", false, FieldType.Calc, null, new string[] { }, true, DisplayName = TestName)]
+    public void Field_CanDeserializeJSON(string json, string name, bool required, FieldType type, int? maxLength, string[] enums, bool readOnly)
     {
         // Arrange - Act
         var field = JsonSerializer.Deserialize(json, Context.Default.FieldLayout);
@@ -65,6 +78,7 @@ public sealed class FieldLayoutTest
         _ = field.Type.Should().Be(type);
         _ = field.MaxLength.Should().Be(maxLength);
         _ = field.Enum.Should().Equal(enums);
+        _ = field.ReadOnly.Should().Be(readOnly);
     }
 
     /// <summary>

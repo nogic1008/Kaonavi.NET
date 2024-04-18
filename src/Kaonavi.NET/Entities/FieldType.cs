@@ -8,17 +8,19 @@ namespace Kaonavi.Net.Entities;
 public enum FieldType
 {
     /// <summary>文字列</summary>
-    String = 0,
+    String,
     /// <summary>数値</summary>
-    Number = 1,
+    Number,
     /// <summary>日付・年月</summary>
-    Date = 2,
+    Date,
     /// <summary>リスト項目</summary>
-    Enum = 3,
+    Enum,
+    /// <summary>計算式パーツ</summary>
+    Calc,
     /// <summary><see cref="MemberDepartment"/></summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    Department = 4,
+    Department,
     /// <summary><see cref="MemberDepartment"/>の配列</summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    DepartmentArray = 5,
+    DepartmentArray,
 }

@@ -227,18 +227,15 @@ public sealed class KaonaviClientTest
     public async Task ApiCaller_Throws_ApplicationException(HttpStatusCode statusCode, string mediaType, string responseBody, string message)
     {
         // Arrange
-        string key = GenerateRandomString();
-        string secret = GenerateRandomString();
-        string tokenString = GenerateRandomString();
-
         var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
+        _ = handler.SetupAnyRequest()
             .ReturnsResponse(statusCode, responseBody, mediaType);
 
         // Act
-        var sut = CreateSut(handler, key, secret);
+        var sut = CreateSut(handler);
         var act = async () => await sut.AuthenticateAsync();
 
+        // Assert
         _ = (await act.Should().ThrowExactlyAsync<ApplicationException>())
             .WithMessage(message)
             .WithInnerExceptionExactly<HttpRequestException>();
@@ -251,12 +248,11 @@ public sealed class KaonaviClientTest
     public async Task When_AccessToken_IsNull_ApiCaller_Calls_AuthenticateAsync()
     {
         // Arrange
-        string tokenString = GenerateRandomString();
         string key = GenerateRandomString();
         string secret = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
+        _ = handler.SetupAnyRequest()
             .ReturnsResponse(HttpStatusCode.InternalServerError, "Error", "text/plain");
 
         // Act
@@ -269,8 +265,7 @@ public sealed class KaonaviClientTest
         handler.VerifyRequest(async req =>
         {
             // End point
-            _ = req.Method.Should().Be(HttpMethod.Post);
-            _ = (req.RequestUri?.PathAndQuery.Should().Be("/token"));
+            _ = req.Should().SendTo(HttpMethod.Post, "/token");
 
             // Header
             _ = (req.Headers.Authorization?.Scheme.Should().Be("Basic"));
@@ -500,11 +495,15 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviClient.Layout.ListAsync"/>は、"/sheet_layouts"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Layout.ListAsync"/>は、<paramref name="expectedEndpoint"/>にGETリクエストを行う。
     /// </summary>
+    /// <param name="getCalcType"><inheritdoc cref="ILayout.ListAsync" path="/param[@name='getCalcType']"/></param>
+    /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
     [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)} > GET /sheet_layouts をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
-    public async Task Layout_ListAsync_Calls_GetApi()
+    [DataRow(false, "/sheet_layouts", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}(false) > GET /sheet_layouts をコールする。")]
+    [DataRow(true, "/sheet_layouts?get_calc_type=true", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}(true) > GET /sheet_layouts?get_calc_type=true をコールする。")]
+    public async Task Layout_ListAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint)
     {
         // Arrange
         /*lang=json,strict*/
@@ -540,19 +539,19 @@ public sealed class KaonaviClientTest
         string tokenString = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/sheet_layouts")
+        _ = handler.SetupAnyRequest()
             .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var layouts = await sut.Layout.ListAsync();
+        var layouts = await sut.Layout.ListAsync(getCalcType);
 
         // Assert
         _ = layouts.Should().HaveCount(1);
 
         handler.VerifyRequest(req =>
         {
-            _ = req.Should().SendTo(HttpMethod.Get, "/sheet_layouts")
+            _ = req.Should().SendTo(HttpMethod.Get, expectedEndpoint)
                 .And.HasToken(tokenString);
             return true;
         }, Times.Once());
@@ -562,7 +561,7 @@ public sealed class KaonaviClientTest
     /// <inheritdoc cref="ILayout.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.Layout.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)} > ArgumentOutOfRangeException をスローする。")]
+    [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(-1) > ArgumentOutOfRangeException をスローする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
     public async Task When_Id_IsNegative_Layout_ReadAsync_Throws_ArgumentOutOfRangeException()
     {
@@ -582,11 +581,15 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviClient.Layout.ReadAsync"/>は、"/sheet_layouts/{sheetId}"にGETリクエストを行う。
+    /// <see cref="KaonaviClient.Layout.ReadAsync"/>は、<paramref name="expectedEndpoint"/>にGETリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)} > GET /sheet_layouts/:sheetId をコールする。")]
+    /// <param name="getCalcType"><inheritdoc cref="ILayout.ReadAsync" path="/param[@name='getCalcType']"/></param>
+    /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
+    [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)} > GET /sheet_layouts/:id をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
-    public async Task Layout_ReadAsync_Calls_GetApi()
+    [DataRow(false, "/sheet_layouts/12", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(12, false) > GET /sheet_layouts/12 をコールする。")]
+    [DataRow(true, "/sheet_layouts/12?get_calc_type=true", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(12, true) > GET /sheet_layouts/12?get_calc_type=true をコールする。")]
+    public async Task Layout_ReadAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint)
     {
         // Arrange
         const int sheetId = 12;
@@ -602,12 +605,12 @@ public sealed class KaonaviClientTest
         );
 
         var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheet_layouts/{sheetId}")
+        _ = handler.SetupAnyRequest()
             .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
         var sut = CreateSut(handler, accessToken: tokenString);
-        var layout = await sut.Layout.ReadAsync(12);
+        var layout = await sut.Layout.ReadAsync(12, getCalcType);
 
         // Assert
         _ = layout.Should().NotBeNull();
@@ -618,7 +621,7 @@ public sealed class KaonaviClientTest
 
         handler.VerifyRequest(req =>
         {
-            _ = req.Should().SendTo(HttpMethod.Get, $"/sheet_layouts/{sheetId}")
+            _ = req.Should().SendTo(HttpMethod.Get, expectedEndpoint)
                 .And.HasToken(tokenString);
             return true;
         }, Times.Once());
