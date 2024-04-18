@@ -15,7 +15,7 @@ public enum FieldType
     Date,
     /// <summary>リスト項目</summary>
     Enum,
-    /// <summary>リスト項目</summary>
+    /// <summary>計算式パーツ</summary>
     Calc,
     /// <summary><see cref="MemberDepartment"/></summary>
     [EditorBrowsable(EditorBrowsableState.Never)]
