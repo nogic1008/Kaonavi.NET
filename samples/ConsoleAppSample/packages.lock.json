@@ -338,7 +338,7 @@
           "System.Text.Encodings.Web": "6.0.0"
         }
       },
-      "kaonavi.net": {
+      "kaonavi.net.core": {
         "type": "Project"
       }
     }

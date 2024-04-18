@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../../src/Kaonavi.NET/Kaonavi.NET.csproj" />
+    <ProjectReference Include="../../src/Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
   </ItemGroup>
 
 </Project>
