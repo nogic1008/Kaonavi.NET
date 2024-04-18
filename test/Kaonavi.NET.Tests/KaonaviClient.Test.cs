@@ -227,18 +227,15 @@ public sealed class KaonaviClientTest
     public async Task ApiCaller_Throws_ApplicationException(HttpStatusCode statusCode, string mediaType, string responseBody, string message)
     {
         // Arrange
-        string key = GenerateRandomString();
-        string secret = GenerateRandomString();
-        string tokenString = GenerateRandomString();
-
         var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
+        _ = handler.SetupAnyRequest()
             .ReturnsResponse(statusCode, responseBody, mediaType);
 
         // Act
-        var sut = CreateSut(handler, key, secret);
+        var sut = CreateSut(handler);
         var act = async () => await sut.AuthenticateAsync();
 
+        // Assert
         _ = (await act.Should().ThrowExactlyAsync<ApplicationException>())
             .WithMessage(message)
             .WithInnerExceptionExactly<HttpRequestException>();
@@ -251,12 +248,11 @@ public sealed class KaonaviClientTest
     public async Task When_AccessToken_IsNull_ApiCaller_Calls_AuthenticateAsync()
     {
         // Arrange
-        string tokenString = GenerateRandomString();
         string key = GenerateRandomString();
         string secret = GenerateRandomString();
 
         var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")
+        _ = handler.SetupAnyRequest()
             .ReturnsResponse(HttpStatusCode.InternalServerError, "Error", "text/plain");
 
         // Act
@@ -269,8 +265,7 @@ public sealed class KaonaviClientTest
         handler.VerifyRequest(async req =>
         {
             // End point
-            _ = req.Method.Should().Be(HttpMethod.Post);
-            _ = (req.RequestUri?.PathAndQuery.Should().Be("/token"));
+            _ = req.Should().SendTo(HttpMethod.Post, "/token");
 
             // Header
             _ = (req.Headers.Authorization?.Scheme.Should().Be("Basic"));
