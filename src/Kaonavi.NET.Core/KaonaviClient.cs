@@ -101,10 +101,7 @@ public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, ID
     public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
     {
         byte[] byteArray = Encoding.UTF8.GetBytes($"{_consumerKey}:{_consumerSecret}");
-        var content = new FormUrlEncodedContent(new Dictionary<string, string>()
-        {
-            { "grant_type", "client_credentials" }
-        }!);
+        var content = new FormUrlEncodedContent([new("grant_type", "client_credentials")]);
         _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
 
         var response = await _client.PostAsync("token", content, cancellationToken).ConfigureAwait(false);
