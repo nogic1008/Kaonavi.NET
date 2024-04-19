@@ -17,6 +17,10 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
+    <ProjectReference Include="../../src/Kaonavi.NET.Generator/Kaonavi.NET.Generator.csproj">
+      <OutputItemType>Analyzer</OutputItemType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
