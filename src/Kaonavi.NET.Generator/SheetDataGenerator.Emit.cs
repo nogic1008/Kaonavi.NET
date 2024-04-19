@@ -9,48 +9,7 @@ public partial class SheetDataGenerator
     private const int Width = 4;
 
     /// <summary>
-    /// [CustomField]属性のついたプロパティを取得します。
-    /// </summary>
-    /// <inheritdoc cref="Emit"/>
-    /// <returns>IDをKey, プロパティ情報をValueとしたDictionary</returns>
-    private static Dictionary<int, IPropertySymbol>? GetCustomFields(TypeDeclarationSyntax syntax, INamedTypeSymbol typeSymbol, Compilation compilation, IGeneratorContext context)
-    {
-        // Get & Validate CustomField attributes
-        var customFieldAttr = compilation.GetTypeByMetadataName(Consts.CustomField);
-        var customFieldProperties = typeSymbol.GetMembers().OfType<IPropertySymbol>()
-            .Select(p => (
-                prop: p,
-                id: p.GetAttributes()
-                    .FirstOrDefault(a => a.AttributeClass?.Equals(customFieldAttr, SymbolEqualityComparer.Default) ?? false)
-                    ?.ConstructorArguments[0].Value as int?
-            ))
-            .Where(p => p.id is not null).ToArray();
-
-        if (customFieldProperties.Length == 0)
-        {
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustHaveCustomField, syntax.Identifier.GetLocation(), typeSymbol.Name));
-            return null;
-        }
-        var customFieldDict = new Dictionary<int, IPropertySymbol>();
-        bool duplicated = false;
-        foreach (var (prop, id) in customFieldProperties)
-        {
-            if (customFieldDict.TryGetValue(id.GetValueOrDefault(), out var prev))
-            {
-                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.DuplicateCustomFieldId, prev.Locations[0], prev.Name, id, prop.Name));
-                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.DuplicateCustomFieldId, prop.Locations[0], prop.Name, id, prev.Name));
-                duplicated = true;
-            }
-            else
-            {
-                customFieldDict.Add(id.GetValueOrDefault(), prop);
-            }
-        }
-        return duplicated ? null : customFieldDict;
-    }
-
-    /// <summary>
-    /// ソース生成を行います。
+    /// ソース生成処理を実行します。
     /// </summary>
     /// <param name="syntax">[SheetSerializable]属性が指定された箇所のシンタックス</param>
     /// <param name="compilation">コンパイル</param>
@@ -94,7 +53,48 @@ public partial class SheetDataGenerator
     }
 
     /// <summary>
-    /// ソース生成を行います。
+    /// [CustomField]属性のついたプロパティを取得します。
+    /// </summary>
+    /// <inheritdoc cref="Emit"/>
+    /// <returns>IDをKey, プロパティ情報をValueとしたDictionary</returns>
+    private static Dictionary<int, IPropertySymbol>? GetCustomFields(TypeDeclarationSyntax syntax, INamedTypeSymbol typeSymbol, Compilation compilation, IGeneratorContext context)
+    {
+        // Get & Validate CustomField attributes
+        var customFieldAttr = compilation.GetTypeByMetadataName(Consts.CustomField);
+        var customFieldProperties = typeSymbol.GetMembers().OfType<IPropertySymbol>()
+            .Select(p => (
+                prop: p,
+                id: p.GetAttributes()
+                    .FirstOrDefault(a => a.AttributeClass?.Equals(customFieldAttr, SymbolEqualityComparer.Default) ?? false)
+                    ?.ConstructorArguments[0].Value as int?
+            ))
+            .Where(p => p.id is not null).ToArray();
+
+        if (customFieldProperties.Length == 0)
+        {
+            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustHaveCustomField, syntax.Identifier.GetLocation(), typeSymbol.Name));
+            return null;
+        }
+        var customFieldDict = new Dictionary<int, IPropertySymbol>();
+        bool duplicated = false;
+        foreach (var (prop, id) in customFieldProperties)
+        {
+            if (customFieldDict.TryGetValue(id.GetValueOrDefault(), out var prev))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.DuplicateCustomFieldId, prev.Locations[0], prev.Name, id, prop.Name));
+                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.DuplicateCustomFieldId, prop.Locations[0], prop.Name, id, prev.Name));
+                duplicated = true;
+            }
+            else
+            {
+                customFieldDict.Add(id.GetValueOrDefault(), prop);
+            }
+        }
+        return duplicated ? null : customFieldDict;
+    }
+
+    /// <summary>
+    /// ソースコードを生成します。
     /// </summary>
     /// <param name="typeSymbol">生成対象となるクラスのSymbol</param>
     /// <param name="customFields">[CustomField]属性のついたプロパティ</param>

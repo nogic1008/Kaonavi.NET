@@ -13,7 +13,7 @@
     <AssemblyAttribute Include="System.CLSCompliantAttribute">
       <_Parameter1>true</_Parameter1>
     </AssemblyAttribute>
-    <InternalsVisibleTo Include="Kaonavi.NET.Core.Tests" />
+    <InternalsVisibleTo Include="Kaonavi.NET.Tests" />
     <Using Include="System.Text.Json" />
     <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>

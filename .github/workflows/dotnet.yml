@@ -58,4 +58,4 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ runner.os }}
           disable_search: true
-          files: ${{ vars.TEST_ASSET_FOLDER }}/net6.0/TestResults/${{ vars.COVERAGE_REPORT_FILE }},${{ vars.TEST_ASSET_FOLDER }}/net8.0/TestResults/${{ vars.COVERAGE_REPORT_FILE }}
+          files: ${{ vars.TEST_ASSET_FOLDER }}/net8.0/TestResults/${{ vars.COVERAGE_REPORT_FILE }}
