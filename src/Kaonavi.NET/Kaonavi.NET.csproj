@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
+    <!-- This project is meta package -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <Description>Unofficial Kaonavi Library for .NET</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
+  </ItemGroup>
+
+</Project>

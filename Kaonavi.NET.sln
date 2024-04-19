@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET", "src\Kaonavi.NET\Kaonavi.NET.csproj", "{1A642D61-DB39-48CD-A0A3-12AA3C028DD2}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Core", "src\Kaonavi.NET.Core\Kaonavi.NET.Core.csproj", "{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Core.Tests", "test\Kaonavi.NET.Core.Tests\Kaonavi.NET.Core.Tests.csproj", "{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}"
@@ -18,6 +20,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A642D61-DB39-48CD-A0A3-12AA3C028DD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A642D61-DB39-48CD-A0A3-12AA3C028DD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A642D61-DB39-48CD-A0A3-12AA3C028DD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A642D61-DB39-48CD-A0A3-12AA3C028DD2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
