@@ -41,7 +41,7 @@ public partial class SheetDataGenerator : IIncrementalGenerator
             token.ThrowIfCancellationRequested();
 
             var ((syntax, compilation), languageVersion) = source;
-            Generate(syntax, compilation, languageVersion, new GeneratorContext(context, languageVersion));
+            Emit(syntax, compilation, languageVersion, new GeneratorContext(context, languageVersion));
         });
     }
 

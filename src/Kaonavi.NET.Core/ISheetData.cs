@@ -13,14 +13,12 @@ public interface ISheetData
     /// <summary>
     /// このエンティティを、等価な<see cref="CustomFieldValue"/>に変換します。
     /// </summary>
-
     public IReadOnlyList<CustomFieldValue> ToCustomFields();
 }
 
 /// <summary>
 /// <see cref="ISheetData"/> の拡張メソッドを提供します。
 /// </summary>
-
 public static class ISheetDataExtensions
 {
     /// <summary>

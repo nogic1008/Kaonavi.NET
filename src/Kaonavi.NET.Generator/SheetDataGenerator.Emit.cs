@@ -11,11 +11,10 @@ public partial class SheetDataGenerator
     /// <summary>
     /// [CustomField]属性のついたプロパティを取得します。
     /// </summary>
-    /// <inheritdoc cref="Generate"/>
+    /// <inheritdoc cref="Emit"/>
     /// <returns>IDをKey, プロパティ情報をValueとしたDictionary</returns>
     private static Dictionary<int, IPropertySymbol>? GetCustomFields(TypeDeclarationSyntax syntax, INamedTypeSymbol typeSymbol, Compilation compilation, IGeneratorContext context)
     {
-
         // Get & Validate CustomField attributes
         var customFieldAttr = compilation.GetTypeByMetadataName(Consts.CustomField);
         var customFieldProperties = typeSymbol.GetMembers().OfType<IPropertySymbol>()
@@ -57,7 +56,7 @@ public partial class SheetDataGenerator
     /// <param name="compilation">コンパイル</param>
     /// <param name="version">C#のバージョン</param>
     /// <param name="context">ソース生成コンテキストの抽象化</param>
-    private static void Generate(TypeDeclarationSyntax syntax, Compilation compilation, LanguageVersion version, IGeneratorContext context)
+    private static void Emit(TypeDeclarationSyntax syntax, Compilation compilation, LanguageVersion version, IGeneratorContext context)
     {
         var typeSymbol = compilation.GetSemanticModel(syntax.SyntaxTree).GetDeclaredSymbol(syntax, context.CancellationToken);
         if (typeSymbol is null)
@@ -81,6 +80,27 @@ public partial class SheetDataGenerator
             return;
 
         // Generate source code
+        string fullType = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+            .Replace("global::", "")
+            .Replace("<", "_")
+            .Replace(">", "_");
+        context.AddSource($"{fullType}.Generated.cs", Generate(typeSymbol, customFieldDict, version));
+
+        static bool IsPartial(TypeDeclarationSyntax typeDeclaration)
+            => typeDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
+
+        static bool IsImplemented(TypeDeclarationSyntax typeDeclaration, INamedTypeSymbol @interface)
+            => typeDeclaration.BaseList?.Types.Any(t => t.Type is IdentifierNameSyntax ins && ins.Identifier.Text == @interface.Name) ?? false;
+    }
+
+    /// <summary>
+    /// ソース生成を行います。
+    /// </summary>
+    /// <param name="typeSymbol">生成対象となるクラスのSymbol</param>
+    /// <param name="customFields">[CustomField]属性のついたプロパティ</param>
+    /// <param name="version">C#のバージョン</param>
+    private static string Generate(INamedTypeSymbol typeSymbol, Dictionary<int, IPropertySymbol> customFields, LanguageVersion version)
+    {
         int lv = 0;
         var sb = new StringBuilder();
 
@@ -126,7 +146,7 @@ public partial class SheetDataGenerator
             sb.Append(' ', lv * Width).AppendLine("=> new[]");
             sb.Append(' ', lv++ * Width).AppendLine("{"); // start of array initializer
         }
-        foreach (var kv in customFieldDict)
+        foreach (var kv in customFields)
         {
             // Use ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) for Date objects, otherwise use ToString()
             string value = Consts.DateObjects.Contains($"{kv.Value.Type.ContainingNamespace.Name}.{kv.Value.Type.Name}")
@@ -139,22 +159,10 @@ public partial class SheetDataGenerator
         else
             sb.Append(' ', --lv * Width).AppendLine("};"); // end of array initializer
 
-
         sb.Append(' ', (lv -= 2) * Width).AppendLine("}"); // end of class
         if (hasNamespace && version < LanguageVersion.CSharp10)
             sb.Append(' ', --lv * Width).AppendLine("}"); // end of namespace
 
-
-        string fullType = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
-            .Replace("global::", "")
-            .Replace("<", "_")
-            .Replace(">", "_");
-        context.AddSource($"{fullType}.Generated.cs", sb.ToString());
-
-        static bool IsPartial(TypeDeclarationSyntax typeDeclaration)
-            => typeDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
-
-        static bool IsImplemented(TypeDeclarationSyntax typeDeclaration, INamedTypeSymbol @interface)
-            => typeDeclaration.BaseList?.Types.Any(t => t.Type is IdentifierNameSyntax ins && ins.Identifier.Text == @interface.Name) ?? false;
+        return sb.ToString();
     }
 }

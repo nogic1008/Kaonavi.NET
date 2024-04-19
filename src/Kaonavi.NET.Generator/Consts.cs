@@ -14,7 +14,8 @@ internal static class Consts
     internal const string ISheetData = $"{Namespace}.{nameof(ISheetData)}";
 
     internal static readonly string[] DisableWarnings = [
-        "CS0612", "CS0618", // Obsolete member usage
+        "CS0612",
+        "CS0618", // Obsolete member usage
         "CS0108", // hides inherited member
         "CS0162", // Unreachable code
         "CS0164", // This label has not been referenced
