@@ -24,6 +24,15 @@ public interface ISheetData
 public static class ISheetDataExtensions
 {
     /// <summary>
+    /// <see cref="ISheetData"/>の一覧を、等価な<inheritdoc cref="RecordType.Single"/>の<see cref="SheetData"/>に変換します。
+    /// </summary>
+    /// <typeparam name="T"><see cref="ISheetData"/>を列挙可能なインターフェース</typeparam>
+    /// <param name="sheets"></param>
+    /// <returns></returns>
+    public static IReadOnlyList<SheetData> ToSingleSheetData<T>(this T sheets) where T : IEnumerable<ISheetData>
+        => sheets.Select(d => new SheetData(d.Code, d.ToCustomFields())).ToArray();
+
+    /// <summary>
     /// <see cref="ISheetData"/>の一覧を、等価な<inheritdoc cref="RecordType.Multiple"/>の<see cref="SheetData"/>に変換します。
     /// </summary>
     /// <typeparam name="T"><see cref="ISheetData"/>を列挙可能なインターフェース</typeparam>
