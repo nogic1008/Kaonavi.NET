@@ -22,15 +22,19 @@ public partial class SheetDataGenerator
             return;
 
         // Validate class definition
-        if (!IsPartial(syntax))
+        if (!syntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)))
         {
             context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustBePartial, syntax.Identifier.GetLocation(), typeSymbol.Name));
             return;
         }
-        var sheetDataInterface = compilation.GetTypeByMetadataName(Consts.ISheetData);
-        if (!IsImplemented(syntax, sheetDataInterface!))
+        if (!typeSymbol.AllInterfaces.Contains(compilation.GetTypeByMetadataName(Consts.ISheetData)!))
         {
             context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustImplCustomSheet, syntax.Identifier.GetLocation(), typeSymbol.Name));
+            return;
+        }
+        if (typeSymbol.GetMembers(Consts.ToCustomFields).OfType<IMethodSymbol>().Any(m => m.Parameters.Length == 0))
+        {
+            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.AlreadyImplemented, syntax.Identifier.GetLocation(), typeSymbol.Name));
             return;
         }
 
@@ -44,12 +48,6 @@ public partial class SheetDataGenerator
             .Replace("<", "_")
             .Replace(">", "_");
         context.AddSource($"{fullType}.Generated.cs", Generate(typeSymbol, customFieldDict, version));
-
-        static bool IsPartial(TypeDeclarationSyntax typeDeclaration)
-            => typeDeclaration.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword));
-
-        static bool IsImplemented(TypeDeclarationSyntax typeDeclaration, INamedTypeSymbol @interface)
-            => typeDeclaration.BaseList?.Types.Any(t => t.Type is IdentifierNameSyntax ins && ins.Identifier.Text == @interface.Name) ?? false;
     }
 
     /// <summary>

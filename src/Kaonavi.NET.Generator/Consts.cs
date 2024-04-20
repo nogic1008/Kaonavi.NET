@@ -13,6 +13,8 @@ internal static class Consts
     /// <summary>Full Name of ISheetData interface.</summary>
     internal const string ISheetData = $"{Namespace}.{nameof(ISheetData)}";
 
+    internal const string ToCustomFields = "ToCustomFields";
+
     internal static readonly string[] DisableWarnings = [
         "CS0612",
         "CS0618", // Obsolete member usage

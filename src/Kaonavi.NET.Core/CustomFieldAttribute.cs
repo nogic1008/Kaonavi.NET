@@ -1,4 +1,4 @@
-﻿namespace Kaonavi.Net;
+namespace Kaonavi.Net;
 
 /// <summary>
 /// このプロパティが<see cref="Entities.CustomFieldValue"/>の一部であることを示します。
