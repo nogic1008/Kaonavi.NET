@@ -64,6 +64,11 @@ public sealed class SheetDataGeneratorTest
         warnings.Select(x => x.Id).Should().Contain(id);
     }
 
+    /// <summary>
+    /// <paramref name="code"/>をコンパイルした場合、<paramref name="version"/>に応じたソースが生成される。
+    /// </summary>
+    /// <param name="code">ソースコード</param>
+    /// <param name="version">C# のバージョン</param>
     [TestMethod("Generator > C# バージョンに応じたソースが生成される。")]
     [DataRow("""
     #nullable disable
@@ -105,6 +110,9 @@ public sealed class SheetDataGeneratorTest
         warnings.Should().BeEmpty();
     }
 
+    /// <summary>
+    /// <see cref="NormalClassSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
+    /// </summary>
     [TestMethod($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つクラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
     public void Class_Generates_ToCustomFields_Method()
     {
@@ -125,6 +133,9 @@ public sealed class SheetDataGeneratorTest
         }
     }
 
+    /// <summary>
+    /// <see cref="NormalRecordSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
+    /// </summary>
     [TestMethod($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ record クラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
     public void Record_Generates_ToCustomFields_Method()
     {
@@ -145,6 +156,9 @@ public sealed class SheetDataGeneratorTest
         }
     }
 
+    /// <summary>
+    /// <see cref="NoNamespaceClassSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
+    /// </summary>
     [TestMethod($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たないクラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
     public void Class_Without_Namespace_Generates_ToCustomFields_Method()
     {
@@ -165,6 +179,9 @@ public sealed class SheetDataGeneratorTest
         }
     }
 
+    /// <summary>
+    /// <see cref="NoNamespaceRecordSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
+    /// </summary>
     [TestMethod($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たない record クラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
     public void Record_Without_Namespace_Generates_ToCustomFields_Method()
     {

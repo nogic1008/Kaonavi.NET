@@ -286,7 +286,6 @@ public sealed class KaonaviClientTest
     /// <summary>
     /// 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。
     /// </summary>
-    [Ignore]
     [TestMethod($"API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。"), TestCategory("API")]
     public async Task UpdateApi_Waits_UpdateLimit()
     {
