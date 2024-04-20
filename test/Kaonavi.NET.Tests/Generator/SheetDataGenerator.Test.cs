@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis;
-using Kaonavi.Net.Entities;
-using RandomFixtureKit;
-using Microsoft.CodeAnalysis.CSharp;
 using System.Globalization;
 using Kaonavi.Net.Tests;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests.Generator;
 
@@ -46,7 +40,7 @@ public sealed class SheetDataGeneratorTest
     [SheetSerializable]
     public partial record Foo(string Code, [property: CustomField(101)] string Name) : ISheetData
     {
-         public IReadOnlyList<CustomFieldValue> ToCustomFields() => [];
+        public IReadOnlyList<CustomFieldValue> ToCustomFields() => [];
     }
     """, "KAONAVI003", DisplayName = $"Generator > {nameof(ISheetData.ToCustomFields)}メソッドを手動で実装している場合、KAONAVI003のコンパイル警告が発生する。")]
     [DataRow("""
