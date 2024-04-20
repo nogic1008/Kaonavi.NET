@@ -95,6 +95,12 @@
         "resolved": "3.3.1",
         "contentHash": "020SuA2p8N7o+/AHC0SLgzGpyS1hNjR8m5tWxnuGqJ3HeJhArUbuPAU8RZr8Ll38ij8oiutGCkQ/G+ymyO51Ow=="
       },
+      "RandomFixtureKit": {
+        "type": "Direct",
+        "requested": "[1.0.1, )",
+        "resolved": "1.0.1",
+        "contentHash": "7H6wNY82zWzDJo3ALnp0nSUHaD1QXdKBIHURkk44YjUL8BIV4zkFSdopNETDkdw3oSBIqkoiuaUhwWzrB/kZdg=="
+      },
       "Castle.Core": {
         "type": "Transitive",
         "resolved": "5.1.1",

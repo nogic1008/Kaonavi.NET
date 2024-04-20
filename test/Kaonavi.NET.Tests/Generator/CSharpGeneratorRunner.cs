@@ -1,10 +1,11 @@
 using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
+using Kaonavi.Net.Generator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Kaonavi.Net.Tests;
+namespace Kaonavi.Net.Tests.Generator;
 
 internal static class CSharpGeneratorRunner
 {
@@ -21,7 +22,7 @@ internal static class CSharpGeneratorRunner
                 string fileName = Path.GetFileName(x);
                 if (fileName.EndsWith("Native.dll"))
                     return false;
-                return fileName.StartsWith("System") || (fileName is "mscorlib.dll" or "netstandard.dll");
+                return fileName.StartsWith("System") || fileName is "mscorlib.dll" or "netstandard.dll";
             });
 
         var references = systemAssemblies
@@ -36,21 +37,16 @@ internal static class CSharpGeneratorRunner
         _baseCompilation = compilation;
     }
 
-    public static (Compilation, ImmutableArray<Diagnostic>) RunGenerator(string source, string[]? preprocessorSymbols = null, AnalyzerConfigOptionsProvider? options = null)
+    public static Diagnostic[] RunGenerator(string source, LanguageVersion version = LanguageVersion.CSharp12)
     {
-        var parseOptions = new CSharpParseOptions(LanguageVersion.CSharp11, preprocessorSymbols: preprocessorSymbols);
+        var parseOptions = new CSharpParseOptions(version);
 
-        var driver = CSharpGeneratorDriver.Create(new Generator.SheetDataGenerator()).WithUpdatedParseOptions(parseOptions);
-        if (options is not null)
-            driver = (CSharpGeneratorDriver)driver.WithUpdatedAnalyzerConfigOptions(options);
+        var driver = CSharpGeneratorDriver.Create(new SheetDataGenerator()).WithUpdatedParseOptions(parseOptions);
 
-        var compilation = _baseCompilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(source, parseOptions));
+        var inputCompilation = _baseCompilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(source, parseOptions));
 
-        driver.RunGeneratorsAndUpdateCompilation(compilation, out var newCompilation, out var diagnostics);
-        return (newCompilation, diagnostics);
-
-        // combine diagnostics as result.(ignore warning)
-        // var compilationDiagnostics = newCompilation.GetDiagnostics();
-        // return diagnostics.Concat(compilationDiagnostics).Where(x => x.Severity >= DiagnosticSeverity.Warning).ToArray();
+        driver.RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
+        var compilationDiagnostics = outputCompilation.GetDiagnostics();
+        return diagnostics.Concat(compilationDiagnostics).Where(x => x.Severity >= DiagnosticSeverity.Warning).ToArray();
     }
 }
