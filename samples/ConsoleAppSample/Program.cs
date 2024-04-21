@@ -1,5 +1,6 @@
 using ConsoleAppSample;
 using Kaonavi.Net;
+using Kaonavi.Net.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -38,8 +39,12 @@ app.AddCommand("upload", "メンバー情報を更新します。", async (Conso
 {
     var employees = Enumerable.Range(1, 9)
         .Select(i => new EmployeeData($"100{i}", $"User {i}", $"User {i}", $"{i}000", $"100{i}@example.com", "男", new(1990, 1, 1), "A", new(2012, 4, 1)));
-    int taskId = await client.Member.UpdateAsync(employees.Select(e => e.ToMemberData()).ToArray(), ctx.CancellationToken).ConfigureAwait(false);
-    ctx.Logger.LogInformation("Start task at (TaskId: {taskId})", taskId);
+    var customSheets = Enumerable.Range(1, 9)
+        .Select(i => new CustomSheetData($"100{i}", $"100-000{i}", $"Address {i}", new(2023, 1, i)));
+    int taskId1 = await client.Member.UpdateAsync(employees.Select(e => e.ToMemberData()).ToArray(), ctx.CancellationToken).ConfigureAwait(false);
+    ctx.Logger.LogInformation("Start task at (TaskId: {taskId})", taskId1);
+    int taskId2 = await client.Sheet.UpdateAsync(1, customSheets.ToSingleSheetData(), ctx.CancellationToken).ConfigureAwait(false);
+    ctx.Logger.LogInformation("Start task at (TaskId: {taskId})", taskId2);
 });
 app.AddCommand("progress", "タスクの進捗状況を取得します。", async (ConsoleAppContext ctx, IKaonaviClient client, [Option("t", "タスクID")] int taskId) =>
 {

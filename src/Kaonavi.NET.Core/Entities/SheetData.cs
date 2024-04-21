@@ -1,5 +1,3 @@
-using Kaonavi.Net.Json;
-
 namespace Kaonavi.Net.Entities;
 
 /// <summary>シート情報</summary>
@@ -37,7 +35,7 @@ public record SheetData
 
 internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>
 {
-    private const string PropertyName = "custom_fields";
+    private static ReadOnlySpan<byte> PropertyName => "custom_fields"u8;
 
     public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => JsonSerializer.Deserialize<IReadOnlyList<JsonElement>>(ref reader, options)!

@@ -1,26 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <!-- This project is meta package -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
     <Description>Unofficial Kaonavi Library for .NET</Description>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <AssemblyAttribute Include="System.CLSCompliantAttribute">
-      <_Parameter1>true</_Parameter1>
-    </AssemblyAttribute>
-    <InternalsVisibleTo Include="Kaonavi.NET.Tests" />
-    <Using Include="System.Text.Json" />
-    <Using Include="System.Text.Json.Serialization" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" Condition="'$(TargetFramework)'!='net8.0'" />
-    <PackageReference Include="System.Text.Json" Version="8.0.3" Condition="'$(TargetFramework)'!='net8.0'" />
+    <ProjectReference Include="../Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
   </ItemGroup>
 
 </Project>
