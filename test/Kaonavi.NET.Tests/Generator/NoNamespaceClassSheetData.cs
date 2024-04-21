@@ -8,4 +8,7 @@ internal partial class NoNamespaceClassSheetData(string code, string name, DateT
     [CustomField(102)] public DateTime Date1 { get; } = date1;
     [CustomField(103)] public DateTimeOffset Date2 { get; } = date2;
     [CustomField(104)] public DateOnly Date3 { get; } = date3;
+    [CustomField(105)] public DateTime? Date4 { get; } = date1;
+    [CustomField(106)] public DateTimeOffset? Date5 { get; } = date2;
+    [CustomField(107)] public DateOnly? Date6 { get; } = date3;
 }

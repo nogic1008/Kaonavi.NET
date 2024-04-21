@@ -128,7 +128,10 @@ public sealed class SheetDataGeneratorTest
                 new(101, sut.Name!),
                 new(102, sut.Date1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(103, sut.Date2.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
-                new(104, sut.Date3.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+                new(104, sut.Date3.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(105, sut.Date4.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(106, sut.Date5.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(107, sut.Date6.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
             );
         }
     }
@@ -151,7 +154,10 @@ public sealed class SheetDataGeneratorTest
                 new(101, sut.Name!),
                 new(102, sut.Date1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(103, sut.Date2.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
-                new(104, sut.Date3.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+                new(104, sut.Date3.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(105, sut.Date4.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(106, sut.Date5.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(107, sut.Date6.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
             );
         }
     }
@@ -174,7 +180,10 @@ public sealed class SheetDataGeneratorTest
                 new(101, sut.Name),
                 new(102, sut.Date1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(103, sut.Date2.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
-                new(104, sut.Date3.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+                new(104, sut.Date3.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(105, sut.Date4.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(106, sut.Date5.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(107, sut.Date6.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
             );
         }
     }
@@ -197,7 +206,10 @@ public sealed class SheetDataGeneratorTest
                 new(101, sut.Name),
                 new(102, sut.Date1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(103, sut.Date2.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
-                new(104, sut.Date3.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
+                new(104, sut.Date3.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(105, sut.Date4.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(106, sut.Date5.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+                new(107, sut.Date6.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
             );
         }
     }

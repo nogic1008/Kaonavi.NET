@@ -8,4 +8,7 @@ internal partial record NormalRecordSheetData : ISheetData
     [CustomField(102)] public DateTime Date1 { get; init; }
     [CustomField(103)] public DateTimeOffset Date2 { get; init; }
     [CustomField(104)] public DateOnly Date3 { get; init; }
+    [CustomField(105)] public DateTime? Date4 { get; init; }
+    [CustomField(106)] public DateTimeOffset? Date5 { get; init; }
+    [CustomField(107)] public DateOnly? Date6 { get; init; }
 }

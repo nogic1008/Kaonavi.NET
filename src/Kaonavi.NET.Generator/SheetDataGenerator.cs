@@ -45,13 +45,17 @@ public partial class SheetDataGenerator : IIncrementalGenerator
         });
     }
 
+    /// <inheritdoc/>
     private class Comparer : IEqualityComparer<(TypeDeclarationSyntax, Compilation)>
     {
         public static readonly Comparer Instance = new();
+        /// <inheritdoc/>
         public bool Equals((TypeDeclarationSyntax, Compilation) x, (TypeDeclarationSyntax, Compilation) y) => x.Item1.Equals(y.Item1);
+        /// <inheritdoc/>
         public int GetHashCode((TypeDeclarationSyntax, Compilation) obj) => obj.Item1.GetHashCode();
     }
 
+    /// <summary><see cref="IGeneratorContext"/> の<see cref="IIncrementalGenerator"/>向け実装</summary>
     private class GeneratorContext(SourceProductionContext context, LanguageVersion languageVersion) : IGeneratorContext
     {
         public CancellationToken CancellationToken => context.CancellationToken;
