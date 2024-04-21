@@ -155,7 +155,7 @@ public partial class SheetDataGenerator
             typeFullName = isNullableValueType ? ((INamedTypeSymbol)kv.Value.Type).TypeArguments[0].ToDisplayString() : typeFullName;
             bool isDate = Consts.DateObjects.Contains(typeFullName);
             // Use ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) for Date objects, otherwise use ToString()
-            string value =  $"{kv.Value.Name}{(isNullableValueType ? $".{nameof(Nullable<DateTime>.GetValueOrDefault)}()" : "")}.ToString({(isDate ? $"\"{Consts.DateFormat}\", {Consts.InvariantCulture}" : "")})";
+            string value = $"{kv.Value.Name}{(isNullableValueType ? $".{nameof(Nullable<DateTime>.GetValueOrDefault)}()" : "")}.ToString({(isDate ? $"\"{Consts.DateFormat}\", {Consts.InvariantCulture}" : "")})";
             AppendIndent(sb, lv).AppendLine($"new {Consts.CustomFieldValue}({kv.Key}, {value}),");
         }
 
