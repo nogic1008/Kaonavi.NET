@@ -55,6 +55,15 @@ public sealed class SheetDataGeneratorTest
     [SheetSerializable]
     public partial record Foo(string Code, [property: CustomField(101)] string Name1, [property: CustomField(101)] string Name2) : ISheetData;
     """, "KAONAVI005", DisplayName = $"Generator > {nameof(CustomFieldAttribute)}のidが重複したプロパティがある場合、KAONAVI005のコンパイル警告が発生する。")]
+    [DataRow("""
+    using Kaonavi.Net;
+    
+    public partial class Foo
+    {
+        [SheetSerializable]
+        public partial record Bar(string Code, [property: CustomField(101)] string Name) : ISheetData;
+    }
+    """, "KAONAVI006", DisplayName = $"Generator > 入れ子にされたクラスの場合、KAONAVI006のコンパイル警告が発生する。")]
     public void When_Invalid_Code_Compiler_Warns_With_Diagnostic(string code, string id)
     {
         // Arrange - Act

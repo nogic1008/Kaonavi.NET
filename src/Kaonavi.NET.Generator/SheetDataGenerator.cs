@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Kaonavi.Net.Generator;
@@ -46,6 +47,7 @@ public partial class SheetDataGenerator : IIncrementalGenerator
     }
 
     /// <inheritdoc/>
+    [ExcludeFromCodeCoverage] // For cache on Initialize
     private class Comparer : IEqualityComparer<(TypeDeclarationSyntax, Compilation)>
     {
         public static readonly Comparer Instance = new();

@@ -19,6 +19,12 @@ internal static class DiagnosticDescriptors
         = new("KAONAVI001", GetResource("KAONAVI001_Title"), GetResource("KAONAVI001_MessageFormat"), Category, DiagnosticSeverity.Warning, true);
 
     /// <summary>
+    /// [SheetSerializable]属性のついたクラスが入れ子にされた型である場合に発出されます。
+    /// </summary>
+    public static readonly DiagnosticDescriptor MustBeOuterClass
+        = new("KAONAVI006", GetResource("KAONAVI006_Title"), GetResource("KAONAVI006_MessageFormat"), Category, DiagnosticSeverity.Warning, true);
+
+    /// <summary>
     /// [SheetSerializable]属性のついたクラスがISheetDataを実装していない場合に発出されます。
     /// </summary>
     public static readonly DiagnosticDescriptor MustImplCustomSheet

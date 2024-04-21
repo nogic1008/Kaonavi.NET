@@ -149,5 +149,23 @@ namespace Kaonavi.Net {
                 return ResourceManager.GetString("KAONAVI005_Title", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   SheetSerializable object &apos;{0}&apos; should not be inner class. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string KAONAVI006_MessageFormat {
+            get {
+                return ResourceManager.GetString("KAONAVI006_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   SheetSerializable object should not be inner class に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string KAONAVI006_Title {
+            get {
+                return ResourceManager.GetString("KAONAVI006_Title", resourceCulture);
+            }
+        }
     }
 }
