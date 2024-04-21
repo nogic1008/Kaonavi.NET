@@ -54,9 +54,6 @@ public partial class SheetDataGenerator
             .Replace("<", "_")
             .Replace(">", "_");
         context.AddSource($"{fullType}.Generated.cs", GenerateImplementedCode(typeSymbol, customFieldDict, version));
-
-        var sheetSerializableAttr = compilation.GetTypeByMetadataName(Consts.SheetSerializable);
-        int sheetId = (typeSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Equals(sheetSerializableAttr, SymbolEqualityComparer.Default) ?? false)?.ConstructorArguments[0].Value as int?).GetValueOrDefault();
     }
 
     /// <summary>
