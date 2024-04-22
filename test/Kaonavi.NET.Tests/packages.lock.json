@@ -20,6 +20,12 @@
           "Microsoft.CodeAnalysis.Common": "[4.8.0]"
         }
       },
+      "Microsoft.Extensions.TimeProvider.Testing": {
+        "type": "Direct",
+        "requested": "[8.4.0, )",
+        "resolved": "8.4.0",
+        "contentHash": "xaXPM4dQe4oJ2gY82al9LtjLHcfXaD+N/lXw4qX02sd3mETQpV2h1jeJyRYxBJcbJHIvE0pR1gj5yz3/dbnMFw=="
+      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[17.9.0, )",
