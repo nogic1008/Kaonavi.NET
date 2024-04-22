@@ -23,16 +23,16 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
     private const int WaitSeconds = 60;
 
-    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[1]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='client']"/></summary>
     private readonly HttpClient _client;
 
-    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[2]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerKey']"/></summary>
     private readonly string _consumerKey;
 
-    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[3]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></summary>
     private readonly string _consumerSecret;
 
-    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string, TimeProvider)" path="/param[4]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string, TimeProvider)" path="/param[@name='timeProvider']"/></summary>
     private readonly TimeProvider _timeProvider;
 
     #region Properties

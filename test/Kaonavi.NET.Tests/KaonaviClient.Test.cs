@@ -341,6 +341,28 @@ public sealed class KaonaviClientTest
         _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
         _ = sut.UpdateRequestCount.Should().Be(0);
     }
+
+    /// <summary>
+    /// <see cref="KaonaviClient.Dispose"/>を呼び出した後のAPI呼び出しは、<see cref="ObjectDisposedException"/>の例外をスローする。。
+    /// </summary>
+    [TestMethod($"API Caller > ${nameof(KaonaviClient.Dispose)}()後にAPIを呼び出そうとした場合、{nameof(ObjectDisposedException)}の例外をスローする。"), TestCategory("API")]
+    public async Task When_Disposed_Api_Throws_ObjectDisposedException()
+    {
+        // Arrange
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
+            .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+        var timeProvider = new FakeTimeProvider();
+
+        // Act
+        var sut = CreateSut(handler, "token");
+        sut.Dispose();
+        var act = async () => await sut.Member.OverWriteAsync(_memberDataPayload);
+
+        // Assert
+        _ = await act.Should().ThrowExactlyAsync<ObjectDisposedException>();
+        handler.VerifyAnyRequest(Times.Never());
+    }
     #endregion API Common Path
 
     /// <summary>
