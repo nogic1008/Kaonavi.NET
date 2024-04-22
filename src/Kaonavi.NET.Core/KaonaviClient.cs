@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -9,7 +10,7 @@ using Kaonavi.Net.Json;
 namespace Kaonavi.Net;
 
 /// <summary>カオナビ API v2 を呼び出すサービスの実装</summary>
-public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
+public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMember, ISheet, IDepartment, IUser, IRole, IAdvancedPermission, IEnumOption, IWebhook
 {
     /// <summary>カオナビ API v2 のルートアドレス</summary>
     private const string BaseApiAddress = "https://api.kaonavi.jp/api/v2.0/";
@@ -20,16 +21,19 @@ public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, ID
 
     /// <summary>更新リクエストがリセットされる時間(秒)</summary>
     /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
-    private const int WaitSecondsForUpdateLimit = 60;
+    private const int WaitSeconds = 60;
 
-    /// <summary><inheritdoc cref="KaonaviClient.KaonaviClient" path="/param[1]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[1]"/></summary>
     private readonly HttpClient _client;
 
-    /// <summary><inheritdoc cref="KaonaviClient.KaonaviClient" path="/param[2]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[2]"/></summary>
     private readonly string _consumerKey;
 
-    /// <summary><inheritdoc cref="KaonaviClient.KaonaviClient" path="/param[3]"/></summary>
+    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[3]"/></summary>
     private readonly string _consumerSecret;
+
+    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string, TimeProvider)" path="/param[4]"/></summary>
+    private readonly TimeProvider _timeProvider;
 
     #region Properties
     private const string TokenHeader = "Kaonavi-Token";
@@ -65,13 +69,16 @@ public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, ID
         }
     }
 
-    /// <summary>更新リクエストを最後に呼び出した日時</summary>
-    private DateTime _lastUpdateApiCalled;
+    /// <summary>更新リクエストの呼び出し履歴</summary>
+    private readonly ConcurrentQueue<ITimer> _requestQueues = new();
+    /// <summary>更新リクエストの呼び出し制限管理</summary>
+    private readonly SemaphoreSlim _semaphore = new(UpdateRequestLimit, UpdateRequestLimit);
+
     /// <summary>
     /// 更新リクエストの呼び出し回数
     /// </summary>
     /// <seealso href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
-    public int UpdateRequestCount { get; private set; }
+    public int UpdateRequestCount => UpdateRequestLimit - _semaphore.CurrentCount;
     #endregion Properties
 
     /// <summary>
@@ -83,23 +90,74 @@ public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, ID
     /// <exception cref="ArgumentNullException">
     /// <paramref name="client"/>, <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<see langword="null"/>の場合にスローされます。
     /// </exception>
-    public KaonaviClient(HttpClient client, string consumerKey, string consumerSecret)
+    public KaonaviClient(HttpClient client, string consumerKey, string consumerSecret) : this(client, consumerKey, consumerSecret, TimeProvider.System) { }
+
+    /// <inheritdoc cref="KaonaviClient(HttpClient, string, string)"/>
+    /// <param name="timeProvider">時間の抽象化クラス(更新リクエストの呼び出し回数制限に使用)</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="client"/>, <paramref name="consumerKey"/>, <paramref name="consumerSecret"/>または<paramref name="timeProvider"/>が<see langword="null"/>の場合にスローされます。
+    /// </exception>
+    internal KaonaviClient(HttpClient client, string consumerKey, string consumerSecret, TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(consumerKey);
         ArgumentNullException.ThrowIfNull(consumerSecret);
+        ArgumentNullException.ThrowIfNull(timeProvider);
 
-        (_client, _consumerKey, _consumerSecret) = (client, consumerKey, consumerSecret);
+        (_client, _consumerKey, _consumerSecret, _timeProvider) = (client, consumerKey, consumerSecret, timeProvider);
         _client.BaseAddress ??= new(BaseApiAddress);
     }
+
+    #region IDisposable
+    /// <summary>このインスタンスが破棄済みかどうかを表す値。</summary>
+    private bool _disposedValue;
+
+    /// <summary>
+    /// <see cref="KaonaviClient"/>で使用しているリソースを解放します。
+    /// </summary>
+    /// <param name="disposing">マネージド リソースを解放する場合は<see langword="true"/>。</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
+        {
+            if (disposing)
+            {
+                _semaphore.Dispose();
+                while (_requestQueues.TryDequeue(out var timer))
+                    timer.Dispose();
+                // HttpClientは外部から渡されたものなので、ここでDisposeしない
+            }
+            _disposedValue = true;
+        }
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// このインスタンスが破棄済みの場合に<see cref="ObjectDisposedException"/>をスローします。
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">このインスタンスがすでに破棄されている場合にスローされます。</exception>
+    private void ThrowIfDisposed()
+    {
+        if (_disposedValue)
+            throw new ObjectDisposedException(GetType().FullName);
+    }
+    #endregion IDisposable
 
     /// <summary>
     /// アクセストークンを発行します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3/paths/~1token/post"/>
     /// </summary>
     /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+    /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
     public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
     {
+        ThrowIfDisposed();
         byte[] byteArray = Encoding.UTF8.GetBytes($"{_consumerKey}:{_consumerSecret}");
         var content = new FormUrlEncodedContent([new("grant_type", "client_credentials")]);
         _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
@@ -347,17 +405,16 @@ public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, ID
     /// </summary>
     /// <param name="request">APIに対するリクエスト</param>
     /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
-    /// <param name="isUpdateLimitApi">更新リクエスト制限の対象APIかどうか</param>
     /// <exception cref="ApplicationException">
     /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
     /// </exception>
-    private async ValueTask<HttpResponseMessage> CallApiAsync(HttpRequestMessage request, CancellationToken cancellationToken, bool isUpdateLimitApi = false)
+    /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
+    private async ValueTask<HttpResponseMessage> CallApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
+        ThrowIfDisposed();
         await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
         var response = await _client.SendAsync(request, cancellationToken: cancellationToken).ConfigureAwait(false);
         await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
-        if (isUpdateLimitApi)
-            UpdateRequestCount++;
         return response;
     }
 
@@ -367,9 +424,9 @@ public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, ID
     /// <inheritdoc cref="CallApiAsync" path="/param"/>
     /// <typeparam name="T">JSONの型</typeparam>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
-    private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken, bool isUpdateLimitApi = false)
+    private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
     {
-        var response = await CallApiAsync(request, cancellationToken, isUpdateLimitApi).ConfigureAwait(false);
+        var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
         return (await response.Content.ReadFromJsonAsync(typeInfo, cancellationToken).ConfigureAwait(false))!;
     }
 
@@ -382,20 +439,37 @@ public class KaonaviClient : IKaonaviClient, ITask, ILayout, IMember, ISheet, ID
     /// <param name="cancellationToken"><inheritdoc cref="CallApiAsync" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
+    /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
     private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
     {
-        if (UpdateRequestCount >= UpdateRequestLimit)
+        ThrowIfDisposed();
+        await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+        ITimer? timer = null;
+        try
         {
-            var timeSpan = _lastUpdateApiCalled.AddSeconds(WaitSecondsForUpdateLimit) - _lastUpdateApiCalled;
-            if (timeSpan > TimeSpan.Zero)
-                await System.Threading.Tasks.Task.Delay(timeSpan, cancellationToken);
-            UpdateRequestCount -= UpdateRequestLimit;
+            int taskId = (await CallApiAsync(new(method, uri)
+            {
+                Content = JsonContent.Create(payload, typeInfo)
+            }, Context.Default.JsonElement, cancellationToken).ConfigureAwait(false)).GetProperty("task_id"u8).GetInt32();
+
+            timer = _timeProvider.CreateTimer(OnFinished, null, TimeSpan.FromSeconds(WaitSeconds), Timeout.InfiniteTimeSpan);
+            _requestQueues.Enqueue(timer);
+            return taskId;
         }
-        _lastUpdateApiCalled = DateTime.Now;
-        return (await CallApiAsync(new(method, uri)
+        catch
         {
-            Content = JsonContent.Create(payload, typeInfo)
-        }, Context.Default.JsonElement, cancellationToken, true).ConfigureAwait(false)).GetProperty("task_id"u8).GetInt32();
+            timer?.Dispose();
+            _semaphore.Release();
+            throw;
+        }
+
+        // Timerのコールバックメソッド
+        void OnFinished(object? _)
+        {
+            if (_requestQueues.TryDequeue(out var timer))
+                timer.Dispose();
+            _semaphore.Release();
+        }
     }
 
     /// <summary>
