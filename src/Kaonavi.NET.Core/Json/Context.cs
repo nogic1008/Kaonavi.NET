@@ -37,6 +37,4 @@ namespace Kaonavi.Net.Json;
     PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower,
     UseStringEnumConverter = true
 )]
-internal partial class Context : JsonSerializerContext
-{
-}
+internal partial class Context : JsonSerializerContext;

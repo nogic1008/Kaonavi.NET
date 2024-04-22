@@ -93,6 +93,9 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     public KaonaviClient(HttpClient client, string consumerKey, string consumerSecret) : this(client, consumerKey, consumerSecret, TimeProvider.System) { }
 
     /// <inheritdoc cref="KaonaviClient(HttpClient, string, string)"/>
+    /// <param name="client"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='client']"/></param>
+    /// <param name="consumerKey"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
+    /// <param name="consumerSecret"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
     /// <param name="timeProvider">時間の抽象化クラス(更新リクエストの呼び出し回数制限に使用)</param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="client"/>, <paramref name="consumerKey"/>, <paramref name="consumerSecret"/>または<paramref name="timeProvider"/>が<see langword="null"/>の場合にスローされます。
@@ -153,7 +156,7 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     /// アクセストークンを発行します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3/paths/~1token/post"/>
     /// </summary>
-    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
     public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
     {
@@ -177,7 +180,7 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     public ITask Task => this;
 
     /// <inheritdoc/>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="taskId"/>が0より小さい場合にスローされます。</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     ValueTask<TaskProgress> ITask.ReadAsync(int id, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Get, $"tasks/{ThrowIfNegative(id):D}"), Context.Default.TaskProgress, cancellationToken);
     #endregion ITask
@@ -396,7 +399,7 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
 
     #region Common Method
     /// <summary>APIコール前に必要な認証を行います。</summary>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     private async ValueTask FetchTokenAsync(CancellationToken cancellationToken)
         => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
 
@@ -404,7 +407,7 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     /// APIを呼び出します。
     /// </summary>
     /// <param name="request">APIに対するリクエスト</param>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchMemberLayoutAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <exception cref="ApplicationException">
     /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
     /// </exception>
@@ -431,19 +434,23 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     }
 
     /// <summary>
-    /// APIを呼び出し、受け取った<inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/>を返します。
+    /// APIを呼び出し、受け取った<inheritdoc cref="TaskProgress" path="/param[@name='Id']"/>を返します。
     /// </summary>
     /// <param name="method">HTTP Method</param>
     /// <param name="uri">リクエストURI</param>
     /// <param name="payload">APIに対するリクエスト</param>
+    /// <param name="typeInfo"><paramref name="payload"/>をJSONに変換するためのメタ情報</param>
     /// <param name="cancellationToken"><inheritdoc cref="CallApiAsync" path="/param[@name='cancellationToken']"/></param>
-    /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+    /// <typeparam name="T">リクエストBodyの型</typeparam>
+    /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
     private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
+
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
         ITimer? timer = null;
         try
         {
@@ -463,7 +470,6 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
             throw;
         }
 
-        // Timerのコールバックメソッド
         void OnFinished(object? _)
         {
             if (_requestQueues.TryDequeue(out var timer))
@@ -477,7 +483,7 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     /// エラーが返ってきた場合は、エラーメッセージを取得し例外をスローします。
     /// </summary>
     /// <param name="response">APIレスポンス</param>
-    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <exception cref="ApplicationException">
     /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
     /// </exception>

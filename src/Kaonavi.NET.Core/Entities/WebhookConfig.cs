@@ -20,7 +20,9 @@ public record WebhookConfigPayload(Uri Url, IReadOnlyList<WebhookEvent> Events, 
 /// Webhook設定
 /// </summary>
 /// <param name="Id">Webhook ID</param>
-/// <inheritdoc cref="WebhookConfigPayload" path="/param" />
+/// <param name="Url"><inheritdoc cref="WebhookConfigPayload" path="/param[@name='Url']"/></param>
+/// <param name="Events"><inheritdoc cref="WebhookConfigPayload" path="/param[@name='Events']"/></param>
+/// <param name="SecretToken"><inheritdoc cref="WebhookConfigPayload" path="/param[@name='SecretToken']"/></param>
 public record WebhookConfig(int Id, Uri Url, IReadOnlyList<WebhookEvent> Events, string SecretToken)
     : WebhookConfigPayload(Url, Events, SecretToken);
 

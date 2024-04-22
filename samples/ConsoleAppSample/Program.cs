@@ -1,6 +1,5 @@
 using ConsoleAppSample;
 using Kaonavi.Net;
-using Kaonavi.Net.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

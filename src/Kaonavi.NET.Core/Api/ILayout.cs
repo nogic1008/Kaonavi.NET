@@ -12,7 +12,7 @@ public interface ILayout
     /// 使用可能なメンバーのレイアウト設定情報を全て取得します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E8%A8%AD%E5%AE%9A/paths/~1member_layouts/get"/>
     /// </summary>
-    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     ValueTask<MemberLayout> ReadMemberLayoutAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -20,7 +20,7 @@ public interface ILayout
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E8%A8%AD%E5%AE%9A/paths/~1sheet_layouts/get"/>
     /// </summary>
     /// <param name="getCalcType">計算式パーツの取得</param>
-    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     ValueTask<IReadOnlyList<SheetLayout>> ListAsync(bool getCalcType = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -29,6 +29,6 @@ public interface ILayout
     /// </summary>
     /// <param name="id"><inheritdoc cref="SheetLayout" path="/param[@name='Id']"/></param>
     /// <param name="getCalcType">計算式パーツの取得</param>
-    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     ValueTask<SheetLayout> ReadAsync(int id, bool getCalcType = false, CancellationToken cancellationToken = default);
 }
