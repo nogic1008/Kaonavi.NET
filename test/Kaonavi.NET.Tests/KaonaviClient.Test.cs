@@ -343,7 +343,7 @@ public sealed class KaonaviClientTest
             .ReturnsResponse(HttpStatusCode.NotFound, /*lang=json,strict*/ """{"errors":["test"]}""", "application/json");
 
         // Act
-        var sut = CreateSut(handler, accessToken: "token");
+        var sut = CreateSut(handler, "token");
         var act = async () => await sut.Member.OverWriteAsync(_memberDataPayload);
 
         // Assert
@@ -359,18 +359,19 @@ public sealed class KaonaviClientTest
     {
         // Arrange
         var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
             .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
         var timeProvider = new FakeTimeProvider();
 
         // Act
-        var sut = CreateSut(handler, "token");
+        var sut = CreateSut(handler, "token", timeProvider);
+        _ = await sut.Member.OverWriteAsync(_memberDataPayload);
         sut.Dispose();
         var act = async () => await sut.Member.OverWriteAsync(_memberDataPayload);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ObjectDisposedException>();
-        handler.VerifyAnyRequest(Times.Never());
+        handler.VerifyAnyRequest(Times.Once());
     }
     #endregion API Common Path
 
