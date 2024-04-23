@@ -3,7 +3,9 @@ namespace Kaonavi.Net.Entities;
 /// <summary>拡張アクセス設定の種別</summary>
 public enum AdvancedType
 {
+    /// <summary>社員</summary>
     Member,
+    /// <summary>部署</summary>
     Department,
 }
 

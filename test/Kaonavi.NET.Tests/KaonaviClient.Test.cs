@@ -2,6 +2,7 @@ using System.Text;
 using Kaonavi.Net.Api;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
+using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Moq.Contrib.HttpClient;
 
@@ -49,6 +50,14 @@ public sealed class KaonaviClientTest
     [TestMethod($"{nameof(KaonaviClient)}(null, \"foo\", \"bar\") > ArgumentNullException(client)をスローする。"), TestCategory("Constructor")]
     public void WhenClientIsNull_Constructor_Throws_ArgumentNullException()
         => Constructor(null, "foo", "bar").Should().ThrowExactly<ArgumentNullException>().WithParameterName("client");
+
+    /// <summary>
+    /// TimeProviderが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
+    /// </summary>
+    [TestMethod($"{nameof(KaonaviClient)}({nameof(HttpClient)}, \"foo\", \"bar\", null) > ArgumentNullException(timeProvider)をスローする。"), TestCategory("Constructor")]
+    public void WhenTimeProviderIsNull_Constructor_Throws_ArgumentNullException()
+        => ((Action)(() => _ = new KaonaviClient(new(), "foo", "bar", null!)))
+            .Should().ThrowExactly<ArgumentNullException>().WithParameterName("timeProvider");
 
     /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>のとき、既定値をセットする。
@@ -199,14 +208,15 @@ public sealed class KaonaviClientTest
     /// テスト対象(System Under Test)となる<see cref="KaonaviClient"/>のインスタンスを生成します。
     /// </summary>
     /// <param name="handler">HttpClientをモックするためのHandlerオブジェクト</param>
+    /// <param name="accessToken">アクセストークン</param>
+    /// <param name="timeProvider">TimeProvider</param>
     /// <param name="key">Consumer Key</param>
     /// <param name="secret">Consumer Secret</param>
-    /// <param name="accessToken">アクセストークン</param>
-    private static KaonaviClient CreateSut(Mock<HttpMessageHandler> handler, string key = "Key", string secret = "Secret", string? accessToken = null)
+    private static KaonaviClient CreateSut(Mock<HttpMessageHandler> handler, string? accessToken = null, TimeProvider? timeProvider = null, string key = "Key", string secret = "Secret")
     {
         var client = handler.CreateClient();
         client.BaseAddress = _baseUri;
-        return new(client, key, secret)
+        return new(client, key, secret, timeProvider ?? TimeProvider.System)
         {
             AccessToken = accessToken
         };
@@ -256,7 +266,7 @@ public sealed class KaonaviClientTest
             .ReturnsResponse(HttpStatusCode.InternalServerError, "Error", "text/plain");
 
         // Act
-        var sut = CreateSut(handler, key, secret);
+        var sut = CreateSut(handler, key: key, secret: secret);
         var act = async () => await sut.Layout.ReadMemberLayoutAsync();
 
         // Assert
@@ -293,17 +303,24 @@ public sealed class KaonaviClientTest
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
             .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+        var timeProvider = new FakeTimeProvider();
 
         // Act - Assert
-        var sut = CreateSut(handler, accessToken: "token");
+        var sut = CreateSut(handler, "token", timeProvider);
         _ = sut.UpdateRequestCount.Should().Be(0);
 
-        // Normal calls (1-5)
-        for (int i = 1; i <= 5; i++)
+        for (int i = 1; i <= 5; i++) // 1-5th calls
             await CallUpdateApiAndVerifyAsync(i);
 
-        // Extra call (Wait 1 minute and reset call count)
-        await CallUpdateApiAndVerifyAsync(1);
+        timeProvider.Advance(TimeSpan.FromSeconds(30));
+        _ = sut.UpdateRequestCount.Should().Be(5);
+
+        // 6th call (waits 1 minute)
+        var task = sut.Member.CreateAsync(_memberDataPayload);
+        _ = sut.UpdateRequestCount.Should().Be(5);
+        timeProvider.Advance(TimeSpan.FromSeconds(30));
+        await task;
+        _ = sut.UpdateRequestCount.Should().Be(1);
 
         handler.VerifyAnyRequest(Times.Exactly(6));
 
@@ -326,12 +343,35 @@ public sealed class KaonaviClientTest
             .ReturnsResponse(HttpStatusCode.NotFound, /*lang=json,strict*/ """{"errors":["test"]}""", "application/json");
 
         // Act
-        var sut = CreateSut(handler, accessToken: "token");
+        var sut = CreateSut(handler, "token");
         var act = async () => await sut.Member.OverWriteAsync(_memberDataPayload);
 
         // Assert
         _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
         _ = sut.UpdateRequestCount.Should().Be(0);
+    }
+
+    /// <summary>
+    /// <see cref="KaonaviClient.Dispose"/>を呼び出した後のAPI呼び出しは、<see cref="ObjectDisposedException"/>の例外をスローする。。
+    /// </summary>
+    [TestMethod($"API Caller > ${nameof(KaonaviClient.Dispose)}()後にAPIを呼び出そうとした場合、{nameof(ObjectDisposedException)}の例外をスローする。"), TestCategory("API")]
+    public async Task When_Disposed_Api_Throws_ObjectDisposedException()
+    {
+        // Arrange
+        var handler = new Mock<HttpMessageHandler>();
+        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
+            .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+        var timeProvider = new FakeTimeProvider();
+
+        // Act
+        var sut = CreateSut(handler, "token", timeProvider);
+        _ = await sut.Member.OverWriteAsync(_memberDataPayload);
+        sut.Dispose();
+        var act = async () => await sut.Member.OverWriteAsync(_memberDataPayload);
+
+        // Assert
+        _ = await act.Should().ThrowExactlyAsync<ObjectDisposedException>();
+        handler.VerifyAnyRequest(Times.Once());
     }
     #endregion API Common Path
 
@@ -353,7 +393,7 @@ public sealed class KaonaviClientTest
             .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
         // Act
-        var sut = CreateSut(handler, key, secret);
+        var sut = CreateSut(handler, key: key, secret: secret);
         var token = await sut.AuthenticateAsync();
 
         // Assert

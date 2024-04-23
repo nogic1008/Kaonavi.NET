@@ -26,6 +26,11 @@
           "Microsoft.Extensions.Options": "8.0.0"
         }
       },
+      "Microsoft.Bcl.TimeProvider": {
+        "type": "Transitive",
+        "resolved": "8.0.1",
+        "contentHash": "C7kWHJnMRY7EvJev2S8+yJHZ1y7A4ZlLbA4NE+O23BDIAN5mHeqND1m+SKv1ChRS5YlCDW7yAMUe7lttRsJaAA=="
+      },
       "Microsoft.Extensions.Configuration": {
         "type": "Transitive",
         "resolved": "8.0.0",
@@ -339,7 +344,10 @@
         }
       },
       "kaonavi.net.core": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Bcl.TimeProvider": "[8.0.1, )"
+        }
       }
     }
   }

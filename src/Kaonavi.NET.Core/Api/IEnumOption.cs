@@ -9,27 +9,27 @@ namespace Kaonavi.Net.Api;
 public interface IEnumOption
 {
     /// <summary>
-    /// マスター管理で編集可能な項目のうち、APIv2 で編集可能な<inheritdoc cref="EnumOption" path="/summary/text()"/>の一覧を取得します。
+    /// マスター管理で編集可能な項目のうち、APIv2 で編集可能な<inheritdoc cref="EnumOption" path="/summary"/>の一覧を取得します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC%E7%AE%A1%E7%90%86/paths/~1enum_options/get"/>
     /// </summary>
     /// <remarks>
     /// APIv2 で編集できるのは、プルダウンリスト、ラジオボタン、チェックボックスで作成された項目です。
     /// ただし、データ連携中の項目はマスター管理で編集不可能なため、上記のパーツ種別であっても取得は出来ません。
     /// </remarks>
-    /// <param name="cancellationToken"><inheritdoc cref="FetchTaskProgressAsync" path="/param[@name='cancellationToken']/text()"/></param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     ValueTask<IReadOnlyList<EnumOption>> ListAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// <paramref name="id"/>と一致する<inheritdoc cref="EnumOption" path="/summary/text()"/>を取得します。
+    /// <paramref name="id"/>と一致する<inheritdoc cref="EnumOption" path="/summary"/>を取得します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC%E7%AE%A1%E7%90%86/paths/~1enum_options~1{custom_field_id}/get"/>
     /// </summary>
-    /// <inheritdoc cref="FetchEnumOptionsAsync" path="/remarks"/>
-    /// <param name="id"><inheritdoc cref="EnumOption.Id" path="/summary/text()"/></param>
-    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
+    /// <inheritdoc cref="ListAsync" path="/remarks"/>
+    /// <param name="id"><inheritdoc cref="EnumOption.Id" path="/summary"/></param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     ValueTask<EnumOption> ReadAsync(int id, CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// <paramref name="id"/>と一致する<inheritdoc cref="EnumOption" path="/summary/text()"/>を一括更新します。
+    /// <paramref name="id"/>と一致する<inheritdoc cref="EnumOption" path="/summary"/>を一括更新します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC%E7%AE%A1%E7%90%86/paths/~1enum_options~1{custom_field_id}/put"/>
     /// </summary>
     /// <remarks>
@@ -42,9 +42,9 @@ public interface IEnumOption
     /// <item><paramref name="payload"/>は0件での指定は出来ません。1件以上指定してください。</item>
     /// </list>
     /// </remarks>
-    /// <param name="id"><inheritdoc cref="EnumOption.Id" path="/summary/text()"/></param>
+    /// <param name="id"><inheritdoc cref="EnumOption.Id" path="/summary"/></param>
     /// <param name="payload">リクエスト</param>
-    /// <param name="cancellationToken">キャンセル通知を受け取るために他のオブジェクトまたはスレッドで使用できるキャンセル トークン。</param>
-    /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary/text()" /></returns>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
+    /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary" /></returns>
     ValueTask<int> UpdateAsync(int id, IReadOnlyList<(int? id, string name)> payload, CancellationToken cancellationToken = default);
 }
