@@ -52,6 +52,14 @@ public sealed class KaonaviClientTest
         => Constructor(null, "foo", "bar").Should().ThrowExactly<ArgumentNullException>().WithParameterName("client");
 
     /// <summary>
+    /// TimeProviderが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
+    /// </summary>
+    [TestMethod($"{nameof(KaonaviClient)}({nameof(HttpClient)}, \"foo\", \"bar\", null) > ArgumentNullException(timeProvider)をスローする。"), TestCategory("Constructor")]
+    public void WhenTimeProviderIsNull_Constructor_Throws_ArgumentNullException()
+        => ((Action)(() => _ = new KaonaviClient(new(), "foo", "bar", null!)))
+            .Should().ThrowExactly<ArgumentNullException>().WithParameterName("timeProvider");
+
+    /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>のとき、既定値をセットする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullのとき、既定値をセットする。"), TestCategory("Constructor")]
@@ -201,6 +209,7 @@ public sealed class KaonaviClientTest
     /// </summary>
     /// <param name="handler">HttpClientをモックするためのHandlerオブジェクト</param>
     /// <param name="accessToken">アクセストークン</param>
+    /// <param name="timeProvider">TimeProvider</param>
     /// <param name="key">Consumer Key</param>
     /// <param name="secret">Consumer Secret</param>
     private static KaonaviClient CreateSut(Mock<HttpMessageHandler> handler, string? accessToken = null, TimeProvider? timeProvider = null, string key = "Key", string secret = "Secret")
