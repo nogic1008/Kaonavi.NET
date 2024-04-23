@@ -146,10 +146,14 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     /// </summary>
     /// <exception cref="ObjectDisposedException">このインスタンスがすでに破棄されている場合にスローされます。</exception>
     private void ThrowIfDisposed()
+#if NET8_0_OR_GREATER
+        => ObjectDisposedException.ThrowIf(_disposedValue, GetType().FullName!);
+#else
     {
         if (_disposedValue)
             throw new ObjectDisposedException(GetType().FullName);
     }
+#endif
     #endregion IDisposable
 
     /// <summary>
@@ -408,10 +412,8 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     /// </summary>
     /// <param name="request">APIに対するリクエスト</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-    /// <exception cref="ApplicationException">
-    /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
-    /// </exception>
     /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
+    /// <inheritdoc cref="ValidateApiResponseAsync" path="/exception"/>
     private async ValueTask<HttpResponseMessage> CallApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
@@ -424,8 +426,10 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     /// <summary>
     /// APIを呼び出し、受け取ったJSONを<typeparamref name="T"/>に変換して返します。
     /// </summary>
-    /// <inheritdoc cref="CallApiAsync" path="/param"/>
     /// <typeparam name="T">JSONの型</typeparam>
+    /// <param name="request">APIに対するリクエスト</param>
+    /// <param name="typeInfo">レスポンスをJSONに変換するためのメタ情報</param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
     {
@@ -436,12 +440,12 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     /// <summary>
     /// APIを呼び出し、受け取った<inheritdoc cref="TaskProgress" path="/param[@name='Id']"/>を返します。
     /// </summary>
+    /// <typeparam name="T">リクエストBodyの型</typeparam>
     /// <param name="method">HTTP Method</param>
     /// <param name="uri">リクエストURI</param>
     /// <param name="payload">APIに対するリクエスト</param>
     /// <param name="typeInfo"><paramref name="payload"/>をJSONに変換するためのメタ情報</param>
-    /// <param name="cancellationToken"><inheritdoc cref="CallApiAsync" path="/param[@name='cancellationToken']"/></param>
-    /// <typeparam name="T">リクエストBodyの型</typeparam>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>

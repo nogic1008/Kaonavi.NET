@@ -8,4 +8,3 @@ namespace Kaonavi.Net;
 [ExcludeFromCodeCoverage] // Only use on source generator
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 public sealed class SheetSerializableAttribute : Attribute;
-
