@@ -121,18 +121,18 @@
     <value>SheetSerializable 属性を持つ '{0}' クラス は partial にする必要があります。ソースは生成されません。</value>
   </data>
   <data name="KAONAVI002_MessageFormat" xml:space="preserve">
-    <value>SheetSerializable 属性を持つ '{0}' クラス は ISheetData を実装する必要があります。ソースは生成されません。</value>
+    <value>SheetSerializable 属性を持つ '{0}' クラス は入れ子にされた型にすることができません。ソースは生成されません。</value>
   </data>
   <data name="KAONAVI003_MessageFormat" xml:space="preserve">
-    <value>SheetSerializable 属性を持つ '{0}' クラス で ISheetData.ToCustomFields() がすでに実装されています。ソースは生成されません。</value>
+    <value>SheetSerializable 属性を持つ '{0}' クラス は ISheetData を実装する必要があります。ソースは生成されません。</value>
   </data>
   <data name="KAONAVI004_MessageFormat" xml:space="preserve">
-    <value>SheetSerializable 属性を持つ '{0}' クラスには CustomField 属性を持つプロパティが少なくとも1つ必要です。ソースは生成されません。</value>
+    <value>SheetSerializable 属性を持つ '{0}' クラス で ToCustomFields() がすでに実装されています。ソースは生成されません。</value>
   </data>
   <data name="KAONAVI005_MessageFormat" xml:space="preserve">
-    <value>'{0}' プロパティには、'{2}' プロパティと重複した CustomField('{1}') 属性があります。ソースは生成されません。</value>
+    <value>SheetSerializable 属性を持つ '{0}' クラスには CustomField 属性を持つプロパティが少なくとも1つ必要です。ソースは生成されません。</value>
   </data>
   <data name="KAONAVI006_MessageFormat" xml:space="preserve">
-    <value>SheetSerializable 属性を持つ '{0}' クラス は入れ子にされた型にすることができません。ソースは生成されません。</value>
+    <value>'{0}' プロパティには、'{2}' プロパティと重複した CustomField('{1}') 属性があります。ソースは生成されません。</value>
   </data>
 </root>

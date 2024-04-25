@@ -34,12 +34,12 @@ public partial class SheetDataGenerator
         }
         if (!typeSymbol.AllInterfaces.Contains(compilation.GetTypeByMetadataName(Consts.ISheetData)!))
         {
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustImplCustomSheet, syntax.Identifier.GetLocation(), typeSymbol.Name));
+            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustImplSheetData, syntax.Identifier.GetLocation(), typeSymbol.Name));
             return;
         }
-        if (typeSymbol.GetMembers(Consts.ToCustomFields).OfType<IMethodSymbol>().Any(m => m.Parameters.Length == 0))
+        if (typeSymbol.GetMembers(Consts.ToCustomFields).OfType<IMethodSymbol>().FirstOrDefault(m => m.Parameters.Length == 0) is IMethodSymbol symbol)
         {
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.AlreadyImplemented, syntax.Identifier.GetLocation(), typeSymbol.Name));
+            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.AlreadyImplemented, symbol.Locations[0], typeSymbol.Name));
             return;
         }
 
