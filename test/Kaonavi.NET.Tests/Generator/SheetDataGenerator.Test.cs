@@ -30,9 +30,18 @@ public sealed class SheetDataGeneratorTest
     [DataRow("""
     using Kaonavi.Net;
     
+    public partial class Foo
+    {
+        [SheetSerializable]
+        public partial record Bar(string Code, [property: CustomField(101)] string Name) : ISheetData;
+    }
+    """, "KAONAVI002", DisplayName = $"Generator > 入れ子にされたクラスの場合、KAONAVI006のコンパイル警告が発生する。")]
+    [DataRow("""
+    using Kaonavi.Net;
+    
     [SheetSerializable]
     public partial record Foo(string Code, [property: CustomField(101)] string Name);
-    """, "KAONAVI002", DisplayName = $"Generator > {nameof(ISheetData)}を継承していない場合、KAONAVI002のコンパイル警告が発生する。")]
+    """, "KAONAVI003", DisplayName = $"Generator > {nameof(ISheetData)}を継承していない場合、KAONAVI002のコンパイル警告が発生する。")]
     [DataRow("""
     using Kaonavi.Net;
     using Kaonavi.Net.Entities;
@@ -42,28 +51,19 @@ public sealed class SheetDataGeneratorTest
     {
         public IReadOnlyList<CustomFieldValue> ToCustomFields() => [];
     }
-    """, "KAONAVI003", DisplayName = $"Generator > {nameof(ISheetData.ToCustomFields)}メソッドを手動で実装している場合、KAONAVI003のコンパイル警告が発生する。")]
+    """, "KAONAVI004", DisplayName = $"Generator > {nameof(ISheetData.ToCustomFields)}メソッドを手動で実装している場合、KAONAVI003のコンパイル警告が発生する。")]
     [DataRow("""
     using Kaonavi.Net;
     
     [SheetSerializable]
     public partial record Foo(string Code, string Name) : ISheetData;
-    """, "KAONAVI004", DisplayName = $"Generator > {nameof(CustomFieldAttribute)}を設定したプロパティがない場合、KAONAVI004のコンパイル警告が発生する。")]
+    """, "KAONAVI005", DisplayName = $"Generator > {nameof(CustomFieldAttribute)}を設定したプロパティがない場合、KAONAVI004のコンパイル警告が発生する。")]
     [DataRow("""
     using Kaonavi.Net;
     
     [SheetSerializable]
     public partial record Foo(string Code, [property: CustomField(101)] string Name1, [property: CustomField(101)] string Name2) : ISheetData;
-    """, "KAONAVI005", DisplayName = $"Generator > {nameof(CustomFieldAttribute)}のidが重複したプロパティがある場合、KAONAVI005のコンパイル警告が発生する。")]
-    [DataRow("""
-    using Kaonavi.Net;
-    
-    public partial class Foo
-    {
-        [SheetSerializable]
-        public partial record Bar(string Code, [property: CustomField(101)] string Name) : ISheetData;
-    }
-    """, "KAONAVI006", DisplayName = $"Generator > 入れ子にされたクラスの場合、KAONAVI006のコンパイル警告が発生する。")]
+    """, "KAONAVI006", DisplayName = $"Generator > {nameof(CustomFieldAttribute)}のidが重複したプロパティがある場合、KAONAVI005のコンパイル警告が発生する。")]
     public void When_Invalid_Code_Compiler_Warns_With_Diagnostic(string code, string id)
     {
         // Arrange - Act
