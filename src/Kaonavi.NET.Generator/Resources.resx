@@ -124,33 +124,33 @@
     <value>SheetSerializable object should be partial</value>
   </data>
   <data name="KAONAVI002_MessageFormat" xml:space="preserve">
-    <value>SheetSerializable object '{0}' should implement ISheetData. Source generation will be skipped.</value>
-  </data>
-  <data name="KAONAVI002_Title" xml:space="preserve">
-    <value>SheetSerializable object should implement ISheetData</value>
-  </data>
-  <data name="KAONAVI003_MessageFormat" xml:space="preserve">
-    <value>SheetSerializable object '{0}' already implements ISheetData.ToCustomFields(). Source generation will be skipped.</value>
-  </data>
-  <data name="KAONAVI003_Title" xml:space="preserve">
-    <value>SheetSerializable object should not implement ISheetData.ToCustomFields</value>
-  </data>
-  <data name="KAONAVI004_MessageFormat" xml:space="preserve">
-    <value>SheetSerializable object '{0}' should have at least one property with CustomField attribute. Source generation will be skipped.</value>
-  </data>
-  <data name="KAONAVI004_Title" xml:space="preserve">
-    <value>SheetSerializable object should have property with CustomField</value>
-  </data>
-  <data name="KAONAVI005_MessageFormat" xml:space="preserve">
-    <value>'{0}' property has duplicated CustomField('{1}') attribute with '{2}' property. Source generation will be skipped.</value>
-  </data>
-  <data name="KAONAVI005_Title" xml:space="preserve">
-    <value>CustomField id should be unique</value>
-  </data>
-  <data name="KAONAVI006_MessageFormat" xml:space="preserve">
     <value>SheetSerializable object '{0}' should not be inner class. Source generation will be skipped.</value>
   </data>
-  <data name="KAONAVI006_Title" xml:space="preserve">
+  <data name="KAONAVI002_Title" xml:space="preserve">
     <value>SheetSerializable object should not be inner class</value>
+  </data>
+  <data name="KAONAVI003_MessageFormat" xml:space="preserve">
+    <value>SheetSerializable object '{0}' should implement ISheetData. Source generation will be skipped.</value>
+  </data>
+  <data name="KAONAVI003_Title" xml:space="preserve">
+    <value>SheetSerializable object should implement ISheetData</value>
+  </data>
+  <data name="KAONAVI004_MessageFormat" xml:space="preserve">
+    <value>SheetSerializable object '{0}' already implements ToCustomFields(). Source generation will be skipped.</value>
+  </data>
+  <data name="KAONAVI004_Title" xml:space="preserve">
+    <value>SheetSerializable object should not implement ToCustomFields()</value>
+  </data>
+  <data name="KAONAVI005_MessageFormat" xml:space="preserve">
+    <value>SheetSerializable object '{0}' should have at least one property with CustomField attribute. Source generation will be skipped.</value>
+  </data>
+  <data name="KAONAVI005_Title" xml:space="preserve">
+    <value>SheetSerializable object should have property with CustomField</value>
+  </data>
+  <data name="KAONAVI006_MessageFormat" xml:space="preserve">
+    <value>'{0}' property has duplicated CustomField('{1}') attribute with '{2}' property. Source generation will be skipped.</value>
+  </data>
+  <data name="KAONAVI006_Title" xml:space="preserve">
+    <value>CustomField should be unique</value>
   </data>
 </root>

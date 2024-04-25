@@ -79,7 +79,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object &apos;{0}&apos; should implement ISheetData. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object &apos;{0}&apos; should not be inner class. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI002_MessageFormat {
             get {
@@ -88,7 +88,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object should implement ISheetData に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object should not be inner class に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI002_Title {
             get {
@@ -97,7 +97,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object &apos;{0}&apos; already implements ISheetData.ToCustomFields(). Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object &apos;{0}&apos; should implement ISheetData. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI003_MessageFormat {
             get {
@@ -106,7 +106,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object should not implement ISheetData.ToCustomFields に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object should implement ISheetData に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI003_Title {
             get {
@@ -115,7 +115,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object &apos;{0}&apos; should have at least one property with CustomField attribute. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object &apos;{0}&apos; already implements ISheetData.ToCustomFields(). Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI004_MessageFormat {
             get {
@@ -124,7 +124,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object should have property with CustomField に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object should not implement ISheetData.ToCustomFields に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI004_Title {
             get {
@@ -133,7 +133,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   &apos;{0}&apos; property has duplicated CustomField(&apos;{1}&apos;) attribute with &apos;{2}&apos; property. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object &apos;{0}&apos; should have at least one property with CustomField attribute. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI005_MessageFormat {
             get {
@@ -142,7 +142,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   CustomField id should be unique に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object should have property with CustomField に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI005_Title {
             get {
@@ -151,7 +151,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object &apos;{0}&apos; should not be inner class. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
+        ///   &apos;{0}&apos; property has duplicated CustomField(&apos;{1}&apos;) attribute with &apos;{2}&apos; property. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI006_MessageFormat {
             get {
@@ -160,7 +160,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object should not be inner class に類似しているローカライズされた文字列を検索します。
+        ///   CustomField should be unique に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI006_Title {
             get {
