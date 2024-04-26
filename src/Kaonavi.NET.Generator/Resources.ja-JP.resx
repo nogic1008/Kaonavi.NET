@@ -135,4 +135,7 @@
   <data name="KAONAVI006_MessageFormat" xml:space="preserve">
     <value>'{0}' プロパティには、'{2}' プロパティと重複した CustomField('{1}') 属性があります。ソースは生成されません。</value>
   </data>
+  <data name="KAONAVI007_MessageFormat" xml:space="preserve">
+    <value>'{0}' プロパティには、get アクセサーがありません。ソースは生成されません。</value>
+  </data>
 </root>

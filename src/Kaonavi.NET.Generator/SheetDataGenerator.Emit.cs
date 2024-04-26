@@ -83,21 +83,25 @@ public partial class SheetDataGenerator
         }
 
         var customFieldDict = new Dictionary<int, IPropertySymbol>();
-        bool duplicated = false;
+        bool hasError = false;
         foreach (var (prop, id) in customFieldProperties)
         {
             if (customFieldDict.TryGetValue(id.GetValueOrDefault(), out var prev))
             {
                 context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.DuplicateCustomFieldId, prev.Locations[0], prev.Name, id, prop.Name));
                 context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.DuplicateCustomFieldId, prop.Locations[0], prop.Name, id, prev.Name));
-                duplicated = true;
+                hasError = true;
+                continue;
             }
-            else
+            if (prop.GetMethod is null)
             {
-                customFieldDict.Add(id.GetValueOrDefault(), prop);
+                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustHaveGetter, prop.Locations[0], prop.Name));
+                hasError = true;
+                continue;
             }
+            customFieldDict.Add(id.GetValueOrDefault(), prop);
         }
-        return duplicated ? null : customFieldDict;
+        return hasError ? null : customFieldDict;
     }
 
     /// <summary>
