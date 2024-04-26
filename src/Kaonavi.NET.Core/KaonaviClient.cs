@@ -239,7 +239,7 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     async ValueTask<IReadOnlyList<SheetData>> ISheet.ListAsync(int id, CancellationToken cancellationToken)
-         => (await CallApiAsync(new(HttpMethod.Get, $"sheets/{ThrowIfNegative(id):D}"), Context.Default.ApiListResultSheetData, cancellationToken)).Values;
+        => (await CallApiAsync(new(HttpMethod.Get, $"sheets/{ThrowIfNegative(id):D}"), Context.Default.ApiListResultSheetData, cancellationToken)).Values;
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
@@ -282,7 +282,7 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     ValueTask<User> IUser.CreateAsync(UserPayload payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Post, "users")
         {
-            Content = JsonContent.Create(new(payload.Email, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), Context.Default.UserJsonPayload)
+            Content = JsonContent.Create(new(payload), Context.Default.UserJsonPayload)
         }, Context.Default.User, cancellationToken);
 
     /// <inheritdoc/>
@@ -295,7 +295,7 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     ValueTask<User> IUser.UpdateAsync(int id, UserPayload payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Patch, $"users/{ThrowIfNegative(id):D}")
         {
-            Content = JsonContent.Create(new(payload.Email, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!)), Context.Default.UserJsonPayload)
+            Content = JsonContent.Create(new(payload), Context.Default.UserJsonPayload)
         }, Context.Default.User, cancellationToken);
 
     /// <inheritdoc/>
@@ -303,7 +303,11 @@ public class KaonaviClient : IDisposable, IKaonaviClient, ITask, ILayout, IMembe
     async ValueTask IUser.DeleteAsync(int id, CancellationToken cancellationToken)
         => await CallApiAsync(new(HttpMethod.Delete, $"users/{ThrowIfNegative(id):D}"), cancellationToken).ConfigureAwait(false);
 
-    internal record UserJsonPayload(string Email, string? MemberCode, string Password, Role Role);
+    internal record UserJsonPayload(string Email, string? MemberCode, string Password, Role Role, bool IsActive, bool PasswordLocked, bool UseSmartphone)
+    {
+        public UserJsonPayload(UserPayload payload) : this(payload.Email, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!), payload.IsActive, payload.PasswordLocked, payload.UseSmartphone)
+        { }
+    }
     #endregion IUser
 
     #region IRole
