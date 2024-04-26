@@ -1431,7 +1431,10 @@ public sealed class KaonaviClientTest
                 "name": "システム管理者",
                 "type": "Adm"
               },
-              "last_login_at": "2021-11-01 12:00:00"
+              "last_login_at": "2021-11-01 12:00:00",
+              "is_active": true,
+              "password_locked": false,
+              "use_smartphone": false
             },
             {
               "id": 2,
@@ -1442,7 +1445,10 @@ public sealed class KaonaviClientTest
                 "name": "マネージャ",
                 "type": "一般"
               },
-              "last_login_at": null
+              "last_login_at": null,
+              "is_active": true,
+              "password_locked": false,
+              "use_smartphone": false
             }
           ]
         }
@@ -1488,13 +1494,16 @@ public sealed class KaonaviClientTest
             "id": 1,
             "name": "システム管理者",
             "type": "Adm"
-          }
+          },
+          "is_active": true,
+          "password_locked": false,
+          "use_smartphone": false
         }
         """;
         var payload = new UserPayload("user1@example.com", "00001", "password", 1);
         /*lang=json,strict*/
         const string expectedJson = """
-        {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1}}
+        {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1},"is_active":true,"password_locked":false,"use_smartphone":false}
         """;
 
         var handler = new Mock<HttpMessageHandler>();
@@ -1623,14 +1632,17 @@ public sealed class KaonaviClientTest
             "id": 1,
             "name": "システム管理者",
             "type": "Adm"
-          }
+          },
+          "is_active": true,
+          "password_locked": false,
+          "use_smartphone": false
         }
         """;
         string tokenString = GenerateRandomString();
         var payload = new UserPayload("user1@example.com", "00001", "password", 1);
         /*lang=json,strict*/
         const string expectedJson = """
-        {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1}}
+        {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1},"is_active":true,"password_locked":false,"use_smartphone":false}
         """;
 
         var handler = new Mock<HttpMessageHandler>();

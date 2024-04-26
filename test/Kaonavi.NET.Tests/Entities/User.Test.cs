@@ -17,7 +17,10 @@ public sealed class UserTest
             "id":1,
             "name":"システム管理者",
             "type":"Adm"
-        }
+        },
+        "is_active": true,
+        "password_locked": false,
+        "use_smartphone": false
     }
     """;
     /*lang=json,strict*/
@@ -30,7 +33,10 @@ public sealed class UserTest
             "id": 2,
             "name": "マネージャ",
             "type": "一般"
-        }
+        },
+        "is_active": true,
+        "password_locked": true,
+        "use_smartphone": true
     }
     """;
 
@@ -43,10 +49,16 @@ public sealed class UserTest
     /// <param name="id"><see cref="User.Id"/></param>
     /// <param name="email"><see cref="User.EMail"/></param>
     /// <param name="memberCode"><see cref="User.MemberCode"/></param>
+    /// <param name="roleId"><see cref="Role.Id"/></param>
+    /// <param name="roleName"><see cref="Role.Name"/></param>
+    /// <param name="roleType"><see cref="Role.Type"/></param>
+    /// <param name="isActive"><see cref="User.IsActive"/></param>
+    /// <param name="passwordLocked"><see cref="User.PasswordLocked"/></param>
+    /// <param name="useSmartphone"><see cref="User.UseSmartphone"/></param>
     [TestMethod(UserTestName), TestCategory("JSON Deserialize")]
-    [DataRow(AdminUserJson, 1, "taro@kaonavi.jp", "A0002", DisplayName = UserTestName)]
-    [DataRow(NonMemberJson, 2, "hanako@kaonavi.jp", null, DisplayName = UserTestName)]
-    public void User_CanDeserializeJSON(string json, int id, string email, string? memberCode)
+    [DataRow(AdminUserJson, 1, "taro@kaonavi.jp", "A0002", 1, "システム管理者", "Adm", true, false, false, DisplayName = UserTestName)]
+    [DataRow(NonMemberJson, 2, "hanako@kaonavi.jp", null, 2, "マネージャ", "一般", true, true, true, DisplayName = UserTestName)]
+    public void User_CanDeserializeJSON(string json, int id, string email, string? memberCode, int roleId, string roleName, string roleType, bool isActive, bool passwordLocked, bool useSmartphone)
     {
         // Arrange - Act
         var user = JsonSerializer.Deserialize(json, Context.Default.User);
@@ -56,11 +68,10 @@ public sealed class UserTest
         _ = user!.Id.Should().Be(id);
         _ = user.Email.Should().Be(email);
         _ = user.MemberCode.Should().Be(memberCode);
-
-        _ = user.Role.Should().BeAssignableTo<Role>();
-        _ = user.Role.Id.Should().NotBe(0);
-        _ = user.Role.Name.Should().NotBeNullOrEmpty();
-        _ = user.Role.Type.Should().NotBeNullOrEmpty();
+        _ = user.IsActive.Should().Be(isActive);
+        _ = user.PasswordLocked.Should().Be(passwordLocked);
+        _ = user.UseSmartphone.Should().Be(useSmartphone);
+        _ = user.Role.Should().Be(new Role(roleId, roleName, roleType));
     }
 
     /// <summary>
@@ -81,6 +92,9 @@ public sealed class UserTest
                 "name": "システム管理者",
                 "type": "Adm"
             },
+            "is_active": true,
+            "password_locked": false,
+            "use_smartphone": false,
             "last_login_at": "2021-11-01 12:00:00"
         }
         """;
@@ -94,7 +108,10 @@ public sealed class UserTest
             Email: "example@kaonavi.jp",
             MemberCode: "12345",
             Role: new(1, "システム管理者", "Adm"),
-            LastLoginAt: new DateTime(2021, 11, 1, 12, 0, 0)
+            LastLoginAt: new DateTime(2021, 11, 1, 12, 0, 0),
+            IsActive: true,
+            PasswordLocked: false,
+            UseSmartphone: false
         ));
     }
 }
