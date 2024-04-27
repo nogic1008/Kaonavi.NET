@@ -22,7 +22,6 @@ var root = new RootCommand()
 var parser = new CommandLineBuilder(root)
     .UseDefaults()
     .UseHost(host =>
-    {
         host
             .ConfigureDefaults(args) // 環境変数, 引数, カレントディレクトリの設定ファイル(appSettings.json)を読み込む
             .ConfigureServices((ctx, services) =>
@@ -48,9 +47,8 @@ var parser = new CommandLineBuilder(root)
             .UseCommandHandler<LayoutCommand, LayoutCommand.CommandHandler>()
             .UseCommandHandler<DownloadCommand, DownloadCommand.CommandHandler>()
             .UseCommandHandler<UploadCommand, UploadCommand.CommandHandler>()
-            .UseCommandHandler<ProgressCommand, ProgressCommand.CommandHandler>();
-        return;
-    })
+            .UseCommandHandler<ProgressCommand, ProgressCommand.CommandHandler>()
+    )
     .Build();
 
 return await parser.InvokeAsync(args);
