@@ -15,7 +15,7 @@
     <DevelopmentDependency>true</DevelopmentDependency>
     <IncludeSymbols>false</IncludeSymbols>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
-    <Description>Code generator for Kaonavi.NET</Description>
+    <Description>Code generator for Kaonavi.NET (DO NOT USE ALONE)</Description>
   </PropertyGroup>
 
   <ItemGroup>

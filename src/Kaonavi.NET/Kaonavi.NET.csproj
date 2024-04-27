@@ -7,10 +7,13 @@
     <IncludeContentInPack>true</IncludeContentInPack>
     <NoWarn>$(NoWarn);NU5128</NoWarn>
     <Description>Unofficial Kaonavi Library for .NET</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
     <ProjectReference Include="../Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
+    <ProjectReference Include="../Kaonavi.NET.Generator/Kaonavi.NET.Generator.csproj" />
   </ItemGroup>
 
 </Project>
