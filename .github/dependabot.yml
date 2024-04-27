@@ -5,13 +5,14 @@ version: 2
 updates:
   # NuGet (/*.csproj)
   - package-ecosystem: nuget
-    directory: '/'
+    directory: /
     schedule:
       interval: daily
       time: '08:00'
       timezone: Japan
+    milestone: 8
     labels:
-      - 'dependabot:robot:'
+      - 'dependabot :robot:'
     commit-message:
       prefix: fix
       prefix-development: chore
@@ -19,14 +20,14 @@ updates:
 
   # GitHub Actions (/.github/workflows/*.yml)
   - package-ecosystem: github-actions
-    directory: '/'
+    directory: /
     schedule:
       interval: daily
       time: '08:00'
       timezone: Japan
+    milestone: 8
     labels:
-      - 'dependabot:robot:'
+      - 'dependabot :robot:'
     commit-message:
-      prefix: fix
-      prefix-development: chore
+      prefix: ci
       include: scope
