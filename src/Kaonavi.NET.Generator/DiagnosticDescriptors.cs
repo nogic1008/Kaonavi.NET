@@ -54,4 +54,9 @@ internal static class DiagnosticDescriptors
     /// カスタムフィールドのIDが重複している場合に発出されます。
     /// </summary>
     public static readonly DiagnosticDescriptor DuplicateCustomFieldId = Create("KAONAVI006", DiagnosticSeverity.Warning, true);
+
+    /// <summary>
+    /// カスタムフィールドが読み取り可能でない場合に発出されます。
+    /// </summary>
+    public static readonly DiagnosticDescriptor MustHaveGetter = Create("KAONAVI007", DiagnosticSeverity.Warning, true);
 }

@@ -115,7 +115,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object &apos;{0}&apos; already implements ISheetData.ToCustomFields(). Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object &apos;{0}&apos; already implements ToCustomFields(). Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI004_MessageFormat {
             get {
@@ -124,7 +124,7 @@ namespace Kaonavi.Net {
         }
         
         /// <summary>
-        ///   SheetSerializable object should not implement ISheetData.ToCustomFields に類似しているローカライズされた文字列を検索します。
+        ///   SheetSerializable object should not implement ToCustomFields() に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string KAONAVI004_Title {
             get {
@@ -165,6 +165,24 @@ namespace Kaonavi.Net {
         internal static string KAONAVI006_Title {
             get {
                 return ResourceManager.GetString("KAONAVI006_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   &apos;{0}&apos; property has not getter. Source generation will be skipped. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string KAONAVI007_MessageFormat {
+            get {
+                return ResourceManager.GetString("KAONAVI007_MessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   CustomField should have getter に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string KAONAVI007_Title {
+            get {
+                return ResourceManager.GetString("KAONAVI007_Title", resourceCulture);
             }
         }
     }

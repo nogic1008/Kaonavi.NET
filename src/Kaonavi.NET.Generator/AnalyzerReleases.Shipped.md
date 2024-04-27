@@ -10,3 +10,4 @@ KAONAVI003 | KaonaviSourceGenerate | Warning | [`SheetSerializable` object shoul
 KAONAVI004 | KaonaviSourceGenerate | Warning | [`SheetSerializable` object should not implement `ToCustomFields()`](../../docs/analyzer/KAONAVI004.md)
 KAONAVI005 | KaonaviSourceGenerate | Warning | [`SheetSerializable` object should have property with `CustomField`](../../docs/analyzer/KAONAVI005.md)
 KAONAVI006 | KaonaviSourceGenerate | Warning | [`CustomField` should be unique](../../docs/analyzer/KAONAVI006.md)
+KAONAVI007 | KaonaviSourceGenerate | Warning | [`CustomField` should have getter](../../docs/analyzer/KAONAVI007.md)
