@@ -1,1 +1,1 @@
-./src/Kaonavi.NET.Generator/AnalyzerReleases.Shipped.md
+../../src/Kaonavi.NET.Generator/AnalyzerReleases.Shipped.md
