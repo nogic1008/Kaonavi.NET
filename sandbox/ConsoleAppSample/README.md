@@ -1,6 +1,6 @@
 # ConsoleAppSample
 
-[ConsoleAppFramework](https://github.com/Cysharp/ConsoleAppFramework)を利用した、`Kaonavi.Net`のサンプルプログラムです。
+[System.CommandLine](https://github.com/dotnet/command-line-api)を利用した、`Kaonavi.Net`のサンプルプログラムです。
 
 ## Setup
 
@@ -34,5 +34,5 @@
 
 ## See also
 
-- [ConsoleAppFramework v4 - Minimal API for CommandLine tool](https://neue.cc/2021/12/30.html)
+- [System.CommandLine の概要](https://learn.microsoft.com/dotnet/standard/commandline/)
 - [.NET での汎用ホスト](https://learn.microsoft.com/dotnet/core/extensions/generic-host)
