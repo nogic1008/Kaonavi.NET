@@ -35,4 +35,4 @@
 ## See also
 
 - [ConsoleAppFramework v4 - Minimal API for CommandLine tool](https://neue.cc/2021/12/30.html)
-- [ASP.NET Core の .NET 汎用ホスト](https://docs.microsoft.com/aspnet/core/fundamentals/host/generic-host)
+- [.NET での汎用ホスト](https://learn.microsoft.com/dotnet/core/extensions/generic-host)
