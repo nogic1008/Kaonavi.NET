@@ -154,4 +154,4 @@ var taskId = await client.Sheet.ReplaceAsync(i, sheetDataList);
 
 ## Development & Contributing
 
-[CONTRIBUTING.md](./CONTRIBUTING.md)を参照してください。
+[CONTRIBUTING.md](https://github.com/nogic1008/Kaonavi.NET/blob/main/CONTRIBUTING.md)を参照してください。
