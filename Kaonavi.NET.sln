@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Core", "src\Kao
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Generator", "src\Kaonavi.NET.Generator\Kaonavi.NET.Generator.csproj", "{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Server", "src\Kaonavi.NET.Server\Kaonavi.NET.Server.csproj", "{843E8AFA-58E4-4027-AEFF-4D8F057CE3E2}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Tests", "test\Kaonavi.NET.Tests\Kaonavi.NET.Tests.csproj", "{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppSample", "sandbox\ConsoleAppSample\ConsoleAppSample.csproj", "{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}"
@@ -34,6 +36,10 @@ Global
 		{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{843E8AFA-58E4-4027-AEFF-4D8F057CE3E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{843E8AFA-58E4-4027-AEFF-4D8F057CE3E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{843E8AFA-58E4-4027-AEFF-4D8F057CE3E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{843E8AFA-58E4-4027-AEFF-4D8F057CE3E2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
