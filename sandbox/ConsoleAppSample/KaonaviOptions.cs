@@ -5,12 +5,16 @@ namespace ConsoleAppSample;
 /// </summary>
 public class KaonaviOptions
 {
-#nullable disable warnings
-    /// <summary>Consumer Key</summary>
-    public string ConsumerKey { get; set; }
-    /// <summary>Consumer Secret</summary>
-    public string ConsumerSecret { get; set; }
-#nullable restore
+    /// <summary>
+    /// <inheritdoc cref="Kaonavi.Net.KaonaviClient.KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/>
+    /// </summary>
+    public required string ConsumerKey { get; set; }
+
+    /// <summary>
+    /// <inheritdoc cref="Kaonavi.Net.KaonaviClient.KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/>
+    /// </summary>
+    public required string ConsumerSecret { get; set; }
+
     /// <summary>
     /// <see cref="Kaonavi.Net.KaonaviClient.UseDryRun"/>
     /// </summary>

@@ -1,6 +1,6 @@
 using Kaonavi.Net;
 
-namespace ConsoleAppSample;
+namespace ConsoleAppSample.Entities;
 
 [SheetSerializable]
 internal partial record CustomSheetData(
