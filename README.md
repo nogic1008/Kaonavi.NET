@@ -73,7 +73,7 @@ if (progress.Status == "NG" || progress.Status == "ERROR")
 [.NET Generic Host](https://learn.microsoft.com/dotnet/core/extensions/generic-host)を用いて、`HttpClient`のインスタンスを外部から注入することができます。
 
 > [!TIP]
-> コンソール アプリの完全なサンプルは[ConsoleAppSample](https://github.com/nogic1008/Kaonavi.NET/tree/main/samples/ConsoleAppSample)を参照してください。
+> コンソール アプリの完全なサンプルは[ConsoleAppSample](https://github.com/nogic1008/Kaonavi.NET/tree/main/sandbox/ConsoleAppSample)を参照してください。
 
 WIP
 
