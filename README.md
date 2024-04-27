@@ -9,6 +9,10 @@
 
 Unofficial Kaonavi Library for .NET
 
+> [!WARNING]
+> 現状、メンテナーがカオナビAPIの利用権を持っていないため、実際の動作確認ができていません。
+> ご利用の際は自己責任でお願いいたします。
+
 ## Install
 
 ```powershell
@@ -34,11 +38,9 @@ var client = new KaonaviClient(new HttpClient(), "Your Consumer Key", "Your Cons
 // アクセストークンは最初にAPIを呼び出す際に自動で取得されます
 
 // 所属ツリー 一括取得APIを呼び出す
-// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get
 var departments = await client.Department.ListAsync();
 
 // メンバー情報 登録APIを呼び出す(戻り値はタスクID)
-// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/post
 int taskId = await client.Member.CreateAsync(new MemberData[]
 {
     new MemberData(
@@ -60,7 +62,6 @@ int taskId = await client.Member.CreateAsync(new MemberData[]
 await Task.Delay(10000);
 
 // タスク進捗状況 取得APIを呼び出す
-// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%BF%E3%82%B9%E3%82%AF%E9%80%B2%E6%8D%97%E7%8A%B6%E6%B3%81/paths/~1tasks~1%7Btask_id%7D/get
 var progress = await client.Task.ReadAsync(taskId);
 if (progress.Status == "NG" || progress.Status == "ERROR")
 {
@@ -68,14 +69,46 @@ if (progress.Status == "NG" || progress.Status == "ERROR")
 }
 ```
 
-### .NET Generic Host
+### Dependency Injection
 
-[.NET Generic Host](https://learn.microsoft.com/dotnet/core/extensions/generic-host)を用いて、`HttpClient`のインスタンスを外部から注入することができます。
+クライアントは`IKaonaviClient`で抽象化されているため、DIコンテナを使用して登録することができます。
 
 > [!TIP]
 > コンソール アプリの完全なサンプルは[ConsoleAppSample](https://github.com/nogic1008/Kaonavi.NET/tree/main/sandbox/ConsoleAppSample)を参照してください。
 
-WIP
+```csharp
+// Microsoft.Extensions.DependencyInjectionでの使用例
+hostBuilder.ConfigureServices((context, services) =>
+{
+    string consumerKey = context.Configuration["Kaonavi:ConsumerKey"];
+    string consumerSecret = context.Configuration["Kaonavi:ConsumerSecret"];
+    // HttpClientを依存性注入しつつ、KaonaviClientをDIに登録
+    // 要 Microsoft.Extensions.Http パッケージ
+    services.AddHttpClient<IKaonaviClient, KaonaviClient>((client) => new(client, consumerKey, consumerSecret));
+
+    services.addTransient<IYourService, YourService>();
+});
+
+public interface IYourService
+{
+    public async Task DoSomethingAsync();
+}
+
+// カオナビAPIを呼び出すサービス
+public class YourService : IYourService
+{
+    private readonly IKaonaviClient _client;
+
+    // コンストラクターで依存性を注入
+    public YourService(IKaonaviClient client) => _client = client;
+
+    public async Task DoSomethingAsync()
+    {
+        var departments = await _client.Department.ListAsync();
+        // ...
+    }
+}
+```
 
 ### Source Generator
 
@@ -116,7 +149,6 @@ var client = new KaonaviClient(new HttpClient(), "Your Consumer Key", "Your Cons
 // IEnumerable<ISheetData>.ToMultipleSheetData(): 複数レコードのシート情報に変換
 var sheetDataList = positions.ToSingleSheetData();
 // シート情報 一括更新APIを呼び出す
-// https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1%7Bsheet_id%7D/put
 var taskId = await client.Sheet.ReplaceAsync(i, sheetDataList);
 ```
 
