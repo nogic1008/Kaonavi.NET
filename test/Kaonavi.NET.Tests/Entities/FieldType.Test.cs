@@ -19,7 +19,7 @@ public sealed class FieldTypeTest
     [DataRow(FieldType.Department, /*lang=json,strict*/ "\"department\"", DisplayName = $"{nameof(FieldType)}.${nameof(FieldType.Department)} > \"department\" にシリアライズされる。")]
     [DataRow(FieldType.DepartmentArray, /*lang=json,strict*/ "\"department[]\"", DisplayName = $"{nameof(FieldType)}.${nameof(FieldType.DepartmentArray)} > \"department[]\" にシリアライズされる。")]
     public void CanSerializeJSON(FieldType fieldType, string expectedJson)
-        => JsonSerializer.Serialize(fieldType).Should().Be(expectedJson);
+        => JsonSerializer.Serialize(fieldType, Context.Default.FieldType).Should().Be(expectedJson);
 
     /// <summary>無効な<see cref="FieldType"/>の場合、<see cref="JsonException"/>をスローする。 </summary>
     /// <param name="invalidValue"><see cref="FieldType"/>の範囲外にあたる値</param>

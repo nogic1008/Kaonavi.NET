@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Kaonavi.Net.Entities;
 
 /// <summary>シート情報</summary>
@@ -37,8 +39,9 @@ internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<
 {
     private static ReadOnlySpan<byte> PropertyName => "custom_fields"u8;
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = $"{nameof(CustomFieldValue)} converter is already added on {nameof(Json.Context)}")]
     public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => JsonSerializer.Deserialize<IReadOnlyList<JsonElement>>(ref reader, options)!
+        => JsonElement.ParseValue(ref reader).EnumerateArray()
             .Select(d =>
                 d.GetProperty(PropertyName)
                     .EnumerateArray()
@@ -47,6 +50,7 @@ internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<
             )
             .ToArray();
 
+    [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = $"{nameof(CustomFieldValue)} converter is already added on {nameof(Json.Context)}")]
     public override void Write(Utf8JsonWriter writer, IReadOnlyList<IReadOnlyList<CustomFieldValue>> value, JsonSerializerOptions options)
     {
         writer.WriteStartArray();

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Kaonavi.Net.Entities;
 
 /// <summary>
@@ -25,14 +27,16 @@ internal class ApiListResultConverterFactory : JsonConverterFactory
     private class ApiListResultConverter<T> : JsonConverter<ApiListResult<T>>
     {
         /// <inheritdoc/>
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = $"{nameof(IReadOnlyList<T>)} converter is already added on {nameof(Json.Context)}")]
         public override ApiListResult<T>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var json = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+            var json = JsonElement.ParseValue(ref reader);
             var prop = json.EnumerateObject().First(d => d.Value.ValueKind == JsonValueKind.Array);
             return new(prop.Name, prop.Value.Deserialize<IReadOnlyList<T>>(options)!);
         }
 
         /// <inheritdoc/>
+        [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = $"{nameof(IReadOnlyList<T>)} converter is already added on {nameof(Json.Context)}")]
         public override void Write(Utf8JsonWriter writer, ApiListResult<T> value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
