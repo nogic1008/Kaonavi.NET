@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <None Include="./README.md" Pack="true" PackagePath="/" />
-    <Compile Include="../Kaonavi.Net.Core/Json/DateTimeConverter.cs" />
+    <Compile Include="..\Kaonavi.Net.Core\Json\DateTimeConverter.cs" />
   </ItemGroup>
 
   <ItemGroup>
