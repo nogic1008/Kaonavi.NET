@@ -1,5 +1,5 @@
 # Please see the documentation for all configuration options:
-# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
 version: 2
 updates:
@@ -29,5 +29,17 @@ updates:
     labels:
       - 'dependabot :robot:'
     commit-message:
-      prefix: ci
-      include: scope
+      prefix: ci(gh-actions)
+
+  # Development Containers (/.devcontainer/devcontainer.json)
+  - package-ecosystem: devcontainers
+    directory: '/'
+    schedule:
+      interval: daily
+      time: '08:00'
+      timezone: Japan
+    labels:
+      - 'dependabot :robot:'
+    milestone: 8
+    commit-message:
+      prefix: ci(devcontainer)
