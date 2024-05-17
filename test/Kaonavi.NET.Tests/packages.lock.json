@@ -22,9 +22,9 @@
       },
       "Microsoft.Extensions.TimeProvider.Testing": {
         "type": "Direct",
-        "requested": "[8.4.0, )",
-        "resolved": "8.4.0",
-        "contentHash": "xaXPM4dQe4oJ2gY82al9LtjLHcfXaD+N/lXw4qX02sd3mETQpV2h1jeJyRYxBJcbJHIvE0pR1gj5yz3/dbnMFw=="
+        "requested": "[8.5.0, )",
+        "resolved": "8.5.0",
+        "contentHash": "eercwjwFkF1J3HIpOniPLVEtUl9eFz7C2j4OX0yDacIlaSOTd8UAFCYmoDkcgnxa02FVcnvA4cuQjvz7lW9YjQ=="
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
