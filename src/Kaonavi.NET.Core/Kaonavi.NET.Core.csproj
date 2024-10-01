@@ -4,6 +4,7 @@
     <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
     <Description>Core Libraries of Kaonavi.NET</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>Kaonavi.Net</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

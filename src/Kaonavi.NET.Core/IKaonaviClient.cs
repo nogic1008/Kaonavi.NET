@@ -1,37 +1,35 @@
-using Kaonavi.Net.Api;
-
 namespace Kaonavi.Net;
 
 /// <summary>カオナビ API v2の抽象化</summary>
 public interface IKaonaviClient
 {
-    /// <inheritdoc cref="ITask"/>
-    ITask Task { get; }
+    /// <inheritdoc cref="KaonaviClient.ITask"/>
+    KaonaviClient.ITask Task { get; }
 
-    /// <inheritdoc cref="ILayout"/>
-    ILayout Layout { get; }
+    /// <inheritdoc cref="KaonaviClient.ILayout"/>
+    KaonaviClient.ILayout Layout { get; }
 
-    /// <inheritdoc cref="IMember"/>
-    IMember Member { get; }
+    /// <inheritdoc cref="KaonaviClient.IMember"/>
+    KaonaviClient.IMember Member { get; }
 
-    /// <inheritdoc cref="ISheet"/>
-    ISheet Sheet { get; }
+    /// <inheritdoc cref="KaonaviClient.ISheet"/>
+    KaonaviClient.ISheet Sheet { get; }
 
-    /// <inheritdoc cref="IDepartment"/>
-    IDepartment Department { get; }
+    /// <inheritdoc cref="KaonaviClient.IDepartment"/>
+    KaonaviClient.IDepartment Department { get; }
 
-    /// <inheritdoc cref="IUser"/>
-    IUser User { get; }
+    /// <inheritdoc cref="KaonaviClient.IUser"/>
+    KaonaviClient.IUser User { get; }
 
-    /// <inheritdoc cref="IRole"/>
-    IRole Role { get; }
+    /// <inheritdoc cref="KaonaviClient.IRole"/>
+    KaonaviClient.IRole Role { get; }
 
-    /// <inheritdoc cref="IAdvancedPermission"/>
-    IAdvancedPermission AdvancedPermission { get; }
+    /// <inheritdoc cref="KaonaviClient.IAdvancedPermission"/>
+    KaonaviClient.IAdvancedPermission AdvancedPermission { get; }
 
-    /// <inheritdoc cref="IEnumOption"/>
-    IEnumOption EnumOption { get; }
+    /// <inheritdoc cref="KaonaviClient.IEnumOption"/>
+    KaonaviClient.IEnumOption EnumOption { get; }
 
-    /// <inheritdoc cref="IWebhook"/>
-    IWebhook Webhook { get; }
+    /// <inheritdoc cref="KaonaviClient.IWebhook"/>
+    KaonaviClient.IWebhook Webhook { get; }
 }
