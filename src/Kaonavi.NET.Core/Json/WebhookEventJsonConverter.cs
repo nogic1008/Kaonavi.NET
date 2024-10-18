@@ -14,9 +14,9 @@ internal class WebhookEventJsonConverter : JsonConverter<WebhookEvent>
     private static ReadOnlySpan<byte> MemberDeleted => "member_deleted"u8;
 
     public override WebhookEvent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => reader.ValueSpan.SequenceEqual(MemberCreated) ? WebhookEvent.MemberCreated
-        : reader.ValueSpan.SequenceEqual(MemberUpdated) ? WebhookEvent.MemberUpdated
-        : reader.ValueSpan.SequenceEqual(MemberDeleted) ? WebhookEvent.MemberDeleted
+        => reader.ValueTextEquals(MemberCreated) ? WebhookEvent.MemberCreated
+        : reader.ValueTextEquals(MemberUpdated) ? WebhookEvent.MemberUpdated
+        : reader.ValueTextEquals(MemberDeleted) ? WebhookEvent.MemberDeleted
         : throw new JsonException();
 
     public override void Write(Utf8JsonWriter writer, WebhookEvent value, JsonSerializerOptions options)

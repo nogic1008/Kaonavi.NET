@@ -1,5 +1,4 @@
 using System.Text;
-using Kaonavi.Net.Api;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 using Microsoft.Extensions.Time.Testing;
@@ -421,7 +420,7 @@ public sealed class KaonaviClientTest
 
     #region タスク進捗状況 API
     /// <summary>
-    /// <inheritdoc cref="ITask.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.ITask.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.Task.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
@@ -537,7 +536,7 @@ public sealed class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.Layout.ListAsync"/>は、<paramref name="expectedEndpoint"/>にGETリクエストを行う。
     /// </summary>
-    /// <param name="getCalcType"><inheritdoc cref="ILayout.ListAsync" path="/param[@name='getCalcType']"/></param>
+    /// <param name="getCalcType"><inheritdoc cref="KaonaviClient.ILayout.ListAsync" path="/param[@name='getCalcType']"/></param>
     /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
     [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)} > GET /sheet_layouts をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
@@ -598,7 +597,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="ILayout.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.ILayout.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.Layout.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(-1) > ArgumentOutOfRangeException をスローする。")]
@@ -623,7 +622,7 @@ public sealed class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.Layout.ReadAsync"/>は、<paramref name="expectedEndpoint"/>にGETリクエストを行う。
     /// </summary>
-    /// <param name="getCalcType"><inheritdoc cref="ILayout.ReadAsync" path="/param[@name='getCalcType']"/></param>
+    /// <param name="getCalcType"><inheritdoc cref="KaonaviClient.ILayout.ReadAsync" path="/param[@name='getCalcType']"/></param>
     /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
     [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)} > GET /sheet_layouts/:id をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
@@ -1009,7 +1008,7 @@ public sealed class KaonaviClientTest
     ];
 
     /// <summary>
-    /// <inheritdoc cref="ISheet.ListAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.ISheet.ListAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.Sheet.ListAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListAsync)} > ArgumentOutOfRangeException をスローする。")]
@@ -1120,7 +1119,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="ISheet.ReplaceAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.ISheet.ReplaceAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.Sheet.ReplaceAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ReplaceAsync)} > ArgumentOutOfRangeException をスローする。")]
@@ -1179,7 +1178,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="ISheet.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.ISheet.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.Sheet.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateAsync)} > ArgumentOutOfRangeException をスローする。")]
@@ -1238,7 +1237,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="ISheet.CreateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.ISheet.CreateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.Sheet.CreateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.CreateAsync)} > ArgumentOutOfRangeException をスローする。")]
@@ -1531,7 +1530,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IUser.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.IUser.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.User.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
@@ -1591,7 +1590,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IUser.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.IUser.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.User.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
@@ -1670,7 +1669,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IUser.DeleteAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.IUser.DeleteAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.User.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
@@ -1997,7 +1996,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IEnumOption.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.IEnumOption.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.EnumOption.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
@@ -2062,7 +2061,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IEnumOption.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.IEnumOption.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.EnumOption.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
@@ -2279,7 +2278,7 @@ public sealed class KaonaviClientTest
     }
 
     /// <summary>
-    /// <inheritdoc cref="IWebhook.DeleteAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
+    /// <inheritdoc cref="KaonaviClient.IWebhook.DeleteAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
     /// <see cref="KaonaviClient.Webhook.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
