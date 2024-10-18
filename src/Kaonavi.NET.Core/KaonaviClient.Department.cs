@@ -6,7 +6,6 @@ namespace Kaonavi.Net;
 
 public partial class KaonaviClient : KaonaviClient.IDepartment
 {
-
     /// <summary>
     /// 所属ツリー API
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC"/>

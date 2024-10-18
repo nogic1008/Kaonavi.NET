@@ -7,7 +7,6 @@ namespace Kaonavi.Net;
 
 public partial class KaonaviClient : KaonaviClient.IRole
 {
-
     /// <summary>
     /// ロール
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB"/>
