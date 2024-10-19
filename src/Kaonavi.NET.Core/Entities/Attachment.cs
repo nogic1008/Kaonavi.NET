@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ public record Attachment
     /// <param name="code"><inheritdoc cref="Code" path="/summary"/></param>
     /// <param name="records"><inheritdoc cref="Records" path="/summary"/></param>
     public Attachment(string code, params Record[] records)
-        => (Code, Records) = (code, records);
+        : this(code, (IReadOnlyList<Record>)records) { }
 
     /// <inheritdoc cref="Attachment(string, Record[])"/>
     [JsonConstructor]

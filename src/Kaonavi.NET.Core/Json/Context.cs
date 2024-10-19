@@ -5,6 +5,7 @@ namespace Kaonavi.Net.Json;
 
 [JsonSerializable(typeof(ApiListResult<string>))]
 [JsonSerializable(typeof(ApiListResult<AdvancedPermission>))]
+[JsonSerializable(typeof(ApiListResult<Attachment>))]
 [JsonSerializable(typeof(ApiListResult<DepartmentTree>))]
 [JsonSerializable(typeof(ApiListResult<MemberData>))]
 [JsonSerializable(typeof(ApiListResult<EnumOption>))]
