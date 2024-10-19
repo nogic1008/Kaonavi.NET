@@ -1,25 +1,24 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET", "src\Kaonavi.NET\Kaonavi.NET.csproj", "{1A642D61-DB39-48CD-A0A3-12AA3C028DD2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kaonavi.NET", "src\Kaonavi.NET\Kaonavi.NET.csproj", "{1A642D61-DB39-48CD-A0A3-12AA3C028DD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Core", "src\Kaonavi.NET.Core\Kaonavi.NET.Core.csproj", "{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kaonavi.NET.Core", "src\Kaonavi.NET.Core\Kaonavi.NET.Core.csproj", "{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Generator", "src\Kaonavi.NET.Generator\Kaonavi.NET.Generator.csproj", "{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kaonavi.NET.Generator", "src\Kaonavi.NET.Generator\Kaonavi.NET.Generator.csproj", "{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Tests", "test\Kaonavi.NET.Tests\Kaonavi.NET.Tests.csproj", "{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kaonavi.NET.Tests", "test\Kaonavi.NET.Tests\Kaonavi.NET.Tests.csproj", "{FEC2DFCE-BE21-42F8-BB62-9A3CEBB61DA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppSample", "sandbox\ConsoleAppSample\ConsoleAppSample.csproj", "{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleAppSample", "sandbox\ConsoleAppSample\ConsoleAppSample.csproj", "{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Generator.Tests", "test\Kaonavi.NET.Generator.Tests\Kaonavi.NET.Generator.Tests.csproj", "{457BCF81-D6EA-43AD-AED9-370C746C7923}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{1A642D61-DB39-48CD-A0A3-12AA3C028DD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -42,5 +41,12 @@ Global
 		{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF1967C4-376A-4B39-BED7-4C71FB68B8EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{457BCF81-D6EA-43AD-AED9-370C746C7923}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{457BCF81-D6EA-43AD-AED9-370C746C7923}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{457BCF81-D6EA-43AD-AED9-370C746C7923}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{457BCF81-D6EA-43AD-AED9-370C746C7923}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
     <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="8.10.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="Moq.Contrib.HttpClient" Version="1.4.0" />
@@ -25,11 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
-    <ProjectReference Include="../../src/Kaonavi.NET.Generator/Kaonavi.NET.Generator.csproj" />
-    <ProjectReference Include="../../src/Kaonavi.NET.Generator/Kaonavi.NET.Generator.csproj">
-      <OutputItemType>Analyzer</OutputItemType>
-      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
 
 </Project>

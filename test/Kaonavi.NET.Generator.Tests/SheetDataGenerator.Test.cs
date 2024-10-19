@@ -1,12 +1,12 @@
 using System.Globalization;
-using Kaonavi.Net.Tests;
+using Kaonavi.Net.Generator.Tests.Entities;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using RandomFixtureKit;
 
-namespace Kaonavi.Net.Tests.Generator;
+namespace Kaonavi.Net.Generator.Tests;
 
-/// <summary><see cref="Generator.SheetDataGenerator"/>の単体テスト</summary>
+/// <summary><see cref="SheetDataGenerator"/>の単体テスト</summary>
 [TestClass, TestCategory("Source Generator")]
 public sealed class SheetDataGeneratorTest
 {
