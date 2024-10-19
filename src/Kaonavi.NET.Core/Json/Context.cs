@@ -5,6 +5,7 @@ namespace Kaonavi.Net.Json;
 
 [JsonSerializable(typeof(ApiListResult<string>))]
 [JsonSerializable(typeof(ApiListResult<AdvancedPermission>))]
+[JsonSerializable(typeof(ApiListResult<Attachment>))]
 [JsonSerializable(typeof(ApiListResult<DepartmentTree>))]
 [JsonSerializable(typeof(ApiListResult<MemberData>))]
 [JsonSerializable(typeof(ApiListResult<EnumOption>))]
@@ -15,6 +16,7 @@ namespace Kaonavi.Net.Json;
 [JsonSerializable(typeof(ApiListResult<UserWithLoginAt>))]
 [JsonSerializable(typeof(ApiListResult<WebhookConfig>))]
 [JsonSerializable(typeof(IReadOnlyList<AdvancedPermission>))]
+[JsonSerializable(typeof(IReadOnlyList<Attachment>))]
 [JsonSerializable(typeof(IReadOnlyList<DepartmentTree>))]
 [JsonSerializable(typeof(IReadOnlyList<EnumOption>))]
 [JsonSerializable(typeof(IReadOnlyList<EnumOptionPayloadData>))]
