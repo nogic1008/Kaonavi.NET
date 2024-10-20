@@ -62,10 +62,10 @@ public sealed class FieldLayoutTest
     /// <param name="enums"><inheritdoc cref="FieldLayout.Enum" path="/summary"/></param>
     /// <param name="readOnly"><inheritdoc cref="FieldLayout.ReadOnly path="/summary"/></param>
     [TestMethod(TestName), TestCategory("JSON Deserialize")]
-    [DataRow(StringFieldJson, "社員番号", true, FieldType.String, 50, new string[] { }, false, DisplayName = TestName)]
-    [DataRow(DateFieldJson, "入社日", false, FieldType.Date, null, new string[] { }, false, DisplayName = TestName)]
-    [DataRow(EnumFieldJson, "性別", false, FieldType.Enum, null, new[] { "男性", "女性" }, false, DisplayName = TestName)]
-    [DataRow(CalcFieldJson, "勤続年数", false, FieldType.Calc, null, new string[] { }, true, DisplayName = TestName)]
+    [DataRow(StringFieldJson, "社員番号", true, FieldType.String, 50, (string[])[], false, DisplayName = TestName)]
+    [DataRow(DateFieldJson, "入社日", false, FieldType.Date, null, (string[])[], false, DisplayName = TestName)]
+    [DataRow(EnumFieldJson, "性別", false, FieldType.Enum, null, (string[])["男性", "女性"], false, DisplayName = TestName)]
+    [DataRow(CalcFieldJson, "勤続年数", false, FieldType.Calc, null, (string[])[], true, DisplayName = TestName)]
     public void Field_CanDeserializeJSON(string json, string name, bool required, FieldType type, int? maxLength, string[] enums, bool readOnly)
     {
         // Arrange - Act
