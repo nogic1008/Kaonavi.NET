@@ -1,7 +1,6 @@
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 
-
 namespace Kaonavi.Net;
 
 public partial class KaonaviClient : KaonaviClient.ISheet

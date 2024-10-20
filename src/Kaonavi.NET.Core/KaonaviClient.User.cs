@@ -2,7 +2,6 @@ using System.Net.Http.Json;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 
-
 namespace Kaonavi.Net;
 
 public partial class KaonaviClient : KaonaviClient.IUser
