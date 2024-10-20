@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Kaonavi.Net</RootNamespace>
+    <RootNamespace>Kaonavi.Net.Generator</RootNamespace>
 
     <!-- For Source Generator -->
     <IsRoslynComponent>true</IsRoslynComponent>
