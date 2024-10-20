@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Kaonavi.Net.Entities;
 
 namespace Kaonavi.Net.Server.Tests;
 
