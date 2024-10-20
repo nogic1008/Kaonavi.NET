@@ -1,7 +1,6 @@
-using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 
-namespace Kaonavi.Net.Server;
+namespace Kaonavi.Net.Entities;
 
 /// <summary>
 /// kaonavi Webhookが送信するリクエストボディ

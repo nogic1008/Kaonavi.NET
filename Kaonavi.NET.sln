@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
@@ -6,6 +6,8 @@ MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET", "src\Kaonavi.NET\Kaonavi.NET.csproj", "{1A642D61-DB39-48CD-A0A3-12AA3C028DD2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Core", "src\Kaonavi.NET.Core\Kaonavi.NET.Core.csproj", "{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Client", "src\Kaonavi.NET.Client\Kaonavi.NET.Client.csproj", "{5BB5C271-908A-4078-9E5A-203A51D96022}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kaonavi.NET.Generator", "src\Kaonavi.NET.Generator\Kaonavi.NET.Generator.csproj", "{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}"
 EndProject
@@ -35,6 +37,10 @@ Global
 		{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B8E3B76-66A5-4179-B07B-77D7BAC96B12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BB5C271-908A-4078-9E5A-203A51D96022}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BB5C271-908A-4078-9E5A-203A51D96022}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BB5C271-908A-4078-9E5A-203A51D96022}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BB5C271-908A-4078-9E5A-203A51D96022}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DB4BD69-C931-4BEA-BFA8-A1F6FCF634F6}.Release|Any CPU.ActiveCfg = Release|Any CPU

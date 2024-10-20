@@ -368,11 +368,18 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
+      "kaonavi.net.client": {
+        "type": "Project",
+        "dependencies": {
+          "Kaonavi.NET.Core": "[2.0.0, )",
+          "Microsoft.Bcl.TimeProvider": "[8.0.1, )",
+          "System.Net.Http.Json": "[8.0.1, )",
+          "System.Text.Json": "[8.0.5, )"
+        }
+      },
       "kaonavi.net.core": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.Bcl.TimeProvider": "[8.0.1, )",
-          "System.Net.Http.Json": "[8.0.1, )",
           "System.Text.Json": "[8.0.5, )"
         }
       }
@@ -726,11 +733,15 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
-      "kaonavi.net.core": {
+      "kaonavi.net.client": {
         "type": "Project",
         "dependencies": {
+          "Kaonavi.NET.Core": "[2.0.0, )",
           "Microsoft.Bcl.TimeProvider": "[8.0.1, )"
         }
+      },
+      "kaonavi.net.core": {
+        "type": "Project"
       }
     }
   }

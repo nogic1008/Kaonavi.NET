@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
-    <Description>Core Libraries of Kaonavi.NET</Description>
+    <Description>Client side of Kaonavi.NET</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Kaonavi.Net</RootNamespace>
   </PropertyGroup>
@@ -11,14 +11,19 @@
     <AssemblyAttribute Include="System.CLSCompliantAttribute">
       <_Parameter1>true</_Parameter1>
     </AssemblyAttribute>
-    <InternalsVisibleTo Include="Kaonavi.NET.Client" />
     <InternalsVisibleTo Include="Kaonavi.NET.Tests" />
     <Using Include="System.Text.Json" />
     <Using Include="System.Text.Json.Serialization" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="8.0.1" />
+    <PackageReference Include="System.Net.Http.Json" Version="8.0.1" Condition="'$(TargetFramework)'!='net8.0'" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" Condition="'$(TargetFramework)'!='net8.0'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
   </ItemGroup>
 
 </Project>

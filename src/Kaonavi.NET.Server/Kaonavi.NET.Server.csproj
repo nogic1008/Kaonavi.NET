@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net6.0</TargetFrameworks>
-    <RootNamespace>Kaonavi.Net.Server</RootNamespace>
-
     <Description>Server side parser for Kaonavi Webhook</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <RootNamespace>Kaonavi.Net</RootNamespace>
+    <NoWarn>$(NoWarn);IDE0130</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,12 +17,13 @@
 
   <ItemGroup>
     <None Include="./README.md" Pack="true" PackagePath="/" />
-    <Compile Include="../Kaonavi.Net.Core/Entities/WebhookEvent.cs" />
-    <Compile Include="../Kaonavi.Net.Core/Json/DateTimeConverter.cs" />
-    <Compile Include="../Kaonavi.Net.Core/Json/WebhookEventJsonConverter.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
   </ItemGroup>
 </Project>
