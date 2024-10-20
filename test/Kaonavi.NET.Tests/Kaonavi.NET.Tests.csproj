@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
+    <ProjectReference Include="../../src/Kaonavi.NET.Client/Kaonavi.NET.Client.csproj" />
   </ItemGroup>
 
 </Project>
