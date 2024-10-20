@@ -1,8 +1,6 @@
-using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
-
 
 namespace Kaonavi.Net;
 

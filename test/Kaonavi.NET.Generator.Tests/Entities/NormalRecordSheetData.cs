@@ -1,4 +1,4 @@
-namespace Kaonavi.Net.Tests.Generator;
+namespace Kaonavi.Net.Generator.Tests.Entities;
 
 [SheetSerializable]
 internal partial record NormalRecordSheetData : ISheetData

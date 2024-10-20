@@ -145,10 +145,14 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// </summary>
     /// <exception cref="ObjectDisposedException">このインスタンスがすでに破棄されている場合にスローされます。</exception>
     private void ThrowIfDisposed()
+#if NET8_0_OR_GREATER
+        => ObjectDisposedException.ThrowIf(_disposedValue, GetType().FullName!);
+#else
     {
         if (_disposedValue)
             throw new ObjectDisposedException(GetType().FullName);
     }
+#endif
     #endregion IDisposable
 
     /// <summary>

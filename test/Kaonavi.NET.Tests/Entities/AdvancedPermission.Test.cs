@@ -32,8 +32,8 @@ public sealed class AdvancedPermissionTest
     /// <param name="addCodes"><inheritdoc cref="AdvancedPermission.AddCodes" path="/summary"/></param>
     /// <param name="exclusionCodes"><inheritdoc cref="AdvancedPermission.ExclusionCodes" path="/summary"/></param>
     [TestMethod(TestName), TestCategory("JSON Deserialize")]
-    [DataRow(AdvancedPermissionJson, 1, new[] { "0001", "0002", "0003" }, new[] { "0001", "0002", "0003" }, DisplayName = TestName)]
-    [DataRow(AdvancedPermissionEmptyJson, 2, new string[0], new string[0], DisplayName = TestName)]
+    [DataRow(AdvancedPermissionJson, 1, (string[])["0001", "0002", "0003"], (string[])["0001", "0002", "0003"], DisplayName = TestName)]
+    [DataRow(AdvancedPermissionEmptyJson, 2, (string[])[], (string[])[], DisplayName = TestName)]
     public void CanDeserializeJSON(string json, int userId, string[] addCodes, string[] exclusionCodes)
     {
         // Arrange - Act

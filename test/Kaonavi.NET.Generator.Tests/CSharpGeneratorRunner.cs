@@ -1,10 +1,10 @@
 using System.Runtime.CompilerServices;
-using Kaonavi.Net.Generator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace Kaonavi.Net.Tests.Generator;
+namespace Kaonavi.Net.Generator.Tests;
 
+/// <summary>コード生成の実行を行います。</summary>
 internal static class CSharpGeneratorRunner
 {
     private static Compilation _baseCompilation = default!;
