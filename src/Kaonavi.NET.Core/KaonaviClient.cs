@@ -153,7 +153,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
             throw new ObjectDisposedException(GetType().FullName);
     }
 #endif
-#endregion IDisposable
+    #endregion IDisposable
 
     /// <summary>
     /// アクセストークンを発行します。
