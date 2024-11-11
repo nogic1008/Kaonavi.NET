@@ -35,8 +35,8 @@
       },
       "Microsoft.Bcl.TimeProvider": {
         "type": "Transitive",
-        "resolved": "8.0.1",
-        "contentHash": "C7kWHJnMRY7EvJev2S8+yJHZ1y7A4ZlLbA4NE+O23BDIAN5mHeqND1m+SKv1ChRS5YlCDW7yAMUe7lttRsJaAA=="
+        "resolved": "9.0.0-rc.2.24473.5",
+        "contentHash": "SlTb7UwJW6GcgiChpj8sdt6mRXACYfKdK+100ZMYNJzyd5ASXhWgHXirbMleo9jRGan2QFDnxBep+W9dsDHiAg=="
       },
       "Microsoft.Extensions.Configuration": {
         "type": "Transitive",
@@ -336,6 +336,19 @@
         "resolved": "6.0.0",
         "contentHash": "lcyUiXTsETK2ALsZrX+nWuHSIQeazhqPphLfaRxzdGaG93+0kELqpgEHtwWOlQe7+jSFnKwaCAgL4kjeZCQJnw=="
       },
+      "System.IO.Pipelines": {
+        "type": "Transitive",
+        "resolved": "9.0.0-rc.2.24473.5",
+        "contentHash": "imrG8NvYH2f4Pdiu9xDUh2X7yoJgl6ginhAzuozH3HKERVf8kOOG09QrAnmgMNHLiWKsTztmE0CyzqfQs/X1IA=="
+      },
+      "System.Net.Http.Json": {
+        "type": "Transitive",
+        "resolved": "9.0.0-rc.2.24473.5",
+        "contentHash": "XTvpvV/p/HBZKWcvINHb0O02g8DwuAyzFqqb6vtqqeKVdydpZfleo2g/SOwuZn22n90fWmJxmktLxiyDxP7Gfg==",
+        "dependencies": {
+          "System.Text.Json": "9.0.0-rc.2.24473.5"
+        }
+      },
       "System.Runtime.CompilerServices.Unsafe": {
         "type": "Transitive",
         "resolved": "6.0.0",
@@ -343,25 +356,24 @@
       },
       "System.Text.Encodings.Web": {
         "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "Vg8eB5Tawm1IFqj4TVK1czJX89rhFxJo9ELqc/Eiq0eXy13RK00eubyU6TJE6y+GQXjyV5gSfiewDUZjQgSE0w==",
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        }
+        "resolved": "9.0.0-rc.2.24473.5",
+        "contentHash": "nBIVPcHg6sqqiV7pWxDxldAaiHCSrAcUU84WfDkjZrrvowv8VzU55K1k7qPw76k2xMnxbfCYZv7gYX7QPuE0fw=="
       },
       "System.Text.Json": {
         "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "zaJsHfESQvJ11vbXnNlkrR46IaMULk/gHxYsJphzSF+07kTjPHv+Oc14w6QEOfo3Q4hqLJgStUaYB9DBl0TmWg==",
+        "resolved": "9.0.0-rc.2.24473.5",
+        "contentHash": "IsQCD+zBcFhteX7fUrS4cU/GvfLPy8F4oLtC9VBcF1U1qu1gZB/zlAxW8G0kqmAiXI84/gowZtcX1MjLk2QWoQ==",
         "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0",
-          "System.Text.Encodings.Web": "6.0.0"
+          "System.IO.Pipelines": "9.0.0-rc.2.24473.5",
+          "System.Text.Encodings.Web": "9.0.0-rc.2.24473.5"
         }
       },
       "kaonavi.net.core": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.Bcl.TimeProvider": "[8.0.1, )"
+          "Microsoft.Bcl.TimeProvider": "[9.0.0-rc.2.24473.5, )",
+          "System.Net.Http.Json": "[9.0.0-rc.2.24473.5, )",
+          "System.Text.Json": "[9.0.0-rc.2.24473.5, )"
         }
       }
     }
