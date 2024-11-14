@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0</TargetFrameworks>
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
     <Description>Core Libraries of Kaonavi.NET</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Kaonavi.Net</RootNamespace>
@@ -17,9 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="9.0.0-rc.2.24473.5" />
-    <PackageReference Include="System.Net.Http.Json" Version="9.0.0-rc.2.24473.5" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0-rc.2.24473.5" />
+    <PackageReference Include="Microsoft.Bcl.TimeProvider" Version="9.0.0" Condition="'$(TargetFramework)'!='net9.0'" />
+    <PackageReference Include="System.Net.Http.Json" Version="9.0.0" Condition="'$(TargetFramework)'!='net9.0'" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0" Condition="'$(TargetFramework)'!='net9.0'" />
   </ItemGroup>
 
 </Project>
