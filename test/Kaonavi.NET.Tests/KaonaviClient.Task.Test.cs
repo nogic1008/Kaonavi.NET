@@ -2,6 +2,7 @@ using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -43,7 +44,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int taskId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             var response = new TaskProgress(taskId, "NG", ["エラーメッセージ1", "エラーメッセージ2"]);
 
             var handler = new Mock<HttpMessageHandler>();
@@ -51,7 +52,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var task = await sut.Task.ReadAsync(taskId);
 
             // Assert
@@ -63,7 +64,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, $"/tasks/{taskId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }

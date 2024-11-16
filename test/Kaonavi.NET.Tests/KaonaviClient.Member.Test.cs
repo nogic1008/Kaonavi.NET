@@ -2,6 +2,7 @@ using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -122,14 +123,14 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var members = await sut.Member.ListAsync();
 
             // Assert
@@ -138,7 +139,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, "/members")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -151,7 +152,7 @@ public sealed partial class KaonaviClientTest
         public async Task Member_CreateAsync_Calls_PostApi()
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -159,7 +160,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Member.CreateAsync(_memberDataPayload);
 
             // Assert
@@ -168,7 +169,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, "/members")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -186,7 +187,7 @@ public sealed partial class KaonaviClientTest
         public async Task Member_ReplaceAsync_Calls_PutApi()
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -194,7 +195,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Member.ReplaceAsync(_memberDataPayload);
 
             // Assert
@@ -203,7 +204,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, "/members")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -221,7 +222,7 @@ public sealed partial class KaonaviClientTest
         public async Task Member_UpdateAsync_Calls_PatchApi()
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -229,7 +230,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Member.UpdateAsync(_memberDataPayload);
 
             // Assert
@@ -238,7 +239,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Patch, "/members")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -256,7 +257,7 @@ public sealed partial class KaonaviClientTest
         public async Task Member_OverWriteAsync_Calls_PutApi()
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -264,7 +265,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Member.OverWriteAsync(_memberDataPayload);
 
             // Assert
@@ -273,7 +274,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, "/members/overwrite")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -292,7 +293,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             string[] codes = _memberDataPayload.Select(d => d.Code).ToArray();
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, Context.Default.IReadOnlyListString)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -300,7 +301,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Member.DeleteAsync(codes);
 
             // Assert
@@ -309,7 +310,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, "/members/delete")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();

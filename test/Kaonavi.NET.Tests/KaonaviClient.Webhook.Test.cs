@@ -1,6 +1,7 @@
 using Kaonavi.Net.Entities;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -41,14 +42,14 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/webhook")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var entities = await sut.Webhook.ListAsync();
 
             // Assert
@@ -57,7 +58,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, "/webhook")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -70,7 +71,7 @@ public sealed partial class KaonaviClientTest
         public async Task Webhook_CreateAsync_Calls_PostApi()
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             /*lang=json,strict*/
             const string responseJson = """
             {
@@ -95,7 +96,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var webhook = await sut.Webhook.CreateAsync(payload);
 
             // Assert
@@ -104,7 +105,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, "/webhook")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -136,7 +137,7 @@ public sealed partial class KaonaviClientTest
               "secret_token": "token"
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             var payload = new WebhookConfig(webhookId, _baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
             /*lang=json,strict*/
             const string expectedJson = """
@@ -148,7 +149,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var webhook = await sut.Webhook.UpdateAsync(payload);
 
             // Assert
@@ -157,7 +158,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Patch, $"/webhook/{webhookId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -199,21 +200,21 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int webhookId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
                 .ReturnsResponse(HttpStatusCode.NoContent);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             await sut.Webhook.DeleteAsync(webhookId);
 
             // Assert
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Delete, $"/webhook/{webhookId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }

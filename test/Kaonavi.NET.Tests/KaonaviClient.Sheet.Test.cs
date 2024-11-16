@@ -2,6 +2,7 @@ using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -114,14 +115,14 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var members = await sut.Sheet.ListAsync(sheetId);
 
             // Assert
@@ -130,7 +131,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, $"/sheets/{sheetId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -167,7 +168,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int sheetId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyListSheetData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -175,7 +176,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Sheet.ReplaceAsync(sheetId, _sheetDataPayload);
 
             // Assert
@@ -184,7 +185,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, $"/sheets/{sheetId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -226,7 +227,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int sheetId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyListSheetData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -234,7 +235,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Sheet.UpdateAsync(sheetId, _sheetDataPayload);
 
             // Assert
@@ -243,7 +244,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Patch, $"/sheets/{sheetId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -285,7 +286,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int sheetId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_sheetDataPayload, Context.Default.IReadOnlyListSheetData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -293,7 +294,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Sheet.CreateAsync(sheetId, _sheetDataPayload);
 
             // Assert
@@ -302,7 +303,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, $"/sheets/{sheetId}/add")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -351,7 +352,7 @@ public sealed partial class KaonaviClientTest
             // Arrange
             const int sheetId = 1;
             const int customFieldId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_attachmentPayload, Context.Default.IReadOnlyListAttachment)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -359,7 +360,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Sheet.AddFileAsync(sheetId, customFieldId, _attachmentPayload);
 
             // Assert
@@ -368,7 +369,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, $"/sheets/{sheetId}/custom_fields/{customFieldId}/file")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -416,7 +417,7 @@ public sealed partial class KaonaviClientTest
             // Arrange
             const int sheetId = 1;
             const int customFieldId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_attachmentPayload, Context.Default.IReadOnlyListAttachment)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -424,7 +425,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Sheet.UpdateFileAsync(sheetId, customFieldId, _attachmentPayload);
 
             // Assert
@@ -433,7 +434,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Patch, $"/sheets/{sheetId}/custom_fields/{customFieldId}/file")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();

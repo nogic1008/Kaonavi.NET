@@ -1,6 +1,7 @@
 using Kaonavi.Net.Entities;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -78,14 +79,14 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == endpoint)
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var permissions = await sut.AdvancedPermission.ListAsync(type);
 
             // Assert
@@ -94,7 +95,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, endpoint)
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -134,14 +135,14 @@ public sealed partial class KaonaviClientTest
         public async Task AdvancedPermission_ReplaceAsync_Calls_PutApi(AdvancedType type, string endpoint)
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == endpoint)
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.AdvancedPermission.ReplaceAsync(type,
             [
                 new(1, ["1"], []),
@@ -154,7 +155,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, endpoint)
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();

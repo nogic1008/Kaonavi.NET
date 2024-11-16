@@ -2,6 +2,7 @@ using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -58,24 +59,23 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var departments = await sut.Department.ListAsync();
 
             // Assert
-            _ = departments.Should().HaveCount(4)
-                .And.AllBeAssignableTo<DepartmentTree>();
+            _ = departments.Should().HaveCount(4).And.AllBeAssignableTo<DepartmentTree>();
 
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, "/departments")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -95,15 +95,14 @@ public sealed partial class KaonaviClientTest
                 new("1500", "第一営業部", "1200", null, 1, ""),
                 new("2000", "ITグループ", "1500", "A0001", 1, "example"),
             };
-            string tokenString = GenerateRandomString();
-            string expectedJson = $"{{\"department_data\":{JsonSerializer.Serialize(payload, Context.Default.IReadOnlyListDepartmentTree)}}}";
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.Department.ReplaceAsync(payload);
 
             // Assert
@@ -112,7 +111,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async (req) =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, "/departments")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();

@@ -2,6 +2,7 @@ using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -54,14 +55,14 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var users = await sut.User.ListAsync();
 
             // Assert
@@ -71,7 +72,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, "/users")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -84,7 +85,7 @@ public sealed partial class KaonaviClientTest
         public async Task User_CreateAsync_Calls_PostApi()
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             /*lang=json,strict*/
             const string responseJson = """
             {
@@ -112,7 +113,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var user = await sut.User.CreateAsync(payload);
 
             // Assert
@@ -121,7 +122,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, "/users")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -163,7 +164,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int userId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             var responseUser = new UserWithLoginAt(
                 userId,
                 "user1@example.com",
@@ -177,7 +178,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsJsonResponse(HttpStatusCode.OK, responseUser, Context.Default.Options);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var user = await sut.User.ReadAsync(userId);
 
             // Assert
@@ -186,7 +187,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, $"/users/{userId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -239,7 +240,7 @@ public sealed partial class KaonaviClientTest
               "use_smartphone": false
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
             /*lang=json,strict*/
             const string expectedJson = """
@@ -251,7 +252,7 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var user = await sut.User.UpdateAsync(userId, payload);
 
             // Assert
@@ -260,7 +261,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(async req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Patch, $"/users/{userId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
                 string receivedJson = await req.Content!.ReadAsStringAsync();
@@ -302,21 +303,21 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int userId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
                 .ReturnsResponse(HttpStatusCode.NoContent);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             await sut.User.DeleteAsync(userId);
 
             // Assert
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Delete, $"/users/{userId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }

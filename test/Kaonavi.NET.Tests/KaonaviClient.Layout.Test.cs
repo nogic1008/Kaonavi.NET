@@ -2,6 +2,7 @@ using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -18,7 +19,7 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
         public async Task Layout_ReadMemberLayoutAsync_Calls_GetApi()
         {
-            string tokenString = GenerateRandomString();
+            // Arrange
             var response = new MemberLayout(
                 new("社員番号", true, FieldType.String, 50, []),
                 new("氏名", false, FieldType.String, 100, []),
@@ -35,13 +36,14 @@ public sealed partial class KaonaviClientTest
                     new(200, "役職", false, FieldType.Enum, null, ["部長", "課長", "マネージャー", null]),
                 ]
             );
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/member_layouts")
                 .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var layout = await sut.Layout.ReadMemberLayoutAsync();
 
             // Assert
@@ -61,7 +63,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, "/member_layouts")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -108,14 +110,14 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == expectedEndpoint)
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var layouts = await sut.Layout.ListAsync(getCalcType);
 
             // Assert
@@ -124,7 +126,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, expectedEndpoint)
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -172,13 +174,14 @@ public sealed partial class KaonaviClientTest
                 RecordType.Multiple,
                 [new(1000, "住所", false, FieldType.String, 250, []), new(1001, "電話番号", false, FieldType.String, 50, [])]
             );
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupAnyRequest()
                 .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var layout = await sut.Layout.ReadAsync(12, getCalcType);
 
             // Assert
@@ -191,7 +194,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, expectedEndpoint)
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
