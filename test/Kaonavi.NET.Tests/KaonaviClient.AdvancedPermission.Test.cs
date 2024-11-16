@@ -16,22 +16,21 @@ public sealed partial class KaonaviClientTest
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         [TestMethod($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
-        [DataRow(10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
-        [DataRow(-1, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
-        public async Task When_Type_IsInvalid_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(int type)
+        [DataRow((AdvancedType)10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
+        [DataRow((AdvancedType)(-1), DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
+        public async Task When_Type_IsInvalid_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(AdvancedType type)
         {
             // Arrange
-            string tokenString = GenerateRandomString();
-
             var handler = new Mock<HttpMessageHandler>();
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
-            var act = async () => await sut.AdvancedPermission.ListAsync((AdvancedType)type);
+            var sut = CreateSut(handler);
+            var act = async () => await sut.AdvancedPermission.ListAsync(type);
 
             // Assert
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>().WithParameterName(nameof(type));
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -90,7 +89,7 @@ public sealed partial class KaonaviClientTest
             var permissions = await sut.AdvancedPermission.ListAsync(type);
 
             // Assert
-            _ = permissions.Should().HaveCount(2);
+            _ = permissions.Should().HaveCount(2).And.AllBeAssignableTo<AdvancedPermission>();
 
             handler.VerifyRequest(req =>
             {
@@ -106,22 +105,21 @@ public sealed partial class KaonaviClientTest
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         [TestMethod($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
-        [DataRow(10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})10, []) > ArgumentOutOfRangeExceptionをスローする。")]
-        [DataRow(-1, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})-1, []) > ArgumentOutOfRangeExceptionをスローする。")]
-        public async Task When_Type_IsInvalid_AdvancedPermission_ReplaceAsync_Throws_ArgumentOutOfRangeException(int type)
+        [DataRow((AdvancedType)10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})10, []) > ArgumentOutOfRangeExceptionをスローする。")]
+        [DataRow((AdvancedType)(-1), DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})-1, []) > ArgumentOutOfRangeExceptionをスローする。")]
+        public async Task When_Type_IsInvalid_AdvancedPermission_ReplaceAsync_Throws_ArgumentOutOfRangeException(AdvancedType type)
         {
             // Arrange
-            string tokenString = GenerateRandomString();
-
             var handler = new Mock<HttpMessageHandler>();
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
-            var act = async () => await sut.AdvancedPermission.ReplaceAsync((AdvancedType)type, []);
+            var sut = CreateSut(handler);
+            var act = async () => await sut.AdvancedPermission.ReplaceAsync(type, []);
 
             // Assert
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>().WithParameterName(nameof(type));
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>

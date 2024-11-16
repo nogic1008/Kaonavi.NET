@@ -177,7 +177,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
             var sut = CreateSut(handler);
@@ -187,7 +187,7 @@ public sealed partial class KaonaviClientTest
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
                 .WithParameterName("id");
 
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
