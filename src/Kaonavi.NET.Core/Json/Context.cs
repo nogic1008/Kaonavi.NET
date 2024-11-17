@@ -31,8 +31,8 @@ namespace Kaonavi.Net.Json;
 [JsonSerializable(typeof(TaskProgress))]
 [JsonSerializable(typeof(Token))]
 [JsonSerializable(typeof(User))]
+[JsonSerializable(typeof(UserPayload))]
 [JsonSerializable(typeof(WebhookConfigPayload))]
-[JsonSerializable(typeof(UserJsonPayload))]
 [JsonSourceGenerationOptions(
     JsonSerializerDefaults.Web,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

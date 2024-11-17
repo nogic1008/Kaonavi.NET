@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace Kaonavi.Net.Json;
 
 /// <summary>
@@ -19,8 +21,16 @@ public class BlankNullableDateConverter : JsonConverter<DateOnly?>
     public override void Write(Utf8JsonWriter writer, DateOnly? value, JsonSerializerOptions options)
     {
         if (value.HasValue)
-            writer.WriteStringValue(value.GetValueOrDefault().ToString());
+        {
+            Span<byte> buffer = stackalloc byte[12]; // "yyyy-MM-dd".Length
+            buffer[0] = (byte)'"';
+            _ = value.GetValueOrDefault().TryFormat(buffer[1..], out int written, "o", CultureInfo.InvariantCulture);
+            buffer[written + 1] = (byte)'"';
+            writer.WriteRawValue(buffer[0..(written + 2)], false);
+        }
         else
+        {
             writer.WriteStringValue(""u8);
+        }
     }
 }

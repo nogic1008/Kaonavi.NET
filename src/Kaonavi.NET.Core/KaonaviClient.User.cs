@@ -86,7 +86,7 @@ public partial class KaonaviClient : KaonaviClient.IUser
     ValueTask<User> IUser.CreateAsync(UserPayload payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Post, "users")
         {
-            Content = JsonContent.Create(new(payload), Context.Default.UserJsonPayload)
+            Content = JsonContent.Create(payload, Context.Default.UserPayload)
         }, Context.Default.User, cancellationToken);
 
     /// <inheritdoc/>
@@ -99,17 +99,11 @@ public partial class KaonaviClient : KaonaviClient.IUser
     ValueTask<User> IUser.UpdateAsync(int id, UserPayload payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Patch, $"users/{ThrowIfNegative(id):D}")
         {
-            Content = JsonContent.Create(new(payload), Context.Default.UserJsonPayload)
+            Content = JsonContent.Create(payload, Context.Default.UserPayload)
         }, Context.Default.User, cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     async ValueTask IUser.DeleteAsync(int id, CancellationToken cancellationToken)
         => await CallApiAsync(new(HttpMethod.Delete, $"users/{ThrowIfNegative(id):D}"), cancellationToken).ConfigureAwait(false);
-
-    internal record UserJsonPayload(string Email, string? MemberCode, string Password, Role Role, bool IsActive, bool PasswordLocked, bool UseSmartphone)
-    {
-        public UserJsonPayload(UserPayload payload) : this(payload.Email, payload.MemberCode, payload.Password, new(payload.RoleId, null!, null!), payload.IsActive, payload.PasswordLocked, payload.UseSmartphone)
-        { }
-    }
 }
