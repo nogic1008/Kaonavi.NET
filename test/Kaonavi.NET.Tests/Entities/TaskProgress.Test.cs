@@ -26,10 +26,10 @@ public sealed class TaskProgressTest
     /// <param name="status"><inheritdoc cref="TaskProgress" path="/param[@name='Status']"/></param>
     /// <param name="messages"><inheritdoc cref="TaskProgress" path="/param[@name='Messages']"/></param>
     [TestMethod(TestName), TestCategory("JSON Deserialize")]
-    [DataRow(TaskOkJson, 1, "OK", (string[])[], DisplayName = TestName)]
-    [DataRow(TaskRunningJson, 2, "RUNNING", null, DisplayName = TestName)]
-    [DataRow(TaskErrorJson, 3, "NG", (string[])["エラーメッセージ1", "エラーメッセージ2"], DisplayName = TestName)]
-    public void CanDeserializeJSON(string json, int id, string status, string[]? messages)
+    [DataRow(TaskOkJson, 1, TaskState.OK, (string[])[], DisplayName = TestName)]
+    [DataRow(TaskRunningJson, 2, TaskState.Running, null, DisplayName = TestName)]
+    [DataRow(TaskErrorJson, 3, TaskState.NG, (string[])["エラーメッセージ1", "エラーメッセージ2"], DisplayName = TestName)]
+    public void CanDeserializeJSON(string json, int id, TaskState status, string[]? messages)
     {
         // Arrange - Act
         var task = JsonSerializer.Deserialize(json, Context.Default.TaskProgress);
