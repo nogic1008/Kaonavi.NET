@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Kaonavi.Net.Entities;
 
 /// <summary>シート項目種別</summary>

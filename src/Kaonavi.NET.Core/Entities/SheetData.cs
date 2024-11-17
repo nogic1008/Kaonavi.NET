@@ -1,3 +1,5 @@
+using Kaonavi.Net.Json;
+
 namespace Kaonavi.Net.Entities;
 
 /// <summary>シート情報</summary>
@@ -25,13 +27,8 @@ public record SheetData(
         private static ReadOnlySpan<byte> PropertyName => "custom_fields"u8;
 
         public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            => JsonSerializer.Deserialize<IReadOnlyList<JsonElement>>(ref reader, options)!
-                .Select(d =>
-                    d.GetProperty(PropertyName)
-                        .EnumerateArray()
-                        .Select(el => el.Deserialize<CustomFieldValue>(options)!)
-                        .ToArray()
-                )
+            => JsonSerializer.Deserialize(ref reader, Context.Default.IReadOnlyListJsonElement)!
+                .Select(d => JsonSerializer.Deserialize(d.GetProperty(PropertyName), Context.Default.IReadOnlyListCustomFieldValue)!)
                 .ToArray();
 
         public override void Write(Utf8JsonWriter writer, IReadOnlyList<IReadOnlyList<CustomFieldValue>> value, JsonSerializerOptions options)
@@ -41,7 +38,7 @@ public record SheetData(
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName(PropertyName);
-                JsonSerializer.Serialize(writer, record, options);
+                JsonSerializer.Serialize(writer, record, Context.Default.IReadOnlyListCustomFieldValue);
                 writer.WriteEndObject();
             }
             writer.WriteEndArray();
