@@ -1,12 +1,11 @@
 using System.Text;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
+using Kaonavi.Net.Tests.Assertions;
 using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Moq.Contrib.HttpClient;
 using RandomFixtureKit;
-
-using Kaonavi.Net.Tests.Assertions;
 
 namespace Kaonavi.Net.Tests;
 
