@@ -48,8 +48,8 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
     public IWebhook Webhook => this;
 
     /// <inheritdoc/>
-    async ValueTask<IReadOnlyList<WebhookConfig>> IWebhook.ListAsync(CancellationToken cancellationToken)
-                => (await CallApiAsync(new(HttpMethod.Get, "webhook"), Context.Default.ApiListResultWebhookConfig, cancellationToken)).Values;
+    ValueTask<IReadOnlyList<WebhookConfig>> IWebhook.ListAsync(CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, "webhook"), "webhook_data", Context.Default.IReadOnlyListWebhookConfig, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<WebhookConfig> IWebhook.CreateAsync(WebhookConfigPayload payload, CancellationToken cancellationToken)

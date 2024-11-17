@@ -8,6 +8,7 @@ namespace Kaonavi.Net.Entities;
 /// <param name="MaxLength"><inheritdoc cref="FieldLayout" path="/param[@name='MaxLength']"/></param>
 /// <param name="Enum"><inheritdoc cref="FieldLayout" path="/param[@name='Enum']"/></param>
 /// <param name="ReadOnly"><inheritdoc cref="FieldLayout" path="/param[@name='ReadOnly']"/></param>
+/// <param name="TypeDetail"><inheritdoc cref="FieldInput" path="/summary"/></param>
 /// <inheritdoc cref="FieldLayout"/>
 public record CustomFieldLayout(
     int Id,
@@ -16,5 +17,6 @@ public record CustomFieldLayout(
     FieldType Type,
     int? MaxLength,
     IReadOnlyList<string?> Enum,
-    bool ReadOnly = false
+    bool ReadOnly = false,
+    FieldInput? TypeDetail = default
 ) : FieldLayout(Name, Required, Type, MaxLength, Enum, ReadOnly);

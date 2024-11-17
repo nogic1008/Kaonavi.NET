@@ -23,6 +23,6 @@ public partial class KaonaviClient : KaonaviClient.IRole
     public IRole Role => this;
 
     /// <inheritdoc/>
-    async ValueTask<IReadOnlyList<Role>> IRole.ListAsync(CancellationToken cancellationToken)
-        => (await CallApiAsync(new(HttpMethod.Get, "roles"), Context.Default.ApiListResultRole, cancellationToken)).Values;
+    ValueTask<IReadOnlyList<Role>> IRole.ListAsync(CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, "roles"), "role_data", Context.Default.IReadOnlyListRole, cancellationToken);
 }

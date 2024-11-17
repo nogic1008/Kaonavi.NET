@@ -3,18 +3,6 @@ using static Kaonavi.Net.KaonaviClient;
 
 namespace Kaonavi.Net.Json;
 
-[JsonSerializable(typeof(ApiListResult<string>))]
-[JsonSerializable(typeof(ApiListResult<AdvancedPermission>))]
-[JsonSerializable(typeof(ApiListResult<Attachment>))]
-[JsonSerializable(typeof(ApiListResult<DepartmentTree>))]
-[JsonSerializable(typeof(ApiListResult<MemberData>))]
-[JsonSerializable(typeof(ApiListResult<EnumOption>))]
-[JsonSerializable(typeof(ApiListResult<EnumOptionPayloadData>))]
-[JsonSerializable(typeof(ApiListResult<Role>))]
-[JsonSerializable(typeof(ApiListResult<SheetData>))]
-[JsonSerializable(typeof(ApiListResult<SheetLayout>))]
-[JsonSerializable(typeof(ApiListResult<User>))]
-[JsonSerializable(typeof(ApiListResult<WebhookConfig>))]
 [JsonSerializable(typeof(IReadOnlyList<AdvancedPermission>))]
 [JsonSerializable(typeof(IReadOnlyList<Attachment>))]
 [JsonSerializable(typeof(IReadOnlyList<DepartmentTree>))]

@@ -34,10 +34,10 @@ public partial class KaonaviClient : KaonaviClient.IDepartment
     public IDepartment Department => this;
 
     /// <inheritdoc/>
-    async ValueTask<IReadOnlyList<DepartmentTree>> IDepartment.ListAsync(CancellationToken cancellationToken)
-        => (await CallApiAsync(new(HttpMethod.Get, "departments"), Context.Default.ApiListResultDepartmentTree, cancellationToken)).Values;
+    ValueTask<IReadOnlyList<DepartmentTree>> IDepartment.ListAsync(CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, "departments"), "department_data", Context.Default.IReadOnlyListDepartmentTree, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IDepartment.ReplaceAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, "departments", new("department_data", payload), Context.Default.ApiListResultDepartmentTree, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "departments", payload, "department_data", Context.Default.IReadOnlyListDepartmentTree, cancellationToken);
 }

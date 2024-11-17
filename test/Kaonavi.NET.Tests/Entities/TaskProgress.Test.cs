@@ -19,6 +19,18 @@ public sealed class TaskProgressTest
     private const string TestName = $"{nameof(TaskProgress)} > JSONからデシリアライズできる。";
 
     /// <summary>
+    /// JSONから<see cref="TaskState"/>にデシリアライズできる。
+    /// </summary>
+    [TestMethod($"{nameof(TaskState)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [DataRow("\"OK\"", TaskState.OK, DisplayName = $"\"OK\" -> {nameof(TaskState)}.{nameof(TaskState.OK)} にデシリアライズできる。")]
+    [DataRow("\"NG\"", TaskState.NG, DisplayName = $"\"NG\" -> {nameof(TaskState)}.{nameof(TaskState.NG)} にデシリアライズできる。")]
+    [DataRow("\"ERROR\"", TaskState.Error, DisplayName = $"\"ERROR\" -> {nameof(TaskState)}.{nameof(TaskState.Error)} にデシリアライズできる。")]
+    [DataRow("\"WAITING\"", TaskState.Waiting, DisplayName = $"\"WAITING\" -> {nameof(TaskState)}.{nameof(TaskState.Waiting)} にデシリアライズできる。")]
+    [DataRow("\"RUNNING\"", TaskState.Running, DisplayName = $"\"RUNNING\" -> {nameof(TaskState)}.{nameof(TaskState.Running)} にデシリアライズできる。")]
+    public void FieldType_Can_Deserialize_FromJSON(string json, TaskState expected)
+        => JsonSerializer.Deserialize(json, Context.Default.TaskState).Should().Be(expected);
+
+    /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
     /// <param name="json">JSON文字列</param>
@@ -26,10 +38,10 @@ public sealed class TaskProgressTest
     /// <param name="status"><inheritdoc cref="TaskProgress" path="/param[@name='Status']"/></param>
     /// <param name="messages"><inheritdoc cref="TaskProgress" path="/param[@name='Messages']"/></param>
     [TestMethod(TestName), TestCategory("JSON Deserialize")]
-    [DataRow(TaskOkJson, 1, "OK", (string[])[], DisplayName = TestName)]
-    [DataRow(TaskRunningJson, 2, "RUNNING", null, DisplayName = TestName)]
-    [DataRow(TaskErrorJson, 3, "NG", (string[])["エラーメッセージ1", "エラーメッセージ2"], DisplayName = TestName)]
-    public void CanDeserializeJSON(string json, int id, string status, string[]? messages)
+    [DataRow(TaskOkJson, 1, TaskState.OK, (string[])[], DisplayName = TestName)]
+    [DataRow(TaskRunningJson, 2, TaskState.Running, null, DisplayName = TestName)]
+    [DataRow(TaskErrorJson, 3, TaskState.NG, (string[])["エラーメッセージ1", "エラーメッセージ2"], DisplayName = TestName)]
+    public void TaskProgress_Can_Deserialize_FromJSON(string json, int id, TaskState status, string[]? messages)
     {
         // Arrange - Act
         var task = JsonSerializer.Deserialize(json, Context.Default.TaskProgress);

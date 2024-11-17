@@ -1,3 +1,4 @@
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.Http.Json;
 using System.Runtime.CompilerServices;
@@ -214,20 +215,45 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     }
 
     /// <summary>
-    /// APIを呼び出し、受け取った<inheritdoc cref="TaskProgress" path="/param[@name='Id']"/>を返します。
+    /// APIを呼び出し、受け取った配列をラップしたJSONオブジェクトを<typeparamref name="T"/>に変換して返します。
+    /// </summary>
+    /// <typeparam name="T">JSONの型</typeparam>
+    /// <param name="request">APIに対するリクエスト</param>
+    /// <param name="propertyName">配列が格納されたJSONのプロパティ名</param>
+    /// <param name="typeInfo">レスポンスをJSONに変換するためのメタ情報</param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
+    /// <inheritdoc cref="CallApiAsync" path="/exception"/>
+    private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, string propertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
+    {
+        var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
+        var json = await response.Content.ReadFromJsonAsync(Context.Default.JsonElement, cancellationToken).ConfigureAwait(false);
+        return JsonSerializer.Deserialize(json.GetProperty(propertyName), typeInfo)!;
+    }
+
+    /// <summary>
+    /// 受け取った配列をラップしたJSONオブジェクトをBodyとしてAPIを呼び出し、受け取った<inheritdoc cref="TaskProgress" path="/param[@name='Id']"/>を返します。
     /// </summary>
     /// <typeparam name="T">リクエストBodyの型</typeparam>
     /// <param name="method">HTTP Method</param>
     /// <param name="uri">リクエストURI</param>
     /// <param name="payload">APIに対するリクエスト</param>
+    /// <param name="propertyName">配列が格納されたJSONのプロパティ名</param>
     /// <param name="typeInfo"><paramref name="payload"/>をJSONに変換するためのメタ情報</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
-    private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
+    private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, string propertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
+
+        var buffer = new ArrayBufferWriter<byte>();
+        using var writer = new Utf8JsonWriter(buffer);
+        writer.WriteStartObject();
+        writer.WritePropertyName(propertyName);
+        JsonSerializer.Serialize(writer, payload, typeInfo);
+        writer.WriteEndObject();
+        writer.Flush();
 
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
@@ -236,7 +262,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         {
             int taskId = (await CallApiAsync(new(method, uri)
             {
-                Content = JsonContent.Create(payload, typeInfo)
+                Content = new ByteArrayContent(buffer.WrittenSpan.ToArray())
             }, Context.Default.JsonElement, cancellationToken).ConfigureAwait(false)).GetProperty("task_id"u8).GetInt32();
 
             timer = _timeProvider.CreateTimer(OnFinished, null, TimeSpan.FromSeconds(WaitSeconds), Timeout.InfiniteTimeSpan);
@@ -276,7 +302,8 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         catch (HttpRequestException ex)
         {
             string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
-                ? string.Join("\n", (await response.Content.ReadFromJsonAsync(Context.Default.ApiListResultString, cancellationToken))!.Values)
+                // { "errors": ["エラーメッセージ1", "エラーメッセージ2",...] }
+                ? string.Join("\n", (await response.Content.ReadFromJsonAsync(Context.Default.JsonElement, cancellationToken)).GetProperty("errors"u8).EnumerateArray().Select(e => e.GetString()))
                 : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             throw new ApplicationException(errorMessage, ex);
         }

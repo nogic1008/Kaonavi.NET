@@ -1,3 +1,5 @@
+using Kaonavi.Net.Json;
+
 namespace Kaonavi.Net.Entities;
 
 /// <summary>シート情報</summary>
@@ -9,7 +11,7 @@ namespace Kaonavi.Net.Entities;
 [method: JsonConstructor]
 public record SheetData(
     string Code,
-    [property: JsonConverter(typeof(SheetRecordConverter))] params IReadOnlyList<IReadOnlyList<CustomFieldValue>> Records
+    [property: JsonConverter(typeof(SheetData.SheetRecordConverter))] params IReadOnlyList<IReadOnlyList<CustomFieldValue>> Records
 )
 {
     /// <summary>
@@ -19,32 +21,27 @@ public record SheetData(
     /// <param name="customFields">設定値</param>
     public SheetData(string code, IReadOnlyList<CustomFieldValue> customFields)
         : this(code, [customFields]) { }
-}
 
-internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>
-{
-    private static ReadOnlySpan<byte> PropertyName => "custom_fields"u8;
-
-    public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        => JsonSerializer.Deserialize<IReadOnlyList<JsonElement>>(ref reader, options)!
-            .Select(d =>
-                d.GetProperty(PropertyName)
-                    .EnumerateArray()
-                    .Select(el => el.Deserialize<CustomFieldValue>(options)!)
-                    .ToArray()
-            )
-            .ToArray();
-
-    public override void Write(Utf8JsonWriter writer, IReadOnlyList<IReadOnlyList<CustomFieldValue>> value, JsonSerializerOptions options)
+    internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>
     {
-        writer.WriteStartArray();
-        foreach (var record in value)
+        private static ReadOnlySpan<byte> PropertyName => "custom_fields"u8;
+
+        public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+            => JsonSerializer.Deserialize(ref reader, Context.Default.IReadOnlyListJsonElement)!
+                .Select(d => JsonSerializer.Deserialize(d.GetProperty(PropertyName), Context.Default.IReadOnlyListCustomFieldValue)!)
+                .ToArray();
+
+        public override void Write(Utf8JsonWriter writer, IReadOnlyList<IReadOnlyList<CustomFieldValue>> value, JsonSerializerOptions options)
         {
-            writer.WriteStartObject();
-            writer.WritePropertyName(PropertyName);
-            JsonSerializer.Serialize(writer, record, options);
-            writer.WriteEndObject();
+            writer.WriteStartArray();
+            foreach (var record in value)
+            {
+                writer.WriteStartObject();
+                writer.WritePropertyName(PropertyName);
+                JsonSerializer.Serialize(writer, record, Context.Default.IReadOnlyListCustomFieldValue);
+                writer.WriteEndObject();
+            }
+            writer.WriteEndArray();
         }
-        writer.WriteEndArray();
     }
 }
