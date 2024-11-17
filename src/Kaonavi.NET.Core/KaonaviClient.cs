@@ -231,51 +231,6 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     }
 
     /// <summary>
-    /// APIを呼び出し、受け取った<inheritdoc cref="TaskProgress" path="/param[@name='Id']"/>を返します。
-    /// </summary>
-    /// <typeparam name="T">リクエストBodyの型</typeparam>
-    /// <param name="method">HTTP Method</param>
-    /// <param name="uri">リクエストURI</param>
-    /// <param name="payload">APIに対するリクエスト</param>
-    /// <param name="typeInfo"><paramref name="payload"/>をJSONに変換するためのメタ情報</param>
-    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-    /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-    /// <inheritdoc cref="CallApiAsync" path="/exception"/>
-    /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
-    private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
-    {
-        ThrowIfDisposed();
-
-        await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-        ITimer? timer = null;
-        try
-        {
-            int taskId = (await CallApiAsync(new(method, uri)
-            {
-                Content = JsonContent.Create(payload, typeInfo)
-            }, Context.Default.JsonElement, cancellationToken).ConfigureAwait(false)).GetProperty("task_id"u8).GetInt32();
-
-            timer = _timeProvider.CreateTimer(OnFinished, null, TimeSpan.FromSeconds(WaitSeconds), Timeout.InfiniteTimeSpan);
-            _requestQueues.Enqueue(timer);
-            return taskId;
-        }
-        catch
-        {
-            timer?.Dispose();
-            _semaphore.Release();
-            throw;
-        }
-
-        void OnFinished(object? _)
-        {
-            if (_requestQueues.TryDequeue(out var timer))
-                timer.Dispose();
-            _semaphore.Release();
-        }
-    }
-
-    /// <summary>
     /// 受け取った配列をラップしたJSONオブジェクトをBodyとしてAPIを呼び出し、受け取った<inheritdoc cref="TaskProgress" path="/param[@name='Id']"/>を返します。
     /// </summary>
     /// <typeparam name="T">リクエストBodyの型</typeparam>
