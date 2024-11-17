@@ -1,6 +1,8 @@
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -56,14 +58,14 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/enum_options")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var entities = await sut.EnumOption.ListAsync();
 
             // Assert
@@ -73,7 +75,7 @@ public sealed partial class KaonaviClientTest
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, "/enum_options")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -88,7 +90,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
             var sut = CreateSut(handler);
@@ -98,7 +100,7 @@ public sealed partial class KaonaviClientTest
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
                 .WithParameterName("id");
 
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -122,23 +124,24 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            int id = JsonDocument.Parse(responseJson).RootElement.GetProperty("id"u8).GetInt32();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/enum_options/10")
+            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/enum_options/{id}")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
-            var entity = await sut.EnumOption.ReadAsync(10);
+            var sut = CreateSut(handler, accessToken: token);
+            var entity = await sut.EnumOption.ReadAsync(id);
 
             // Assert
             _ = entity.Should().NotBeNull();
 
             handler.VerifyRequest(req =>
             {
-                _ = req.Should().SendTo(HttpMethod.Get, "/enum_options/10")
-                    .And.HasToken(tokenString);
+                _ = req.Should().SendTo(HttpMethod.Get, $"/enum_options/{id}")
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -153,7 +156,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
             var sut = CreateSut(handler);
@@ -163,7 +166,7 @@ public sealed partial class KaonaviClientTest
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
                 .WithParameterName("id");
 
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -174,28 +177,38 @@ public sealed partial class KaonaviClientTest
         public async Task EnumOption_UpdateAsync_Calls_PutApi()
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            const int id = 10;
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/enum_options/10")
+            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/enum_options/{id}")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
-            int taskId = await sut.EnumOption.UpdateAsync(10, [(1, "value1"), (null, "value2")]);
+            var sut = CreateSut(handler, accessToken: token);
+            int taskId = await sut.EnumOption.UpdateAsync(id, [(1, "社長"), (null, "本部長"), (2, "マネージャー")]);
 
             // Assert
             _ = taskId.Should().Be(TaskId);
 
             handler.VerifyRequest(async req =>
             {
-                _ = req.Should().SendTo(HttpMethod.Put, "/enum_options/10")
-                    .And.HasToken(tokenString);
+                _ = req.Should().SendTo(HttpMethod.Put, $"/enum_options/{id}")
+                    .And.HasToken(token);
 
                 // Body
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
                 string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should()
-                    .Be(/*lang=json,strict*/ """{"enum_option_data":[{"id":1,"name":"value1"},{"name":"value2"}]}""");
+                _ = doc.RootElement.Should()
+                    .BeSameJson("""
+                    {
+                      "enum_option_data": [
+                        { "id": 1, "name": "社長" },
+                        { "name": "本部長" },
+                        { "id": 2, "name": "マネージャー" }
+                      ]
+                    }
+                    """);
 
                 return true;
             }, Times.Once());

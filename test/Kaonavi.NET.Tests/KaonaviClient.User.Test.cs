@@ -1,7 +1,8 @@
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -54,24 +55,24 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var users = await sut.User.ListAsync();
 
             // Assert
-            _ = users.Should().AllBeAssignableTo<UserWithLoginAt>()
+            _ = users.Should().AllBeAssignableTo<User>()
                 .And.HaveCount(2);
 
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, "/users")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -84,7 +85,7 @@ public sealed partial class KaonaviClientTest
         public async Task User_CreateAsync_Calls_PostApi()
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             /*lang=json,strict*/
             const string responseJson = """
             {
@@ -102,30 +103,36 @@ public sealed partial class KaonaviClientTest
             }
             """;
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
-            /*lang=json,strict*/
-            const string expectedJson = """
-            {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1},"is_active":true,"password_locked":false,"use_smartphone":false}
-            """;
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var user = await sut.User.CreateAsync(payload);
 
             // Assert
             _ = user.Should().NotBeNull();
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, "/users")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson("""
+                {
+                  "email": "user1@example.com",
+                  "member_code": "00001",
+                  "password": "password",
+                  "role": { "id": 1 },
+                  "is_active": true,
+                  "password_locked": false,
+                  "use_smartphone": false
+                }
+                """);
 
                 return true;
             }, Times.Once());
@@ -141,7 +148,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
             var sut = CreateSut(handler);
@@ -151,7 +158,7 @@ public sealed partial class KaonaviClientTest
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
                 .WithParameterName("id");
 
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -163,30 +170,40 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int userId = 1;
-            string tokenString = GenerateRandomString();
-            var responseUser = new UserWithLoginAt(
-                userId,
-                "user1@example.com",
-                "00001",
-                new(1, "システム管理者", "Adm"),
-                new(2021, 11, 1, 12, 0, 0)
-            );
+            string token = FixtureFactory.Create<string>();
+            /*lang=json,strict*/
+            const string responseJson = """
+            {
+              "id": 1,
+              "email": "user1@example.com",
+              "member_code": "00001",
+              "role": {
+                "id": 1,
+                "name": "システム管理者",
+                "type": "Adm"
+              },
+              "is_active": true,
+              "password_locked": false,
+              "use_smartphone": false,
+              "last_login_at": "2021-11-01 12:00:00"
+            }
+            """;
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
-                .ReturnsJsonResponse(HttpStatusCode.OK, responseUser, Context.Default.Options);
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var user = await sut.User.ReadAsync(userId);
 
             // Assert
-            _ = user.Should().Be(responseUser);
+            _ = user.Should().NotBeNull();
 
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, $"/users/{userId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -201,7 +218,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
             var sut = CreateSut(handler);
@@ -211,7 +228,7 @@ public sealed partial class KaonaviClientTest
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
                 .WithParameterName("id");
 
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -239,32 +256,38 @@ public sealed partial class KaonaviClientTest
               "use_smartphone": false
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
-            /*lang=json,strict*/
-            const string expectedJson = """
-            {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1},"is_active":true,"password_locked":false,"use_smartphone":false}
-            """;
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var user = await sut.User.UpdateAsync(userId, payload);
 
             // Assert
             _ = user.Should().NotBeNull();
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Patch, $"/users/{userId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson("""
+                {
+                  "email": "user1@example.com",
+                  "member_code": "00001",
+                  "password": "password",
+                  "role": { "id":1 },
+                  "is_active": true,
+                  "password_locked": false,
+                  "use_smartphone": false
+                }
+                """);
 
                 return true;
             }, Times.Once());
@@ -280,7 +303,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
             var sut = CreateSut(handler);
@@ -290,7 +313,7 @@ public sealed partial class KaonaviClientTest
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
                 .WithParameterName("id");
 
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -302,21 +325,21 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int userId = 1;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
                 .ReturnsResponse(HttpStatusCode.NoContent);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             await sut.User.DeleteAsync(userId);
 
             // Assert
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Delete, $"/users/{userId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }

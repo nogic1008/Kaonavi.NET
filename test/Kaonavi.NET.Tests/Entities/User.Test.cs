@@ -3,7 +3,7 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary><see cref="User"/>, <see cref="UserWithLoginAt"/>の単体テスト</summary>
+/// <summary><see cref="User"/>の単体テスト</summary>
 [TestClass, TestCategory("Entities")]
 public sealed class UserTest
 {
@@ -20,7 +20,8 @@ public sealed class UserTest
         },
         "is_active": true,
         "password_locked": false,
-        "use_smartphone": false
+        "use_smartphone": false,
+        "last_login_at": "2021-11-01 12:00:00"
     }
     """;
     /*lang=json,strict*/
@@ -36,7 +37,8 @@ public sealed class UserTest
         },
         "is_active": true,
         "password_locked": true,
-        "use_smartphone": true
+        "use_smartphone": true,
+        "last_login_at": "2021-11-01 12:00:00"
     }
     """;
 
@@ -72,46 +74,5 @@ public sealed class UserTest
         _ = user.PasswordLocked.Should().Be(passwordLocked);
         _ = user.UseSmartphone.Should().Be(useSmartphone);
         _ = user.Role.Should().Be(new Role(roleId, roleName, roleType));
-    }
-
-    /// <summary>
-    /// JSONから<see cref="UserWithLoginAt"/>にデシリアライズできる。
-    /// </summary>
-    [TestMethod($"{nameof(UserWithLoginAt)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
-    public void UserWithLoginAt_CanDeserializeJSON()
-    {
-        // Arrange
-        /*lang=json,strict*/
-        const string json = """
-        {
-            "id": 1,
-            "email": "example@kaonavi.jp",
-            "member_code": "12345",
-            "role": {
-                "id": 1,
-                "name": "システム管理者",
-                "type": "Adm"
-            },
-            "is_active": true,
-            "password_locked": false,
-            "use_smartphone": false,
-            "last_login_at": "2021-11-01 12:00:00"
-        }
-        """;
-
-        // Act
-        var user = JsonSerializer.Deserialize(json, Context.Default.UserWithLoginAt);
-
-        // Assert
-        _ = user.Should().Be(new UserWithLoginAt(
-            Id: 1,
-            Email: "example@kaonavi.jp",
-            MemberCode: "12345",
-            Role: new(1, "システム管理者", "Adm"),
-            LastLoginAt: new DateTime(2021, 11, 1, 12, 0, 0),
-            IsActive: true,
-            PasswordLocked: false,
-            UseSmartphone: false
-        ));
     }
 }

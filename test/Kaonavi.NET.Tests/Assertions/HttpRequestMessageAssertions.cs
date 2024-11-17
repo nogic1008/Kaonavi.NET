@@ -1,6 +1,6 @@
 using FluentAssertions.Primitives;
 
-namespace Kaonavi.Net.Tests;
+namespace Kaonavi.Net.Tests.Assertions;
 
 /// <summary>
 /// Contains assertions for <see cref="HttpRequestMessage"/> instances.

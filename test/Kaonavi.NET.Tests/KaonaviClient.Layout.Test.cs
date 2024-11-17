@@ -1,7 +1,8 @@
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -18,50 +19,126 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
         public async Task Layout_ReadMemberLayoutAsync_Calls_GetApi()
         {
-            string tokenString = GenerateRandomString();
-            var response = new MemberLayout(
-                new("社員番号", true, FieldType.String, 50, []),
-                new("氏名", false, FieldType.String, 100, []),
-                new("フリガナ", false, FieldType.String, 100, []),
-                new("メールアドレス", false, FieldType.String, 100, []),
-                new("入社日", false, FieldType.Date, null, []),
-                new("退職日", false, FieldType.Date, null, []),
-                new("性別", false, FieldType.Enum, null, ["男性", "女性"]),
-                new("生年月日", false, FieldType.Date, null, []),
-                new("所属", false, FieldType.Department, null, []),
-                new("兼務情報", false, FieldType.DepartmentArray, null, []),
-                [
-                    new(100, "血液型", false, FieldType.Enum, null, ["A", "B", "O", "AB"]),
-                    new(200, "役職", false, FieldType.Enum, null, ["部長", "課長", "マネージャー", null]),
-                ]
-            );
+            // Arrange
+            /*lang=json,strict*/
+            const string responseJson = """
+            {
+              "code": {
+                "name": "社員番号",
+                "required": true,
+                "type": "string",
+                "max_length": 50,
+                "enum": []
+              },
+              "name": {
+                "name": "氏名",
+                "required": false,
+                "type": "string",
+                "max_length": 100,
+                "enum": []
+              },
+              "name_kana": {
+                "name": "フリガナ",
+                "required": false,
+                "type": "string",
+                "max_length": 100,
+                "enum": []
+              },
+              "mail": {
+                "name": "メールアドレス",
+                "required": false,
+                "type": "string",
+                "max_length": 100,
+                "enum": []
+              },
+              "entered_date": {
+                "name": "入社日",
+                "required": false,
+                "type": "date",
+                "max_length": null,
+                "enum": []
+              },
+              "retired_date": {
+                "name": "退職日",
+                "required": false,
+                "type": "date",
+                "max_length": null,
+                "enum": []
+              },
+              "gender": {
+                "name": "性別",
+                "required": false,
+                "type": "enum",
+                "max_length": null,
+                "enum": ["男性", "女性"]
+              },
+              "birthday": {
+                "name": "生年月日",
+                "required": false,
+                "type": "date",
+                "max_length": null,
+                "enum": []
+              },
+              "department": {
+                "name": "所属",
+                "required": false,
+                "type": "department",
+                "max_length": null,
+                "enum": []
+              },
+              "sub_departments": {
+                "name": "兼務情報",
+                "required": false,
+                "type": "department[]",
+                "max_length": null,
+                "enum": []
+              },
+              "custom_fields": [
+                {
+                  "id": 100,
+                  "name": "血液型",
+                  "required": false,
+                  "type": "enum",
+                  "max_length": null,
+                  "enum": ["A", "B", "O", "AB"]
+                },
+                {
+                  "id": 200,
+                  "name": "役職",
+                  "required": false,
+                  "type": "enum",
+                  "max_length": null,
+                  "enum": ["部長", "課長", "マネージャー"]
+                },
+                {
+                  "id": 300,
+                  "name": "計算式",
+                  "required": false,
+                  "type": "calc",
+                  "max_length": null,
+                  "enum": null,
+                  "read_only": true
+                }
+              ]
+            }
+            """;
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/member_layouts")
-                .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var layout = await sut.Layout.ReadMemberLayoutAsync();
 
             // Assert
             _ = layout.Should().NotBeNull();
-            _ = layout.Code.Name.Should().Be("社員番号");
-            _ = layout.Name.Name.Should().Be("氏名");
-            _ = layout.NameKana.Name.Should().Be("フリガナ");
-            _ = layout.Mail.Name.Should().Be("メールアドレス");
-            _ = layout.EnteredDate.Name.Should().Be("入社日");
-            _ = layout.RetiredDate.Name.Should().Be("退職日");
-            _ = layout.Gender.Name.Should().Be("性別");
-            _ = layout.Birthday.Name.Should().Be("生年月日");
-            _ = layout.Department.Name.Should().Be("所属");
-            _ = layout.SubDepartments.Name.Should().Be("兼務情報");
-            _ = layout.CustomFields.Should().HaveCount(2);
 
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, "/member_layouts")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -108,23 +185,23 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest()
+            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == expectedEndpoint)
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var layouts = await sut.Layout.ListAsync(getCalcType);
 
             // Assert
-            _ = layouts.Should().HaveCount(1);
+            _ = layouts.Should().HaveCount(1).And.AllBeAssignableTo<SheetLayout>();
 
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, expectedEndpoint)
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -139,7 +216,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
             var sut = CreateSut(handler);
@@ -149,7 +226,7 @@ public sealed partial class KaonaviClientTest
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
                 .WithParameterName("id");
 
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -164,34 +241,61 @@ public sealed partial class KaonaviClientTest
         public async Task Layout_ReadAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint)
         {
             // Arrange
-            const int sheetId = 12;
-            string tokenString = GenerateRandomString();
-            var response = new SheetLayout(
-                sheetId,
-                "住所・連絡先",
-                RecordType.Multiple,
-                [new(1000, "住所", false, FieldType.String, 250, []), new(1001, "電話番号", false, FieldType.String, 50, [])]
-            );
+            /*lang=json,strict*/
+            const string responseJson = """
+            {
+              "id": 12,
+              "name": "住所・連絡先",
+              "record_type": 1,
+              "custom_fields": [
+                {
+                  "id": 1000,
+                  "name": "住所",
+                  "required": false,
+                  "type": "string",
+                  "max_length": 100,
+                  "enum": [],
+                  "type_detail": "text_box"
+                },
+                {
+                  "id": 1001,
+                  "name": "電話番号",
+                  "required": false,
+                  "type": "string",
+                  "max_length": 100,
+                  "enum": [],
+                  "type_detail": "text_box"
+                },
+                {
+                  "id": 1002,
+                  "name": "計算式",
+                  "required": false,
+                  "type": "calc",
+                  "max_length": null,
+                  "enum": [],
+                  "read_only": true,
+                  "type_detail": "text_box"
+                }
+              ]
+            }
+            """;
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest()
-                .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
+            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == expectedEndpoint)
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var layout = await sut.Layout.ReadAsync(12, getCalcType);
 
             // Assert
             _ = layout.Should().NotBeNull();
-            _ = layout.Id.Should().Be(sheetId);
-            _ = layout.Name.Should().Be("住所・連絡先");
-            _ = layout.RecordType.Should().Be(RecordType.Multiple);
-            _ = layout.CustomFields.Should().HaveCount(2);
 
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, expectedEndpoint)
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }

@@ -1,7 +1,16 @@
 namespace Kaonavi.Net.Entities;
 
 /// <summary>シート情報</summary>
-public record SheetData
+/// <param name="Code">社員コード</param>
+/// <param name="Records">
+/// メンバーが持つ設定値のリスト
+/// <para><see cref="RecordType.Multiple"/>の場合にのみ複数の値が返却されます。</para>
+/// </param>
+[method: JsonConstructor]
+public record SheetData(
+    string Code,
+    [property: JsonConverter(typeof(SheetRecordConverter))] params IReadOnlyList<IReadOnlyList<CustomFieldValue>> Records
+)
 {
     /// <summary>
     /// 単一レコードシート向けに、SheetDataの新しいインスタンスを生成します。
@@ -10,27 +19,6 @@ public record SheetData
     /// <param name="customFields">設定値</param>
     public SheetData(string code, IReadOnlyList<CustomFieldValue> customFields)
         : this(code, [customFields]) { }
-
-    /// <summary>
-    /// 複数レコードシート向けに、SheetDataの新しいインスタンスを生成します。
-    /// </summary>
-    /// <param name="code"><inheritdoc cref="Code" path="/summary/text()"/></param>
-    /// <param name="records"><inheritdoc cref="Records" path="/summary/text()"/></param>
-    public SheetData(string code, params IReadOnlyList<CustomFieldValue>[] records)
-        => (Code, Records) = (code, records);
-
-    /// <inheritdoc cref="SheetData(string, IReadOnlyList{CustomFieldValue}[])"/>
-    [JsonConstructor]
-    public SheetData(string code, IReadOnlyList<IReadOnlyList<CustomFieldValue>> records)
-        => (Code, Records) = (code, records);
-
-    /// <summary>社員コード</summary>
-    public string Code { get; init; }
-
-    /// <summary>メンバーが持つ設定値のリスト</summary>
-    /// <remarks><see cref="RecordType.Multiple"/>の場合にのみ複数の値が返却されます。</remarks>
-    [JsonConverter(typeof(SheetRecordConverter))]
-    public IReadOnlyList<IReadOnlyList<CustomFieldValue>> Records { get; init; }
 }
 
 internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>

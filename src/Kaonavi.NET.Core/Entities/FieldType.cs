@@ -1,26 +1,23 @@
 using System.ComponentModel;
-using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Entities;
 
 /// <summary>フィールドの入力タイプ</summary>
-[JsonConverter(typeof(FieldTypeJsonConverter))]
+[JsonConverter(typeof(JsonStringEnumConverter<FieldType>))]
 public enum FieldType
 {
     /// <summary>文字列</summary>
-    String,
+    [JsonStringEnumMemberName("string")] String,
     /// <summary>数値</summary>
-    Number,
+    [JsonStringEnumMemberName("number")] Number,
     /// <summary>日付・年月</summary>
-    Date,
+    [JsonStringEnumMemberName("date")] Date,
     /// <summary>リスト項目</summary>
-    Enum,
+    [JsonStringEnumMemberName("enum")] Enum,
     /// <summary>計算式パーツ</summary>
-    Calc,
+    [JsonStringEnumMemberName("calc")] Calc,
     /// <summary><see cref="MemberDepartment"/></summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    Department,
+    [EditorBrowsable(EditorBrowsableState.Never), JsonStringEnumMemberName("department")] Department,
     /// <summary><see cref="MemberDepartment"/>の配列</summary>
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    DepartmentArray,
+    [EditorBrowsable(EditorBrowsableState.Never), JsonStringEnumMemberName("department[]")] DepartmentArray,
 }

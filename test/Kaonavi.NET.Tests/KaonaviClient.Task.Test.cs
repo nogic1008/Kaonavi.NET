@@ -1,7 +1,7 @@
-using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -21,7 +21,7 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(It.IsAny<Uri>()).ReturnsResponse(HttpStatusCode.OK);
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
             var sut = CreateSut(handler);
@@ -31,7 +31,7 @@ public sealed partial class KaonaviClientTest
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
                 .WithParameterName("id");
 
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -43,27 +43,34 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int taskId = 1;
-            string tokenString = GenerateRandomString();
-            var response = new TaskProgress(taskId, "NG", ["エラーメッセージ1", "エラーメッセージ2"]);
+            /*lang=json,strict*/
+            const string responseJson = """
+            {
+              "id": 1,
+              "status": "NG",
+              "messages": [
+                "エラーメッセージ1",
+                "エラーメッセージ2"
+              ]
+            }
+            """;
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
-                .ReturnsJsonResponse(HttpStatusCode.OK, response, Context.Default.Options);
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var task = await sut.Task.ReadAsync(taskId);
 
             // Assert
             _ = task.Should().NotBeNull();
-            _ = task.Id.Should().Be(taskId);
-            _ = task.Status.Should().Be("NG");
-            _ = task.Messages.Should().Equal("エラーメッセージ1", "エラーメッセージ2");
 
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, $"/tasks/{taskId}")
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }

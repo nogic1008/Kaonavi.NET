@@ -9,8 +9,8 @@ public sealed class ISheetDataExtensionsTest
 {
     public class TestSheetData : ISheetData
     {
-        public string Code { get; set; } = default!;
-        public string Name { get; set; } = default!;
+        public required string Code { get; init; }
+        public required string Name { get; init; }
         public IReadOnlyList<CustomFieldValue> ToCustomFields() => [new(101, Name)];
     }
 
@@ -45,6 +45,6 @@ public sealed class ISheetDataExtensionsTest
         var actual = values.ToMultipleSheetData();
 
         // Assert
-        actual.Should().HaveCount(codes.Length).And.OnlyContain(d => d.Records.Count == names.Length);
+        actual.Should().HaveCount(10).And.OnlyContain(d => d.Records.Count == 3);
     }
 }

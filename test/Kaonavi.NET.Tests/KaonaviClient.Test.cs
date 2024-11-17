@@ -1,9 +1,11 @@
 using System.Text;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
+using Kaonavi.Net.Tests.Assertions;
 using Microsoft.Extensions.Time.Testing;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -21,9 +23,6 @@ public sealed partial class KaonaviClientTest
     /// <summary>タスク結果JSON</summary>
     /*lang=json,strict*/
     private const string TaskJson = """{"task_id":1}""";
-
-    /// <summary>ランダムな文字列を生成します。</summary>
-    private static string GenerateRandomString() => Guid.NewGuid().ToString();
 
     /// <summary>
     /// テスト対象(System Under Test)となる<see cref="KaonaviClient"/>のインスタンスを生成します。
@@ -126,7 +125,7 @@ public sealed partial class KaonaviClientTest
     {
         // Arrange
         var client = new HttpClient();
-        string headerValue = GenerateRandomString();
+        string headerValue = FixtureFactory.Create<string>();
         client.DefaultRequestHeaders.Add("Kaonavi-Token", headerValue);
 
         // Act
@@ -157,7 +156,7 @@ public sealed partial class KaonaviClientTest
     {
         // Arrange
         var client = new HttpClient();
-        string headerValue = GenerateRandomString();
+        string headerValue = FixtureFactory.Create<string>();
 
         // Act
         _ = new KaonaviClient(client, "foo", "bar")
@@ -261,8 +260,8 @@ public sealed partial class KaonaviClientTest
     public async Task When_AccessToken_IsNull_ApiCaller_Calls_AuthenticateAsync()
     {
         // Arrange
-        string key = GenerateRandomString();
-        string secret = GenerateRandomString();
+        string key = FixtureFactory.Create<string>();
+        string secret = FixtureFactory.Create<string>();
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupAnyRequest()
@@ -386,10 +385,10 @@ public sealed partial class KaonaviClientTest
     public async Task AuthenticateAsync_Calls_PostApi()
     {
         // Arrange
-        string key = GenerateRandomString();
-        string secret = GenerateRandomString();
-        string tokenString = GenerateRandomString();
-        var response = new Token("25396f58-10f8-c228-7f0f-818b1d666b2e", "Bearer", 3600);
+        string key = FixtureFactory.Create<string>();
+        string secret = FixtureFactory.Create<string>();
+        string tokenString = FixtureFactory.Create<string>();
+        var response = new Token(FixtureFactory.Create<string>(), "Bearer", 3600);
 
         var handler = new Mock<HttpMessageHandler>();
         _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/token")

@@ -1,6 +1,8 @@
 using Kaonavi.Net.Entities;
+using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
+using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -16,22 +18,21 @@ public sealed partial class KaonaviClientTest
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         [TestMethod($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
-        [DataRow(10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
-        [DataRow(-1, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
-        public async Task When_Type_IsInvalid_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(int type)
+        [DataRow((AdvancedType)10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
+        [DataRow((AdvancedType)(-1), DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
+        public async Task When_Type_IsInvalid_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(AdvancedType type)
         {
             // Arrange
-            string tokenString = GenerateRandomString();
-
             var handler = new Mock<HttpMessageHandler>();
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
-            var act = async () => await sut.AdvancedPermission.ListAsync((AdvancedType)type);
+            var sut = CreateSut(handler);
+            var act = async () => await sut.AdvancedPermission.ListAsync(type);
 
             // Assert
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>().WithParameterName(nameof(type));
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -79,23 +80,23 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == endpoint)
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             var permissions = await sut.AdvancedPermission.ListAsync(type);
 
             // Assert
-            _ = permissions.Should().HaveCount(2);
+            _ = permissions.Should().HaveCount(2).And.AllBeAssignableTo<AdvancedPermission>();
 
             handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Get, endpoint)
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
                 return true;
             }, Times.Once());
         }
@@ -106,22 +107,21 @@ public sealed partial class KaonaviClientTest
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         [TestMethod($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
-        [DataRow(10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})10, []) > ArgumentOutOfRangeExceptionをスローする。")]
-        [DataRow(-1, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})-1, []) > ArgumentOutOfRangeExceptionをスローする。")]
-        public async Task When_Type_IsInvalid_AdvancedPermission_ReplaceAsync_Throws_ArgumentOutOfRangeException(int type)
+        [DataRow((AdvancedType)10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})10, []) > ArgumentOutOfRangeExceptionをスローする。")]
+        [DataRow((AdvancedType)(-1), DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})-1, []) > ArgumentOutOfRangeExceptionをスローする。")]
+        public async Task When_Type_IsInvalid_AdvancedPermission_ReplaceAsync_Throws_ArgumentOutOfRangeException(AdvancedType type)
         {
             // Arrange
-            string tokenString = GenerateRandomString();
-
             var handler = new Mock<HttpMessageHandler>();
+            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
-            var act = async () => await sut.AdvancedPermission.ReplaceAsync((AdvancedType)type, []);
+            var sut = CreateSut(handler);
+            var act = async () => await sut.AdvancedPermission.ReplaceAsync(type, []);
 
             // Assert
             _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>().WithParameterName(nameof(type));
-            handler.VerifyRequest(It.IsAny<Uri>(), Times.Never());
+            handler.VerifyAnyRequest(Times.Never());
         }
 
         /// <summary>
@@ -136,14 +136,14 @@ public sealed partial class KaonaviClientTest
         public async Task AdvancedPermission_ReplaceAsync_Calls_PutApi(AdvancedType type, string endpoint)
         {
             // Arrange
-            string tokenString = GenerateRandomString();
+            string token = FixtureFactory.Create<string>();
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == endpoint)
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: tokenString);
+            var sut = CreateSut(handler, accessToken: token);
             int taskId = await sut.AdvancedPermission.ReplaceAsync(type,
             [
                 new(1, ["1"], []),
@@ -153,15 +153,30 @@ public sealed partial class KaonaviClientTest
             // Assert
             _ = taskId.Should().Be(TaskId);
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, endpoint)
-                    .And.HasToken(tokenString);
+                    .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should()
-                    .Be(/*lang=json,strict*/ """{"advanced_permission_data":[{"user_id":1,"add_codes":["1"],"exclusion_codes":[]},{"user_id":2,"add_codes":["2"],"exclusion_codes":["1","3"]}]}""");
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should()
+                    .BeSameJson("""
+                    {
+                      "advanced_permission_data": [
+                        {
+                          "user_id": 1,
+                          "add_codes": ["1"],
+                          "exclusion_codes": []
+                        },
+                        {
+                          "user_id": 2,
+                          "add_codes": ["2"],
+                          "exclusion_codes": ["1", "3"]
+                        }
+                      ]
+                    }
+                    """);
 
                 return true;
             }, Times.Once());
