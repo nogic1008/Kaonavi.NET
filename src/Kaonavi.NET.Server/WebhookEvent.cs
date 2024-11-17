@@ -1,0 +1,1 @@
+../Kaonavi.Net.Core/Entities/WebhookEvent.cs
