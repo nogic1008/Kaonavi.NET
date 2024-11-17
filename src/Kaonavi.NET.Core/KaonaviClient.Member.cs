@@ -95,26 +95,26 @@ public partial class KaonaviClient : KaonaviClient.IMember
     public IMember Member => this;
 
     /// <inheritdoc/>
-    async ValueTask<IReadOnlyList<MemberData>> IMember.ListAsync(CancellationToken cancellationToken)
-        => (await CallApiAsync(new(HttpMethod.Get, "members"), Context.Default.ApiListResultMemberData, cancellationToken)).Values;
+    ValueTask<IReadOnlyList<MemberData>> IMember.ListAsync(CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, "members"), "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.CreateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Post, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, "members", payload, "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.ReplaceAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "members", payload, "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.UpdateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Patch, "members", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Patch, "members", payload, "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.OverWriteAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", new("member_data", payload), Context.Default.ApiListResultMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", payload, "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Post, "members/delete", new("codes", codes), Context.Default.ApiListResultString, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, "members/delete", codes, "codes", Context.Default.IReadOnlyListString, cancellationToken);
 }

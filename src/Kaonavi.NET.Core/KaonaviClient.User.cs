@@ -79,8 +79,8 @@ public partial class KaonaviClient : KaonaviClient.IUser
     public IUser User => this;
 
     /// <inheritdoc/>
-    async ValueTask<IReadOnlyList<User>> IUser.ListAsync(CancellationToken cancellationToken)
-        => (await CallApiAsync(new(HttpMethod.Get, "users"), Context.Default.ApiListResultUser, cancellationToken)).Values;
+    ValueTask<IReadOnlyList<User>> IUser.ListAsync(CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, "users"), "user_data", Context.Default.IReadOnlyListUser, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<User> IUser.CreateAsync(UserPayload payload, CancellationToken cancellationToken)
