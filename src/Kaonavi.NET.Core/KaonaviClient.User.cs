@@ -13,11 +13,11 @@ public partial class KaonaviClient : KaonaviClient.IUser
     public interface IUser
     {
         /// <summary>
-        /// <inheritdoc cref="UserWithLoginAt" path="/summary/text()"/>の一覧を取得します。
+        /// <inheritdoc cref="User" path="/summary/text()"/>の一覧を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get"/>
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<IReadOnlyList<UserWithLoginAt>> ListAsync(CancellationToken cancellationToken = default);
+        ValueTask<IReadOnlyList<User>> ListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <inheritdoc cref="User" path="/summary/text()"/>を登録します。
@@ -41,12 +41,12 @@ public partial class KaonaviClient : KaonaviClient.IUser
         ValueTask<User> CreateAsync(UserPayload payload, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// <paramref name="id"/>と一致する<inheritdoc cref="UserWithLoginAt" path="/summary/text()"/>を取得します。
+        /// <paramref name="id"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get"/>
         /// </summary>
-        /// <param name="id"><inheritdoc cref="UserWithLoginAt" path="/param[@name='Id']/text()"/></param>
+        /// <param name="id"><inheritdoc cref="User" path="/param[@name='Id']/text()"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<UserWithLoginAt> ReadAsync(int id, CancellationToken cancellationToken = default);
+        ValueTask<User> ReadAsync(int id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を更新します。
@@ -79,8 +79,8 @@ public partial class KaonaviClient : KaonaviClient.IUser
     public IUser User => this;
 
     /// <inheritdoc/>
-    async ValueTask<IReadOnlyList<UserWithLoginAt>> IUser.ListAsync(CancellationToken cancellationToken)
-        => (await CallApiAsync(new(HttpMethod.Get, "users"), Context.Default.ApiListResultUserWithLoginAt, cancellationToken)).Values;
+    async ValueTask<IReadOnlyList<User>> IUser.ListAsync(CancellationToken cancellationToken)
+        => (await CallApiAsync(new(HttpMethod.Get, "users"), Context.Default.ApiListResultUser, cancellationToken)).Values;
 
     /// <inheritdoc/>
     ValueTask<User> IUser.CreateAsync(UserPayload payload, CancellationToken cancellationToken)
@@ -91,8 +91,8 @@ public partial class KaonaviClient : KaonaviClient.IUser
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    ValueTask<UserWithLoginAt> IUser.ReadAsync(int id, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, $"users/{ThrowIfNegative(id):D}"), Context.Default.UserWithLoginAt, cancellationToken);
+    ValueTask<User> IUser.ReadAsync(int id, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"users/{ThrowIfNegative(id):D}"), Context.Default.User, cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>

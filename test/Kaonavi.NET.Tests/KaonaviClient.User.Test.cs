@@ -66,7 +66,7 @@ public sealed partial class KaonaviClientTest
             var users = await sut.User.ListAsync();
 
             // Assert
-            _ = users.Should().AllBeAssignableTo<UserWithLoginAt>()
+            _ = users.Should().AllBeAssignableTo<User>()
                 .And.HaveCount(2);
 
             handler.VerifyRequest(req =>
