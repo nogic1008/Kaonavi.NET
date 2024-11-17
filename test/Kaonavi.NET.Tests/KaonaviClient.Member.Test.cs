@@ -4,6 +4,8 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using RandomFixtureKit;
 
+using Kaonavi.Net.Tests.Assertions;
+
 namespace Kaonavi.Net.Tests;
 
 public sealed partial class KaonaviClientTest
@@ -12,34 +14,46 @@ public sealed partial class KaonaviClientTest
     [TestClass]
     public class MemberTest
     {
-        /// <summary>Member APIのリクエストPayload</summary>
-        private static readonly MemberData[] _memberDataPayload =
+        /// <summary><inheritdoc cref="KaonaviClient.Member" path="/summary/text()"/>のリクエストPayload</summary>
+        /*lang=json,strict*/
+        private const string PayloadJson = """
         [
-            new(
-                Code: "A0002",
-                Name: "カオナビ 太郎",
-                NameKana: "カオナビ タロウ",
-                Mail: "taro@example.com",
-                EnteredDate: new(2005, 9, 20),
-                Gender: "男性",
-                Birthday: new(1984, 5, 15),
-                Department: new("1000"),
-                SubDepartments: [],
-                CustomFields: [new(100, "A")]
-            ),
-            new(
-                Code: "A0001",
-                Name: "カオナビ 花子",
-                NameKana: "カオナビ ハナコ",
-                Mail: "hanako@kaonavi.jp",
-                EnteredDate: new(2013, 5, 7),
-                Gender: "女性",
-                Birthday: new(1986, 5, 16),
-                Department: new("2000"),
-                SubDepartments: [new("3000"), new("4000")],
-                CustomFields: [new(100, "O"), new(200, ["部長", "マネージャー"])]
-            )
-        ];
+          {
+            "code": "A0002",
+            "name": "カオナビ 太郎",
+            "name_kana": "カオナビ タロウ",
+            "mail": "taro@kaonavi.jp",
+            "entered_date": "2005-09-20",
+            "gender": "男性",
+            "birthday": "1984-05-15",
+            "department": { "code": "1000" },
+            "sub_departments": [],
+            "custom_fields": [
+              { "id": 100, "values": ["A"] }
+            ]
+          },
+          {
+            "code": "A0001",
+            "name": "カオナビ 花子",
+            "name_kana": "カオナビ ハナコ",
+            "mail": "hanako@kaonavi.jp",
+            "entered_date": "2013-05-07",
+            "gender": "女性",
+            "birthday": "1986-05-16",
+            "department": { "code": "2000" },
+            "sub_departments": [
+              { "code": "3000" },
+              { "code": "4000" }
+            ],
+            "custom_fields": [
+              { "id": 100, "values": ["O"] },
+              { "id": 200, "values": ["部長", "マネージャー"] }
+            ]
+          }
+        ]
+        """;
+        /// <summary><inheritdoc cref="KaonaviClient.Member" path="/summary/text()"/>のリクエストPayload</summary>
+        private static readonly IReadOnlyList<MemberData> _payload = JsonSerializer.Deserialize(PayloadJson, Context.Default.IReadOnlyListMemberData)!;
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.ListAsync"/>は、"/members"にGETリクエストを行う。
@@ -153,7 +167,6 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             string token = FixtureFactory.Create<string>();
-            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -161,19 +174,19 @@ public sealed partial class KaonaviClientTest
 
             // Act
             var sut = CreateSut(handler, accessToken: token);
-            int taskId = await sut.Member.CreateAsync(_memberDataPayload);
+            int taskId = await sut.Member.CreateAsync(_payload);
 
             // Assert
             _ = taskId.Should().Be(TaskId);
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, "/members")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(PayloadJson);
 
                 return true;
             }, Times.Once());
@@ -188,7 +201,6 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             string token = FixtureFactory.Create<string>();
-            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -196,19 +208,19 @@ public sealed partial class KaonaviClientTest
 
             // Act
             var sut = CreateSut(handler, accessToken: token);
-            int taskId = await sut.Member.ReplaceAsync(_memberDataPayload);
+            int taskId = await sut.Member.ReplaceAsync(_payload);
 
             // Assert
             _ = taskId.Should().Be(TaskId);
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, "/members")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(PayloadJson);
 
                 return true;
             }, Times.Once());
@@ -223,7 +235,6 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             string token = FixtureFactory.Create<string>();
-            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
@@ -231,19 +242,19 @@ public sealed partial class KaonaviClientTest
 
             // Act
             var sut = CreateSut(handler, accessToken: token);
-            int taskId = await sut.Member.UpdateAsync(_memberDataPayload);
+            int taskId = await sut.Member.UpdateAsync(_payload);
 
             // Assert
             _ = taskId.Should().Be(TaskId);
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Patch, "/members")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(PayloadJson);
 
                 return true;
             }, Times.Once());
@@ -258,7 +269,6 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             string token = FixtureFactory.Create<string>();
-            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_memberDataPayload, Context.Default.IReadOnlyListMemberData)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
@@ -266,19 +276,19 @@ public sealed partial class KaonaviClientTest
 
             // Act
             var sut = CreateSut(handler, accessToken: token);
-            int taskId = await sut.Member.OverWriteAsync(_memberDataPayload);
+            int taskId = await sut.Member.OverWriteAsync(_payload);
 
             // Assert
             _ = taskId.Should().Be(TaskId);
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, "/members/overwrite")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(PayloadJson);
 
                 return true;
             }, Times.Once());
@@ -292,7 +302,7 @@ public sealed partial class KaonaviClientTest
         public async Task Member_DeleteAsync_Calls_PostApi()
         {
             // Arrange
-            string[] codes = _memberDataPayload.Select(d => d.Code).ToArray();
+            string[] codes = _payload.Select(d => d.Code).ToArray();
             string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, Context.Default.IReadOnlyListString)}}}";
 
@@ -307,14 +317,14 @@ public sealed partial class KaonaviClientTest
             // Assert
             _ = taskId.Should().Be(TaskId);
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, "/members/delete")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson("""{ "codes": ["A0002", "A0001"]}""");
 
                 return true;
             }, Times.Once());

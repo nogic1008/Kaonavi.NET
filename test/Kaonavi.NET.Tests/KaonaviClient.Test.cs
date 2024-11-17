@@ -6,6 +6,8 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using RandomFixtureKit;
 
+using Kaonavi.Net.Tests.Assertions;
+
 namespace Kaonavi.Net.Tests;
 
 /// <summary><see cref="KaonaviClient"/>の単体テスト</summary>

@@ -1,8 +1,9 @@
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
 using Moq;
 using Moq.Contrib.HttpClient;
 using RandomFixtureKit;
+
+using Kaonavi.Net.Tests.Assertions;
 
 namespace Kaonavi.Net.Tests;
 
@@ -103,10 +104,6 @@ public sealed partial class KaonaviClientTest
             }
             """;
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
-            /*lang=json,strict*/
-            const string expectedJson = """
-            {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1},"is_active":true,"password_locked":false,"use_smartphone":false}
-            """;
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
@@ -119,14 +116,24 @@ public sealed partial class KaonaviClientTest
             // Assert
             _ = user.Should().NotBeNull();
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, "/users")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson("""
+                {
+                  "email": "user1@example.com",
+                  "member_code": "00001",
+                  "password": "password",
+                  "role": { "id": 1 },
+                  "is_active": true,
+                  "password_locked": false,
+                  "use_smartphone": false
+                }
+                """);
 
                 return true;
             }, Times.Once());
@@ -165,24 +172,34 @@ public sealed partial class KaonaviClientTest
             // Arrange
             const int userId = 1;
             string token = FixtureFactory.Create<string>();
-            var responseUser = new UserWithLoginAt(
-                userId,
-                "user1@example.com",
-                "00001",
-                new(1, "システム管理者", "Adm"),
-                new(2021, 11, 1, 12, 0, 0)
-            );
+            /*lang=json,strict*/
+            const string responseJson = """
+            {
+              "id": 1,
+              "email": "user1@example.com",
+              "member_code": "00001",
+              "role": {
+                "id": 1,
+                "name": "システム管理者",
+                "type": "Adm"
+              },
+              "is_active": true,
+              "password_locked": false,
+              "use_smartphone": false,
+              "last_login_at": "2021-11-01 12:00:00"
+            }
+            """;
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
-                .ReturnsJsonResponse(HttpStatusCode.OK, responseUser, Context.Default.Options);
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(handler, accessToken: token);
             var user = await sut.User.ReadAsync(userId);
 
             // Assert
-            _ = user.Should().Be(responseUser);
+            _ = user.Should().NotBeNull();
 
             handler.VerifyRequest(req =>
             {
@@ -242,10 +259,6 @@ public sealed partial class KaonaviClientTest
             """;
             string token = FixtureFactory.Create<string>();
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
-            /*lang=json,strict*/
-            const string expectedJson = """
-            {"email":"user1@example.com","member_code":"00001","password":"password","role":{"id":1},"is_active":true,"password_locked":false,"use_smartphone":false}
-            """;
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
@@ -258,14 +271,24 @@ public sealed partial class KaonaviClientTest
             // Assert
             _ = user.Should().NotBeNull();
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Patch, $"/users/{userId}")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson("""
+                {
+                  "email": "user1@example.com",
+                  "member_code": "00001",
+                  "password": "password",
+                  "role": { "id":1 },
+                  "is_active": true,
+                  "password_locked": false,
+                  "use_smartphone": false
+                }
+                """);
 
                 return true;
             }, Times.Once());

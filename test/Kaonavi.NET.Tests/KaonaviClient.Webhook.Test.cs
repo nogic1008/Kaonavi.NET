@@ -3,6 +3,8 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using RandomFixtureKit;
 
+using Kaonavi.Net.Tests.Assertions;
+
 namespace Kaonavi.Net.Tests;
 
 public sealed partial class KaonaviClientTest
@@ -86,10 +88,6 @@ public sealed partial class KaonaviClientTest
             }
             """;
             var payload = new WebhookConfigPayload(_baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
-            /*lang=json,strict*/
-            const string expectedJson = """
-            {"url":"https://example.com/","events":["member_created","member_updated","member_deleted"],"secret_token":"token"}
-            """;
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/webhook")
@@ -102,14 +100,20 @@ public sealed partial class KaonaviClientTest
             // Assert
             _ = webhook.Should().NotBeNull();
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Post, "/webhook")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson("""
+                {
+                  "url": "https://example.com/",
+                  "events": ["member_created", "member_updated", "member_deleted"],
+                  "secret_token": "token"
+                }
+                """);
 
                 return true;
             }, Times.Once());
@@ -139,10 +143,6 @@ public sealed partial class KaonaviClientTest
             """;
             string token = FixtureFactory.Create<string>();
             var payload = new WebhookConfig(webhookId, _baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
-            /*lang=json,strict*/
-            const string expectedJson = """
-            {"id":1,"url":"https://example.com/","events":["member_created","member_updated","member_deleted"],"secret_token":"token"}
-            """;
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
@@ -155,14 +155,21 @@ public sealed partial class KaonaviClientTest
             // Assert
             _ = webhook.Should().NotBeNull();
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Patch, $"/webhook/{webhookId}")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson("""
+                {
+                  "id": 1,
+                  "url": "https://example.com/",
+                  "events": ["member_created", "member_updated", "member_deleted"],
+                  "secret_token": "token"
+                }
+                """);
 
                 return true;
             }, Times.Once());

@@ -1,8 +1,9 @@
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
 using Moq;
 using Moq.Contrib.HttpClient;
 using RandomFixtureKit;
+
+using Kaonavi.Net.Tests.Assertions;
 
 namespace Kaonavi.Net.Tests;
 
@@ -108,14 +109,47 @@ public sealed partial class KaonaviClientTest
             // Assert
             _ = taskId.Should().Be(TaskId);
 
-            handler.VerifyRequest(async (req) =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, "/departments")
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should().Be(expectedJson);
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson("""
+                {
+                  "department_data": [
+                    {
+                      "code": "1000",
+                      "name": "取締役会",
+                      "leader_member_code": "A0002",
+                      "order": 1,
+                      "memo": ""
+                    },
+                    {
+                      "code": "1200",
+                      "name": "営業本部",
+                      "order": 2,
+                      "memo": ""
+                    },
+                    {
+                      "code": "1500",
+                      "name": "第一営業部",
+                      "parent_code": "1200",
+                      "order": 1,
+                      "memo": ""
+                    },
+                    {
+                      "code": "2000",
+                      "name": "ITグループ",
+                      "parent_code": "1500",
+                      "leader_member_code": "A0001",
+                      "order": 1,
+                      "memo": "example"
+                    }
+                  ]
+                }
+                """);
 
                 return true;
             }, Times.Once());

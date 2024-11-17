@@ -3,6 +3,8 @@ using Moq;
 using Moq.Contrib.HttpClient;
 using RandomFixtureKit;
 
+using Kaonavi.Net.Tests.Assertions;
+
 namespace Kaonavi.Net.Tests;
 
 public sealed partial class KaonaviClientTest
@@ -152,15 +154,30 @@ public sealed partial class KaonaviClientTest
             // Assert
             _ = taskId.Should().Be(TaskId);
 
-            handler.VerifyRequest(async req =>
+            handler.VerifyRequest(req =>
             {
                 _ = req.Should().SendTo(HttpMethod.Put, endpoint)
                     .And.HasToken(token);
 
                 // Body
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = receivedJson.Should()
-                    .Be(/*lang=json,strict*/ """{"advanced_permission_data":[{"user_id":1,"add_codes":["1"],"exclusion_codes":[]},{"user_id":2,"add_codes":["2"],"exclusion_codes":["1","3"]}]}""");
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should()
+                    .BeSameJson("""
+                    {
+                      "advanced_permission_data": [
+                        {
+                          "user_id": 1,
+                          "add_codes": ["1"],
+                          "exclusion_codes": []
+                        },
+                        {
+                          "user_id": 2,
+                          "add_codes": ["2"],
+                          "exclusion_codes": ["1", "3"]
+                        }
+                      ]
+                    }
+                    """);
 
                 return true;
             }, Times.Once());
