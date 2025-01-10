@@ -12,7 +12,7 @@ public record SheetLayout(
     IReadOnlyList<CustomFieldLayout> CustomFields
 );
 
-/// <summary><inheritdoc cref="SheetLayout" path="/param[@name='RecordType']/text()"/></summary>
+/// <summary><inheritdoc cref="SheetLayout" path="/param[@name='RecordType']"/></summary>
 public enum RecordType
 {
     /// <summary>単一レコードシート</summary>
