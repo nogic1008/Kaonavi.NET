@@ -1,3 +1,4 @@
+using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.Http.Json;
@@ -243,7 +244,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
-    private async ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, string propertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
+    private ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, string propertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
 
@@ -255,15 +256,28 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         writer.WriteEndObject();
         writer.Flush();
 
+        return CallRequestLimitApiAsync(new(method, uri)
+        {
+            Content = new ByteArrayContent(buffer.WrittenSpan.ToArray())
+        }, cancellationToken);
+    }
+
+    /// <summary>
+    /// 更新リクエスト制限のあるAPIを呼び出します。
+    /// 制限を超える場合は、呼び出し可能になるまで待機します。
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    private async ValueTask<int> CallRequestLimitApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
         ITimer? timer = null;
         try
         {
-            int taskId = (await CallApiAsync(new(method, uri)
-            {
-                Content = new ByteArrayContent(buffer.WrittenSpan.ToArray())
-            }, Context.Default.JsonElement, cancellationToken).ConfigureAwait(false)).GetProperty("task_id"u8).GetInt32();
+            int taskId = (await CallApiAsync(request, Context.Default.JsonElement, cancellationToken).ConfigureAwait(false)).GetProperty("task_id"u8).GetInt32();
 
             timer = _timeProvider.CreateTimer(OnFinished, null, TimeSpan.FromSeconds(WaitSeconds), Timeout.InfiniteTimeSpan);
             _requestQueues.Enqueue(timer);
@@ -275,7 +289,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
             _semaphore.Release();
             throw;
         }
-
+ 
         void OnFinished(object? _)
         {
             if (_requestQueues.TryDequeue(out var timer))

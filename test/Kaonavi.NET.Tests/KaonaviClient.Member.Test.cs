@@ -11,7 +11,7 @@ public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Member"/>の単体テスト</summary>
     [TestClass]
-    public class MemberTest
+    public sealed class MemberTest
     {
         /// <summary><inheritdoc cref="KaonaviClient.Member" path="/summary/text()"/>のリクエストPayload</summary>
         /*lang=json,strict*/
@@ -324,6 +324,92 @@ public sealed partial class KaonaviClientTest
                 // Body
                 using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
                 _ = doc.RootElement.Should().BeSameJson("""{ "codes": ["A0002", "A0001"]}""");
+
+                return true;
+            }, Times.Once());
+        }
+
+        /// <summary>メンバー情報 顔写真 APIのリクエストPayload</summary>
+        /*lang=json,strict*/
+        private const string FaceImagePayloadJson = """
+        [
+          {
+            "code": "A0001",
+            "base64_face_image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII="
+          }
+        ]
+        """;
+        /// <summary>メンバー情報 顔写真 APIのリクエストPayload</summary>
+        private static readonly IReadOnlyList<FaceImage> _faceImagePayload = JsonSerializer.Deserialize(FaceImagePayloadJson, Context.Default.IReadOnlyListFaceImage)!;
+
+
+        /// <summary>
+        /// <see cref="KaonaviClient.Member.AddFaceImageAsync"/>は、"/members/face_image"にPOSTリクエストを行う。
+        /// </summary>
+        [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.AddFaceImageAsync)} > POST /members/face_image をコールする。")]
+        [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("メンバー情報")]
+        [DataRow(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
+        [DataRow(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
+        public async Task Member_AddFaceImageAsync_Calls_PostApi(bool enableTrimming, string expectedJson)
+        {
+            // Arrange
+            string token = FixtureFactory.Create<string>();
+
+            var handler = new Mock<HttpMessageHandler>();
+            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image")
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: token);
+            int taskId = await sut.Member.AddFaceImageAsync(_faceImagePayload, enableTrimming);
+
+            // Assert
+            _ = taskId.Should().Be(TaskId);
+
+            handler.VerifyRequest(req =>
+            {
+                _ = req.Should().SendTo(HttpMethod.Post, "/members/face_image")
+                    .And.HasToken(token);
+
+                // Body
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson(expectedJson);
+
+                return true;
+            }, Times.Once());
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviClient.Member.UpdateFaceImageAsync"/>は、"/members/face_image"にPATCHリクエストを行う。
+        /// </summary>
+        [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateFaceImageAsync)} > PATCH /members/face_image をコールする。")]
+        [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("メンバー情報")]
+        [DataRow(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
+        [DataRow(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
+        public async Task Member_UpdateFaceImageAsync_Calls_PatchApi(bool enableTrimming, string expectedJson)
+        {
+            // Arrange
+            string token = FixtureFactory.Create<string>();
+
+            var handler = new Mock<HttpMessageHandler>();
+            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image")
+                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+
+            // Act
+            var sut = CreateSut(handler, accessToken: token);
+            int taskId = await sut.Member.UpdateFaceImageAsync(_faceImagePayload, enableTrimming);
+
+            // Assert
+            _ = taskId.Should().Be(TaskId);
+
+            handler.VerifyRequest(req =>
+            {
+                _ = req.Should().SendTo(HttpMethod.Patch, "/members/face_image")
+                    .And.HasToken(token);
+
+                // Body
+                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
+                _ = doc.RootElement.Should().BeSameJson(expectedJson);
 
                 return true;
             }, Times.Once());
