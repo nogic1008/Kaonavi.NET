@@ -13,14 +13,14 @@ public partial class KaonaviClient : KaonaviClient.IUser
     public interface IUser
     {
         /// <summary>
-        /// <inheritdoc cref="User" path="/summary/text()"/>の一覧を取得します。
+        /// <inheritdoc cref="Entities.User" path="/summary"/>の一覧を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get"/>
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         ValueTask<IReadOnlyList<User>> ListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// <inheritdoc cref="User" path="/summary/text()"/>を登録します。
+        /// <inheritdoc cref="Entities.User" path="/summary"/>を登録します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/post"/>
         /// </summary>
         /// <param name="payload">リクエスト</param>
@@ -41,18 +41,18 @@ public partial class KaonaviClient : KaonaviClient.IUser
         ValueTask<User> CreateAsync(UserPayload payload, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// <paramref name="id"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を取得します。
+        /// <paramref name="id"/>と一致する<inheritdoc cref="Entities.User" path="/summary"/>を取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/get"/>
         /// </summary>
-        /// <param name="id"><inheritdoc cref="User" path="/param[@name='Id']/text()"/></param>
+        /// <param name="id"><inheritdoc cref="Entities.User" path="/param[@name='Id']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         ValueTask<User> ReadAsync(int id, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// <paramref name="id"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を更新します。
+        /// <paramref name="id"/>と一致する<inheritdoc cref="Entities.User" path="/summary"/>を更新します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/patch"/>
         /// </summary>
-        /// <param name="id"><inheritdoc cref="User" path="/param[@name='Id']/text()"/></param>
+        /// <param name="id"><inheritdoc cref="Entities.User" path="/param[@name='Id']"/></param>
         /// <param name="payload">リクエスト</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <remarks>
@@ -67,10 +67,10 @@ public partial class KaonaviClient : KaonaviClient.IUser
         ValueTask<User> UpdateAsync(int id, UserPayload payload, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// <paramref name="id"/>と一致する<inheritdoc cref="User" path="/summary/text()"/>を削除します。
+        /// <paramref name="id"/>と一致する<inheritdoc cref="Entities.User" path="/summary"/>を削除します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users~1{user_id}/delete"/>
         /// </summary>
-        /// <param name="id"><inheritdoc cref="User" path="/param[@name='Id']/text()"/></param>
+        /// <param name="id"><inheritdoc cref="Entities.User" path="/param[@name='Id']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         ValueTask DeleteAsync(int id, CancellationToken cancellationToken = default);
     }

@@ -41,7 +41,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// </remarks>
         /// <param name="payload">一括更新するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
         ValueTask<int> ReplaceAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -53,7 +53,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">更新するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
         ValueTask<int> UpdateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -73,7 +73,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// </remarks>
         /// <param name="payload">入れ替え対象となるデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
         ValueTask<int> OverWriteAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -86,9 +86,9 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1delete/post"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
-        /// <param name="codes">削除する<inheritdoc cref="MemberData" path="/param[@name='Code']/text()"/>のリスト</param>
+        /// <param name="codes">削除する<inheritdoc cref="MemberData" path="/param[@name='Code']"/>のリスト</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
         ValueTask<int> DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -116,7 +116,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// </list>
         /// </param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
         ValueTask<int> AddFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming = true, CancellationToken cancellationToken = default);
 
         /// <summary>
@@ -138,7 +138,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <param name="payload">更新対象となるデータ</param>
         /// <param name="enableTrimming"><inheritdoc cref="IMember.AddFaceImageAsync" path="/param[@name='enableTrimming']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+        /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
         ValueTask<int> UpdateFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming = true, CancellationToken cancellationToken = default);
     }
 
@@ -184,7 +184,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
     /// <param name="enableTrimming"><inheritdoc cref="IMember.AddFaceImageAsync" path="/param[@name='enableTrimming']"/></param>
     /// <param name="payload">追加/更新対象となるデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-    /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']/text()"/></returns>
+    /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     private ValueTask<int> CallFaceImageApiAsync(HttpMethod method, IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
