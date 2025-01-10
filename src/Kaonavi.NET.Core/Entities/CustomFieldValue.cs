@@ -6,23 +6,23 @@ public record CustomFieldValue
     /// <summary>
     /// 単一の項目値を持つ、CustomFieldValueの新しいインスタンスを生成します。
     /// </summary>
-    /// <param name="id"><inheritdoc cref="Id" path="/summary/text()"/></param>
-    /// <param name="value"><inheritdoc cref="Value" path="/summary/text()"/></param>
-    /// <param name="name"><inheritdoc cref="Name" path="/summary/text()"/></param>
+    /// <param name="id"><inheritdoc cref="Id" path="/summary"/></param>
+    /// <param name="value"><inheritdoc cref="Value" path="/summary"/></param>
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
     public CustomFieldValue(int id, string value, string? name = null)
         => (Id, Value, Name) = (id, value, name);
 
     /// <summary>
     /// 複数の項目値を持つ、CustomFieldValueの新しいインスタンスを生成します。
     /// </summary>
-    /// <param name="id"><inheritdoc cref="Id" path="/summary/text()"/></param>
-    /// <param name="values"><inheritdoc cref="Values" path="/summary/text()"/></param>
-    /// <param name="name"><inheritdoc cref="Name" path="/summary/text()"/></param>
+    /// <param name="id"><inheritdoc cref="Id" path="/summary"/></param>
+    /// <param name="values"><inheritdoc cref="Values" path="/summary"/></param>
+    /// <param name="name"><inheritdoc cref="Name" path="/summary"/></param>
     [JsonConstructor]
     public CustomFieldValue(int id, IReadOnlyList<string> values, string? name = null)
         => (Id, Values, Name) = (id, values, name);
 
-    /// <summary><inheritdoc cref="CustomFieldLayout" path="/param[@name='Id']/text()"/></summary>
+    /// <summary><inheritdoc cref="CustomFieldLayout" path="/param[@name='Id']"/></summary>
     public int Id { get; init; }
 
     /// <summary>シート項目名</summary>
