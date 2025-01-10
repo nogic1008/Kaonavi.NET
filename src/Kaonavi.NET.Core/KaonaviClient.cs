@@ -1,4 +1,3 @@
-using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.Http.Json;
@@ -289,7 +288,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
             _semaphore.Release();
             throw;
         }
- 
+
         void OnFinished(object? _)
         {
             if (_requestQueues.TryDequeue(out var timer))
