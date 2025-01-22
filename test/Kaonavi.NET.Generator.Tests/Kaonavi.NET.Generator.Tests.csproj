@@ -9,6 +9,7 @@
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
     <PackageReference Include="RandomFixtureKit" />
+    <PackageReference Include="Shouldly" />
     <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
