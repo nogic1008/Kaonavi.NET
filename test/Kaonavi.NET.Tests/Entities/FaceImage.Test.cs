@@ -22,11 +22,13 @@ public sealed class FaceImageTest
         """;
 
         // Act
-        var sut = JsonSerializer.Deserialize(json, Context.Default.FaceImage);
+        var faceImage = JsonSerializer.Deserialize(json, Context.Default.FaceImage);
 
         // Assert
-        _ = sut.Should().NotBeNull();
-        _ = sut!.Code.Should().Be("A0001");
-        _ = sut.Content.Should().Equal(Convert.FromBase64String(base64));
+        faceImage!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            static sut => sut.Code.ShouldBe("A0001"),
+            static sut => sut.Content.ShouldBe(Convert.FromBase64String(base64))
+        );
     }
 }

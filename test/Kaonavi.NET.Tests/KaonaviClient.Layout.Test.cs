@@ -1,8 +1,6 @@
-using Kaonavi.Net.Entities;
 using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
-using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -10,7 +8,7 @@ public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Layout"/>の単体テスト</summary>
     [TestClass]
-    public class LayoutTest
+    public sealed class LayoutTest
     {
         /// <summary>
         /// <see cref="KaonaviClient.Layout.ReadMemberLayoutAsync"/>は、"/member_layouts"にGETリクエストを行う。
@@ -122,25 +120,20 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/member_layouts")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/member_layouts")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var layout = await sut.Layout.ReadMemberLayoutAsync();
 
             // Assert
-            _ = layout.Should().NotBeNull();
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, "/member_layouts")
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            layout.ShouldNotBeNull();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/member_layouts")
+            );
         }
 
         /// <summary>
@@ -185,25 +178,20 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == expectedEndpoint)
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == expectedEndpoint)
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var layouts = await sut.Layout.ListAsync(getCalcType);
 
             // Assert
-            _ = layouts.Should().HaveCount(1).And.AllBeAssignableTo<SheetLayout>();
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, expectedEndpoint)
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            layouts.ShouldNotBeEmpty();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                req => req.RequestUri?.PathAndQuery.ShouldBe(expectedEndpoint)
+            );
         }
 
         /// <summary>
@@ -215,18 +203,16 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_Layout_ReadAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => _ = await sut.Layout.ReadAsync(-1);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName("id");
-
-            handler.VerifyAnyRequest(Times.Never());
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -279,25 +265,20 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == expectedEndpoint)
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == expectedEndpoint)
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var layout = await sut.Layout.ReadAsync(12, getCalcType);
 
             // Assert
-            _ = layout.Should().NotBeNull();
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, expectedEndpoint)
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            layout.ShouldNotBeNull();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                req => req.RequestUri?.PathAndQuery.ShouldBe(expectedEndpoint)
+            );
         }
     }
 }

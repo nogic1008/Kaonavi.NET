@@ -15,14 +15,14 @@ public sealed class EnumOptionTest
         /*lang=json,strict*/
         const string jsonString = """
         {
-            "sheet_name": "役職情報",
-            "id": 10,
-            "name": "役職",
-            "enum_option_data": [
-                { "id": 1, "name": "社長" },
-                { "id": 2, "name": "部長" },
-                { "id": 3, "name": "課長" }
-            ]
+          "sheet_name": "役職情報",
+          "id": 10,
+          "name": "役職",
+          "enum_option_data": [
+            { "id": 1, "name": "社長" },
+            { "id": 2, "name": "部長" },
+            { "id": 3, "name": "課長" }
+          ]
         }
         """;
 
@@ -30,11 +30,12 @@ public sealed class EnumOptionTest
         var enumOption = JsonSerializer.Deserialize(jsonString, Context.Default.EnumOption);
 
         // Assert
-        _ = enumOption.Should().NotBeNull();
-        _ = enumOption!.SheetName.Should().Be("役職情報");
-        _ = enumOption.Id.Should().Be(10);
-        _ = enumOption.Name.Should().Be("役職");
-        _ = enumOption.EnumOptionData.Should().NotBeNullOrEmpty()
-            .And.Equal(new EnumOption.Data(1, "社長"), new(2, "部長"), new(3, "課長"));
+        enumOption!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            static sut => sut.SheetName.ShouldBe("役職情報"),
+            static sut => sut.Id.ShouldBe(10),
+            static sut => sut.Name.ShouldBe("役職"),
+            static sut => sut.EnumOptionData.ShouldBe([new(1, "社長"), new(2, "部長"), new(3, "課長")])
+        );
     }
 }

@@ -25,13 +25,15 @@ public sealed class WebhookConfigTest
         """;
 
         // Act
-        var config = JsonSerializer.Deserialize(json, Context.Default.WebhookConfig);
+        var webhookConfig = JsonSerializer.Deserialize(json, Context.Default.WebhookConfig);
 
         // Assert
-        _ = config.Should().NotBeNull();
-        _ = config!.Id.Should().Be(1);
-        _ = config.Url.Should().Be(new Uri("https://example.com"));
-        _ = config.Events.Should().Equal(WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted);
-        _ = config!.SecretToken.Should().Be("string");
+        webhookConfig!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            static sut => sut.Id.ShouldBe(1),
+            static sut => sut.Url.ShouldBe(new Uri("https://example.com")),
+            static sut => sut.Events.ShouldBe([WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted]),
+            static sut => sut.SecretToken.ShouldBe("string")
+        );
     }
 }

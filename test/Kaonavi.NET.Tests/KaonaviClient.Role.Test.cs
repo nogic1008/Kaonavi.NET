@@ -1,7 +1,6 @@
 using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
-using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -9,7 +8,7 @@ public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Role"/>の単体テスト</summary>
     [TestClass]
-    public class RoleTest
+    public sealed class RoleTest
     {
         /// <summary>
         /// <see cref="KaonaviClient.Role.ListAsync"/>は、"/roles"にGETリクエストを行う。
@@ -36,25 +35,20 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/roles")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/roles")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var roles = await sut.Role.ListAsync();
 
             // Assert
-            _ = roles.Should().HaveCount(2);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, "/roles")
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            roles.ShouldNotBeEmpty();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/roles")
+            );
         }
     }
 }

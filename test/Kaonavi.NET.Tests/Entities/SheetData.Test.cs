@@ -17,18 +17,18 @@ public sealed class SheetDataTest
         /*lang=json,strict*/
         const string jsonString = """
         {
-            "code": "A0002",
-            "records": [
+          "code": "A0002",
+          "records": [
+            {
+              "custom_fields": [
                 {
-                    "custom_fields": [
-                        {
-                            "id": 1000,
-                            "name": "住所",
-                            "values": ["東京都港区x-x-x"]
-                        }
-                    ]
+                  "id": 1000,
+                  "name": "住所",
+                  "values": ["東京都港区x-x-x"]
                 }
-            ]
+              ]
+            }
+          ]
         }
         """;
 
@@ -36,10 +36,10 @@ public sealed class SheetDataTest
         var sheetData = JsonSerializer.Deserialize(jsonString, Context.Default.SheetData);
 
         // Assert
-        _ = sheetData.Should().NotBeNull();
-        _ = sheetData!.Code.Should().Be("A0002");
-        _ = sheetData.Records.Should().ContainSingle()
-            .Which.Should().AllBeAssignableTo<CustomFieldValue>();
+        sheetData.ShouldNotBeNull().ShouldSatisfyAllConditions(
+            static sut => sut.Code.ShouldNotBeNull("A0002"),
+            static sut => sut.Records.ShouldHaveSingleItem().ShouldHaveSingleItem()
+        );
     }
 
     /// <summary>
@@ -52,37 +52,37 @@ public sealed class SheetDataTest
         /*lang=json,strict*/
         const string jsonString = """
         {
-            "code": "A0001",
-            "records": [
+          "code": "A0001",
+          "records": [
+            {
+              "custom_fields": [
                 {
-                    "custom_fields": [
-                        {
-                            "id": 1000,
-                            "name": "住所",
-                            "values": ["大阪府大阪市y番y号"]
-                        },
-                        {
-                            "id": 1001,
-                            "name": "電話番号",
-                            "values": ["06-yyyy-yyyy"]
-                        }
-                    ]
+                  "id": 1000,
+                  "name": "住所",
+                  "values": ["大阪府大阪市y番y号"]
                 },
                 {
-                    "custom_fields": [
-                        {
-                            "id": 1000,
-                            "name": "住所",
-                            "values": ["愛知県名古屋市z丁目z番z号"]
-                        },
-                        {
-                            "id": 1001,
-                            "name": "電話番号",
-                            "values": ["052-zzzz-zzzz"]
-                        }
-                    ]
+                  "id": 1001,
+                  "name": "電話番号",
+                  "values": ["06-yyyy-yyyy"]
                 }
-            ]
+              ]
+            },
+            {
+              "custom_fields": [
+                {
+                  "id": 1000,
+                  "name": "住所",
+                  "values": ["愛知県名古屋市z丁目z番z号"]
+                },
+                {
+                  "id": 1001,
+                  "name": "電話番号",
+                  "values": ["052-zzzz-zzzz"]
+                }
+              ]
+            }
+          ]
         }
         """;
 
@@ -90,9 +90,11 @@ public sealed class SheetDataTest
         var sheetData = JsonSerializer.Deserialize(jsonString, Context.Default.SheetData);
 
         // Assert
-        _ = sheetData.Should().NotBeNull();
-        _ = sheetData!.Code.Should().Be("A0001");
-        _ = sheetData.Records.Should().HaveCount(2)
-            .And.AllBeAssignableTo<IReadOnlyList<CustomFieldValue>>();
+        sheetData!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            static sut => sut.Code.ShouldBe("A0001"),
+            static sut => sut.Records.Count.ShouldBe(2),
+            static sut => sut.Records[0].Count.ShouldBe(2)
+        );
     }
 }

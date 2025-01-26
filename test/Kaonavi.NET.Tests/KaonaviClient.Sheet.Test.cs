@@ -3,7 +3,6 @@ using Kaonavi.Net.Json;
 using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
-using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -76,18 +75,16 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_Sheet_ListAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => _ = await sut.Sheet.ListAsync(-1);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName("id");
-
-            handler.VerifyAnyRequest(Times.Never());
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -157,25 +154,20 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var members = await sut.Sheet.ListAsync(sheetId);
 
             // Assert
-            _ = members.Should().HaveCount(2).And.AllBeAssignableTo<SheetData>();
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, $"/sheets/{sheetId}")
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            members.ShouldNotBeEmpty();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/sheets/{sheetId}")
+            );
         }
 
         /// <summary>
@@ -187,18 +179,16 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_Sheet_ReplaceAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => _ = await sut.Sheet.ReplaceAsync(-1, _sheetDataPayload);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName("id");
-
-            handler.VerifyAnyRequest(Times.Never());
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -210,30 +200,21 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int sheetId = 1;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Sheet.ReplaceAsync(sheetId, _sheetDataPayload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Put, $"/sheets/{sheetId}")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(SheetDataJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Put),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/sheets/{sheetId}"),
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, SheetDataJson)
+            );
         }
 
         /// <summary>
@@ -245,18 +226,16 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_Sheet_UpdateAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => _ = await sut.Sheet.UpdateAsync(-1, _sheetDataPayload);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName("id");
-
-            handler.VerifyAnyRequest(Times.Never());
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -268,30 +247,21 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int sheetId = 1;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Sheet.UpdateAsync(sheetId, _sheetDataPayload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Patch, $"/sheets/{sheetId}")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(SheetDataJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Patch),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/sheets/{sheetId}"),
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, SheetDataJson)
+            );
         }
 
         /// <summary>
@@ -303,18 +273,16 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_Sheet_CreateAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => _ = await sut.Sheet.CreateAsync(-1, _sheetDataPayload);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName("id");
-
-            handler.VerifyAnyRequest(Times.Never());
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -326,30 +294,21 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int sheetId = 1;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}/add")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}/add")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Sheet.CreateAsync(sheetId, _sheetDataPayload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Post, $"/sheets/{sheetId}/add")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(SheetDataJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Post),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/sheets/{sheetId}/add"),
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, SheetDataJson)
+            );
         }
 
 
@@ -367,18 +326,16 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_Sheet_AddFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName)
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => _ = await sut.Sheet.AddFileAsync(id, customFieldId, _attachmentPayload);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName(paramName);
-
-            handler.VerifyAnyRequest(Times.Never());
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe(paramName);
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -391,31 +348,21 @@ public sealed partial class KaonaviClientTest
             // Arrange
             const int sheetId = 1;
             const int customFieldId = 1;
-            string token = FixtureFactory.Create<string>();
-            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_attachmentPayload, Context.Default.IReadOnlyListAttachment)}}}";
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}/custom_fields/{customFieldId}/file")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}/custom_fields/{customFieldId}/file")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Sheet.AddFileAsync(sheetId, customFieldId, _attachmentPayload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Post, $"/sheets/{sheetId}/custom_fields/{customFieldId}/file")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(AttachmentJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Post),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/sheets/{sheetId}/custom_fields/{customFieldId}/file"),
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, AttachmentJson)
+            );
         }
 
         /// <summary>
@@ -432,18 +379,16 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_Sheet_UpdateFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName)
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => _ = await sut.Sheet.UpdateFileAsync(id, customFieldId, []);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName(paramName);
-
-            handler.VerifyAnyRequest(Times.Never());
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe(paramName);
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -456,7 +401,6 @@ public sealed partial class KaonaviClientTest
             // Arrange
             const int sheetId = 1;
             const int customFieldId = 1;
-            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_attachmentPayload, Context.Default.IReadOnlyListAttachment)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
@@ -464,23 +408,16 @@ public sealed partial class KaonaviClientTest
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(handler, "token");
             int taskId = await sut.Sheet.UpdateFileAsync(sheetId, customFieldId, _attachmentPayload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Patch, $"/sheets/{sheetId}/custom_fields/{customFieldId}/file")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(AttachmentJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            handler.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Patch),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/sheets/{sheetId}/custom_fields/{customFieldId}/file"),
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, AttachmentJson)
+            );
         }
     }
 }

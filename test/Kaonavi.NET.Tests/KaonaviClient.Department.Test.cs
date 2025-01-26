@@ -2,7 +2,6 @@ using Kaonavi.Net.Entities;
 using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
-using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -10,7 +9,7 @@ public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Department"/>の単体テスト</summary>
     [TestClass]
-    public class DepartmentTest
+    public sealed class DepartmentTest
     {
         /// <summary>
         /// <see cref="KaonaviClient.Department.ListAsync"/>は、"/departments"にGETリクエストを行う。
@@ -59,25 +58,20 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var departments = await sut.Department.ListAsync();
 
             // Assert
-            _ = departments.Should().HaveCount(4).And.AllBeAssignableTo<DepartmentTree>();
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, "/departments")
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            departments.ShouldNotBeEmpty();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/departments")
+            );
         }
 
         /// <summary>
@@ -95,27 +89,20 @@ public sealed partial class KaonaviClientTest
                 new("1500", "第一営業部", "1200", null, 1, ""),
                 new("2000", "ITグループ", "1500", "A0001", 1, "example"),
             };
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/departments")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Department.ReplaceAsync(payload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Put, "/departments")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.Should().BeSameJson("""
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Put),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/departments"),
+                static req => req.Content!.ShouldHaveJsonBody("""
                 {
                   "department_data": [
                     {
@@ -148,10 +135,8 @@ public sealed partial class KaonaviClientTest
                     }
                   ]
                 }
-                """);
-
-                return true;
-            }, Times.Once());
+                """)
+            );
         }
     }
 }

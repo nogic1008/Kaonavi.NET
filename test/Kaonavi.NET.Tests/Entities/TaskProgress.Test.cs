@@ -28,7 +28,7 @@ public sealed class TaskProgressTest
     [DataRow("\"WAITING\"", TaskState.Waiting, DisplayName = $"\"WAITING\" -> {nameof(TaskState)}.{nameof(TaskState.Waiting)} にデシリアライズできる。")]
     [DataRow("\"RUNNING\"", TaskState.Running, DisplayName = $"\"RUNNING\" -> {nameof(TaskState)}.{nameof(TaskState.Running)} にデシリアライズできる。")]
     public void FieldType_Can_Deserialize_FromJSON(string json, TaskState expected)
-        => JsonSerializer.Deserialize(json, Context.Default.TaskState).Should().Be(expected);
+        => JsonSerializer.Deserialize(json, Context.Default.TaskState).ShouldBe(expected);
 
     /// <summary>
     /// JSONからデシリアライズできる。
@@ -44,12 +44,14 @@ public sealed class TaskProgressTest
     public void TaskProgress_Can_Deserialize_FromJSON(string json, int id, TaskState status, string[]? messages)
     {
         // Arrange - Act
-        var task = JsonSerializer.Deserialize(json, Context.Default.TaskProgress);
+        var taskProgress = JsonSerializer.Deserialize(json, Context.Default.TaskProgress);
 
         // Assert
-        _ = task.Should().NotBeNull();
-        _ = task!.Id.Should().Be(id);
-        _ = task.Status.Should().Be(status);
-        _ = task.Messages.Should().Equal(messages);
+        taskProgress!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            sut => sut.Id.ShouldBe(id),
+            sut => sut.Status.ShouldBe(status),
+            sut => sut.Messages.ShouldBe(messages)
+        );
     }
 }

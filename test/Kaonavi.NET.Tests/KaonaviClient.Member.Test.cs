@@ -3,7 +3,6 @@ using Kaonavi.Net.Json;
 using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
-using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -136,25 +135,20 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var members = await sut.Member.ListAsync();
 
             // Assert
-            _ = members.Should().HaveCount(2);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, "/members")
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            members.ShouldNotBeEmpty();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members")
+            );
         }
 
         /// <summary>
@@ -165,30 +159,21 @@ public sealed partial class KaonaviClientTest
         public async Task Member_CreateAsync_Calls_PostApi()
         {
             // Arrange
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Member.CreateAsync(_payload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Post, "/members")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(PayloadJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Post),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members"),
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, PayloadJson)
+            );
         }
 
         /// <summary>
@@ -199,30 +184,21 @@ public sealed partial class KaonaviClientTest
         public async Task Member_ReplaceAsync_Calls_PutApi()
         {
             // Arrange
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Member.ReplaceAsync(_payload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Put, "/members")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(PayloadJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Put),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members"),
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, PayloadJson)
+            );
         }
 
         /// <summary>
@@ -233,30 +209,21 @@ public sealed partial class KaonaviClientTest
         public async Task Member_UpdateAsync_Calls_PatchApi()
         {
             // Arrange
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Member.UpdateAsync(_payload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Patch, "/members")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(PayloadJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Patch),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members"),
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, PayloadJson)
+            );
         }
 
         /// <summary>
@@ -267,30 +234,21 @@ public sealed partial class KaonaviClientTest
         public async Task Member_OverWriteAsync_Calls_PutApi()
         {
             // Arrange
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Member.OverWriteAsync(_payload);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Put, "/members/overwrite")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.GetProperty("member_data"u8).Should().BeSameJson(PayloadJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Put),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/overwrite"),
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, PayloadJson)
+            );
         }
 
         /// <summary>
@@ -302,31 +260,23 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             string[] codes = _payload.Select(d => d.Code).ToArray();
-            string token = FixtureFactory.Create<string>();
             string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, Context.Default.IReadOnlyListString)}}}";
 
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/delete")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/delete")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Member.DeleteAsync(codes);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Post, "/members/delete")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.Should().BeSameJson("""{ "codes": ["A0002", "A0001"]}""");
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Post),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/delete"),
+                static req => req.Content!.ShouldHaveJsonBody("""{ "codes": ["A0002", "A0001"] }""")
+            );
         }
 
         /// <summary>メンバー情報 顔写真 APIのリクエストPayload</summary>
@@ -353,30 +303,21 @@ public sealed partial class KaonaviClientTest
         public async Task Member_AddFaceImageAsync_Calls_PostApi(bool enableTrimming, string expectedJson)
         {
             // Arrange
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Member.AddFaceImageAsync(_faceImagePayload, enableTrimming);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Post, "/members/face_image")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.Should().BeSameJson(expectedJson);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Post),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/face_image"),
+                req => req.Content!.ShouldHaveJsonBody(expectedJson)
+            );
         }
 
         /// <summary>
@@ -389,30 +330,22 @@ public sealed partial class KaonaviClientTest
         public async Task Member_UpdateFaceImageAsync_Calls_PatchApi(bool enableTrimming, string expectedJson)
         {
             // Arrange
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.Member.UpdateFaceImageAsync(_faceImagePayload, enableTrimming);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
+            taskId.ShouldBe(TaskId);
 
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Patch, "/members/face_image")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.Should().BeSameJson(expectedJson);
-
-                return true;
-            }, Times.Once());
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Patch),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/face_image"),
+                req => req.Content!.ShouldHaveJsonBody(expectedJson)
+            );
         }
     }
 }

@@ -10,34 +10,34 @@ public sealed class DepartmentTreeTest
     /*lang=json,strict*/
     private const string SimpleJson = """
     {
-        "code": "1000",
-        "name": "取締役会",
-        "parent_code": null,
-        "leader_member_code": "A0002",
-        "order": 1,
-        "memo": ""
+      "code": "1000",
+      "name": "取締役会",
+      "parent_code": null,
+      "leader_member_code": "A0002",
+      "order": 1,
+      "memo": ""
     }
     """;
     /*lang=json,strict*/
     private const string NoLeaderJson = """
     {
-        "code": "1200",
-        "name": "営業本部",
-        "parent_code": null,
-        "leader_member_code": null,
-        "order": 2,
-        "memo": null
+      "code": "1200",
+      "name": "営業本部",
+      "parent_code": null,
+      "leader_member_code": null,
+      "order": 2,
+      "memo": null
     }
     """;
     /*lang=json,strict*/
     private const string ChildJson = """
     {
-        "code": "2000",
-        "name": "ITグループ",
-        "parent_code": "1500",
-        "leader_member_code": "A0001",
-        "order": 1,
-        "memo": "example"
+      "code": "2000",
+      "name": "ITグループ",
+      "parent_code": "1500",
+      "leader_member_code": "A0001",
+      "order": 1,
+      "memo": "example"
     }
     """;
 
@@ -56,6 +56,5 @@ public sealed class DepartmentTreeTest
     [DataRow(NoLeaderJson, "1200", "営業本部", null, null, 2, null, DisplayName = TestName)]
     [DataRow(ChildJson, "2000", "ITグループ", "1500", "A0001", 1, "example", DisplayName = TestName)]
     public void CanDeserializeJSON(string json, string code, string name, string? parentCode, string? leaderMemberCode, int order, string? memo)
-        => JsonSerializer.Deserialize(json, Context.Default.DepartmentTree)
-            .Should().Be(new DepartmentTree(code, name, parentCode, leaderMemberCode, order, memo));
+        => JsonSerializer.Deserialize(json, Context.Default.DepartmentTree).ShouldBe(new(code, name, parentCode, leaderMemberCode, order, memo));
 }

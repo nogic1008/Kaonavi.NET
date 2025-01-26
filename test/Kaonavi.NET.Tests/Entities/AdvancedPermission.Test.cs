@@ -10,17 +10,17 @@ public sealed class AdvancedPermissionTest
     // lang=json,strict
     private const string AdvancedPermissionJson = """
     {
-        "user_id": 1,
-        "add_codes": ["0001", "0002", "0003"],
-        "exclusion_codes": ["0001", "0002", "0003"]
+      "user_id": 1,
+      "add_codes": ["0001", "0002", "0003"],
+      "exclusion_codes": ["0001", "0002", "0003"]
     }
     """;
     // lang=json,strict
     private const string AdvancedPermissionEmptyJson = """
     {
-        "user_id": 2,
-        "add_codes": [],
-        "exclusion_codes": []
+      "user_id": 2,
+      "add_codes": [],
+      "exclusion_codes": []
     }
     """;
 
@@ -37,12 +37,14 @@ public sealed class AdvancedPermissionTest
     public void CanDeserializeJSON(string json, int userId, string[] addCodes, string[] exclusionCodes)
     {
         // Arrange - Act
-        var sut = JsonSerializer.Deserialize(json, Context.Default.AdvancedPermission);
+        var advancedPermission = JsonSerializer.Deserialize(json, Context.Default.AdvancedPermission);
 
         // Assert
-        _ = sut.Should().NotBeNull();
-        _ = sut!.UserId.Should().Be(userId);
-        _ = sut.AddCodes.Should().Equal(addCodes);
-        _ = sut.ExclusionCodes.Should().Equal(exclusionCodes);
+        advancedPermission!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            sut => sut.UserId.ShouldBe(userId),
+            sut => sut.AddCodes.ShouldBe(addCodes),
+            sut => sut.ExclusionCodes.ShouldBe(exclusionCodes)
+        );
     }
 }

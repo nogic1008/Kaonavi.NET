@@ -17,34 +17,43 @@ public sealed class ISheetDataExtensionsTest
     /// <summary>
     /// <see cref="ISheetDataExtensions.ToSingleSheetData{T}(T)"/>は、単一レコードであるSheetDataの一覧を返す。
     /// </summary>
-    [TestMethod($"{nameof(IEnumerable<TestSheetData>)}<{nameof(TestSheetData)}>.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードであるSheetDataの一覧を返す。")]
+    [TestMethod($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードであるSheetDataの一覧を返す。")]
     public void ToSingleSheetData_Returns_Single_SheetData()
     {
         // Arrange
-        var values = FixtureFactory.CreateMany<TestSheetData>(10);
+        const int length = 10;
+        var values = FixtureFactory.CreateMany<TestSheetData>(length);
 
         // Act
         var actual = values.ToSingleSheetData();
 
         // Assert
-        actual.Should().HaveCount(values.Length).And.OnlyContain(d => d.Records.Count == 1);
+        actual.ShouldSatisfyAllConditions(
+            static sut => sut.Count.ShouldBe(length),
+            static sut => sut.ShouldAllBe(d => d.Records.Count == 1)
+        );
     }
 
     /// <summary>
     /// <see cref="ISheetDataExtensions.ToMultipleSheetData{T}(IEnumerable{T})"/>は、複数レコードであるSheetDataの一覧を返す。
     /// </summary>
-    [TestMethod($"{nameof(IEnumerable<TestSheetData>)}<{nameof(TestSheetData)}>.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードであるSheetDataの一覧を返す。")]
+    [TestMethod($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードであるSheetDataの一覧を返す。")]
     public void ToMultipleSheetData_Returns_Multiple_SheetData()
     {
         // Arrange
-        string[] codes = FixtureFactory.CreateMany<string>(10);
-        string[] names = FixtureFactory.CreateMany<string>(3);
+        const int codeLength = 10;
+        string[] codes = FixtureFactory.CreateMany<string>(codeLength);
+        const int nameLength = 3;
+        string[] names = FixtureFactory.CreateMany<string>(nameLength);
         var values = codes.SelectMany(code => names.Select(name => new TestSheetData { Code = code, Name = name }));
 
         // Act
         var actual = values.ToMultipleSheetData();
 
         // Assert
-        actual.Should().HaveCount(10).And.OnlyContain(d => d.Records.Count == 3);
+        actual.ShouldSatisfyAllConditions(
+            static sut => sut.Count.ShouldBe(codeLength),
+            static sut => sut.ShouldAllBe(d => d.Records.Count == nameLength)
+        );
     }
 }
