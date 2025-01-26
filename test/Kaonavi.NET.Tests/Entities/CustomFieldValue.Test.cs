@@ -21,14 +21,15 @@ public sealed class CustomFieldValueTest
     public void CanDeserializeJSON(string json, int id, string? name, params string[] values)
     {
         // Arrange - Act
-        var fieldValue = JsonSerializer.Deserialize(json, Context.Default.CustomFieldValue);
+        var customFieldValue = JsonSerializer.Deserialize(json, Context.Default.CustomFieldValue);
 
         // Assert
-        _ = fieldValue.Should().NotBeNull();
-        _ = fieldValue!.Id.Should().Be(id);
-        _ = fieldValue.Name.Should().Be(name);
-        _ = fieldValue.Value.Should().Be(values[0]);
-        _ = fieldValue.Values.Should().NotBeNullOrEmpty()
-            .And.Equal(values);
+        customFieldValue!.ShouldSatisfyAllConditions(
+            sut => sut.ShouldNotBeNull(),
+            sut => sut.Id.ShouldBe(id),
+            sut => sut.Name.ShouldBe(name),
+            sut => sut.Value.ShouldBe(values[0]),
+            sut => sut.Values.ShouldBe(values)
+        );
     }
 }

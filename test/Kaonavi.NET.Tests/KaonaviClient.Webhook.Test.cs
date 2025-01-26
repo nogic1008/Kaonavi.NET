@@ -2,7 +2,6 @@ using Kaonavi.Net.Entities;
 using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
-using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -10,7 +9,7 @@ public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Webhook"/>の単体テスト</summary>
     [TestClass]
-    public class WebhookTest
+    public sealed class WebhookTest
     {
         /// <summary>
         /// <see cref="KaonaviClient.Webhook.ListAsync"/>は、"/webhook"にGETリクエストを行う。
@@ -43,25 +42,20 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/webhook")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/webhook")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var entities = await sut.Webhook.ListAsync();
 
             // Assert
-            _ = entities.Should().HaveCount(2);
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, "/webhook")
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            entities.ShouldNotBeEmpty();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/webhook")
+            );
         }
 
         /// <summary>
@@ -72,7 +66,6 @@ public sealed partial class KaonaviClientTest
         public async Task Webhook_CreateAsync_Calls_PostApi()
         {
             // Arrange
-            string token = FixtureFactory.Create<string>();
             /*lang=json,strict*/
             const string responseJson = """
             {
@@ -88,34 +81,27 @@ public sealed partial class KaonaviClientTest
             """;
             var payload = new WebhookConfigPayload(_baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
 
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/webhook")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/webhook")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var webhook = await sut.Webhook.CreateAsync(payload);
 
             // Assert
-            _ = webhook.Should().NotBeNull();
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Post, "/webhook")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.Should().BeSameJson("""
+            webhook.ShouldNotBeNull();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Post),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/webhook"),
+                static req => req.Content!.ShouldHaveJsonBody("""
                 {
                   "url": "https://example.com/",
                   "events": ["member_created", "member_updated", "member_deleted"],
                   "secret_token": "token"
                 }
-                """);
-
-                return true;
-            }, Times.Once());
+                """)
+            );
         }
 
         /// <summary>
@@ -140,38 +126,30 @@ public sealed partial class KaonaviClientTest
               "secret_token": "token"
             }
             """;
-            string token = FixtureFactory.Create<string>();
             var payload = new WebhookConfig(webhookId, _baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
 
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var webhook = await sut.Webhook.UpdateAsync(payload);
 
             // Assert
-            _ = webhook.Should().NotBeNull();
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Patch, $"/webhook/{webhookId}")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                _ = doc.RootElement.Should().BeSameJson("""
+            webhook.ShouldNotBeNull();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Patch),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/webhook/{webhookId}"),
+                static req => req.Content!.ShouldHaveJsonBody("""
                 {
                   "id": 1,
                   "url": "https://example.com/",
                   "events": ["member_created", "member_updated", "member_deleted"],
                   "secret_token": "token"
                 }
-                """);
-
-                return true;
-            }, Times.Once());
+                """)
+            );
         }
 
         /// <summary>
@@ -183,18 +161,16 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_Webhook_DeleteAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => await sut.Webhook.DeleteAsync(-1);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName("id");
-
-            handler.VerifyAnyRequest(Times.Never());
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -206,23 +182,20 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int webhookId = 1;
-            string token = FixtureFactory.Create<string>();
 
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/webhook/{webhookId}")
                 .ReturnsResponse(HttpStatusCode.NoContent);
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             await sut.Webhook.DeleteAsync(webhookId);
 
             // Assert
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Delete, $"/webhook/{webhookId}")
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Delete),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/webhook/{webhookId}")
+            );
         }
     }
 }

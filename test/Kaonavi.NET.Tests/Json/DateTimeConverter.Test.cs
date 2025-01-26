@@ -25,7 +25,7 @@ public sealed class DateTimeConverterTest
         // Act
         var actual = sut.Read(ref reader, typeof(DateTime), JsonSerializerOptions.Default);
         // Assert
-        _ = actual.Should().Be(new(year, month, day, hour, minute, second));
+        actual.ShouldBe(new(year, month, day, hour, minute, second));
     }
 
     /// <summary>
@@ -47,6 +47,6 @@ public sealed class DateTimeConverterTest
         writer.Flush();
 
         // Assert
-        buffer.WrittenSpan.ToArray().Should().BeEquivalentTo(Encoding.UTF8.GetBytes(json));
+        buffer.WrittenSpan.ToArray().ShouldBe(Encoding.UTF8.GetBytes(json));
     }
 }

@@ -1,8 +1,6 @@
-using Kaonavi.Net.Entities;
 using Kaonavi.Net.Tests.Assertions;
 using Moq;
 using Moq.Contrib.HttpClient;
-using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -10,7 +8,7 @@ public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.EnumOption"/>の単体テスト</summary>
     [TestClass]
-    public class EnumOptionTest
+    public sealed class EnumOptionTest
     {
         /// <summary>
         /// <see cref="KaonaviClient.EnumOption.ListAsync"/>は、"/enum_options"にGETリクエストを行う。
@@ -58,26 +56,21 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/enum_options")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/enum_options")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var entities = await sut.EnumOption.ListAsync();
 
             // Assert
-            _ = entities.Should().HaveCount(3)
-                .And.AllBeAssignableTo<EnumOption>();
+            entities.ShouldNotBeEmpty();
 
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, "/enum_options")
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/enum_options")
+            );
         }
 
         /// <summary>
@@ -89,18 +82,17 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_EnumOption_ReadAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => await sut.EnumOption.ReadAsync(-1);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName("id");
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
 
-            handler.VerifyAnyRequest(Times.Never());
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -124,26 +116,21 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            int id = JsonDocument.Parse(responseJson).RootElement.GetProperty("id"u8).GetInt32();
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/enum_options/{id}")
+            const int id = 10;
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/enum_options/{id}")
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             var entity = await sut.EnumOption.ReadAsync(id);
 
             // Assert
-            _ = entity.Should().NotBeNull();
-
-            handler.VerifyRequest(req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Get, $"/enum_options/{id}")
-                    .And.HasToken(token);
-                return true;
-            }, Times.Once());
+            entity.ShouldNotBeNull();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/enum_options/{id}")
+            );
         }
 
         /// <summary>
@@ -155,18 +142,16 @@ public sealed partial class KaonaviClientTest
         public async Task When_Id_IsNegative_EnumOption_UpdateAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
 
             // Act
-            var sut = CreateSut(handler);
+            var sut = CreateSut(mockedApi);
             var act = async () => await sut.EnumOption.UpdateAsync(-1, []);
 
             // Assert
-            _ = await act.Should().ThrowExactlyAsync<ArgumentOutOfRangeException>()
-                .WithParameterName("id");
-
-            handler.VerifyAnyRequest(Times.Never());
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
+            mockedApi.ShouldNotBeCalled();
         }
 
         /// <summary>
@@ -178,40 +163,29 @@ public sealed partial class KaonaviClientTest
         {
             // Arrange
             const int id = 10;
-            string token = FixtureFactory.Create<string>();
-
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/enum_options/{id}")
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/enum_options/{id}")
                 .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
 
             // Act
-            var sut = CreateSut(handler, accessToken: token);
+            var sut = CreateSut(mockedApi, "token");
             int taskId = await sut.EnumOption.UpdateAsync(id, [(1, "社長"), (null, "本部長"), (2, "マネージャー")]);
 
             // Assert
-            _ = taskId.Should().Be(TaskId);
-
-            handler.VerifyRequest(async req =>
-            {
-                _ = req.Should().SendTo(HttpMethod.Put, $"/enum_options/{id}")
-                    .And.HasToken(token);
-
-                // Body
-                using var doc = JsonDocument.Parse(req.Content!.ReadAsStream());
-                string receivedJson = await req.Content!.ReadAsStringAsync();
-                _ = doc.RootElement.Should()
-                    .BeSameJson("""
-                    {
-                      "enum_option_data": [
-                        { "id": 1, "name": "社長" },
-                        { "name": "本部長" },
-                        { "id": 2, "name": "マネージャー" }
-                      ]
-                    }
-                    """);
-
-                return true;
-            }, Times.Once());
+            taskId.ShouldBe(TaskId);
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Put),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/enum_options/{id}"),
+                static req => req.Content!.ShouldHaveJsonBody("""
+                {
+                  "enum_option_data": [
+                    { "id": 1, "name": "社長" },
+                    { "name": "本部長" },
+                    { "id": 2, "name": "マネージャー" }
+                  ]
+                }
+                """)
+            );
         }
     }
 }

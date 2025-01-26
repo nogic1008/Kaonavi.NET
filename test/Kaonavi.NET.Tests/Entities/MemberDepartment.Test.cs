@@ -16,9 +16,9 @@ public sealed class MemberDepartmentTest
     /*lang=json,strict*/
     private const string MultipleJson = """
     {
-        "code": "2000",
-        "name": "営業本部 第一営業部 ITグループ",
-        "names": ["営業本部", "第一営業部", "ITグループ"]
+      "code": "2000",
+      "name": "営業本部 第一営業部 ITグループ",
+      "names": ["営業本部", "第一営業部", "ITグループ"]
     }
     """;
 
@@ -38,12 +38,14 @@ public sealed class MemberDepartmentTest
     public void CanDeserializeJSON(string json, string code, string? name, string[]? names)
     {
         // Arrange - Act
-        var department = JsonSerializer.Deserialize(json, Context.Default.MemberDepartment);
+        var memberDepartment = JsonSerializer.Deserialize(json, Context.Default.MemberDepartment);
 
         // Assert
-        _ = department.Should().NotBeNull();
-        _ = department!.Code.Should().Be(code);
-        _ = department.Name.Should().Be(name);
-        _ = department.Names.Should().Equal(names);
+        memberDepartment!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            sut => sut.Code.ShouldBe(code),
+            sut => sut.Name.ShouldBe(name),
+            sut => sut.Names.ShouldBe(names)
+        );
     }
 }

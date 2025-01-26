@@ -81,7 +81,7 @@ public sealed class SheetDataGeneratorTest
         var warnings = CSharpGeneratorRunner.RunGenerator(code);
 
         // Assert
-        warnings.Select(x => x.Id).Should().Contain(id);
+        warnings.Select(x => x.Id).ShouldContain(id);
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ public sealed class SheetDataGeneratorTest
         var warnings = CSharpGeneratorRunner.RunGenerator(code, version);
 
         // Assert
-        warnings.Should().BeEmpty();
+        warnings.ShouldBeEmpty();
     }
 
     /// <summary>
@@ -140,19 +140,17 @@ public sealed class SheetDataGeneratorTest
         var values = FixtureFactory.CreateMany<NormalClassSheetData>(10);
 
         // Act - Assert
-        typeof(NormalClassSheetData).Should().Implement<ISheetData>()
-            .And.HaveMethod(nameof(ISheetData.ToCustomFields), []);
         foreach (var sut in values)
         {
-            sut.ToCustomFields().Should().Equal(
+            sut.ToCustomFields().ShouldBe([
                 new(101, sut.Name!),
                 new(102, sut.Date1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(103, sut.Date2.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(104, sut.Date3.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(105, sut.Date4.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(106, sut.Date5.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
-                new(107, sut.Date6.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
-            );
+                new(107, sut.Date6.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
+            ]);
         }
     }
 
@@ -166,11 +164,9 @@ public sealed class SheetDataGeneratorTest
         var values = FixtureFactory.CreateMany<NormalRecordSheetData>(10);
 
         // Act - Assert
-        typeof(NormalRecordSheetData).Should().Implement<ISheetData>()
-            .And.HaveMethod(nameof(ISheetData.ToCustomFields), []);
         foreach (var sut in values)
         {
-            sut.ToCustomFields().Should().Equal(
+            sut.ToCustomFields().ShouldBe([
                 new(101, sut.Name!),
                 new(102, sut.Date1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(103, sut.Date2.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
@@ -178,7 +174,7 @@ public sealed class SheetDataGeneratorTest
                 new(105, sut.Date4.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(106, sut.Date5.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(107, sut.Date6.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
-            );
+            ]);
         }
     }
 
@@ -192,11 +188,9 @@ public sealed class SheetDataGeneratorTest
         var values = FixtureFactory.CreateMany<NoNamespaceClassSheetData>(10);
 
         // Act - Assert
-        typeof(NoNamespaceClassSheetData).Should().Implement<ISheetData>()
-            .And.HaveMethod(nameof(ISheetData.ToCustomFields), []);
         foreach (var sut in values)
         {
-            sut.ToCustomFields().Should().Equal(
+            sut.ToCustomFields().ShouldBe([
                 new(101, sut.Name),
                 new(102, sut.Date1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(103, sut.Date2.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
@@ -204,7 +198,7 @@ public sealed class SheetDataGeneratorTest
                 new(105, sut.Date4.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(106, sut.Date5.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(107, sut.Date6.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
-            );
+            ]);
         }
     }
 
@@ -218,11 +212,9 @@ public sealed class SheetDataGeneratorTest
         var values = FixtureFactory.CreateMany<NoNamespaceRecordSheetData>(10);
 
         // Act - Assert
-        typeof(NoNamespaceRecordSheetData).Should().Implement<ISheetData>()
-            .And.HaveMethod(nameof(ISheetData.ToCustomFields), []);
         foreach (var sut in values)
         {
-            sut.ToCustomFields().Should().Equal(
+            sut.ToCustomFields().ShouldBe([
                 new(101, sut.Name),
                 new(102, sut.Date1.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(103, sut.Date2.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
@@ -230,7 +222,7 @@ public sealed class SheetDataGeneratorTest
                 new(105, sut.Date4.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(106, sut.Date5.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 new(107, sut.Date6.GetValueOrDefault().ToString("yyyy-MM-dd", CultureInfo.InvariantCulture))
-            );
+            ]);
         }
     }
 }

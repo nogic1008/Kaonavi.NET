@@ -10,42 +10,42 @@ public sealed class FieldLayoutTest
     /*lang=json,strict*/
     private const string StringFieldJson = """
     {
-        "name": "社員番号",
-        "required": true,
-        "type": "string",
-        "max_length": 50,
-        "enum": []
+      "name": "社員番号",
+      "required": true,
+      "type": "string",
+      "max_length": 50,
+      "enum": []
     }
     """;
     /*lang=json,strict*/
     private const string DateFieldJson = """
     {
-        "name": "入社日",
-        "required": false,
-        "type": "date",
-        "max_length": null,
-        "enum": []
+      "name": "入社日",
+      "required": false,
+      "type": "date",
+      "max_length": null,
+      "enum": []
     }
     """;
     /*lang=json,strict*/
     private const string EnumFieldJson = """
     {
-        "name": "性別",
-        "required": false,
-        "type": "enum",
-        "max_length": null,
-        "enum": ["男性", "女性"]
+      "name": "性別",
+      "required": false,
+      "type": "enum",
+      "max_length": null,
+      "enum": ["男性", "女性"]
     }
     """;
     /*lang=json,strict*/
     private const string CalcFieldJson = """
     {
-        "name": "勤続年数",
-        "required": false,
-        "type": "calc",
-        "max_length": null,
-        "enum": [],
-        "read_only": true
+      "name": "勤続年数",
+      "required": false,
+      "type": "calc",
+      "max_length": null,
+      "enum": [],
+      "read_only": true
     }
     """;
 
@@ -63,7 +63,7 @@ public sealed class FieldLayoutTest
     [DataRow("\"department\"", FieldType.Department, DisplayName = $"\"department\" -> {nameof(FieldType)}.{nameof(FieldType.Department)} にデシリアライズできる。")]
     [DataRow("\"department[]\"", FieldType.DepartmentArray, DisplayName = $"\"department[]\" -> {nameof(FieldType)}.{nameof(FieldType.DepartmentArray)} にデシリアライズできる。")]
     public void FieldType_Can_Deserialize_FromJSON(string json, FieldType expected)
-        => JsonSerializer.Deserialize(json, Context.Default.FieldType).Should().Be(expected);
+        => JsonSerializer.Deserialize(json, Context.Default.FieldType).ShouldBe(expected);
 
     /// <summary>
     /// JSONから<see cref="FieldLayout"/>にデシリアライズできる。
@@ -83,16 +83,18 @@ public sealed class FieldLayoutTest
     public void FieldLayout_Can_Deserialize_FromJSON(string json, string name, bool required, FieldType type, int? maxLength, string[] enums, bool readOnly)
     {
         // Arrange - Act
-        var field = JsonSerializer.Deserialize(json, Context.Default.FieldLayout);
+        var fieldLayout = JsonSerializer.Deserialize(json, Context.Default.FieldLayout);
 
         // Assert
-        _ = field.Should().NotBeNull();
-        _ = field!.Name.Should().Be(name);
-        _ = field.Required.Should().Be(required);
-        _ = field.Type.Should().Be(type);
-        _ = field.MaxLength.Should().Be(maxLength);
-        _ = field.Enum.Should().Equal(enums);
-        _ = field.ReadOnly.Should().Be(readOnly);
+        fieldLayout!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            sut => sut.Name.ShouldBe(name),
+            sut => sut.Required.ShouldBe(required),
+            sut => sut.Type.ShouldBe(type),
+            sut => sut.MaxLength.ShouldBe(maxLength),
+            sut => sut.Enum.ShouldBe(enums),
+            sut => sut.ReadOnly.ShouldBe(readOnly)
+        );
     }
 
     /// <summary>
@@ -112,7 +114,7 @@ public sealed class FieldLayoutTest
     [DataRow("\"face_image\"", FieldInput.FaceImage, DisplayName = $"\"face_image\" -> {nameof(FieldInput)}.{nameof(FieldInput.FaceImage)} にデシリアライズできる。")]
     [DataRow("\"calc_formula\"", FieldInput.CalcFormula, DisplayName = $"\"calc_formula\" -> {nameof(FieldInput)}.{nameof(FieldInput.CalcFormula)} にデシリアライズできる。")]
     public void FieldInput_Can_Deserialize_FromJSON(string json, FieldInput expected)
-        => JsonSerializer.Deserialize(json, Context.Default.FieldInput).Should().Be(expected);
+        => JsonSerializer.Deserialize(json, Context.Default.FieldInput).ShouldBe(expected);
 
     /// <summary>
     /// JSONから<see cref="CustomFieldLayout"/>にデシリアライズできる。
@@ -124,28 +126,30 @@ public sealed class FieldLayoutTest
         /*lang=json,strict*/
         const string jsonString = """
         {
-            "id": 100,
-            "name": "血液型",
-            "required": false,
-            "type": "enum",
-            "max_length": null,
-            "enum": ["A", "B", "O", "AB"],
-            "type_detail": "text_box"
+          "id": 100,
+          "name": "血液型",
+          "required": false,
+          "type": "enum",
+          "max_length": null,
+          "enum": ["A", "B", "O", "AB"],
+          "type_detail": "text_box"
         }
         """;
 
         // Act
-        var customField = JsonSerializer.Deserialize(jsonString, Context.Default.CustomFieldLayout);
+        var customFieldLayout = JsonSerializer.Deserialize(jsonString, Context.Default.CustomFieldLayout);
 
         // Assert
-        _ = customField.Should().NotBeNull();
-        _ = customField!.Id.Should().Be(100);
-        _ = customField.Name.Should().Be("血液型");
-        _ = customField.Required.Should().BeFalse();
-        _ = customField.Type.Should().Be(FieldType.Enum);
-        _ = customField.MaxLength.Should().BeNull();
-        _ = customField.Enum.Should().Equal("A", "B", "O", "AB");
-        _ = customField.ReadOnly.Should().BeFalse();
-        _ = customField.TypeDetail.Should().Be(FieldInput.TextBox);
+        customFieldLayout!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            static sut => sut.Id.ShouldBe(100),
+            static sut => sut.Name.ShouldBe("血液型"),
+            static sut => sut.Required.ShouldBeFalse(),
+            static sut => sut.Type.ShouldBe(FieldType.Enum),
+            static sut => sut.MaxLength.ShouldBeNull(),
+            static sut => sut.Enum.ShouldBe(["A", "B", "O", "AB"]),
+            static sut => sut.ReadOnly.ShouldBeFalse(),
+            static sut => sut.TypeDetail.ShouldBe(FieldInput.TextBox)
+        );
     }
 }

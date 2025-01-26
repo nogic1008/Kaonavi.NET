@@ -62,14 +62,14 @@ public sealed partial class KaonaviClientTest
     [DataRow(null, "foo", "consumerKey", DisplayName = $"{nameof(KaonaviClient)}({nameof(HttpClient)}, null, \"foo\") > {nameof(ArgumentNullException)}(consumerKey)をスローする。")]
     [DataRow("foo", null, "consumerSecret", DisplayName = $"{nameof(KaonaviClient)}({nameof(HttpClient)}, \"foo\", null) > {nameof(ArgumentNullException)}(consumerSecret)をスローする。")]
     public void WhenParamIsNull_Constructor_Throws_ArgumentNullException(string? consumerKey, string? consumerSecret, string paramName)
-        => Constructor(new(), consumerKey, consumerSecret).Should().ThrowExactly<ArgumentNullException>().WithParameterName(paramName);
+        => Constructor(new(), consumerKey, consumerSecret).ShouldThrow<ArgumentNullException>().ParamName.ShouldBe(paramName);
 
     /// <summary>
     /// HttpClientが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient)}(null, \"foo\", \"bar\") > ArgumentNullException(client)をスローする。"), TestCategory("Constructor")]
     public void WhenClientIsNull_Constructor_Throws_ArgumentNullException()
-        => Constructor(null, "foo", "bar").Should().ThrowExactly<ArgumentNullException>().WithParameterName("client");
+        => Constructor(null, "foo", "bar").ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("client");
 
     /// <summary>
     /// TimeProviderが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
@@ -77,7 +77,7 @@ public sealed partial class KaonaviClientTest
     [TestMethod($"{nameof(KaonaviClient)}({nameof(HttpClient)}, \"foo\", \"bar\", null) > ArgumentNullException(timeProvider)をスローする。"), TestCategory("Constructor")]
     public void WhenTimeProviderIsNull_Constructor_Throws_ArgumentNullException()
         => ((Action)(() => _ = new KaonaviClient(new(), "foo", "bar", null!)))
-            .Should().ThrowExactly<ArgumentNullException>().WithParameterName("timeProvider");
+            .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("timeProvider");
 
     /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>のとき、既定値をセットする。
@@ -87,13 +87,13 @@ public sealed partial class KaonaviClientTest
     {
         // Arrange
         var client = new HttpClient();
-        _ = client.BaseAddress.Should().BeNull();
+        client.BaseAddress.ShouldBeNull();
 
         // Act
         _ = new KaonaviClient(client, "foo", "bar");
 
         // Assert
-        _ = client.BaseAddress.Should().NotBeNull();
+        client.BaseAddress.ShouldNotBeNull();
     }
 
     /// <summary>
@@ -112,7 +112,7 @@ public sealed partial class KaonaviClientTest
         _ = new KaonaviClient(client, "foo", "bar");
 
         // Assert
-        _ = client.BaseAddress.Should().Be(_baseUri);
+        client.BaseAddress.ShouldBe(_baseUri);
     }
     #endregion Constructor
 
@@ -132,7 +132,7 @@ public sealed partial class KaonaviClientTest
         var sut = new KaonaviClient(client, "foo", "bar");
 
         // Assert
-        _ = sut.AccessToken.Should().Be(headerValue);
+        sut.AccessToken.ShouldBe(headerValue);
     }
 
     /// <summary>
@@ -141,11 +141,15 @@ public sealed partial class KaonaviClientTest
     [TestMethod($"{nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Tokenヘッダーがないとき、nullを返す。"), TestCategory("Properties")]
     public void When_Header_KaonaviToken_IsNull_AccessToken_Returns_Null()
     {
-        // Arrange - Act
-        var sut = new KaonaviClient(new(), "foo", "bar");
+        // Arrange
+        var client = new HttpClient();
+
+        // Act
+        var sut = new KaonaviClient(client, "foo", "bar");
 
         // Assert
-        _ = sut.AccessToken.Should().BeNull();
+        client.DefaultRequestHeaders.TryGetValues("Kaonavi-Token", out _).ShouldBeFalse();
+        sut.AccessToken.ShouldBeNull();
     }
 
     /// <summary>
@@ -165,8 +169,8 @@ public sealed partial class KaonaviClientTest
         };
 
         // Assert
-        _ = client.DefaultRequestHeaders.TryGetValues("Kaonavi-Token", out var values).Should().BeTrue();
-        _ = values.Should().HaveCount(1).And.Contain(headerValue);
+        client.DefaultRequestHeaders.TryGetValues("Kaonavi-Token", out var values).ShouldBeTrue();
+        values.ShouldHaveSingleItem().ShouldBe(headerValue);
     }
 
     /// <summary>
@@ -190,7 +194,7 @@ public sealed partial class KaonaviClientTest
         var sut = new KaonaviClient(client, "foo", "bar");
 
         // Assert
-        _ = sut.UseDryRun.Should().Be(expected);
+        sut.UseDryRun.ShouldBe(expected);
     }
 
     /// <summary>
@@ -210,8 +214,8 @@ public sealed partial class KaonaviClientTest
         };
 
         // Assert
-        _ = client.DefaultRequestHeaders.TryGetValues("Dry-Run", out var values).Should().BeTrue();
-        _ = (values?.First().Should().Be("1"));
+        client.DefaultRequestHeaders.TryGetValues("Dry-Run", out var values).ShouldBeTrue();
+        values.ShouldHaveSingleItem().ShouldBe("1");
         #endregion UseDryRun = true
 
         #region UseDryRun = false
@@ -219,7 +223,7 @@ public sealed partial class KaonaviClientTest
         sut.UseDryRun = false;
 
         // Assert
-        _ = client.DefaultRequestHeaders.TryGetValues("Dry-Run", out _).Should().BeFalse();
+        client.DefaultRequestHeaders.TryGetValues("Dry-Run", out _).ShouldBeFalse();
         #endregion UseDryRun = false
     }
     #endregion Properties
@@ -239,18 +243,20 @@ public sealed partial class KaonaviClientTest
     public async Task ApiCaller_Throws_ApplicationException(HttpStatusCode statusCode, string mediaType, string responseBody, string message)
     {
         // Arrange
-        var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupAnyRequest()
+        var mockedApi = new Mock<HttpMessageHandler>();
+        _ = mockedApi.SetupAnyRequest()
             .ReturnsResponse(statusCode, responseBody, mediaType);
 
         // Act
-        var sut = CreateSut(handler);
+        var sut = CreateSut(mockedApi);
         var act = async () => await sut.AuthenticateAsync();
 
         // Assert
-        _ = (await act.Should().ThrowExactlyAsync<ApplicationException>())
-            .WithMessage(message)
-            .WithInnerExceptionExactly<HttpRequestException>();
+        (await act.ShouldThrowAsync<ApplicationException>())
+            .ShouldSatisfyAllConditions(
+                ex => ex.Message.ShouldBe(message),
+                static ex => ex.InnerException.ShouldBeAssignableTo<HttpRequestException>()
+            );
     }
 
     /// <summary>
@@ -263,36 +269,21 @@ public sealed partial class KaonaviClientTest
         string key = FixtureFactory.Create<string>();
         string secret = FixtureFactory.Create<string>();
 
-        var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupAnyRequest()
+        var mockedApi = new Mock<HttpMessageHandler>();
+        _ = mockedApi.SetupAnyRequest()
             .ReturnsResponse(HttpStatusCode.InternalServerError, "Error", "text/plain");
 
         // Act
-        var sut = CreateSut(handler, key: key, secret: secret);
+        var sut = CreateSut(mockedApi, key: key, secret: secret);
         var act = async () => await sut.Layout.ReadMemberLayoutAsync();
 
         // Assert
-        _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
+        _ = await act.ShouldThrowAsync<ApplicationException>();
 
-        handler.VerifyRequest(async req =>
-        {
-            // End point
-            _ = req.Should().SendTo(HttpMethod.Post, "/token");
-
-            // Header
-            _ = (req.Headers.Authorization?.Scheme.Should().Be("Basic"));
-            byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
-            string base64String = Convert.ToBase64String(byteArray);
-            _ = (req.Headers.Authorization?.Parameter.Should().Be(base64String));
-
-            // Body
-            _ = req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
-            string body = await req.Content!.ReadAsStringAsync();
-            _ = body.Should().Be("grant_type=client_credentials");
-
-            return true;
-        }, Times.Once());
-        handler.VerifyRequest(res => res.RequestUri?.PathAndQuery != "/token", Times.Never());
+        mockedApi.ShouldBeCalledOnce(
+            static req => req.Method.ShouldBe(HttpMethod.Post),
+            static req => req.RequestUri?.PathAndQuery.ShouldBe("/token")
+        );
     }
 
     /// <summary>
@@ -302,34 +293,37 @@ public sealed partial class KaonaviClientTest
     public async Task UpdateApi_Waits_UpdateLimit()
     {
         // Arrange
-        var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
+        string token = FixtureFactory.Create<string>();
+        var mockedApi = new Mock<HttpMessageHandler>();
+        _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
             .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
         var timeProvider = new FakeTimeProvider();
 
         // Act - Assert
-        var sut = CreateSut(handler, "token", timeProvider);
-        _ = sut.UpdateRequestCount.Should().Be(0);
+        var sut = CreateSut(mockedApi, token, timeProvider);
+        sut.UpdateRequestCount.ShouldBe(0);
 
         for (int i = 1; i <= 5; i++) // 1-5th calls
             await CallUpdateApiAndVerifyAsync(i);
 
         timeProvider.Advance(TimeSpan.FromSeconds(30));
-        _ = sut.UpdateRequestCount.Should().Be(5);
+        sut.UpdateRequestCount.ShouldBe(5);
 
-        // 6th call (waits 1 minute)
+        // 6th call (does not call API until 1 min)
         var task = sut.Member.CreateAsync([]);
-        _ = sut.UpdateRequestCount.Should().Be(5);
+        sut.UpdateRequestCount.ShouldBe(5);
+        mockedApi.ShouldBeCalled(Times.Exactly(5));
+
         timeProvider.Advance(TimeSpan.FromSeconds(30));
         await task;
-        _ = sut.UpdateRequestCount.Should().Be(1);
+        sut.UpdateRequestCount.ShouldBe(1);
+        mockedApi.ShouldBeCalled(Times.Exactly(6));
 
-        handler.VerifyAnyRequest(Times.Exactly(6));
-
-        async Task CallUpdateApiAndVerifyAsync(int expected)
+        async ValueTask CallUpdateApiAndVerifyAsync(int expected)
         {
             _ = await sut.Member.CreateAsync([]);
-            _ = sut.UpdateRequestCount.Should().Be(expected);
+            sut.UpdateRequestCount.ShouldBe(expected);
+            mockedApi.ShouldBeCalled(Times.Exactly(expected), req => req.Headers.GetValues("Kaonavi-Token").ShouldHaveSingleItem().ShouldBe(token));
         }
     }
 
@@ -340,21 +334,22 @@ public sealed partial class KaonaviClientTest
     public async Task When_Api_Returns_Error_UpdateApi_DoesNot_Counts_UpdateLimit()
     {
         // Arrange
-        var handler = new Mock<HttpMessageHandler>();
-        _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
+        var mockedApi = new Mock<HttpMessageHandler>();
+        _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
             .ReturnsResponse(HttpStatusCode.NotFound, /*lang=json,strict*/ """{"errors":["test"]}""", "application/json");
 
         // Act
-        var sut = CreateSut(handler, "token");
+        var sut = CreateSut(mockedApi, "token");
         var act = async () => await sut.Member.OverWriteAsync([]);
 
         // Assert
-        _ = await act.Should().ThrowExactlyAsync<ApplicationException>();
-        _ = sut.UpdateRequestCount.Should().Be(0);
+        await act.ShouldThrowAsync<ApplicationException>();
+        sut.UpdateRequestCount.ShouldBe(0);
+        mockedApi.ShouldBeCalledOnce();
     }
 
     /// <summary>
-    /// <see cref="KaonaviClient.Dispose"/>を呼び出した後のAPI呼び出しは、<see cref="ObjectDisposedException"/>の例外をスローする。。
+    /// <see cref="KaonaviClient.Dispose"/>を呼び出した後のAPI呼び出しは、<see cref="ObjectDisposedException"/>の例外をスローする。
     /// </summary>
     [TestMethod($"API Caller > ${nameof(KaonaviClient.Dispose)}()後にAPIを呼び出そうとした場合、{nameof(ObjectDisposedException)}の例外をスローする。"), TestCategory("API")]
     public async Task When_Disposed_Api_Throws_ObjectDisposedException()
@@ -372,8 +367,8 @@ public sealed partial class KaonaviClientTest
         var act = async () => await sut.Member.OverWriteAsync([]);
 
         // Assert
-        _ = await act.Should().ThrowExactlyAsync<ObjectDisposedException>();
-        handler.VerifyAnyRequest(Times.Once());
+        await act.ShouldThrowAsync<ObjectDisposedException>();
+        handler.ShouldBeCalledOnce();
     }
     #endregion API Common Path
 
@@ -387,7 +382,6 @@ public sealed partial class KaonaviClientTest
         // Arrange
         string key = FixtureFactory.Create<string>();
         string secret = FixtureFactory.Create<string>();
-        string tokenString = FixtureFactory.Create<string>();
         var response = new Token(FixtureFactory.Create<string>(), "Bearer", 3600);
 
         var handler = new Mock<HttpMessageHandler>();
@@ -399,25 +393,14 @@ public sealed partial class KaonaviClientTest
         var token = await sut.AuthenticateAsync();
 
         // Assert
-        _ = token.Should().Be(response);
-
-        handler.VerifyRequest(async req =>
-        {
-            // End point
-            _ = req.Should().SendTo(HttpMethod.Post, "/token");
-
-            // Header
-            _ = (req.Headers.Authorization?.Scheme.Should().Be("Basic"));
-            byte[] byteArray = Encoding.UTF8.GetBytes($"{key}:{secret}");
-            string base64String = Convert.ToBase64String(byteArray);
-            _ = (req.Headers.Authorization?.Parameter.Should().Be(base64String));
-
-            // Body
-            _ = req.Content.Should().BeAssignableTo<FormUrlEncodedContent>();
-            string body = await req.Content!.ReadAsStringAsync();
-            _ = body.Should().Be("grant_type=client_credentials");
-
-            return true;
-        }, Times.Once());
+        token.ShouldBe(response);
+        handler.ShouldBeCalledOnce(
+            static req => req.Method.ShouldBe(HttpMethod.Post),
+            static req => req.RequestUri?.PathAndQuery.ShouldBe("/token"),
+            static req => req.Headers.Authorization?.Scheme.ShouldBe("Basic"),
+            req => req.Headers.Authorization?.Parameter.ShouldBe(Convert.ToBase64String(Encoding.UTF8.GetBytes($"{key}:{secret}"))),
+            static req => req.Content.ShouldBeAssignableTo<FormUrlEncodedContent>(),
+            static async req => (await req.Content!.ReadAsStringAsync()).ShouldBe("grant_type=client_credentials")
+        );
     }
 }

@@ -17,9 +17,9 @@ public sealed class TokenTest
         /*lang=json,strict*/
         const string jsonString = """
         {
-            "access_token": "25396f58-10f8-c228-7f0f-818b1d666b2e",
-            "token_type": "Bearer",
-            "expires_in": 3600
+          "access_token": "25396f58-10f8-c228-7f0f-818b1d666b2e",
+          "token_type": "Bearer",
+          "expires_in": 3600
         }
         """;
 
@@ -27,9 +27,11 @@ public sealed class TokenTest
         var token = JsonSerializer.Deserialize(jsonString, Context.Default.Token);
 
         // Assert
-        _ = token.Should().NotBeNull();
-        _ = token!.AccessToken.Should().Be("25396f58-10f8-c228-7f0f-818b1d666b2e");
-        _ = token.TokenType.Should().Be("Bearer");
-        _ = token.ExpiresIn.Should().Be(3600);
+        token!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            static sut => sut.AccessToken.ShouldBe("25396f58-10f8-c228-7f0f-818b1d666b2e"),
+            static sut => sut.TokenType.ShouldBe("Bearer"),
+            static sut => sut.ExpiresIn.ShouldBe(3600)
+        );
     }
 }

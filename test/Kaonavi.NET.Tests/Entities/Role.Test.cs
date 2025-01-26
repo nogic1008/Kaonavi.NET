@@ -20,6 +20,5 @@ public sealed class RoleTest
     [DataRow(/*lang=json,strict*/ """{ "id": 1, "name": "カオナビ管理者", "type": "Adm" }""", 1, "カオナビ管理者", "Adm", DisplayName = TestName)]
     [DataRow(/*lang=json,strict*/ """{ "id": 2, "name": "カオナビマネージャー", "type": "一般" }""", 2, "カオナビマネージャー", "一般", DisplayName = TestName)]
     public void CanDeserializeJSON(string json, int id, string name, string type)
-        => JsonSerializer.Deserialize(json, Context.Default.Role)
-            .Should().Be(new Role(id, name, type));
+        => JsonSerializer.Deserialize(json, Context.Default.Role).ShouldBe(new(id, name, type));
 }

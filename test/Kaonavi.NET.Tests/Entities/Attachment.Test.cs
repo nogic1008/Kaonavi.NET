@@ -26,12 +26,15 @@ public sealed class AttachmentTest
         """;
 
         // Act
-        var sut = JsonSerializer.Deserialize(json, Context.Default.Attachment);
+        var attachment = JsonSerializer.Deserialize(json, Context.Default.Attachment);
 
         // Assert
-        _ = sut.Should().NotBeNull();
-        _ = sut!.Code.Should().Be("A0001");
-        _ = sut.Records.Should().HaveCount(1).And.ContainSingle(r => r.FileName == "sample.txt"
-            && r.Content.SequenceEqual(Convert.FromBase64String("44GT44KM44Gv44K144Oz44OX44Or44OG44Kt44K544OI44Gn44GZ44CC")));
+        attachment!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            static sut => sut.Code.ShouldBe("A0001"),
+            static sut => sut.Records.ShouldHaveSingleItem(),
+            static sut => sut.Records[0].FileName.ShouldBe("sample.txt"),
+            static sut => sut.Records[0].Content.ShouldBe(Convert.FromBase64String("44GT44KM44Gv44K144Oz44OX44Or44OG44Kt44K544OI44Gn44GZ44CC"))
+        );
     }
 }

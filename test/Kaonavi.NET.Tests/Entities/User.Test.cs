@@ -10,35 +10,35 @@ public sealed class UserTest
     /*lang=json,strict*/
     private const string AdminUserJson = """
     {
-        "id": 1,
-        "email":"taro@kaonavi.jp",
-        "member_code":"A0002",
-        "role":{
-            "id":1,
-            "name":"システム管理者",
-            "type":"Adm"
-        },
-        "is_active": true,
-        "password_locked": false,
-        "use_smartphone": false,
-        "last_login_at": "2021-11-01 12:00:00"
+      "id": 1,
+      "email":"taro@kaonavi.jp",
+      "member_code":"A0002",
+      "role":{
+        "id":1,
+        "name":"システム管理者",
+        "type":"Adm"
+      },
+      "is_active": true,
+      "password_locked": false,
+      "use_smartphone": false,
+      "last_login_at": "2021-11-01 12:00:00"
     }
     """;
     /*lang=json,strict*/
     private const string NonMemberJson = """
     {
+      "id": 2,
+      "email": "hanako@kaonavi.jp",
+      "member_code": null,
+      "role": {
         "id": 2,
-        "email": "hanako@kaonavi.jp",
-        "member_code": null,
-        "role": {
-            "id": 2,
-            "name": "マネージャ",
-            "type": "一般"
-        },
-        "is_active": true,
-        "password_locked": true,
-        "use_smartphone": true,
-        "last_login_at": "2021-11-01 12:00:00"
+        "name": "マネージャ",
+        "type": "一般"
+      },
+      "is_active": true,
+      "password_locked": true,
+      "use_smartphone": true,
+      "last_login_at": "2021-11-01 12:00:00"
     }
     """;
 
@@ -66,13 +66,15 @@ public sealed class UserTest
         var user = JsonSerializer.Deserialize(json, Context.Default.User);
 
         // Assert
-        _ = user.Should().NotBeNull();
-        _ = user!.Id.Should().Be(id);
-        _ = user.Email.Should().Be(email);
-        _ = user.MemberCode.Should().Be(memberCode);
-        _ = user.IsActive.Should().Be(isActive);
-        _ = user.PasswordLocked.Should().Be(passwordLocked);
-        _ = user.UseSmartphone.Should().Be(useSmartphone);
-        _ = user.Role.Should().Be(new Role(roleId, roleName, roleType));
+        user!.ShouldSatisfyAllConditions(
+            static sut => sut.ShouldNotBeNull(),
+            sut => sut.Id.ShouldBe(id),
+            sut => sut.Email.ShouldBe(email),
+            sut => sut.MemberCode.ShouldBe(memberCode),
+            sut => sut.IsActive.ShouldBe(isActive),
+            sut => sut.PasswordLocked.ShouldBe(passwordLocked),
+            sut => sut.UseSmartphone.ShouldBe(useSmartphone),
+            sut => sut.Role.ShouldBe(new(roleId, roleName, roleType))
+        );
     }
 }
