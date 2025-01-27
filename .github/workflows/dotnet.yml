@@ -15,17 +15,30 @@ env:
 jobs:
   lint:
     name: Lint
-    uses: nogic1008/actions/.github/workflows/dotnet-format.yml@v2.0.0
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Setup .NET SDK # detected from global.json
+        uses: actions/setup-dotnet@v4.2.0
+      - name: Add Problem Matcher for dotnet-format
+        run: echo "::add-matcher::.github/dotnet-format.json"
+      - name: Lint
+        run: dotnet format --verify-no-changes --verbosity detailed
 
-  restore:
+  validate:
     name: Validate NuGet Lock Files
-    uses: nogic1008/actions/.github/workflows/nuget-lock-files.yml@v2.0.0
-    with:
-      update-lock-files: ${{ contains(github.head_ref, 'dependabot') && github.event_name == 'pull_request' }}
-      dotnet-version: ${{ vars.DOTNET_SDK_VERSIONS }}
-      lock-file-path: '**/packages.lock.json'
-    secrets:
-      PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4.2.0
+        with:
+          dotnet-version: ${{ vars.DOTNET_SDK_VERSIONS }}
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Restore with lock files
+        run: dotnet restore --locked-mode
 
   test:
     name: Debug Build & Test
