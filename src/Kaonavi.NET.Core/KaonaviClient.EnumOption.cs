@@ -71,7 +71,7 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
             HttpMethod.Put,
             $"enum_options/{ThrowIfNegative(id):D}",
             payload.Select(d => new EnumOptionPayloadData(d.id, d.name)).ToArray(),
-            "enum_option_data",
+            "enum_option_data"u8,
             Context.Default.IReadOnlyListEnumOptionPayloadData,
             cancellationToken);
 

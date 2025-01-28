@@ -237,20 +237,20 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <param name="method">HTTP Method</param>
     /// <param name="uri">リクエストURI</param>
     /// <param name="payload">APIに対するリクエスト</param>
-    /// <param name="propertyName">配列が格納されたJSONのプロパティ名</param>
+    /// <param name="utf8PropertyName">配列が格納されたJSONのプロパティ名</param>
     /// <param name="typeInfo"><paramref name="payload"/>をJSONに変換するためのメタ情報</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
-    private ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, string propertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
+    private ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, ReadOnlySpan<byte> utf8PropertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
 
         var buffer = new ArrayBufferWriter<byte>();
         using var writer = new Utf8JsonWriter(buffer);
         writer.WriteStartObject();
-        writer.WritePropertyName(propertyName);
+        writer.WritePropertyName(utf8PropertyName);
         JsonSerializer.Serialize(writer, payload, typeInfo);
         writer.WriteEndObject();
         writer.Flush();
