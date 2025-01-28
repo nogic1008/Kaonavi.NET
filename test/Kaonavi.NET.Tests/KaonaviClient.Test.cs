@@ -240,7 +240,7 @@ public sealed partial class KaonaviClientTest
     [DataRow(HttpStatusCode.Unauthorized, "application/json", /*lang=json,strict*/ """{"errors":["consumer_keyとconsumer_secretの組み合わせが不正です。"]}""", "consumer_keyとconsumer_secretの組み合わせが不正です。", DisplayName = $"API Caller > ApplicationExceptionをスローする。")]
     [DataRow(HttpStatusCode.TooManyRequests, "application/json", /*lang=json,strict*/ """{"errors":["1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。"]}""", "1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。", DisplayName = $"API Caller > ApplicationExceptionをスローする。")]
     [DataRow(HttpStatusCode.InternalServerError, "plain/text", "Error", "Error", DisplayName = $"API Caller > ApplicationExceptionをスローする。")]
-    public async Task ApiCaller_Throws_ApplicationException(HttpStatusCode statusCode, string mediaType, string responseBody, string message)
+    public async ValueTask ApiCaller_Throws_ApplicationException(HttpStatusCode statusCode, string mediaType, string responseBody, string message)
     {
         // Arrange
         var mockedApi = new Mock<HttpMessageHandler>();
@@ -263,7 +263,7 @@ public sealed partial class KaonaviClientTest
     /// <see cref="KaonaviClient.AccessToken"/>が<see langword="null"/>のとき、<see cref="KaonaviClient.AuthenticateAsync(CancellationToken)"/>を呼び出す。
     /// </summary>
     [TestMethod($"API Caller > {nameof(KaonaviClient.AuthenticateAsync)}を呼び出す。"), TestCategory("API")]
-    public async Task When_AccessToken_IsNull_ApiCaller_Calls_AuthenticateAsync()
+    public async ValueTask When_AccessToken_IsNull_ApiCaller_Calls_AuthenticateAsync()
     {
         // Arrange
         string key = FixtureFactory.Create<string>();
@@ -290,7 +290,7 @@ public sealed partial class KaonaviClientTest
     /// 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。
     /// </summary>
     [TestMethod($"API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。"), TestCategory("API")]
-    public async Task UpdateApi_Waits_UpdateLimit()
+    public async ValueTask UpdateApi_Waits_UpdateLimit()
     {
         // Arrange
         string token = FixtureFactory.Create<string>();
@@ -331,7 +331,7 @@ public sealed partial class KaonaviClientTest
     /// 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。
     /// </summary>
     [TestMethod($"API Caller > 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。"), TestCategory("API")]
-    public async Task When_Api_Returns_Error_UpdateApi_DoesNot_Counts_UpdateLimit()
+    public async ValueTask When_Api_Returns_Error_UpdateApi_DoesNot_Counts_UpdateLimit()
     {
         // Arrange
         var mockedApi = new Mock<HttpMessageHandler>();
@@ -352,7 +352,7 @@ public sealed partial class KaonaviClientTest
     /// <see cref="KaonaviClient.Dispose"/>を呼び出した後のAPI呼び出しは、<see cref="ObjectDisposedException"/>の例外をスローする。
     /// </summary>
     [TestMethod($"API Caller > ${nameof(KaonaviClient.Dispose)}()後にAPIを呼び出そうとした場合、{nameof(ObjectDisposedException)}の例外をスローする。"), TestCategory("API")]
-    public async Task When_Disposed_Api_Throws_ObjectDisposedException()
+    public async ValueTask When_Disposed_Api_Throws_ObjectDisposedException()
     {
         // Arrange
         var handler = new Mock<HttpMessageHandler>();
@@ -377,7 +377,7 @@ public sealed partial class KaonaviClientTest
     /// </summary>
     [TestMethod($"{nameof(KaonaviClient.AuthenticateAsync)} > POST /token をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("アクセストークン")]
-    public async Task AuthenticateAsync_Calls_PostApi()
+    public async ValueTask AuthenticateAsync_Calls_PostApi()
     {
         // Arrange
         string key = FixtureFactory.Create<string>();

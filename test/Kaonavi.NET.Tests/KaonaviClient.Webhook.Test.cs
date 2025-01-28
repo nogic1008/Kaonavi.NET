@@ -16,7 +16,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.ListAsync)} > GET /webhook をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("Webhook設定")]
-        public async Task Webhook_ListAsync_Calls_GetApi()
+        public async ValueTask Webhook_ListAsync_Calls_GetApi()
         {
             // Arrange
             /*lang=json,strict*/
@@ -63,7 +63,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.CreateAsync)} > POST /webhook をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("Webhook設定")]
-        public async Task Webhook_CreateAsync_Calls_PostApi()
+        public async ValueTask Webhook_CreateAsync_Calls_PostApi()
         {
             // Arrange
             /*lang=json,strict*/
@@ -109,7 +109,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.UpdateAsync)} > PATCH /webhook/:webhookId をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("Webhook設定")]
-        public async Task Webhook_UpdateAsync_Calls_PatchApi()
+        public async ValueTask Webhook_UpdateAsync_Calls_PatchApi()
         {
             // Arrange
             const int webhookId = 1;
@@ -158,7 +158,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("Webhook設定")]
-        public async Task When_Id_IsNegative_Webhook_DeleteAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_Webhook_DeleteAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -178,7 +178,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)} > DELETE /webhook/:webhookId をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("Webhook設定")]
-        public async Task Webhook_DeleteAsync_Calls_DeleteApi()
+        public async ValueTask Webhook_DeleteAsync_Calls_DeleteApi()
         {
             // Arrange
             const int webhookId = 1;

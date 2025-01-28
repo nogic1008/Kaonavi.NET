@@ -16,7 +16,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ListAsync)} > GET /users をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
-        public async Task User_ListAsync_Calls_GetApi()
+        public async ValueTask User_ListAsync_Calls_GetApi()
         {
             // Arrange
             /*lang=json,strict*/
@@ -75,7 +75,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.CreateAsync)} > POST /users をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("ユーザー情報")]
-        public async Task User_CreateAsync_Calls_PostApi()
+        public async ValueTask User_CreateAsync_Calls_PostApi()
         {
             // Arrange
             /*lang=json,strict*/
@@ -129,7 +129,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
-        public async Task When_Id_IsNegative_User_ReadAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_User_ReadAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -149,7 +149,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > GET /users/:userId をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
-        public async Task User_ReadAsync_Calls_GetApi()
+        public async ValueTask User_ReadAsync_Calls_GetApi()
         {
             // Arrange
             const int userId = 1;
@@ -193,7 +193,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("ユーザー情報")]
-        public async Task When_Id_IsNegative_User_UpdateAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_User_UpdateAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -213,7 +213,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > PATCH /users/:userId をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("ユーザー情報")]
-        public async Task User_UpdateAsync_Calls_PatchApi()
+        public async ValueTask User_UpdateAsync_Calls_PatchApi()
         {
             // Arrange
             const int userId = 1;
@@ -268,7 +268,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("ユーザー情報")]
-        public async Task When_Id_IsNegative_User_DeleteAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_User_DeleteAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -288,7 +288,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > DELETE /users/:userId をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("ユーザー情報")]
-        public async Task User_DeleteAsync_Calls_DeleteApi()
+        public async ValueTask User_DeleteAsync_Calls_DeleteApi()
         {
             // Arrange
             const int userId = 1;

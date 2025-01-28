@@ -15,7 +15,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Role)}.{nameof(KaonaviClient.Role.ListAsync)} > GET /roles をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ロール")]
-        public async Task Role_ListAsync_Calls_GetApi()
+        public async ValueTask Role_ListAsync_Calls_GetApi()
         {
             // Arrange
             /*lang=json,strict*/

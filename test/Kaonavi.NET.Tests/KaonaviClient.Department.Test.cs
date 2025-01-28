@@ -16,7 +16,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ListAsync)} > GET /departments をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("所属ツリー")]
-        public async Task Department_ListAsync_Calls_GetApi()
+        public async ValueTask Department_ListAsync_Calls_GetApi()
         {
             // Arrange
             /*lang=json,strict*/
@@ -79,7 +79,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ReplaceAsync)} > PUT /departments をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("所属ツリー")]
-        public async Task Department_ReplaceAsync_Calls_PutApi()
+        public async ValueTask Department_ReplaceAsync_Calls_PutApi()
         {
             // Arrange
             var payload = new DepartmentTree[]
