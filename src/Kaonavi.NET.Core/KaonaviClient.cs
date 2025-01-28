@@ -257,7 +257,10 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
 
         return CallRequestLimitApiAsync(new(method, uri)
         {
-            Content = new ByteArrayContent(buffer.WrittenSpan.ToArray())
+            Content = new ReadOnlyMemoryContent(buffer.WrittenMemory)
+            {
+                Headers = { ContentType = new("application/json") }
+            }
         }, cancellationToken);
     }
 

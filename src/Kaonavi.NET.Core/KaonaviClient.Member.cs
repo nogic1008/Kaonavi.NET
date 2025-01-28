@@ -200,7 +200,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
 
         return CallRequestLimitApiAsync(new(method, "members/face_image")
         {
-            Content = new ByteArrayContent(buffer.WrittenSpan.ToArray())
+            Content = new ReadOnlyMemoryContent(buffer.WrittenMemory)
+            {
+                Headers = { ContentType = new("application/json") }
+            }
         }, cancellationToken);
     }
 }
