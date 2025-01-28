@@ -324,12 +324,4 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
             throw new ApplicationException(errorMessage, ex);
         }
     }
-
-    /// <summary>
-    /// <paramref name="id"/>が負の値の場合に<see cref="ArgumentOutOfRangeException"/>をスローします。
-    /// </summary>
-    /// <param name="id">チェックするID</param>
-    /// <param name="paramName"><paramref name="id"/>として渡された変数名</param>
-    private static int ThrowIfNegative(int id, [CallerArgumentExpression(nameof(id))] string? paramName = null)
-        => id >= 0 ? id : throw new ArgumentOutOfRangeException(paramName);
 }

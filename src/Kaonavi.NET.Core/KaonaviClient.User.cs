@@ -92,18 +92,27 @@ public partial class KaonaviClient : KaonaviClient.IUser
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     ValueTask<User> IUser.ReadAsync(int id, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, $"users/{ThrowIfNegative(id):D}"), Context.Default.User, cancellationToken);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        return CallApiAsync(new(HttpMethod.Get, $"users/{id:D}"), Context.Default.User, cancellationToken);
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     ValueTask<User> IUser.UpdateAsync(int id, UserPayload payload, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Patch, $"users/{ThrowIfNegative(id):D}")
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        return CallApiAsync(new(HttpMethod.Patch, $"users/{id:D}")
         {
             Content = JsonContent.Create(payload, Context.Default.UserPayload)
         }, Context.Default.User, cancellationToken);
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     async ValueTask IUser.DeleteAsync(int id, CancellationToken cancellationToken)
-        => await CallApiAsync(new(HttpMethod.Delete, $"users/{ThrowIfNegative(id):D}"), cancellationToken).ConfigureAwait(false);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        await CallApiAsync(new(HttpMethod.Delete, $"users/{id:D}"), cancellationToken).ConfigureAwait(false);
+    }
 }

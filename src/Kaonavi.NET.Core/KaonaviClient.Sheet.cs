@@ -176,30 +176,50 @@ public partial class KaonaviClient : KaonaviClient.ISheet
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     ValueTask<IReadOnlyList<SheetData>> ISheet.ListAsync(int id, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, $"sheets/{ThrowIfNegative(id):D}"), "member_data", Context.Default.IReadOnlyListSheetData, cancellationToken);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        return CallApiAsync(new(HttpMethod.Get, $"sheets/{id:D}"), "member_data", Context.Default.IReadOnlyListSheetData, cancellationToken);
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     ValueTask<int> ISheet.ReplaceAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, $"sheets/{ThrowIfNegative(id):D}", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        return CallTaskApiAsync(HttpMethod.Put, $"sheets/{id:D}", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     ValueTask<int> ISheet.UpdateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Patch, $"sheets/{ThrowIfNegative(id):D}", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        return CallTaskApiAsync(HttpMethod.Patch, $"sheets/{id:D}", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     ValueTask<int> ISheet.CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Post, $"sheets/{ThrowIfNegative(id):D}/add", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        return CallTaskApiAsync(HttpMethod.Post, $"sheets/{id:D}/add", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>または<paramref name="customFieldId"/>が0より小さい場合にスローされます。</exception>
     ValueTask<int> ISheet.AddFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Post, $"sheets/{ThrowIfNegative(id):D}/custom_fields/{ThrowIfNegative(customFieldId):D}/file", payload, "member_data"u8, Context.Default.IReadOnlyListAttachment, cancellationToken);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        ArgumentOutOfRangeException.ThrowIfNegative(customFieldId);
+        return CallTaskApiAsync(HttpMethod.Post, $"sheets/{id:D}/custom_fields/{customFieldId:D}/file", payload, "member_data"u8, Context.Default.IReadOnlyListAttachment, cancellationToken);
+    }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>または<paramref name="customFieldId"/>が0より小さい場合にスローされます。</exception>
     ValueTask<int> ISheet.UpdateFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Patch, $"sheets/{ThrowIfNegative(id):D}/custom_fields/{ThrowIfNegative(customFieldId):D}/file", payload, "member_data"u8, Context.Default.IReadOnlyListAttachment, cancellationToken);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        ArgumentOutOfRangeException.ThrowIfNegative(customFieldId);
+        return CallTaskApiAsync(HttpMethod.Patch, $"sheets/{id:D}/custom_fields/{customFieldId:D}/file", payload, "member_data"u8, Context.Default.IReadOnlyListAttachment, cancellationToken);
+    }
 }

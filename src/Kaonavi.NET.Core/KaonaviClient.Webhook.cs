@@ -68,5 +68,8 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     async ValueTask IWebhook.DeleteAsync(int id, CancellationToken cancellationToken)
-        => await CallApiAsync(new(HttpMethod.Delete, $"webhook/{ThrowIfNegative(id):D}"), cancellationToken).ConfigureAwait(false);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        await CallApiAsync(new(HttpMethod.Delete, $"webhook/{id:D}"), cancellationToken).ConfigureAwait(false);
+    }
 }
