@@ -10,7 +10,7 @@ public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Sheet"/>の単体テスト</summary>
     [TestClass]
-    public class SheetTest
+    public sealed class SheetTest
     {
         /// <summary>シート情報APIのリクエストPayload</summary>
         /*lang=json,strict*/
