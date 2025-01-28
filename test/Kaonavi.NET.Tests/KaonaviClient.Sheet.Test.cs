@@ -10,7 +10,7 @@ public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Sheet"/>の単体テスト</summary>
     [TestClass]
-    public class SheetTest
+    public sealed class SheetTest
     {
         /// <summary>シート情報APIのリクエストPayload</summary>
         /*lang=json,strict*/
@@ -72,7 +72,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListAsync)} > ArgumentOutOfRangeException をスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("シート情報")]
-        public async Task When_Id_IsNegative_Sheet_ListAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_Sheet_ListAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -92,7 +92,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListAsync)} > GET /sheets/:sheetId をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("シート情報")]
-        public async Task Sheet_ListAsync_Calls_GetApi()
+        public async ValueTask Sheet_ListAsync_Calls_GetApi()
         {
             // Arrange
             const int sheetId = 1;
@@ -176,7 +176,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ReplaceAsync)} > ArgumentOutOfRangeException をスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("シート情報")]
-        public async Task When_Id_IsNegative_Sheet_ReplaceAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_Sheet_ReplaceAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -196,7 +196,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ReplaceAsync)} > PUT /sheets/:sheetId をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("シート情報")]
-        public async Task Sheet_ReplaceAsync_Calls_PutApi()
+        public async ValueTask Sheet_ReplaceAsync_Calls_PutApi()
         {
             // Arrange
             const int sheetId = 1;
@@ -223,7 +223,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateAsync)} > ArgumentOutOfRangeException をスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("シート情報")]
-        public async Task When_Id_IsNegative_Sheet_UpdateAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_Sheet_UpdateAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -243,7 +243,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateAsync)} > PATCH /sheets/:sheetId をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("シート情報")]
-        public async Task Sheet_UpdateAsync_Calls_PatchApi()
+        public async ValueTask Sheet_UpdateAsync_Calls_PatchApi()
         {
             // Arrange
             const int sheetId = 1;
@@ -270,7 +270,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.CreateAsync)} > ArgumentOutOfRangeException をスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("シート情報")]
-        public async Task When_Id_IsNegative_Sheet_CreateAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_Sheet_CreateAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -290,7 +290,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.CreateAsync)} > POST /sheets/:sheetId/add をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("シート情報")]
-        public async Task Sheet_CreateAsync_Calls_PostApi()
+        public async ValueTask Sheet_CreateAsync_Calls_PostApi()
         {
             // Arrange
             const int sheetId = 1;
@@ -323,7 +323,7 @@ public sealed partial class KaonaviClientTest
         [DataRow(-1, 1, nameof(id), DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.AddFileAsync)}(-1, 1, []) > ArgumentOutOfRangeException をスローする。")]
         [DataRow(1, -1, nameof(customFieldId), DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.AddFileAsync)}(1, -1, []) > ArgumentOutOfRangeException をスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("シート情報")]
-        public async Task When_Id_IsNegative_Sheet_AddFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName)
+        public async ValueTask When_Id_IsNegative_Sheet_AddFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName)
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -343,7 +343,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.AddFileAsync)} > POST /sheets/:sheetId/custom_fields/:customFieldId/file をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("シート情報")]
-        public async Task Sheet_AddFileAsync_Calls_PostApi()
+        public async ValueTask Sheet_AddFileAsync_Calls_PostApi()
         {
             // Arrange
             const int sheetId = 1;
@@ -376,7 +376,7 @@ public sealed partial class KaonaviClientTest
         [DataRow(-1, 1, nameof(id), DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateFileAsync)}(-1, 1, []) > ArgumentOutOfRangeException をスローする。")]
         [DataRow(1, -1, nameof(customFieldId), DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateFileAsync)}(1, -1, []) > ArgumentOutOfRangeException をスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("シート情報")]
-        public async Task When_Id_IsNegative_Sheet_UpdateFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName)
+        public async ValueTask When_Id_IsNegative_Sheet_UpdateFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName)
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -396,7 +396,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateFileAsync)} > PATCH /sheets/:sheetId/custom_fields/:customFieldId/file をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("シート情報")]
-        public async Task Sheet_UpdateFileAsync_Calls_PostApi()
+        public async ValueTask Sheet_UpdateFileAsync_Calls_PostApi()
         {
             // Arrange
             const int sheetId = 1;

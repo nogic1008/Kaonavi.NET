@@ -19,7 +19,7 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
         [DataRow((AdvancedType)10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
         [DataRow((AdvancedType)(-1), DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
-        public async Task When_Type_IsInvalid_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(AdvancedType type)
+        public async ValueTask When_Type_IsInvalid_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(AdvancedType type)
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -43,7 +43,7 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
         [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > GET /advanced_permissions/member をコールする。")]
         [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > GET /advanced_permissions/department をコールする。")]
-        public async Task AdvancedPermission_ListAsync_Calls_GetApi(AdvancedType type, string endpoint)
+        public async ValueTask AdvancedPermission_ListAsync_Calls_GetApi(AdvancedType type, string endpoint)
         {
             // Arrange
             /*lang=json,strict*/
@@ -103,7 +103,7 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("拡張アクセス設定")]
         [DataRow((AdvancedType)10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})10, []) > ArgumentOutOfRangeExceptionをスローする。")]
         [DataRow((AdvancedType)(-1), DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})-1, []) > ArgumentOutOfRangeExceptionをスローする。")]
-        public async Task When_Type_IsInvalid_AdvancedPermission_ReplaceAsync_Throws_ArgumentOutOfRangeException(AdvancedType type)
+        public async ValueTask When_Type_IsInvalid_AdvancedPermission_ReplaceAsync_Throws_ArgumentOutOfRangeException(AdvancedType type)
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -127,7 +127,7 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("拡張アクセス設定")]
         [DataRow(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > PUT /advanced_permissions/member をコールする。")]
         [DataRow(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > PUT /advanced_permissions/department をコールする。")]
-        public async Task AdvancedPermission_ReplaceAsync_Calls_PutApi(AdvancedType type, string endpoint)
+        public async ValueTask AdvancedPermission_ReplaceAsync_Calls_PutApi(AdvancedType type, string endpoint)
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();

@@ -16,7 +16,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("タスク進捗状況")]
-        public async Task When_Id_IsNegative_Task_ReadAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_Task_ReadAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -36,7 +36,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > GET /tasks/:taskId をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("タスク進捗状況")]
-        public async Task Task_ReadAsync_Calls_GetApi()
+        public async ValueTask Task_ReadAsync_Calls_GetApi()
         {
             // Arrange
             const int taskId = 1;

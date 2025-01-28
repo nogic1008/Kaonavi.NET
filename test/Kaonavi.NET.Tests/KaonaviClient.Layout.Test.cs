@@ -15,7 +15,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadMemberLayoutAsync)} > GET /member_layouts をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
-        public async Task Layout_ReadMemberLayoutAsync_Calls_GetApi()
+        public async ValueTask Layout_ReadMemberLayoutAsync_Calls_GetApi()
         {
             // Arrange
             /*lang=json,strict*/
@@ -145,7 +145,7 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
         [DataRow(false, "/sheet_layouts", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}(false) > GET /sheet_layouts をコールする。")]
         [DataRow(true, "/sheet_layouts?get_calc_type=true", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}(true) > GET /sheet_layouts?get_calc_type=true をコールする。")]
-        public async Task Layout_ListAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint)
+        public async ValueTask Layout_ListAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint)
         {
             // Arrange
             /*lang=json,strict*/
@@ -200,7 +200,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(-1) > ArgumentOutOfRangeException をスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
-        public async Task When_Id_IsNegative_Layout_ReadAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_Layout_ReadAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -224,7 +224,7 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
         [DataRow(false, "/sheet_layouts/12", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(12, false) > GET /sheet_layouts/12 をコールする。")]
         [DataRow(true, "/sheet_layouts/12?get_calc_type=true", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(12, true) > GET /sheet_layouts/12?get_calc_type=true をコールする。")]
-        public async Task Layout_ReadAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint)
+        public async ValueTask Layout_ReadAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint)
         {
             // Arrange
             /*lang=json,strict*/

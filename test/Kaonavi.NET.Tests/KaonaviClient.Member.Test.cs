@@ -58,7 +58,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ListAsync)} > GET /members をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("メンバー情報")]
-        public async Task Member_ListAsync_Calls_GetApi()
+        public async ValueTask Member_ListAsync_Calls_GetApi()
         {
             // Arrange
             /*lang=json,strict*/
@@ -156,7 +156,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.CreateAsync)} > POST /members をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("メンバー情報")]
-        public async Task Member_CreateAsync_Calls_PostApi()
+        public async ValueTask Member_CreateAsync_Calls_PostApi()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -181,7 +181,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ReplaceAsync)} > PUT /members をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("メンバー情報")]
-        public async Task Member_ReplaceAsync_Calls_PutApi()
+        public async ValueTask Member_ReplaceAsync_Calls_PutApi()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -206,7 +206,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateAsync)} > PATCH /members をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("メンバー情報")]
-        public async Task Member_UpdateAsync_Calls_PatchApi()
+        public async ValueTask Member_UpdateAsync_Calls_PatchApi()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -231,7 +231,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.OverWriteAsync)} > PUT /members/overwrite をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("メンバー情報")]
-        public async Task Member_OverWriteAsync_Calls_PutApi()
+        public async ValueTask Member_OverWriteAsync_Calls_PutApi()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -256,7 +256,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.DeleteAsync)} > POST /members/delete をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("メンバー情報")]
-        public async Task Member_DeleteAsync_Calls_PostApi()
+        public async ValueTask Member_DeleteAsync_Calls_PostApi()
         {
             // Arrange
             string[] codes = _payload.Select(d => d.Code).ToArray();
@@ -300,7 +300,7 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("メンバー情報")]
         [DataRow(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
         [DataRow(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
-        public async Task Member_AddFaceImageAsync_Calls_PostApi(bool enableTrimming, string expectedJson)
+        public async ValueTask Member_AddFaceImageAsync_Calls_PostApi(bool enableTrimming, string expectedJson)
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -327,7 +327,7 @@ public sealed partial class KaonaviClientTest
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("メンバー情報")]
         [DataRow(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
         [DataRow(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
-        public async Task Member_UpdateFaceImageAsync_Calls_PatchApi(bool enableTrimming, string expectedJson)
+        public async ValueTask Member_UpdateFaceImageAsync_Calls_PatchApi(bool enableTrimming, string expectedJson)
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();

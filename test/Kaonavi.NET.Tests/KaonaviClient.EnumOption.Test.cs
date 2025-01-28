@@ -15,7 +15,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ListAsync)} > GET /enum_options をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("マスター管理")]
-        public async Task EnumOption_ListAsync_Calls_GetApi()
+        public async ValueTask EnumOption_ListAsync_Calls_GetApi()
         {
             // Arrange
             /*lang=json,strict*/
@@ -79,7 +79,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("マスター管理")]
-        public async Task When_Id_IsNegative_EnumOption_ReadAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_EnumOption_ReadAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -100,7 +100,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ReadAsync)} > GET /enum_options/:id をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("マスター管理")]
-        public async Task EnumOption_ReadAsync_Calls_GetApi()
+        public async ValueTask EnumOption_ReadAsync_Calls_GetApi()
         {
             // Arrange
             /*lang=json,strict*/
@@ -139,7 +139,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("マスター管理")]
-        public async Task When_Id_IsNegative_EnumOption_UpdateAsync_Throws_ArgumentOutOfRangeException()
+        public async ValueTask When_Id_IsNegative_EnumOption_UpdateAsync_Throws_ArgumentOutOfRangeException()
         {
             // Arrange
             var mockedApi = new Mock<HttpMessageHandler>();
@@ -159,7 +159,7 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.UpdateAsync)} > PUT /enum_options/:id をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("マスター管理")]
-        public async Task EnumOption_UpdateAsync_Calls_PutApi()
+        public async ValueTask EnumOption_UpdateAsync_Calls_PutApi()
         {
             // Arrange
             const int id = 10;
