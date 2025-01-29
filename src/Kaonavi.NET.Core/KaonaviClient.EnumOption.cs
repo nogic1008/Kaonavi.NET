@@ -72,9 +72,6 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
     ValueTask<int> IEnumOption.UpdateAsync(int id, IReadOnlyList<(int? id, string name)> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
-        var data = payload.Select(d => new EnumOptionPayloadData(d.id, d.name)).ToArray();
-        return CallTaskApiAsync(HttpMethod.Put, $"enum_options/{id:D}", data, "enum_option_data"u8, Context.Default.IReadOnlyListEnumOptionPayloadData, cancellationToken);
+        return CallTaskApiAsync(HttpMethod.Put, $"enum_options/{id:D}", payload, "enum_option_data"u8, Context.Default.IReadOnlyListValueTupleNullableInt32String, cancellationToken);
     }
-
-    internal record EnumOptionPayloadData(int? Id, string Name);
 }
