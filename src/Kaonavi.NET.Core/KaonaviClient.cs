@@ -1,7 +1,6 @@
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Net.Http.Json;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization.Metadata;
 using Kaonavi.Net.Entities;
@@ -26,11 +25,11 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='client']"/></summary>
     private readonly HttpClient _client;
 
-    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerKey']"/></summary>
-    private readonly string _consumerKey;
-
-    /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></summary>
-    private readonly string _consumerSecret;
+    /// <summary>
+    /// <inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerKey']"/>と
+    /// <inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/>を":"で連結したバイト配列
+    /// </summary>
+    private readonly byte[] _basicCredentials;
 
     /// <summary><inheritdoc cref="KaonaviClient(HttpClient, string, string, TimeProvider)" path="/param[@name='timeProvider']"/></summary>
     private readonly TimeProvider _timeProvider;
@@ -107,7 +106,8 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         ArgumentNullException.ThrowIfNull(consumerSecret);
         ArgumentNullException.ThrowIfNull(timeProvider);
 
-        (_client, _consumerKey, _consumerSecret, _timeProvider) = (client, consumerKey, consumerSecret, timeProvider);
+        (_client, _timeProvider) = (client, timeProvider);
+        _basicCredentials = Encoding.UTF8.GetBytes($"{consumerKey}:{consumerSecret}");
         _client.BaseAddress ??= new(BaseApiAddress);
     }
 
@@ -152,9 +152,8 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
 
-        byte[] byteArray = Encoding.UTF8.GetBytes($"{_consumerKey}:{_consumerSecret}");
         var content = new FormUrlEncodedContent([new("grant_type", "client_credentials")]);
-        _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
+        _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(_basicCredentials));
 
         var response = await _client.PostAsync("token", content, cancellationToken).ConfigureAwait(false);
         await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
