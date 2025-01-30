@@ -14,8 +14,8 @@ public partial class SheetDataGenerator
     /// <param name="syntax">[SheetSerializable]属性が指定された箇所のシンタックス</param>
     /// <param name="compilation">現在のコンパイル結果</param>
     /// <param name="version">C#のバージョン</param>
-    /// <param name="context">ソース生成コンテキストの抽象化</param>
-    private static void Emit(TypeDeclarationSyntax syntax, Compilation compilation, LanguageVersion version, IGeneratorContext context)
+    /// <param name="context">ソース生成コンテキスト</param>
+    private static void Emit(TypeDeclarationSyntax syntax, Compilation compilation, LanguageVersion version, SourceProductionContext context)
     {
         var typeSymbol = compilation.GetSemanticModel(syntax.SyntaxTree).GetDeclaredSymbol(syntax, context.CancellationToken);
         if (typeSymbol is null)
@@ -60,11 +60,11 @@ public partial class SheetDataGenerator
     /// [CustomField]属性のついたプロパティを取得します。
     /// </summary>
     /// <param name="syntax">[SheetSerializable]属性が指定された箇所のシンタックス</param>
-    /// <param name="syntax">[SheetSerializable]属性が指定されたクラスのシンボル</param>
+    /// <param name="typeSymbol">[SheetSerializable]属性が指定されたクラスのシンボル</param>
     /// <param name="compilation">現在のコンパイル結果</param>
-    /// <param name="context">ソース生成コンテキストの抽象化</param>
+    /// <param name="context">ソース生成コンテキスト</param>
     /// <returns>[CustomField]属性の設定に不備がある場合は<see langword="null"/>, 適切に設定されている場合はIDをKey, プロパティ情報をValueとしたDictionary</returns>
-    private static IDictionary<int, IPropertySymbol>? GetCustomFields(TypeDeclarationSyntax syntax, INamedTypeSymbol typeSymbol, Compilation compilation, IGeneratorContext context)
+    private static IDictionary<int, IPropertySymbol>? GetCustomFields(TypeDeclarationSyntax syntax, INamedTypeSymbol typeSymbol, Compilation compilation, SourceProductionContext context)
     {
         var customFieldAttr = compilation.GetTypeByMetadataName(Consts.CustomField);
         var customFieldProperties = typeSymbol.GetMembers().OfType<IPropertySymbol>()
