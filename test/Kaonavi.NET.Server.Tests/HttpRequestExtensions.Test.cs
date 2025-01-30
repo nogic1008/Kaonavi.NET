@@ -26,7 +26,7 @@ public sealed class HttpRequestExtensionsTest
         request.SetupGet(x => x.ContentType).Returns(contentType);
 
         // Act - Assert
-        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token").Should().BeFalse();
+        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token").ShouldBeFalse();
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public sealed class HttpRequestExtensionsTest
         request.SetupGet(x => x.Headers.UserAgent).Returns(new StringValues(userAgent));
 
         // Act - Assert
-        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token").Should().BeFalse();
+        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token").ShouldBeFalse();
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public sealed class HttpRequestExtensionsTest
         request.Setup(x => x.Headers.TryGetValue("Kaonavi-Token", out It.Ref<StringValues>.IsAny)).Returns(false);
 
         // Act - Assert
-        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token").Should().BeFalse();
+        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token").ShouldBeFalse();
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public sealed class HttpRequestExtensionsTest
             .Returns(true);
 
         // Act - Assert
-        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token").Should().BeFalse();
+        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token").ShouldBeFalse();
 
         static void MockCallback(string key, out StringValues values)
             => values = new StringValues("another-token");
@@ -99,7 +99,7 @@ public sealed class HttpRequestExtensionsTest
             .Returns(true);
 
         // Act - Assert
-        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, token).Should().BeTrue();
+        HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, token).ShouldBeTrue();
 
         void MockCallback(string key, out StringValues values)
             => values = new StringValues(token);

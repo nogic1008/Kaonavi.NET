@@ -1,4 +1,4 @@
-<Project Sdk="MSTest.Sdk/3.6.3">
+<Project Sdk="MSTest.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
@@ -7,17 +7,17 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="FluentAssertions" Version="6.12.2" />
-    <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="RandomFixtureKit" Version="1.0.1" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0" Condition="'$(TargetFramework)'!='net9.0'" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="RandomFixtureKit" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="Microsoft.VisualStudio.TestTools.UnitTesting.ParallelizeAttribute" />
-    <Using Include="FluentAssertions" />
     <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
     <Using Include="Moq" />
+    <Using Include="Shouldly" />
   </ItemGroup>
 
   <ItemGroup>
