@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Kaonavi.Net.Json;
 
 /// <summary>
@@ -6,6 +8,7 @@ namespace Kaonavi.Net.Json;
 internal class EnumOptionPayloadConverter : JsonConverter<IReadOnlyList<(int? id, string name)>>
 {
     /// <inheritdoc/>
+    [ExcludeFromCodeCoverage]
     public override IReadOnlyList<(int? id, string name)>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         => throw new NotImplementedException();
 
