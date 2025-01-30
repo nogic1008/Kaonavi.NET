@@ -12,8 +12,8 @@
 
 ### Requirements
 
-- [.NET 8.0](https://dotnet.microsoft.com/download/dotnet/8.0) および [.NET 6.0 SDK](https://dotnet.microsoft.com/download/dotnet/6.0) が必要です。
-- ソース ジェネレーター部分のデバッグには Visual Studio 2022 (バージョン 17.3)以降が必要です。
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) および [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) が必要です。
+- ソース ジェネレーター部分(`Kaonavi.NET.Generator`)のデバッグには Visual Studio 2022 (バージョン 17.3)以降が必要です。
 
 #### Recommended
 
@@ -21,10 +21,10 @@
 
 - Visual Studio 2022 (バージョン 17.3)以降
   - 当プロジェクトはオープンソースのため、[Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/)が利用可能です。
-  - .NET 8.0 および .NET 6.0 SDK がインストール内容に含まれているか確認してください。
+  - .NET 9.0 および .NET 8.0 SDK がインストール内容に含まれているか確認してください。
   - ソース ジェネレーター部分をデバッグするためには、.NET Compiler Platform SDK を追加でインストールしてください。
 - [Visual Studio Code](https://code.visualstudio.com/) + [EditorConfig 拡張機能](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) + [C# Dev Kit](https://learn.microsoft.com/visualstudio/subscriptions/vs-c-sharp-dev-kit)
-  - .NET 8.0 および .NET 6.0 SDK は個別にインストールしてください。
+  - .NET 9.0 および .NET 8.0 SDK は個別にインストールしてください。
   - Gitのインストールが必要です。(Visual Studio Codeの初回実行時、インストールを促されます)
   - C# Dev Kitがライセンス上利用できない場合は、[C# 拡張機能](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)を代わりに使用できます。
 - Dev Container
@@ -93,7 +93,7 @@ Git コミットメッセージの例:
   - コードのフォーマットは `dotnet format` コマンドで自動修正できます。
 - ファイルのエンコーディングは UTF-8 とします。
 - 非 ASCII 文字(日本語など)を変数名,メンバー名に使用しないでください。
-  - コードのコメント部分に非 ASCII 文字を使うのは構いません。
+  - XMLドキュメンテーションコメントを含む、コードのコメント部分に非 ASCII 文字を使うのは構いません。
 - リソースファイルのデフォルト言語は英語とし、日本語のリソースファイルは `Resources.ja-jp.resx` として作成してください。
 
 ### CI/CD
@@ -104,9 +104,9 @@ Git コミットメッセージの例:
 
 | Job Name | Description |
 | --- | --- |
-|Lint|コードフォーマットのチェック|
-|Validate NuGet Lock Files|NuGet パッケージのロックファイル(`packages.lock.json`)の検証|
-|Debug Build & Test|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linuxと.NET 6.0/8.0の各環境で実施)|
+|[Lint](./.github/workflows/dotnet.yml#L16)|コードフォーマットのチェック|
+|[Validate NuGet Lock Files](./.github/workflows/dotnet.yml#L28)|NuGet パッケージのロックファイル(`packages.lock.json`)の検証|
+|[Debug Build & Test](./.github/workflows/dotnet.yml#L43)|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linuxと.NET 8.0/9.0の各環境で実施)|
 
 ## Thanks
 

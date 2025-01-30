@@ -1,0 +1,40 @@
+@HostAddress = http://localhost:5247
+@KaonaviToken = YOUR_KAONAVI_TOKEN
+
+POST {{HostAddress}}/webhook/
+Content-Type: application/json
+User-Agent: Kaonavi-Webhook
+Kaonavi-Token: {{KaonaviToken}}
+
+{
+  "event": "member_created",
+  "event_time": "2023-04-11 09:40:45",
+  "member_data": [
+    {
+      "code": "A0001"
+    },
+    {
+      "code": "A0002"
+    }
+  ]
+}
+
+###
+
+POST {{HostAddress}}/webhook2/
+Content-Type: application/json
+User-Agent: Kaonavi-Webhook
+Kaonavi-Token: {{KaonaviToken}}
+
+{
+  "event": "member_created",
+  "event_time": "2023-04-11 09:40:45",
+  "member_data": [
+    {
+      "code": "A0001"
+    },
+    {
+      "code": "A0002"
+    }
+  ]
+}

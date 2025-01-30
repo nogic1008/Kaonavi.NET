@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net9.0;net8.0</TargetFrameworks>
+    <RootNamespace>Kaonavi.Net.Server</RootNamespace>
+
+    <Description>Server side parser for Kaonavi Webhook</Description>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Include="System.Text.Json" />
+    <Using Include="System.Text.Json.Serialization" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="./README.md" Pack="true" PackagePath="/" />
+    <Compile Include="../Kaonavi.NET.Core/Json/DateTimeConverter.cs" />
+    <Compile Include="../Kaonavi.NET.Core/Entities/WebhookEvent.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="System.Text.Json" Condition="'$(TargetFramework)'!='net9.0'" />
+  </ItemGroup>
+</Project>
