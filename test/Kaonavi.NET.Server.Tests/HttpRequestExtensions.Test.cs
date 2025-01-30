@@ -12,7 +12,7 @@ namespace Kaonavi.Net.Server.Tests;
 public sealed class HttpRequestExtensionsTest
 {
     /// <summary>
-    /// Content-Typeが"applicaton/json"でない場合、<see cref="HttpRequestExtensions.IsKaonaviWebhookRequest"/>は<see langword="false"/>を返す。
+    /// Content-Typeが"application/json"でない場合、<see cref="HttpRequestExtensions.IsKaonaviWebhookRequest"/>は<see langword="false"/>を返す。
     /// </summary>
     /// <param name="contentType">Content-Type</param>
     [TestMethod($"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)} > Content-Typeが\"applicaton/json\"でない場合、falseを返す。")]
