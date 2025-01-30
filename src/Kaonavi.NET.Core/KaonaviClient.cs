@@ -140,20 +140,6 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         Dispose(true);
         GC.SuppressFinalize(this);
     }
-
-    /// <summary>
-    /// このインスタンスが破棄済みの場合に<see cref="ObjectDisposedException"/>をスローします。
-    /// </summary>
-    /// <exception cref="ObjectDisposedException">このインスタンスがすでに破棄されている場合にスローされます。</exception>
-    private void ThrowIfDisposed()
-#if NET8_0_OR_GREATER
-        => ObjectDisposedException.ThrowIf(_disposedValue, GetType().FullName!);
-#else
-    {
-        if (_disposedValue)
-            throw new ObjectDisposedException(GetType().FullName);
-    }
-#endif
     #endregion IDisposable
 
     /// <summary>
@@ -161,10 +147,11 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3/paths/~1token/post"/>
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-    /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
+    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
     public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_disposedValue, GetType());
+
         byte[] byteArray = Encoding.UTF8.GetBytes($"{_consumerKey}:{_consumerSecret}");
         var content = new FormUrlEncodedContent([new("grant_type", "client_credentials")]);
         _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(byteArray));
@@ -189,11 +176,12 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// </summary>
     /// <param name="request">APIに対するリクエスト</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-    /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
+    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
     /// <inheritdoc cref="ValidateApiResponseAsync" path="/exception"/>
     private async ValueTask<HttpResponseMessage> CallApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_disposedValue, GetType());
+
         await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
         var response = await _client.SendAsync(request, cancellationToken: cancellationToken).ConfigureAwait(false);
         await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
@@ -242,10 +230,10 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
-    /// <inheritdoc cref="ThrowIfDisposed" path="/exception"/>
+    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
     private ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, ReadOnlySpan<byte> utf8PropertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_disposedValue, GetType());
 
         var buffer = new ArrayBufferWriter<byte>();
         using var writer = new Utf8JsonWriter(buffer);
