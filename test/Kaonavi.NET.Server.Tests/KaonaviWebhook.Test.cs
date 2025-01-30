@@ -1,5 +1,4 @@
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Kaonavi.Net.Entities;
 
 namespace Kaonavi.Net.Server.Tests;
@@ -31,12 +30,10 @@ public sealed class KaonaviWebhookTest
         var actual = JsonSerializer.Deserialize(json, Context.Default.KaonaviWebhook);
 
         // Assert
-        actual.Should().NotBeNull();
-        actual!.Event.Should().Be(WebhookEvent.MemberCreated);
-        actual.EventTime.Should().Be(new DateTime(2023, 4, 11, 9, 40, 45));
-        actual.MemberData.Should().Equal(new Member("A0001"), new Member("A0002"));
+        actual.ShouldNotBeNull().ShouldSatisfyAllConditions(
+            static sut => sut.Event.ShouldBe(WebhookEvent.MemberCreated),
+            static sut => sut.EventTime.ShouldBe(new DateTime(2023, 4, 11, 9, 40, 45)),
+            static sut => sut.MemberData.ShouldBe([new("A0001"), new("A0002")])
+        );
     }
 }
-
-[JsonSerializable(typeof(KaonaviWebhook))]
-public partial class Context : JsonSerializerContext;
