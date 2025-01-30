@@ -27,8 +27,7 @@ public sealed class TokenTest
         var token = JsonSerializer.Deserialize(jsonString, Context.Default.Token);
 
         // Assert
-        token!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        token.ShouldNotBeNull().ShouldSatisfyAllConditions(
             static sut => sut.AccessToken.ShouldBe("25396f58-10f8-c228-7f0f-818b1d666b2e"),
             static sut => sut.TokenType.ShouldBe("Bearer"),
             static sut => sut.ExpiresIn.ShouldBe(3600)

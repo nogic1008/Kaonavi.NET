@@ -86,8 +86,7 @@ public sealed class FieldLayoutTest
         var fieldLayout = JsonSerializer.Deserialize(json, Context.Default.FieldLayout);
 
         // Assert
-        fieldLayout!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        fieldLayout.ShouldNotBeNull().ShouldSatisfyAllConditions(
             sut => sut.Name.ShouldBe(name),
             sut => sut.Required.ShouldBe(required),
             sut => sut.Type.ShouldBe(type),
@@ -140,8 +139,7 @@ public sealed class FieldLayoutTest
         var customFieldLayout = JsonSerializer.Deserialize(jsonString, Context.Default.CustomFieldLayout);
 
         // Assert
-        customFieldLayout!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        customFieldLayout.ShouldNotBeNull().ShouldSatisfyAllConditions(
             static sut => sut.Id.ShouldBe(100),
             static sut => sut.Name.ShouldBe("血液型"),
             static sut => sut.Required.ShouldBeFalse(),

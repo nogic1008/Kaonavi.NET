@@ -44,8 +44,7 @@ public sealed class SheetLayoutTest
         var sheetLayout = JsonSerializer.Deserialize(jsonString, Context.Default.SheetLayout);
 
         // Assert
-        sheetLayout!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        sheetLayout.ShouldNotBeNull().ShouldSatisfyAllConditions(
             static sut => sut.Id.ShouldBe(12),
             static sut => sut.Name.ShouldBe("住所・連絡先"),
             static sut => sut.RecordType.ShouldBe(RecordType.Multiple),

@@ -106,8 +106,7 @@ public sealed class MemberDataTest
         var memberData = JsonSerializer.Deserialize(json, Context.Default.MemberData);
 
         // Assert
-        memberData!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        memberData.ShouldNotBeNull().ShouldSatisfyAllConditions(
             sut => sut.Code.ShouldBe(code),
             sut => sut.Name.ShouldBe(name),
             sut => sut.NameKana.ShouldBe(nameKana),
@@ -116,10 +115,9 @@ public sealed class MemberDataTest
             sut => sut.RetiredDate.ShouldBe(ParseDateOrNull(retiredDate)),
             sut => sut.Gender.ShouldBe(gender),
             sut => sut.Birthday.ShouldBe(ParseDateOrNull(birthday)),
-            static sut => sut.Department.ShouldNotBeNull(),
-            sut => sut.Department!.Code.ShouldBe(departmentCode),
-            static sut => sut.SubDepartments!.ShouldNotBeNull(),
-            static sut => sut.CustomFields!.ShouldNotBeNull()
+            sut => sut.Department.ShouldNotBeNull().Code.ShouldBe(departmentCode),
+            static sut => sut.SubDepartments.ShouldNotBeNull(),
+            static sut => sut.CustomFields.ShouldNotBeNull()
         );
 
         static DateOnly? ParseDateOrNull(string? value) => DateOnly.TryParseExact(value, "yyyy/MM/dd", out var date) ? date : null;

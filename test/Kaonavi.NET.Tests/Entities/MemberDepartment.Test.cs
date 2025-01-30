@@ -41,8 +41,7 @@ public sealed class MemberDepartmentTest
         var memberDepartment = JsonSerializer.Deserialize(json, Context.Default.MemberDepartment);
 
         // Assert
-        memberDepartment!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        memberDepartment.ShouldNotBeNull().ShouldSatisfyAllConditions(
             sut => sut.Code.ShouldBe(code),
             sut => sut.Name.ShouldBe(name),
             sut => sut.Names.ShouldBe(names)

@@ -47,8 +47,7 @@ public sealed class TaskProgressTest
         var taskProgress = JsonSerializer.Deserialize(json, Context.Default.TaskProgress);
 
         // Assert
-        taskProgress!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        taskProgress.ShouldNotBeNull().ShouldSatisfyAllConditions(
             sut => sut.Id.ShouldBe(id),
             sut => sut.Status.ShouldBe(status),
             sut => sut.Messages.ShouldBe(messages)

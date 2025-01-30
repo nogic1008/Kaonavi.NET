@@ -24,8 +24,7 @@ public sealed class CustomFieldValueTest
         var customFieldValue = JsonSerializer.Deserialize(json, Context.Default.CustomFieldValue);
 
         // Assert
-        customFieldValue!.ShouldSatisfyAllConditions(
-            sut => sut.ShouldNotBeNull(),
+        customFieldValue.ShouldNotBeNull().ShouldSatisfyAllConditions(
             sut => sut.Id.ShouldBe(id),
             sut => sut.Name.ShouldBe(name),
             sut => sut.Value.ShouldBe(values[0]),
