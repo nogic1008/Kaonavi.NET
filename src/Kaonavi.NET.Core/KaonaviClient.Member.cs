@@ -151,23 +151,23 @@ public partial class KaonaviClient : KaonaviClient.IMember
 
     /// <inheritdoc/>
     ValueTask<int> IMember.CreateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Post, "members", payload, "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, "members", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.ReplaceAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, "members", payload, "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "members", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.UpdateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Patch, "members", payload, "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Patch, "members", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.OverWriteAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", payload, "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Post, "members/delete", codes, "codes", Context.Default.IReadOnlyListString, cancellationToken);
+        => CallTaskApiAsync(HttpMethod.Post, "members/delete", codes, "codes"u8, Context.Default.IReadOnlyListString, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.AddFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
@@ -185,9 +185,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
     /// <param name="payload">追加/更新対象となるデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
+    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
     private ValueTask<int> CallFaceImageApiAsync(HttpMethod method, IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
     {
-        ThrowIfDisposed();
+        ObjectDisposedException.ThrowIf(_disposedValue, GetType());
 
         var buffer = new ArrayBufferWriter<byte>();
         using var writer = new Utf8JsonWriter(buffer);
@@ -200,7 +201,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
 
         return CallRequestLimitApiAsync(new(method, "members/face_image")
         {
-            Content = new ByteArrayContent(buffer.WrittenSpan.ToArray())
+            Content = new ReadOnlyMemoryContent(buffer.WrittenMemory)
+            {
+                Headers = { ContentType = new("application/json") }
+            }
         }, cancellationToken);
     }
 }

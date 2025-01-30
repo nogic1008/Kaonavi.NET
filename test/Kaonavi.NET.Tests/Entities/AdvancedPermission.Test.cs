@@ -40,8 +40,7 @@ public sealed class AdvancedPermissionTest
         var advancedPermission = JsonSerializer.Deserialize(json, Context.Default.AdvancedPermission);
 
         // Assert
-        advancedPermission!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        advancedPermission.ShouldNotBeNull().ShouldSatisfyAllConditions(
             sut => sut.UserId.ShouldBe(userId),
             sut => sut.AddCodes.ShouldBe(addCodes),
             sut => sut.ExclusionCodes.ShouldBe(exclusionCodes)

@@ -30,8 +30,7 @@ public sealed class EnumOptionTest
         var enumOption = JsonSerializer.Deserialize(jsonString, Context.Default.EnumOption);
 
         // Assert
-        enumOption!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        enumOption.ShouldNotBeNull().ShouldSatisfyAllConditions(
             static sut => sut.SheetName.ShouldBe("役職情報"),
             static sut => sut.Id.ShouldBe(10),
             static sut => sut.Name.ShouldBe("役職"),

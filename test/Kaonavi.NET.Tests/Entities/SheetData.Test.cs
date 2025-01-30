@@ -38,7 +38,11 @@ public sealed class SheetDataTest
         // Assert
         sheetData.ShouldNotBeNull().ShouldSatisfyAllConditions(
             static sut => sut.Code.ShouldNotBeNull("A0002"),
-            static sut => sut.Records.ShouldHaveSingleItem().ShouldHaveSingleItem()
+            static sut => sut.Records.ShouldHaveSingleItem().ShouldHaveSingleItem().ShouldSatisfyAllConditions(
+                static sut => sut.Id.ShouldBe(1000),
+                static sut => sut.Name.ShouldBe("住所"),
+                static sut => sut.Values.ShouldBe(["東京都港区x-x-x"])
+            )
         );
     }
 
@@ -93,8 +97,35 @@ public sealed class SheetDataTest
         sheetData!.ShouldSatisfyAllConditions(
             static sut => sut.ShouldNotBeNull(),
             static sut => sut.Code.ShouldBe("A0001"),
-            static sut => sut.Records.Count.ShouldBe(2),
-            static sut => sut.Records[0].Count.ShouldBe(2)
+            static sut => sut.Records.ShouldSatisfyAllConditions(
+                static records => records.Count.ShouldBe(2),
+                static records => records[0].ShouldSatisfyAllConditions(
+                    static fields => fields.Count.ShouldBe(2),
+                    static fields => fields[0].ShouldSatisfyAllConditions(
+                        static sut => sut.Id.ShouldBe(1000),
+                        static sut => sut.Name.ShouldBe("住所"),
+                        static sut => sut.Values.ShouldBe(["大阪府大阪市y番y号"])
+                    ),
+                    static fields => fields[1].ShouldSatisfyAllConditions(
+                        static sut => sut.Id.ShouldBe(1001),
+                        static sut => sut.Name.ShouldBe("電話番号"),
+                        static sut => sut.Values.ShouldBe(["06-yyyy-yyyy"])
+                    )
+                ),
+                static records => records[1].ShouldSatisfyAllConditions(
+                    static fields => fields.Count.ShouldBe(2),
+                    static fields => fields[0].ShouldSatisfyAllConditions(
+                        static sut => sut.Id.ShouldBe(1000),
+                        static sut => sut.Name.ShouldBe("住所"),
+                        static sut => sut.Values.ShouldBe(["愛知県名古屋市z丁目z番z号"])
+                    ),
+                    static fields => fields[1].ShouldSatisfyAllConditions(
+                        static sut => sut.Id.ShouldBe(1001),
+                        static sut => sut.Name.ShouldBe("電話番号"),
+                        static sut => sut.Values.ShouldBe(["052-zzzz-zzzz"])
+                    )
+                )
+            )
         );
     }
 }

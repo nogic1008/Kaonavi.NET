@@ -42,7 +42,7 @@ public partial class SheetDataGenerator : IIncrementalGenerator
             token.ThrowIfCancellationRequested();
 
             var ((syntax, compilation), languageVersion) = source;
-            Emit(syntax, compilation, languageVersion, new GeneratorContext(context, languageVersion));
+            Emit(syntax, compilation, languageVersion, context);
         });
     }
 
@@ -55,14 +55,5 @@ public partial class SheetDataGenerator : IIncrementalGenerator
         public bool Equals((TypeDeclarationSyntax, Compilation) x, (TypeDeclarationSyntax, Compilation) y) => x.Item1.Equals(y.Item1);
         /// <inheritdoc/>
         public int GetHashCode((TypeDeclarationSyntax, Compilation) obj) => obj.Item1.GetHashCode();
-    }
-
-    /// <summary><see cref="IGeneratorContext"/> の<see cref="IIncrementalGenerator"/>向け実装</summary>
-    private class GeneratorContext(SourceProductionContext context, LanguageVersion languageVersion) : IGeneratorContext
-    {
-        public CancellationToken CancellationToken => context.CancellationToken;
-        public LanguageVersion LanguageVersion { get; } = languageVersion;
-        public void AddSource(string hintName, string source) => context.AddSource(hintName, source);
-        public void ReportDiagnostic(Diagnostic diagnostic) => context.ReportDiagnostic(diagnostic);
     }
 }

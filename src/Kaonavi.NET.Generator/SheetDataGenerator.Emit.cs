@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -14,8 +15,8 @@ public partial class SheetDataGenerator
     /// <param name="syntax">[SheetSerializable]属性が指定された箇所のシンタックス</param>
     /// <param name="compilation">現在のコンパイル結果</param>
     /// <param name="version">C#のバージョン</param>
-    /// <param name="context">ソース生成コンテキストの抽象化</param>
-    private static void Emit(TypeDeclarationSyntax syntax, Compilation compilation, LanguageVersion version, IGeneratorContext context)
+    /// <param name="context">ソース生成コンテキスト</param>
+    private static void Emit(TypeDeclarationSyntax syntax, Compilation compilation, LanguageVersion version, SourceProductionContext context)
     {
         var typeSymbol = compilation.GetSemanticModel(syntax.SyntaxTree).GetDeclaredSymbol(syntax, context.CancellationToken);
         if (typeSymbol is null)
@@ -60,11 +61,11 @@ public partial class SheetDataGenerator
     /// [CustomField]属性のついたプロパティを取得します。
     /// </summary>
     /// <param name="syntax">[SheetSerializable]属性が指定された箇所のシンタックス</param>
-    /// <param name="syntax">[SheetSerializable]属性が指定されたクラスのシンボル</param>
+    /// <param name="typeSymbol">[SheetSerializable]属性が指定されたクラスのシンボル</param>
     /// <param name="compilation">現在のコンパイル結果</param>
-    /// <param name="context">ソース生成コンテキストの抽象化</param>
+    /// <param name="context">ソース生成コンテキスト</param>
     /// <returns>[CustomField]属性の設定に不備がある場合は<see langword="null"/>, 適切に設定されている場合はIDをKey, プロパティ情報をValueとしたDictionary</returns>
-    private static IDictionary<int, IPropertySymbol>? GetCustomFields(TypeDeclarationSyntax syntax, INamedTypeSymbol typeSymbol, Compilation compilation, IGeneratorContext context)
+    private static IDictionary<int, IPropertySymbol>? GetCustomFields(TypeDeclarationSyntax syntax, INamedTypeSymbol typeSymbol, Compilation compilation, SourceProductionContext context)
     {
         var customFieldAttr = compilation.GetTypeByMetadataName(Consts.CustomField);
         var customFieldProperties = typeSymbol.GetMembers().OfType<IPropertySymbol>()
@@ -82,7 +83,7 @@ public partial class SheetDataGenerator
             return null;
         }
 
-        var customFieldDict = new Dictionary<int, IPropertySymbol>();
+        var customFieldDict = new Dictionary<int, IPropertySymbol>(customFieldProperties.Length);
         bool hasError = false;
         foreach (var (prop, id) in customFieldProperties)
         {
@@ -123,34 +124,34 @@ public partial class SheetDataGenerator
             if (version >= LanguageVersion.CSharp10)
             {
                 // Use file-scoped namespace (C# 10)
-                AppendIndent(sb, lv).AppendLine($"namespace {typeSymbol.ContainingNamespace.ToDisplayString()};")
+                AppendLineWithIndent(sb, lv, $"namespace {typeSymbol.ContainingNamespace.ToDisplayString()};")
                     .AppendLine();
             }
             else
             {
                 // Use nested namespace
-                AppendIndent(sb, lv).AppendLine($"namespace {typeSymbol.ContainingNamespace.ToDisplayString()}");
-                AppendIndent(sb, lv++).AppendLine("{"); // start of namespace
+                AppendLineWithIndent(sb, lv, $"namespace {typeSymbol.ContainingNamespace.ToDisplayString()}");
+                AppendLineWithIndent(sb, lv++, "{"); // start of namespace
             }
         }
 
-        AppendIndent(sb, lv).AppendLine($"partial {(typeSymbol.IsRecord ? "record" : "class")} {typeSymbol.Name}");
-        AppendIndent(sb, lv++).AppendLine("{"); // start of class
+        AppendLineWithIndent(sb, lv, $"partial {(typeSymbol.IsRecord ? "record" : "class")} {typeSymbol.Name}");
+        AppendLineWithIndent(sb, lv++, "{"); // start of class
 
-        AppendIndent(sb, lv).AppendLine("/// <inheritdoc/>");
-        AppendIndent(sb, lv++).AppendLine($"public {Consts.ToCustomFieldsReturnType} ToCustomFields()");
+        AppendLineWithIndent(sb, lv, "/// <inheritdoc/>");
+        AppendLineWithIndent(sb, lv++, $"public {Consts.ToCustomFieldsReturnType} ToCustomFields()");
 
         if (version >= (LanguageVersion)1200)
         {
             // Use collection expression (C# 12)
-            AppendIndent(sb, lv).AppendLine("=>");
-            AppendIndent(sb, lv++).AppendLine("["); // start of collection expression
+            AppendLineWithIndent(sb, lv, "=>");
+            AppendLineWithIndent(sb, lv++, "["); // start of collection expression
         }
         else
         {
             // Use array initializer
-            AppendIndent(sb, lv).AppendLine("=> new[]");
-            AppendIndent(sb, lv++).AppendLine("{"); // start of array initializer
+            AppendLineWithIndent(sb, lv, "=> new[]");
+            AppendLineWithIndent(sb, lv++, "{"); // start of array initializer
         }
         foreach (var kv in customFields)
         {
@@ -160,17 +161,17 @@ public partial class SheetDataGenerator
             bool isDate = Consts.DateObjects.Contains(typeFullName);
             // Use ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) for Date objects, otherwise use ToString()
             string value = $"{kv.Value.Name}{(isNullableValueType ? $".{nameof(Nullable<DateTime>.GetValueOrDefault)}()" : "")}.ToString({(isDate ? $"\"{Consts.DateFormat}\", {Consts.InvariantCulture}" : "")})";
-            AppendIndent(sb, lv).AppendLine($"new {Consts.CustomFieldValue}({kv.Key}, {value}),");
+            AppendLineWithIndent(sb, lv, $"new {Consts.CustomFieldValue}({kv.Key}, {value}),");
         }
 
         if (version >= (LanguageVersion)1200)
-            AppendIndent(sb, --lv).AppendLine("];"); // end of collection expression
+            AppendLineWithIndent(sb, --lv, "];"); // end of collection expression
         else
-            AppendIndent(sb, --lv).AppendLine("};"); // end of array initializer
+            AppendLineWithIndent(sb, --lv, "};"); // end of array initializer
 
-        AppendIndent(sb, lv -= 2).AppendLine("}"); // end of class
+        AppendLineWithIndent(sb, lv -= 2, "}"); // end of class
         if (hasNamespace && version < LanguageVersion.CSharp10)
-            AppendIndent(sb, --lv).AppendLine("}"); // end of namespace
+            AppendLineWithIndent(sb, --lv, "}"); // end of namespace
 
         return sb.ToString();
     }
@@ -179,11 +180,14 @@ public partial class SheetDataGenerator
     /// 生成ソース共通のヘッダー(auto-generatedタグ, 警告抑制)を追加します。
     /// </summary>
     /// <param name="sb">StringBuilder</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static StringBuilder AppendHeader(StringBuilder sb)
     {
-        sb.AppendLine("/// <auto-generated/>").AppendLine();
+        sb.AppendLine("/// <auto-generated/>")
+            .AppendLine();
         sb.AppendLine("#nullable enable annotations");
-        sb.AppendLine("#nullable disable warnings").AppendLine();
+        sb.AppendLine("#nullable disable warnings")
+            .AppendLine();
         foreach (string warning in Consts.DisableWarnings)
             sb.AppendLine($"#pragma warning disable {warning}");
         return sb.AppendLine();
@@ -192,5 +196,7 @@ public partial class SheetDataGenerator
     /// <summary>インデントを挿入します。</summary>
     /// <param name="sb">インデントを挿入するStringBuilder</param>
     /// <param name="level">インデントレベル</param>
-    private static StringBuilder AppendIndent(StringBuilder sb, in int level) => sb.Append(' ', level * Width);
+    /// <param name="value"><inheritdoc cref="StringBuilder.AppendLine(string)" path="/param[@name='value']"/></param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static StringBuilder AppendLineWithIndent(StringBuilder sb, in int level, string value) => sb.Append(' ', level * Width).AppendLine(value);
 }

@@ -66,15 +66,14 @@ public sealed class UserTest
         var user = JsonSerializer.Deserialize(json, Context.Default.User);
 
         // Assert
-        user!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        user.ShouldNotBeNull().ShouldSatisfyAllConditions(
             sut => sut.Id.ShouldBe(id),
             sut => sut.Email.ShouldBe(email),
             sut => sut.MemberCode.ShouldBe(memberCode),
+            sut => sut.Role.ShouldBe(new(roleId, roleName, roleType)),
             sut => sut.IsActive.ShouldBe(isActive),
             sut => sut.PasswordLocked.ShouldBe(passwordLocked),
-            sut => sut.UseSmartphone.ShouldBe(useSmartphone),
-            sut => sut.Role.ShouldBe(new(roleId, roleName, roleType))
+            sut => sut.UseSmartphone.ShouldBe(useSmartphone)
         );
     }
 }

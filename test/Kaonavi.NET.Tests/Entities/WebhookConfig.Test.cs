@@ -28,8 +28,7 @@ public sealed class WebhookConfigTest
         var webhookConfig = JsonSerializer.Deserialize(json, Context.Default.WebhookConfig);
 
         // Assert
-        webhookConfig!.ShouldSatisfyAllConditions(
-            static sut => sut.ShouldNotBeNull(),
+        webhookConfig.ShouldNotBeNull().ShouldSatisfyAllConditions(
             static sut => sut.Id.ShouldBe(1),
             static sut => sut.Url.ShouldBe(new Uri("https://example.com")),
             static sut => sut.Events.ShouldBe([WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted]),

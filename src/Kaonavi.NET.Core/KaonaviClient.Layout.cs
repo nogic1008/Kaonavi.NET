@@ -50,5 +50,8 @@ public partial class KaonaviClient : KaonaviClient.ILayout
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     ValueTask<SheetLayout> ILayout.ReadAsync(int id, bool getCalcType, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, $"sheet_layouts/{ThrowIfNegative(id):D}{(getCalcType ? "?get_calc_type=true" : "")}"), Context.Default.SheetLayout, cancellationToken);
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        return CallApiAsync(new(HttpMethod.Get, $"sheet_layouts/{id:D}{(getCalcType ? "?get_calc_type=true" : "")}"), Context.Default.SheetLayout, cancellationToken);
+    }
 }
