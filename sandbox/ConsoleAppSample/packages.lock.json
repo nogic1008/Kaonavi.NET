@@ -350,16 +350,16 @@
       "kaonavi.net.core": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.Bcl.TimeProvider": "[9.0.0, )",
+          "Microsoft.Bcl.TimeProvider": "[9.0.3, )",
           "System.Net.Http.Json": "[9.0.0, )",
           "System.Text.Json": "[9.0.1, )"
         }
       },
       "Microsoft.Bcl.TimeProvider": {
         "type": "CentralTransitive",
-        "requested": "[9.0.0, )",
-        "resolved": "9.0.0",
-        "contentHash": "MD+1/wpOQ9XaLPrHDTJTnQ18GjwNF1GqUuAFFhCyIWXtkEpaBY7v+OyPgh1WGeFvbV9gh4jEr95hFIwECrw8TA=="
+        "requested": "[9.0.3, )",
+        "resolved": "9.0.3",
+        "contentHash": "G8mEABHtAtfs4wNhrViz0PN3s0TeLA/0lzUIQ79hkc2i18VwHPXzL03m3Wfv5mpmhPcoXMbRWMue0cJNOSEEMw=="
       },
       "System.Net.Http.Json": {
         "type": "CentralTransitive",
