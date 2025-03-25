@@ -4,32 +4,32 @@ namespace Kaonavi.Net;
 public interface IKaonaviClient
 {
     /// <inheritdoc cref="KaonaviClient.ITask"/>
-    KaonaviClient.ITask Task { get; }
+    public KaonaviClient.ITask Task { get; }
 
     /// <inheritdoc cref="KaonaviClient.ILayout"/>
-    KaonaviClient.ILayout Layout { get; }
+    public KaonaviClient.ILayout Layout { get; }
 
     /// <inheritdoc cref="KaonaviClient.IMember"/>
-    KaonaviClient.IMember Member { get; }
+    public KaonaviClient.IMember Member { get; }
 
     /// <inheritdoc cref="KaonaviClient.ISheet"/>
-    KaonaviClient.ISheet Sheet { get; }
+    public KaonaviClient.ISheet Sheet { get; }
 
     /// <inheritdoc cref="KaonaviClient.IDepartment"/>
-    KaonaviClient.IDepartment Department { get; }
+    public KaonaviClient.IDepartment Department { get; }
 
     /// <inheritdoc cref="KaonaviClient.IUser"/>
-    KaonaviClient.IUser User { get; }
+    public KaonaviClient.IUser User { get; }
 
     /// <inheritdoc cref="KaonaviClient.IRole"/>
-    KaonaviClient.IRole Role { get; }
+    public KaonaviClient.IRole Role { get; }
 
     /// <inheritdoc cref="KaonaviClient.IAdvancedPermission"/>
-    KaonaviClient.IAdvancedPermission AdvancedPermission { get; }
+    public KaonaviClient.IAdvancedPermission AdvancedPermission { get; }
 
     /// <inheritdoc cref="KaonaviClient.IEnumOption"/>
-    KaonaviClient.IEnumOption EnumOption { get; }
+    public KaonaviClient.IEnumOption EnumOption { get; }
 
     /// <inheritdoc cref="KaonaviClient.IWebhook"/>
-    KaonaviClient.IWebhook Webhook { get; }
+    public KaonaviClient.IWebhook Webhook { get; }
 }

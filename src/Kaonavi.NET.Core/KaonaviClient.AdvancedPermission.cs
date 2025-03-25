@@ -18,7 +18,7 @@ public partial class KaonaviClient : KaonaviClient.IAdvancedPermission
         /// </summary>
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<IReadOnlyList<AdvancedPermission>> ListAsync(AdvancedType type, CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<AdvancedPermission>> ListAsync(AdvancedType type, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 現在登録されている<inheritdoc cref="AdvancedPermission" path="/summary"/>を全て、リクエストしたデータで入れ替えます。
@@ -28,7 +28,7 @@ public partial class KaonaviClient : KaonaviClient.IAdvancedPermission
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="payload">入れ替え対象となるデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<int> ReplaceAsync(AdvancedType type, IReadOnlyList<AdvancedPermission> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> ReplaceAsync(AdvancedType type, IReadOnlyList<AdvancedPermission> payload, CancellationToken cancellationToken = default);
     }
 
     /// <inheritdoc/>
@@ -36,12 +36,12 @@ public partial class KaonaviClient : KaonaviClient.IAdvancedPermission
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
-    ValueTask<IReadOnlyList<AdvancedPermission>> IAdvancedPermission.ListAsync(AdvancedType type, CancellationToken cancellationToken)
+    public ValueTask<IReadOnlyList<AdvancedPermission>> IAdvancedPermission.ListAsync(AdvancedType type, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Get, $"advanced_permissions/{AdvancedTypeToString(type)}"), "advanced_permission_data", Context.Default.IReadOnlyListAdvancedPermission, cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
-    ValueTask<int> IAdvancedPermission.ReplaceAsync(AdvancedType type, IReadOnlyList<AdvancedPermission> payload, CancellationToken cancellationToken)
+    public ValueTask<int> IAdvancedPermission.ReplaceAsync(AdvancedType type, IReadOnlyList<AdvancedPermission> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, $"advanced_permissions/{AdvancedTypeToString(type)}", payload, "advanced_permission_data"u8, Context.Default.IReadOnlyListAdvancedPermission, cancellationToken);
 
     /// <summary>

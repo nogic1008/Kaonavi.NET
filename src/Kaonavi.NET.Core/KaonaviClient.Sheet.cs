@@ -17,7 +17,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         /// </summary>
         /// <param name="id"><inheritdoc cref="SheetLayout" path="/param[@name='Id']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<IReadOnlyList<SheetData>> ListAsync(int id, CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<SheetData>> ListAsync(int id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="SheetData" path="/summary"/>を一括更新します。
@@ -30,7 +30,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         /// <param name="payload">一括更新するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        ValueTask<int> ReplaceAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> ReplaceAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="SheetData" path="/summary"/>の一部を更新します。
@@ -61,7 +61,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         /// <param name="payload">更新するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        ValueTask<int> UpdateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> UpdateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="RecordType.Multiple"/>にレコードを追加します。
@@ -73,7 +73,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         /// <param name="payload">追加するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        ValueTask<int> CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致するシートのファイルパーツにファイルをアップロードします。
@@ -117,7 +117,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         /// <param name="payload">追加するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        ValueTask<int> AddFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> AddFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致するシートのファイルパーツのファイルを置き換えます。
@@ -167,7 +167,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         /// <param name="payload">追加するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        ValueTask<int> UpdateFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> UpdateFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken = default);
     }
 
     /// <inheritdoc/>
@@ -175,7 +175,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    ValueTask<IReadOnlyList<SheetData>> ISheet.ListAsync(int id, CancellationToken cancellationToken)
+    public ValueTask<IReadOnlyList<SheetData>> ISheet.ListAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallApiAsync(new(HttpMethod.Get, $"sheets/{id:D}"), "member_data", Context.Default.IReadOnlyListSheetData, cancellationToken);
@@ -183,7 +183,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    ValueTask<int> ISheet.ReplaceAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
+    public ValueTask<int> ISheet.ReplaceAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallTaskApiAsync(HttpMethod.Put, $"sheets/{id:D}", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
@@ -191,7 +191,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    ValueTask<int> ISheet.UpdateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
+    public ValueTask<int> ISheet.UpdateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallTaskApiAsync(HttpMethod.Patch, $"sheets/{id:D}", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
@@ -199,7 +199,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    ValueTask<int> ISheet.CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
+    public ValueTask<int> ISheet.CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallTaskApiAsync(HttpMethod.Post, $"sheets/{id:D}/add", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
@@ -207,7 +207,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>または<paramref name="customFieldId"/>が0より小さい場合にスローされます。</exception>
-    ValueTask<int> ISheet.AddFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
+    public ValueTask<int> ISheet.AddFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         ArgumentOutOfRangeException.ThrowIfNegative(customFieldId);
@@ -216,7 +216,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>または<paramref name="customFieldId"/>が0より小さい場合にスローされます。</exception>
-    ValueTask<int> ISheet.UpdateFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
+    public ValueTask<int> ISheet.UpdateFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         ArgumentOutOfRangeException.ThrowIfNegative(customFieldId);

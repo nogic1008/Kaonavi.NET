@@ -16,7 +16,7 @@ public partial class KaonaviClient : KaonaviClient.IDepartment
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%89%80%E5%B1%9E%E3%83%84%E3%83%AA%E3%83%BC/paths/~1departments/get"/>
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<IReadOnlyList<DepartmentTree>> ListAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<DepartmentTree>> ListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <inheritdoc cref="DepartmentTree" path="/summary"/>を一括更新します。
@@ -27,17 +27,17 @@ public partial class KaonaviClient : KaonaviClient.IDepartment
         /// <param name="payload">一括更新するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        ValueTask<int> ReplaceAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> ReplaceAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken = default);
     }
 
     /// <inheritdoc/>
     public IDepartment Department => this;
 
     /// <inheritdoc/>
-    ValueTask<IReadOnlyList<DepartmentTree>> IDepartment.ListAsync(CancellationToken cancellationToken)
+    public ValueTask<IReadOnlyList<DepartmentTree>> IDepartment.ListAsync(CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Get, "departments"), "department_data", Context.Default.IReadOnlyListDepartmentTree, cancellationToken);
 
     /// <inheritdoc/>
-    ValueTask<int> IDepartment.ReplaceAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken)
+    public ValueTask<int> IDepartment.ReplaceAsync(IReadOnlyList<DepartmentTree> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, "departments", payload, "department_data"u8, Context.Default.IReadOnlyListDepartmentTree, cancellationToken);
 }
