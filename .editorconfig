@@ -8,10 +8,6 @@ trim_trailing_whitespace = false
 insert_final_newline = true
 end_of_line = lf
 
-# Visual Studio Solution Files
-[*.sln]
-indent_style = tab
-
 # Markdown Files
 [*.md]
 trim_trailing_whitespace = false
