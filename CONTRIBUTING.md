@@ -12,7 +12,7 @@
 
 ### Requirements
 
-- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) (9.0.200以降) および [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) が必要です。
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) および [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) が必要です。
 - ソース ジェネレーター部分(`Kaonavi.NET.Generator`)のデバッグには Visual Studio 2022 (バージョン 17.3)以降が必要です。
 
 #### Recommended
