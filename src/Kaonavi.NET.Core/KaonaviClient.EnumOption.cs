@@ -56,12 +56,12 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
     public IEnumOption EnumOption => this;
 
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyList<EnumOption>> IEnumOption.ListAsync(CancellationToken cancellationToken)
+    ValueTask<IReadOnlyList<EnumOption>> IEnumOption.ListAsync(CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Get, "enum_options"), "custom_field_data", Context.Default.IReadOnlyListEnumOption, cancellationToken);
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<EnumOption> IEnumOption.ReadAsync(int id, CancellationToken cancellationToken)
+    ValueTask<EnumOption> IEnumOption.ReadAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallApiAsync(new(HttpMethod.Get, $"enum_options/{id:D}"), Context.Default.EnumOption, cancellationToken);
@@ -69,7 +69,7 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> IEnumOption.UpdateAsync(int id, IReadOnlyList<(int? id, string name)> payload, CancellationToken cancellationToken)
+    ValueTask<int> IEnumOption.UpdateAsync(int id, IReadOnlyList<(int? id, string name)> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallTaskApiAsync(HttpMethod.Put, $"enum_options/{id:D}", payload, "enum_option_data"u8, Context.Default.IReadOnlyListValueTupleNullableInt32String, cancellationToken);

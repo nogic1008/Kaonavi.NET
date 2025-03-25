@@ -48,18 +48,18 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
     public IWebhook Webhook => this;
 
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyList<WebhookConfig>> IWebhook.ListAsync(CancellationToken cancellationToken)
+    ValueTask<IReadOnlyList<WebhookConfig>> IWebhook.ListAsync(CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Get, "webhook"), "webhook_data", Context.Default.IReadOnlyListWebhookConfig, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<WebhookConfig> IWebhook.CreateAsync(WebhookConfigPayload payload, CancellationToken cancellationToken)
+    ValueTask<WebhookConfig> IWebhook.CreateAsync(WebhookConfigPayload payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Post, "webhook")
         {
             Content = JsonContent.Create(payload, Context.Default.WebhookConfigPayload)
         }, Context.Default.WebhookConfig, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<WebhookConfig> IWebhook.UpdateAsync(WebhookConfig payload, CancellationToken cancellationToken)
+    ValueTask<WebhookConfig> IWebhook.UpdateAsync(WebhookConfig payload, CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Patch, $"webhook/{payload.Id}")
         {
             Content = JsonContent.Create(payload, Context.Default.WebhookConfig)
@@ -67,7 +67,7 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    public async ValueTask IWebhook.DeleteAsync(int id, CancellationToken cancellationToken)
+    async ValueTask IWebhook.DeleteAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         await CallApiAsync(new(HttpMethod.Delete, $"webhook/{id:D}"), cancellationToken).ConfigureAwait(false);

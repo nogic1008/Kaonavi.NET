@@ -146,35 +146,35 @@ public partial class KaonaviClient : KaonaviClient.IMember
     public IMember Member => this;
 
     /// <inheritdoc/>
-    public ValueTask<IReadOnlyList<MemberData>> IMember.ListAsync(CancellationToken cancellationToken)
+    ValueTask<IReadOnlyList<MemberData>> IMember.ListAsync(CancellationToken cancellationToken)
         => CallApiAsync(new(HttpMethod.Get, "members"), "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> IMember.CreateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
+    ValueTask<int> IMember.CreateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Post, "members", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> IMember.ReplaceAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
+    ValueTask<int> IMember.ReplaceAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, "members", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> IMember.UpdateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
+    ValueTask<int> IMember.UpdateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Patch, "members", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> IMember.OverWriteAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
+    ValueTask<int> IMember.OverWriteAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> IMember.DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken)
+    ValueTask<int> IMember.DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Post, "members/delete", codes, "codes"u8, Context.Default.IReadOnlyListString, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> IMember.AddFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
+    ValueTask<int> IMember.AddFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
         => CallFaceImageApiAsync(HttpMethod.Post, payload, enableTrimming, cancellationToken);
 
     /// <inheritdoc/>
-    public ValueTask<int> IMember.UpdateFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
+    ValueTask<int> IMember.UpdateFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
         => CallFaceImageApiAsync(HttpMethod.Patch, payload, enableTrimming, cancellationToken);
 
     /// <summary>

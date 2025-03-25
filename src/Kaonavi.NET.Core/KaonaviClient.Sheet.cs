@@ -175,7 +175,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<IReadOnlyList<SheetData>> ISheet.ListAsync(int id, CancellationToken cancellationToken)
+    ValueTask<IReadOnlyList<SheetData>> ISheet.ListAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallApiAsync(new(HttpMethod.Get, $"sheets/{id:D}"), "member_data", Context.Default.IReadOnlyListSheetData, cancellationToken);
@@ -183,7 +183,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> ISheet.ReplaceAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
+    ValueTask<int> ISheet.ReplaceAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallTaskApiAsync(HttpMethod.Put, $"sheets/{id:D}", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
@@ -191,7 +191,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> ISheet.UpdateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
+    ValueTask<int> ISheet.UpdateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallTaskApiAsync(HttpMethod.Patch, $"sheets/{id:D}", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
@@ -199,7 +199,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> ISheet.CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
+    ValueTask<int> ISheet.CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallTaskApiAsync(HttpMethod.Post, $"sheets/{id:D}/add", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
@@ -207,7 +207,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>または<paramref name="customFieldId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> ISheet.AddFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
+    ValueTask<int> ISheet.AddFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         ArgumentOutOfRangeException.ThrowIfNegative(customFieldId);
@@ -216,7 +216,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>または<paramref name="customFieldId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<int> ISheet.UpdateFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
+    ValueTask<int> ISheet.UpdateFileAsync(int id, int customFieldId, IReadOnlyList<Attachment> payload, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         ArgumentOutOfRangeException.ThrowIfNegative(customFieldId);

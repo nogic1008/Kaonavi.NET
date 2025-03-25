@@ -25,7 +25,7 @@ public partial class KaonaviClient : KaonaviClient.ITask
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<TaskProgress> ITask.ReadAsync(int id, CancellationToken cancellationToken)
+    ValueTask<TaskProgress> ITask.ReadAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallApiAsync(new(HttpMethod.Get, $"tasks/{id:D}"), Context.Default.TaskProgress, cancellationToken);
