@@ -351,7 +351,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Bcl.TimeProvider": "[9.0.3, )",
-          "System.Net.Http.Json": "[9.0.0, )",
+          "System.Net.Http.Json": "[9.0.3, )",
           "System.Text.Json": "[9.0.3, )"
         }
       },
@@ -363,11 +363,11 @@
       },
       "System.Net.Http.Json": {
         "type": "CentralTransitive",
-        "requested": "[9.0.0, )",
-        "resolved": "9.0.0",
-        "contentHash": "e8s0BFOwHaFTqz6wi3l+9tm0SuKOUs5wiahHTjnAabF9n1+0NuZeG/vOLo2vSfUp+DlIChaRfnAiOFkRpHN/ew==",
+        "requested": "[9.0.3, )",
+        "resolved": "9.0.3",
+        "contentHash": "1PLQgaGNBaU6OYwXCcsvOncpayCaYy7gp2BsXrXHxQToKdTnLHHf5/MXyMf0nD6SfY9MMb/TC8HWR2weaNQctA==",
         "dependencies": {
-          "System.Text.Json": "9.0.0"
+          "System.Text.Json": "9.0.3"
         }
       },
       "System.Text.Json": {
