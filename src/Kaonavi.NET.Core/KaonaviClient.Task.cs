@@ -17,7 +17,7 @@ public partial class KaonaviClient : KaonaviClient.ITask
         /// </summary>
         /// <param name="id"><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<TaskProgress> ReadAsync(int id, CancellationToken cancellationToken = default);
+        public ValueTask<TaskProgress> ReadAsync(int id, CancellationToken cancellationToken = default);
     }
 
     /// <inheritdoc/>

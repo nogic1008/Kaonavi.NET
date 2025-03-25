@@ -20,7 +20,7 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
         /// ただし、データ連携中の項目はマスター管理で編集不可能なため、上記のパーツ種別であっても取得は出来ません。
         /// </remarks>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<IReadOnlyList<EnumOption>> ListAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<EnumOption>> ListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="EnumOption" path="/summary"/>を取得します。
@@ -29,7 +29,7 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
         /// <inheritdoc cref="ListAsync" path="/remarks"/>
         /// <param name="id"><inheritdoc cref="EnumOption.Id" path="/summary"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<EnumOption> ReadAsync(int id, CancellationToken cancellationToken = default);
+        public ValueTask<EnumOption> ReadAsync(int id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="EnumOption" path="/summary"/>を一括更新します。
@@ -49,7 +49,7 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
         /// <param name="payload">リクエスト</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary" /></returns>
-        ValueTask<int> UpdateAsync(int id, IReadOnlyList<(int? id, string name)> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> UpdateAsync(int id, IReadOnlyList<(int? id, string name)> payload, CancellationToken cancellationToken = default);
     }
 
     /// <inheritdoc/>

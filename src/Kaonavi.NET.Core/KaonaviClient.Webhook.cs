@@ -17,7 +17,7 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/Webhook/paths/~1webhook/get"/>
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<IReadOnlyList<WebhookConfig>> ListAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<WebhookConfig>> ListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <inheritdoc cref="WebhookConfig" path="/summary"/>を登録します。
@@ -25,7 +25,7 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
         /// </summary>
         /// <param name="payload">リクエスト</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<WebhookConfig> CreateAsync(WebhookConfigPayload payload, CancellationToken cancellationToken = default);
+        public ValueTask<WebhookConfig> CreateAsync(WebhookConfigPayload payload, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <see cref="WebhookConfig.Id"/>と一致する<inheritdoc cref="WebhookConfig" path="/summary"/>情報を更新します。
@@ -33,7 +33,7 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
         /// </summary>
         /// <param name="payload">リクエスト</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<WebhookConfig> UpdateAsync(WebhookConfig payload, CancellationToken cancellationToken = default);
+        public ValueTask<WebhookConfig> UpdateAsync(WebhookConfig payload, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="WebhookConfig" path="/summary"/>を削除します。
@@ -41,7 +41,7 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
         /// </summary>
         /// <param name="id"><inheritdoc cref="WebhookConfig" path="/param[@name='Id']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask DeleteAsync(int id, CancellationToken cancellationToken = default);
+        public ValueTask DeleteAsync(int id, CancellationToken cancellationToken = default);
     }
 
     /// <inheritdoc/>

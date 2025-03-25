@@ -16,7 +16,7 @@ public partial class KaonaviClient : KaonaviClient.IRole
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AD%E3%83%BC%E3%83%AB/paths/~1roles/get"/>
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<IReadOnlyList<Role>> ListAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<Role>> ListAsync(CancellationToken cancellationToken = default);
     }
 
     /// <inheritdoc/>

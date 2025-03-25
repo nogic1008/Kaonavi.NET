@@ -17,7 +17,7 @@ public partial class KaonaviClient : KaonaviClient.IUser
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1users/get"/>
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<IReadOnlyList<User>> ListAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<User>> ListAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <inheritdoc cref="Entities.User" path="/summary"/>を登録します。
@@ -38,7 +38,7 @@ public partial class KaonaviClient : KaonaviClient.IUser
         /// </item>
         /// </list>
         /// </remarks>
-        ValueTask<User> CreateAsync(UserPayload payload, CancellationToken cancellationToken = default);
+        public ValueTask<User> CreateAsync(UserPayload payload, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="Entities.User" path="/summary"/>を取得します。
@@ -46,7 +46,7 @@ public partial class KaonaviClient : KaonaviClient.IUser
         /// </summary>
         /// <param name="id"><inheritdoc cref="Entities.User" path="/param[@name='Id']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask<User> ReadAsync(int id, CancellationToken cancellationToken = default);
+        public ValueTask<User> ReadAsync(int id, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="Entities.User" path="/summary"/>を更新します。
@@ -64,7 +64,7 @@ public partial class KaonaviClient : KaonaviClient.IUser
         /// <item>パスワードロック</item>
         /// </list>
         /// </remarks>
-        ValueTask<User> UpdateAsync(int id, UserPayload payload, CancellationToken cancellationToken = default);
+        public ValueTask<User> UpdateAsync(int id, UserPayload payload, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="Entities.User" path="/summary"/>を削除します。
@@ -72,7 +72,7 @@ public partial class KaonaviClient : KaonaviClient.IUser
         /// </summary>
         /// <param name="id"><inheritdoc cref="Entities.User" path="/param[@name='Id']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        ValueTask DeleteAsync(int id, CancellationToken cancellationToken = default);
+        public ValueTask DeleteAsync(int id, CancellationToken cancellationToken = default);
     }
 
     /// <inheritdoc/>
