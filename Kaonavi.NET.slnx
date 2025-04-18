@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="sandbox/ConsoleAppSample/ConsoleAppSample.csproj" />
+  <Project Path="sandbox/WebhookReceiverSample/WebhookReceiverSample.csproj" />
+  <Project Path="src/Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
+  <Project Path="src/Kaonavi.NET.Generator/Kaonavi.NET.Generator.csproj" />
+  <Project Path="src/Kaonavi.NET.Server/Kaonavi.NET.Server.csproj" />
+  <Project Path="src/Kaonavi.NET/Kaonavi.NET.csproj" />
+  <Project Path="test/Kaonavi.NET.Generator.Tests/Kaonavi.NET.Generator.Tests.csproj" />
+  <Project Path="test/Kaonavi.NET.Server.Tests/Kaonavi.NET.Server.Tests.csproj" />
+  <Project Path="test/Kaonavi.NET.Tests/Kaonavi.NET.Tests.csproj" />
+</Solution>
