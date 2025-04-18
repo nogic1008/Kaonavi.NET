@@ -30,7 +30,7 @@ internal class LayoutCommand : Command
         public async Task<int> InvokeAsync(InvocationContext context)
         {
             context.GetCancellationToken().ThrowIfCancellationRequested();
-            var memberLayout = await client.Layout.ReadMemberLayoutAsync(cancellationToken: context.GetCancellationToken()).ConfigureAwait(false);
+            var memberLayout = await client.Layout.ReadMemberLayoutAsync(context.GetCancellationToken()).ConfigureAwait(false);
             logger.LogInformation("Received Layout: {memberLayout}", memberLayout);
             return 0;
         }
