@@ -15,7 +15,9 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadMemberLayoutAsync)} > GET /member_layouts をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("レイアウト設定")]
-        public async ValueTask Layout_ReadMemberLayoutAsync_Calls_GetApi()
+        [DataRow(false, "/member_layouts", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}(false) > GET /member_layouts をコールする。")]
+        [DataRow(true, "/member_layouts?get_calc_type=true", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}(true) > GET /member_layouts?get_calc_type=true をコールする。")]
+        public async ValueTask Layout_ReadMemberLayoutAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint)
         {
             // Arrange
             /*lang=json,strict*/
@@ -121,18 +123,18 @@ public sealed partial class KaonaviClientTest
             }
             """;
             var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/member_layouts")
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == expectedEndpoint)
                 .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
 
             // Act
             var sut = CreateSut(mockedApi, "token");
-            var layout = await sut.Layout.ReadMemberLayoutAsync();
+            var layout = await sut.Layout.ReadMemberLayoutAsync(getCalcType);
 
             // Assert
             layout.ShouldNotBeNull();
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Get),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/member_layouts")
+                req => req.RequestUri?.PathAndQuery.ShouldBe(expectedEndpoint)
             );
         }
 
