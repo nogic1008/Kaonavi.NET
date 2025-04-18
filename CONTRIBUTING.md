@@ -12,7 +12,7 @@
 
 ### Requirements
 
-- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) および [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) が必要です。
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) (9.0.200以降) および [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) が必要です。
 - ソース ジェネレーター部分(`Kaonavi.NET.Generator`)のデバッグには Visual Studio 2022 (バージョン 17.3)以降が必要です。
 
 #### Recommended
@@ -21,7 +21,7 @@
 
 - Visual Studio 2022 (バージョン 17.3)以降
   - 当プロジェクトはオープンソースのため、[Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/)が利用可能です。
-  - .NET 9.0 および .NET 8.0 SDK がインストール内容に含まれているか確認してください。
+  - .NET 9.0 (9.0.200以降) および .NET 8.0 SDK がインストール内容に含まれているか確認してください。
   - ソース ジェネレーター部分をデバッグするためには、.NET Compiler Platform SDK を追加でインストールしてください。
 - [Visual Studio Code](https://code.visualstudio.com/) + [EditorConfig 拡張機能](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) + [C# Dev Kit](https://learn.microsoft.com/visualstudio/subscriptions/vs-c-sharp-dev-kit)
   - .NET 9.0 および .NET 8.0 SDK は個別にインストールしてください。
