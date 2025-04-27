@@ -58,10 +58,7 @@ public partial class KaonaviClient : KaonaviClient.IUser
         /// <remarks>
         /// 管理者メニュー > ユーザー管理 にて更新可能な以下のオプションについては元の値が維持されます。
         /// <list type="bullet">
-        /// <item>スマホオプション</item>
         /// <item>セキュアアクセス</item>
-        /// <item>アカウント状態</item>
-        /// <item>パスワードロック</item>
         /// </list>
         /// </remarks>
         public ValueTask<User> UpdateAsync(int id, UserPayload payload, CancellationToken cancellationToken = default);
