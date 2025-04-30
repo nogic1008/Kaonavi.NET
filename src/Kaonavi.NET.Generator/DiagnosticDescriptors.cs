@@ -7,7 +7,7 @@ internal static class DiagnosticDescriptors
 {
     private const string Category = "KaonaviSourceGenerate";
 
-    private const string HelpLink = "https://github.com/nogic1008/Kaonavi.NET/tree/v2.0.0/docs/analyzer/";
+    private const string HelpLink = "https://github.com/nogic1008/Kaonavi.NET/tree/v3.0.0/docs/analyzer/";
 
     /// <summary>Resources.resxからローカライズされた文字列を取得します。</summary>
     /// <param name="resourceName">キー</param>
