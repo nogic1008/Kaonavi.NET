@@ -33,7 +33,10 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4.3.1
         with:
-          dotnet-version: ${{ vars.DOTNET_SDK_VERSIONS }}
+          # TODO: Add "10.x" on `vars.DOTNET_SDK_VERSIONS` and revert this change
+          dotnet-version:
+            ${{ vars.DOTNET_SDK_VERSIONS }}
+            10.x
           cache: true
           cache-dependency-path: '**/packages.lock.json'
 
@@ -52,7 +55,10 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4.3.1
         with:
-          dotnet-version: ${{ vars.DOTNET_SDK_VERSIONS }}
+          # TODO: Add "10.x" on `vars.DOTNET_SDK_VERSIONS` and revert this change
+          dotnet-version:
+            ${{ vars.DOTNET_SDK_VERSIONS }}
+            10.x
           cache: true
           cache-dependency-path: '**/packages.lock.json'
 
