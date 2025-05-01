@@ -1,6 +1,6 @@
 # ConsoleAppSample
 
-[System.CommandLine](https://github.com/dotnet/command-line-api)を利用した、`Kaonavi.Net`のサンプルプログラムです。
+[ConsoleAppFramework](https://github.com/Cysharp/ConsoleAppFramework)を利用した、`Kaonavi.Net`のサンプルプログラムです。
 
 ## Setup
 
@@ -26,7 +26,7 @@
 > ConsoleAppSample layout
 # メンバー情報を全取得
 > ConsoleAppSample download
-# メンバー情報を更新
+# メンバー情報をサンプルデータで更新
 > ConsoleAppSample upload
 # タスクの進捗状況を取得
 > ConsoleAppSample progress -t 13
@@ -34,5 +34,6 @@
 
 ## See also
 
-- [System.CommandLine の概要](https://learn.microsoft.com/dotnet/standard/commandline/)
+- [ConsoleAppFramework v5 - ゼロオーバーヘッド・Native AOT対応のC#用CLIフレームワーク](https://neue.cc/2024/06/13_ConsoleAppFramework_v5.html)
+- [ConsoleAppFramework v5.3.0 - NuGet参照状況からのメソッド自動生成によるDI統合の強化、など](https://neue.cc/2024/12/16_ConsoleAppFramewrok_v5_3_0.html)
 - [.NET での汎用ホスト](https://learn.microsoft.com/dotnet/core/extensions/generic-host)
