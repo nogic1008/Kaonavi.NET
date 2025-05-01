@@ -10,7 +10,6 @@
     <PackageReference Include="Moq" />
     <PackageReference Include="RandomFixtureKit" />
     <PackageReference Include="Shouldly" />
-    <PackageReference Include="System.Text.Json" />
   </ItemGroup>
 
   <ItemGroup>
