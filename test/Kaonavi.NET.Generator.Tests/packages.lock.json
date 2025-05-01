@@ -84,12 +84,12 @@
       },
       "System.Text.Json": {
         "type": "Direct",
-        "requested": "[9.0.4, )",
-        "resolved": "9.0.4",
-        "contentHash": "pYtmpcO6R3Ef1XilZEHgXP2xBPVORbYEzRP7dl0IAAbN8Dm+kfwio8aCKle97rAWXOExr292MuxWYurIuwN62g==",
+        "requested": "[10.0.0-rc.1.25451.107, )",
+        "resolved": "10.0.0-rc.1.25451.107",
+        "contentHash": "sYKU72lwIRQ/SUF3sgzO6CgWXiIgdNTi/HtPTnyL6UotT+D8XdSFDsjPdLFShUVj9+RfLCK0U6ZtLLApjkwjbA==",
         "dependencies": {
-          "System.IO.Pipelines": "9.0.4",
-          "System.Text.Encodings.Web": "9.0.4"
+          "System.IO.Pipelines": "10.0.0-rc.1.25451.107",
+          "System.Text.Encodings.Web": "10.0.0-rc.1.25451.107"
         }
       },
       "DiffEngine": {
@@ -236,8 +236,8 @@
       },
       "System.IO.Pipelines": {
         "type": "Transitive",
-        "resolved": "9.0.4",
-        "contentHash": "luF2Xba+lTe2GOoNQdZLe8q7K6s7nSpWZl9jIwWNMszN4/Yv0lmxk9HISgMmwdyZ83i3UhAGXaSY9o6IJBUuuA=="
+        "resolved": "10.0.0-rc.1.25451.107",
+        "contentHash": "5CplABcE9o3p+mflW0H9NagzQV91wsyE/lRaGcnyG4Q0O7tUN2grg+8ZRQo0N7b2uMaR3zHWY/sIasEtRc2q8A=="
       },
       "System.Management": {
         "type": "Transitive",
@@ -267,14 +267,14 @@
       },
       "System.Text.Encodings.Web": {
         "type": "Transitive",
-        "resolved": "9.0.4",
-        "contentHash": "V+5cCPpk1S2ngekUs9nDrQLHGiWFZMg8BthADQr+Fwi59a8DdHFu26S2oi9Bfgv+d67bqmkPqctJXMEXiimXUg=="
+        "resolved": "10.0.0-rc.1.25451.107",
+        "contentHash": "z7W4oRHTRULSL183yhz4cOY13GSKCVvWuAO3OBpqFPWg2TyO/BJJ8rQX5ShecYK79RRj7+SjmUDrBWWPGbWcsQ=="
       },
       "kaonavi.net.core": {
         "type": "Project",
         "dependencies": {
-          "System.Net.Http.Json": "[9.0.4, )",
-          "System.Text.Json": "[9.0.4, )"
+          "System.Net.Http.Json": "[10.0.0-preview.3.25171.5, )",
+          "System.Text.Json": "[10.0.0-rc.1.25451.107, )"
         }
       },
       "kaonavi.net.generator": {
@@ -288,11 +288,11 @@
       },
       "System.Net.Http.Json": {
         "type": "CentralTransitive",
-        "requested": "[9.0.4, )",
-        "resolved": "9.0.4",
-        "contentHash": "t34SoSx8l/O5kv7IwYXENjQOTpVKFkH3ydZejcZCsNsymthJrdCguvHFcbP3ayeBOXdm4Bq8bhmVGCgr0RXIQg==",
+        "requested": "[10.0.0-preview.3.25171.5, )",
+        "resolved": "10.0.0-preview.3.25171.5",
+        "contentHash": "SR/Dpq2XfD1URuOb+qkvaPgCZ63cCojjILGvBJ3nCXWTBCltL/zNUyhRmOXecs9dLMzseJaRR55xQWdZBEgfXw==",
         "dependencies": {
-          "System.Text.Json": "9.0.4"
+          "System.Text.Json": "10.0.0-preview.3.25171.5"
         }
       }
     }
