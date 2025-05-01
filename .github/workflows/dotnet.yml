@@ -33,12 +33,12 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4.3.1
         with:
-          # TODO: Add "10.x" on `vars.DOTNET_SDK_VERSIONS` and revert this change
-          dotnet-version:
-            ${{ vars.DOTNET_SDK_VERSIONS }}
-            10.x
+          dotnet-version: ${{ vars.DOTNET_SDK_VERSIONS }}
           cache: true
           cache-dependency-path: '**/packages.lock.json'
+      # TODO: Add "10.x" on `vars.DOTNET_SDK_VERSIONS` and remove this step
+      - name: Setup .NET 10 SDK (preview) # detected from global.json
+        uses: actions/setup-dotnet@v4.3.1
 
       - name: Restore with lock files
         run: dotnet restore --locked-mode
@@ -55,12 +55,12 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4.3.1
         with:
-          # TODO: Add "10.x" on `vars.DOTNET_SDK_VERSIONS` and revert this change
-          dotnet-version:
-            ${{ vars.DOTNET_SDK_VERSIONS }}
-            10.x
+          dotnet-version: ${{ vars.DOTNET_SDK_VERSIONS }}
           cache: true
           cache-dependency-path: '**/packages.lock.json'
+      # TODO: Add "10.x" on `vars.DOTNET_SDK_VERSIONS` and remove this step
+      - name: Setup .NET 10 SDK (preview) # detected from global.json
+        uses: actions/setup-dotnet@v4.3.1
 
       - name: Build
         run: dotnet build
