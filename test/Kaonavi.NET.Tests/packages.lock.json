@@ -393,16 +393,9 @@
       "kaonavi.net.core": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.Bcl.TimeProvider": "[9.0.4, )",
           "System.Net.Http.Json": "[9.0.4, )",
           "System.Text.Json": "[9.0.4, )"
         }
-      },
-      "Microsoft.Bcl.TimeProvider": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.4, )",
-        "resolved": "9.0.4",
-        "contentHash": "h60TVcGJZ89Tg6+5RkfxAezZXnihNoJBzPQF59uMMZLHu8jK3IdRTqjzP5mJOIg0HdvR884bp6awyiodc9Yxqg=="
       },
       "Microsoft.Extensions.Http": {
         "type": "CentralTransitive",
@@ -522,12 +515,6 @@
           "DiffEngine": "11.3.0",
           "EmptyFiles": "4.4.0"
         }
-      },
-      "System.Text.Json": {
-        "type": "Direct",
-        "requested": "[9.0.4, )",
-        "resolved": "9.0.4",
-        "contentHash": "pYtmpcO6R3Ef1XilZEHgXP2xBPVORbYEzRP7dl0IAAbN8Dm+kfwio8aCKle97rAWXOExr292MuxWYurIuwN62g=="
       },
       "Castle.Core": {
         "type": "Transitive",
@@ -831,6 +818,12 @@
         "requested": "[9.0.4, )",
         "resolved": "9.0.4",
         "contentHash": "t34SoSx8l/O5kv7IwYXENjQOTpVKFkH3ydZejcZCsNsymthJrdCguvHFcbP3ayeBOXdm4Bq8bhmVGCgr0RXIQg=="
+      },
+      "System.Text.Json": {
+        "type": "CentralTransitive",
+        "requested": "[9.0.4, )",
+        "resolved": "9.0.4",
+        "contentHash": "pYtmpcO6R3Ef1XilZEHgXP2xBPVORbYEzRP7dl0IAAbN8Dm+kfwio8aCKle97rAWXOExr292MuxWYurIuwN62g=="
       }
     }
   }

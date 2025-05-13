@@ -13,5 +13,3 @@ KAONAVI006 | KaonaviSourceGenerate | Warning | [`CustomField` should be unique](
 KAONAVI007 | KaonaviSourceGenerate | Warning | [`CustomField` should have getter](../../docs/analyzer/KAONAVI007.md)
 
 ## Release 3.0
-
-No Changes

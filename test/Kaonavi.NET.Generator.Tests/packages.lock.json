@@ -273,19 +273,12 @@
       "kaonavi.net.core": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.Bcl.TimeProvider": "[9.0.4, )",
           "System.Net.Http.Json": "[9.0.4, )",
           "System.Text.Json": "[9.0.4, )"
         }
       },
       "kaonavi.net.generator": {
         "type": "Project"
-      },
-      "Microsoft.Bcl.TimeProvider": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.4, )",
-        "resolved": "9.0.4",
-        "contentHash": "h60TVcGJZ89Tg6+5RkfxAezZXnihNoJBzPQF59uMMZLHu8jK3IdRTqjzP5mJOIg0HdvR884bp6awyiodc9Yxqg=="
       },
       "Microsoft.CodeAnalysis.Analyzers": {
         "type": "CentralTransitive",
