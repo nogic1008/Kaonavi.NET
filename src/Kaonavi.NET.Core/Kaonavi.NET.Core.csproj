@@ -1,11 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;net9.0;net8.0;netstandard2.1</TargetFrameworks>
     <Description>Core Libraries of Kaonavi.NET</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Kaonavi.Net</RootNamespace>
-    <IsAotCompatible>true</IsAotCompatible>
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">true</IsAotCompatible>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,6 +19,12 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.TimeProvider" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))" />
+    <PackageReference Include="PolySharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Portable.System.DateTimeOnly" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))" />
+    <PackageReference Include="Portable.System.DateTimeOnly.Json" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))" />
     <PackageReference Include="System.Net.Http.Json" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))" />
     <PackageReference Include="System.Text.Json" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))" />
   </ItemGroup>

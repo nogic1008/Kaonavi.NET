@@ -1,4 +1,7 @@
 using Kaonavi.Net.Json;
+#if NETSTANDARD2_1
+using DateOnly = System.Text.Json.DateOnly;
+#endif
 
 namespace Kaonavi.Net.Entities;
 
@@ -14,6 +17,9 @@ namespace Kaonavi.Net.Entities;
 /// <param name="Department">主務情報</param>
 /// <param name="SubDepartments">兼務情報リスト</param>
 /// <param name="CustomFields">カスタム項目値</param>
+#if NETSTANDARD2_1
+[CLSCompliant(false)]
+#endif
 public record MemberData(
     string Code,
     string? Name = null,
@@ -22,7 +28,7 @@ public record MemberData(
     [property: JsonConverter(typeof(BlankNullableDateConverter))] DateOnly? EnteredDate = default,
     [property: JsonConverter(typeof(BlankNullableDateConverter))] DateOnly? RetiredDate = default,
     string? Gender = null,
-    DateOnly? Birthday = default,
+    [property: JsonConverter(typeof(BlankNullableDateConverter))] DateOnly? Birthday = default,
     MemberDepartment? Department = null,
     IReadOnlyList<MemberDepartment>? SubDepartments = null,
     IReadOnlyList<CustomFieldValue>? CustomFields = null

@@ -27,7 +27,12 @@ namespace Kaonavi.Net.Json;
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower,
     UseStringEnumConverter = true,
-    Converters = [typeof(EnumOptionPayloadConverter)]
+    Converters = [
+        typeof(EnumOptionPayloadConverter),
+#if NETSTANDARD2_1
+        typeof(DateOnlyConverter),
+#endif
+    ]
 )]
 #pragma warning restore CS3016 // CLS Compliant
 internal partial class Context : JsonSerializerContext;

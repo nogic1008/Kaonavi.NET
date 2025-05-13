@@ -147,7 +147,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3/paths/~1token/post"/>
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
+    /// <exception cref="ObjectDisposedException">このインスタンスがすでに破棄されている場合にスローされます。</exception>
     public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
@@ -175,7 +175,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// </summary>
     /// <param name="request">APIに対するリクエスト</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
+    /// <exception cref="ObjectDisposedException">このインスタンスがすでに破棄されている場合にスローされます。</exception>
     /// <inheritdoc cref="ValidateApiResponseAsync" path="/exception"/>
     private async ValueTask<HttpResponseMessage> CallApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
@@ -229,7 +229,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
-    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
+    /// <exception cref="ObjectDisposedException">このインスタンスがすでに破棄されている場合にスローされます。</exception>
     private ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, ReadOnlySpan<byte> utf8PropertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
@@ -307,7 +307,11 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
             string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
                 // { "errors": ["エラーメッセージ1", "エラーメッセージ2",...] }
                 ? string.Join("\n", (await response.Content.ReadFromJsonAsync(Context.Default.JsonElement, cancellationToken)).GetProperty("errors"u8).EnumerateArray().Select(e => e.GetString()))
+#if NETSTANDARD2_1
+                : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#else
                 : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+#endif
             throw new ApplicationException(errorMessage, ex);
         }
     }
