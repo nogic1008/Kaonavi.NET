@@ -1,6 +1,9 @@
 namespace Kaonavi.Net;
 
 /// <summary>カオナビ API v2の抽象化</summary>
+#if NETSTANDARD2_1
+[CLSCompliant(false)]
+#endif
 public interface IKaonaviClient
 {
     /// <inheritdoc cref="KaonaviClient.ITask"/>
@@ -10,6 +13,9 @@ public interface IKaonaviClient
     public KaonaviClient.ILayout Layout { get; }
 
     /// <inheritdoc cref="KaonaviClient.IMember"/>
+#if NETSTANDARD2_1
+    [CLSCompliant(false)]
+#endif
     public KaonaviClient.IMember Member { get; }
 
     /// <inheritdoc cref="KaonaviClient.ISheet"/>

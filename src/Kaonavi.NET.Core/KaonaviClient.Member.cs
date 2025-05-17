@@ -10,6 +10,9 @@ public partial class KaonaviClient : KaonaviClient.IMember
     /// メンバー情報 API
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1"/>
     /// </summary>
+#if NETSTANDARD2_1
+    [CLSCompliant(false)]
+#endif
     public interface IMember
     {
         /// <summary>
@@ -143,6 +146,9 @@ public partial class KaonaviClient : KaonaviClient.IMember
     }
 
     /// <inheritdoc/>
+#if NETSTANDARD2_1
+    [CLSCompliant(false)]
+#endif
     public IMember Member => this;
 
     /// <inheritdoc/>
@@ -185,7 +191,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
     /// <param name="payload">追加/更新対象となるデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
+    /// <exception cref="ObjectDisposedException">このインスタンスがすでに破棄されている場合にスローされます。</exception>
     private ValueTask<int> CallFaceImageApiAsync(HttpMethod method, IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
