@@ -710,8 +710,6 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Bcl.TimeProvider": "[9.0.4, )",
-          "Portable.System.DateTimeOnly": "[9.0.0, )",
-          "Portable.System.DateTimeOnly.Json": "[9.0.0, )",
           "System.Net.Http.Json": "[10.0.0-preview.3.25171.5, )",
           "System.Text.Json": "[10.0.0-preview.3.25171.5, )"
         }
@@ -736,21 +734,6 @@
           "Microsoft.Extensions.Logging": "10.0.0-preview.3.25171.5",
           "Microsoft.Extensions.Logging.Abstractions": "10.0.0-preview.3.25171.5",
           "Microsoft.Extensions.Options": "10.0.0-preview.3.25171.5"
-        }
-      },
-      "Portable.System.DateTimeOnly": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.0, )",
-        "resolved": "9.0.0",
-        "contentHash": "JOr7+/s1MSjpg4m2lIFsFaA7bF0DEWq2Kg4gr7HWqlrwVaiqmJe/YChzCPUZ9qhYD/3YEDvp5C65PrqBMooh7A=="
-      },
-      "Portable.System.DateTimeOnly.Json": {
-        "type": "CentralTransitive",
-        "requested": "[9.0.0, )",
-        "resolved": "9.0.0",
-        "contentHash": "AOLfITdKRyBraSI4YOIMGTprbBYJ7A1QMM4fKRb1nqthKEz0HSn9WP8372Cd1uARAfRbEr9bE5+jYnFcfwzFoQ==",
-        "dependencies": {
-          "System.Text.Json": "8.0.5"
         }
       },
       "System.Net.Http.Json": {
