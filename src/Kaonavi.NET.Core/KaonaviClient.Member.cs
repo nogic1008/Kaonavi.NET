@@ -10,9 +10,6 @@ public partial class KaonaviClient : KaonaviClient.IMember
     /// メンバー情報 API
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1"/>
     /// </summary>
-#if NETSTANDARD2_1
-    [CLSCompliant(false)]
-#endif
     public interface IMember
     {
         /// <summary>
@@ -146,9 +143,6 @@ public partial class KaonaviClient : KaonaviClient.IMember
     }
 
     /// <inheritdoc/>
-#if NETSTANDARD2_1
-    [CLSCompliant(false)]
-#endif
     public IMember Member => this;
 
     /// <inheritdoc/>

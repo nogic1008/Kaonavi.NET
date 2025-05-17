@@ -1,7 +1,8 @@
+#if NETSTANDARD2_1
+global using DateOnly = System.DateTime;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-#if NETSTANDARD2_1
 /// <summary>
 /// .NET Standard 2.1用のポリフィル(.NET 8.0以降で追加された機能の簡易実装)を提供します。
 /// </summary>
@@ -26,7 +27,7 @@ internal static class NetStandardPolyFillExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void ThrowIfNegative(int value, [CallerArgumentExpression(nameof(value))] string? paramName = null)
         {
-            if (value > 0)
+            if (value < 0)
                 Throw(paramName);
 
             [DoesNotReturn]

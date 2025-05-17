@@ -1,7 +1,4 @@
 using System.Globalization;
-#if NETSTANDARD2_1
-using DateOnly = System.DateOnly;
-#endif
 
 namespace Kaonavi.Net.Json;
 
@@ -26,7 +23,11 @@ public class BlankNullableDateConverter : JsonConverter<DateOnly?>
         if (value.HasValue)
         {
 #if NETSTANDARD
-            writer.WriteStringValue(value.GetValueOrDefault().ToString("o", CultureInfo.InvariantCulture));
+            Span<char> buffer = stackalloc char[12]; // "yyyy-MM-dd".Length
+            buffer[0] = '"';
+            _ = value.GetValueOrDefault().TryFormat(buffer[1..], out int written, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            buffer[written + 1] = '"';
+            writer.WriteRawValue(buffer[0..(written + 2)], false);
 #else
             Span<byte> buffer = stackalloc byte[12]; // "yyyy-MM-dd".Length
             buffer[0] = (byte)'"';
