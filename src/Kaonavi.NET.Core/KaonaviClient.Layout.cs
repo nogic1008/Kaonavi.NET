@@ -12,7 +12,7 @@ public partial class KaonaviClient : KaonaviClient.ILayout
     public interface ILayout
     {
         /// <inheritdoc cref="ReadMemberLayoutAsync(bool, CancellationToken)"/>
-        public ValueTask<MemberLayout> ReadMemberLayoutAsync(CancellationToken cancellationToken = default) => ReadMemberLayoutAsync(false, cancellationToken);
+        public ValueTask<MemberLayout> ReadMemberLayoutAsync(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 使用可能なメンバーのレイアウト設定情報を全て取得します。
@@ -42,6 +42,10 @@ public partial class KaonaviClient : KaonaviClient.ILayout
 
     /// <inheritdoc/>
     public ILayout Layout => this;
+
+    /// <inheritdoc/>
+    ValueTask<MemberLayout> ILayout.ReadMemberLayoutAsync(CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, "member_layouts"), Context.Default.MemberLayout, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<MemberLayout> ILayout.ReadMemberLayoutAsync(bool getCalcType, CancellationToken cancellationToken)

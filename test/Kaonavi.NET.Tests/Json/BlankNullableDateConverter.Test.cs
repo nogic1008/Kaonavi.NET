@@ -1,6 +1,9 @@
 using System.Buffers;
 using System.Text;
 using Kaonavi.Net.Json;
+#if NET6_0
+using DateOnly = System.DateTime;
+#endif
 
 namespace Kaonavi.Net.Tests.Json;
 

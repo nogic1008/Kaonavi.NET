@@ -275,7 +275,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Post),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/delete"),
-                static req => req.Content!.ShouldHaveJsonBody("""{ "codes": ["A0002", "A0001"] }""")
+                async static req => await req.Content!.ShouldHaveJsonBodyAsync("""{ "codes": ["A0002", "A0001"] }""")
             );
         }
 
@@ -316,7 +316,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Post),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/face_image"),
-                req => req.Content!.ShouldHaveJsonBody(expectedJson)
+                async req => await req.Content!.ShouldHaveJsonBodyAsync(expectedJson)
             );
         }
 
@@ -344,7 +344,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Patch),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/face_image"),
-                req => req.Content!.ShouldHaveJsonBody(expectedJson)
+                async req => await req.Content!.ShouldHaveJsonBodyAsync(expectedJson)
             );
         }
     }
