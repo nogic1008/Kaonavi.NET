@@ -307,11 +307,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
             string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
                 // { "errors": ["エラーメッセージ1", "エラーメッセージ2",...] }
                 ? string.Join("\n", (await response.Content.ReadFromJsonAsync(Context.Default.JsonElement, cancellationToken)).GetProperty("errors"u8).EnumerateArray().Select(e => e.GetString()))
-#if NETSTANDARD2_1
-                : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-#else
                 : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-#endif
             throw new ApplicationException(errorMessage, ex);
         }
     }
