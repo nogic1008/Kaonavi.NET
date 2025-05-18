@@ -275,6 +275,6 @@ public sealed class SheetDataGeneratorTest
 
         // Assert
         warnings.ShouldBeEmpty();
-        sb.ToString().ShouldBe(expected.Replace("\n", Environment.NewLine));
+        sb.ToString().ShouldBe(expected, StringCompareShould.IgnoreLineEndings);
     }
 }
