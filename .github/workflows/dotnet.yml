@@ -59,7 +59,7 @@ jobs:
       - name: Build
         run: dotnet build
       - name: Test
-        run: dotnet test --no-build -p:TestingPlatformShowTestsFailure=true -p:TestingPlatformCommandLineArguments="--coverage --coverage-output-format cobertura --coverage-output ${{ vars.COVERAGE_REPORT_FILE }}"
+        run: dotnet test --no-build -p:TestingPlatformCommandLineArguments="--coverage --coverage-output-format cobertura --coverage-output ${{ vars.COVERAGE_REPORT_FILE }}"
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v5.4.3
