@@ -54,7 +54,7 @@ public partial class SheetDataGenerator
             .Replace("global::", "")
             .Replace("<", "_")
             .Replace(">", "_");
-        context.AddSource($"{fullType}.Generated.cs", GenerateImplementedCode(typeSymbol, customFieldDict, version));
+        context.AddSource($"{fullType}.g.cs", GenerateImplementedCode(typeSymbol, customFieldDict, version));
     }
 
     /// <summary>

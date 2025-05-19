@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -12,30 +13,21 @@ internal static class CSharpGeneratorRunner
     [ModuleInitializer]
     public static void InitializeCompilation()
     {
-        // running .NET Core system assemblies dir path
-        string baseAssemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location)!;
-        var systemAssemblies = Directory.GetFiles(baseAssemblyPath)
-            .Where(x =>
-            {
-                string fileName = Path.GetFileName(x);
-                if (fileName.EndsWith("Native.dll"))
-                    return false;
-                return fileName.StartsWith("System") || fileName is "mscorlib.dll" or "netstandard.dll";
-            });
+        var references = AppDomain.CurrentDomain.GetAssemblies()
+            .Where(x => !x.IsDynamic && !string.IsNullOrWhiteSpace(x.Location))
+            .Select(x => MetadataReference.CreateFromFile(x.Location))
+            .Concat([
+                MetadataReference.CreateFromFile(typeof(SheetSerializableAttribute).Assembly.Location), // Kaonavi.Net.Core.dll
+            ]);
 
-        var references = systemAssemblies
-            .Append(typeof(SheetSerializableAttribute).Assembly.Location) // Kaonavi.Net.Core.dll
-            .Select(x => MetadataReference.CreateFromFile(x))
-            .ToArray();
-
-        var compilation = CSharpCompilation.Create("generatortest",
+        var compilation = CSharpCompilation.Create("generator_test",
             references: references,
             options: new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
         _baseCompilation = compilation;
     }
 
-    public static Diagnostic[] RunGenerator(string source, LanguageVersion version = LanguageVersion.CSharp12)
+    public static (Compilation, ImmutableArray<Diagnostic>) RunGenerator(string source, LanguageVersion version = LanguageVersion.CSharp12)
     {
         var parseOptions = new CSharpParseOptions(version);
 
@@ -43,8 +35,7 @@ internal static class CSharpGeneratorRunner
 
         var inputCompilation = _baseCompilation.AddSyntaxTrees(CSharpSyntaxTree.ParseText(source, parseOptions));
 
-        driver.RunGeneratorsAndUpdateCompilation(inputCompilation, out var outputCompilation, out var diagnostics);
-        var compilationDiagnostics = outputCompilation.GetDiagnostics();
-        return diagnostics.Concat(compilationDiagnostics).Where(x => x.Severity >= DiagnosticSeverity.Warning).ToArray();
+        driver.RunGeneratorsAndUpdateCompilation(inputCompilation, out var compilation, out var diagnostics);
+        return (compilation, diagnostics);
     }
 }
