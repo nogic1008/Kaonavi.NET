@@ -22,7 +22,7 @@ public record MemberData(
     [property: JsonConverter(typeof(BlankNullableDateConverter))] DateOnly? EnteredDate = default,
     [property: JsonConverter(typeof(BlankNullableDateConverter))] DateOnly? RetiredDate = default,
     string? Gender = null,
-    DateOnly? Birthday = default,
+    [property: JsonConverter(typeof(BlankNullableDateConverter))] DateOnly? Birthday = default,
     MemberDepartment? Department = null,
     IReadOnlyList<MemberDepartment>? SubDepartments = null,
     IReadOnlyList<CustomFieldValue>? CustomFields = null
