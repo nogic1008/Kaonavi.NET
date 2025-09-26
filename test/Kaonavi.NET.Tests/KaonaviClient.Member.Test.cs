@@ -294,6 +294,50 @@ public sealed partial class KaonaviClientTest
 
 
         /// <summary>
+        /// <see cref="KaonaviClient.Member.GetFaceImageListAsync"/>は、"/members/face_image"にGETリクエストを行う。
+        /// </summary>
+        [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.GetFaceImageListAsync)} > GET /members/face_image をコールする。")]
+        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("メンバー情報")]
+        public async ValueTask Member_GetFaceImageListAsync_Calls_GetApi()
+        {
+            // Arrange
+            /*lang=json,strict*/
+            const string responseJson = """
+            {
+              "member_data": [
+                {
+                  "code": "A0001",
+                  "file_name": "A0001.jpg",
+                  "download_url": "https://example.kaonavi.jp/image/xxxx.jpg?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID",
+                  "updated_at": "2020-10-01 01:23:45"
+                },
+                {
+                  "code": "A0002",
+                  "file_name": "A0002.jpg",
+                  "download_url": "https://example.kaonavi.jp/image/xxxx.jpg?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID",
+                  "updated_at": "2020-10-01 01:23:45"
+                }
+              ]
+            }
+            """;
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image?updated_since=2020-10-01")
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(mockedApi, "token");
+            var faceImages = await sut.Member.GetFaceImageListAsync(new DateOnly(2020, 10, 1));
+
+            // Assert
+            faceImages.ShouldNotBeEmpty();
+
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/face_image?updated_since=2020-10-01")
+            );
+        }
+
+        /// <summary>
         /// <see cref="KaonaviClient.Member.AddFaceImageAsync"/>は、"/members/face_image"にPOSTリクエストを行う。
         /// </summary>
         [TestMethod($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.AddFaceImageAsync)} > POST /members/face_image をコールする。")]
