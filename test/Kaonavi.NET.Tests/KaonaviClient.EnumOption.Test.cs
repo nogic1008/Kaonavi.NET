@@ -176,7 +176,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Put),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe($"/enum_options/{id}"),
-                static req => req.Content!.ShouldHaveJsonBody("""
+                static async req => await req.Content!.ShouldHaveJsonBodyAsync("""
                 {
                   "enum_option_data": [
                     { "id": 1, "name": "社長" },

@@ -21,9 +21,9 @@ internal static class AssertExtensions
     public static void ShouldNotBeCalled(this Mock<HttpMessageHandler> handler, params Action<HttpRequestMessage>[] conditions)
         => handler.ShouldBeCalled(Times.Never(), conditions);
 
-    public static void ShouldHaveJsonBody(this HttpContent content, [StringSyntax(StringSyntaxAttribute.Json)] string expectedJson, string? customMessage = null)
+    public static async ValueTask ShouldHaveJsonBodyAsync(this HttpContent content, [StringSyntax(StringSyntaxAttribute.Json)] string expectedJson, string? customMessage = null)
     {
-        using var actual = JsonDocument.Parse(content.ReadAsStream());
+        using var actual = JsonDocument.Parse(await content.ReadAsStreamAsync());
         using var expected = JsonDocument.Parse(expectedJson);
         if (!JsonElement.DeepEquals(actual.RootElement, expected.RootElement))
             throw new ShouldAssertException(new ExpectedActualShouldlyMessage(expectedJson, actual.RootElement, customMessage).ToString());

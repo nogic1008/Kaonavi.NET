@@ -147,7 +147,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Put),
                 req => req.RequestUri?.PathAndQuery.ShouldBe(endpoint),
-                static req => req.Content!.ShouldHaveJsonBody("""
+                static async req => await req.Content!.ShouldHaveJsonBodyAsync("""
                 {
                   "advanced_permission_data": [
                     {
