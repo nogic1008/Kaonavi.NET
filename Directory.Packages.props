@@ -16,6 +16,7 @@
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.0.0" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="Moq.Contrib.HttpClient" Version="1.4.0" />
+    <PackageVersion Include="PolySharp" Version="1.14.1" />
     <PackageVersion Include="RandomFixtureKit" Version="1.0.1" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="10.0.0" />
