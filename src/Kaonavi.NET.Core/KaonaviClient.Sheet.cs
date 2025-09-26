@@ -94,6 +94,10 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         ///   </description>
         /// </item>
         /// <item>
+        ///   <term>対応拡張子</term>
+        ///   <description>txt, csv, xml, htm, html, doc, docx, rtf, xls, xlsx, xlsm, ppt, pptx, pdf, jpeg, jpg, gif, png, tif, zip, odp, ods, xdw, msg</description>
+        /// </item>
+        /// <item>
         ///   <term>1リクエストあたりの上限</term>
         ///   <description>
         ///     <list type="bullet">
@@ -142,6 +146,10 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         ///       </item>
         ///     </list>
         ///   </description>
+        /// </item>
+        /// <item>
+        ///   <term>対応拡張子</term>
+        ///   <description>txt, csv, xml, htm, html, doc, docx, rtf, xls, xlsx, xlsm, ppt, pptx, pdf, jpeg, jpg, gif, png, tif, zip, odp, ods, xdw, msg</description>
         /// </item>
         /// <item>
         ///   <term>1リクエストあたりの上限</term>

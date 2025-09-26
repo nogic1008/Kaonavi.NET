@@ -29,11 +29,22 @@ public partial class KaonaviClient : KaonaviClient.IUser
         /// 管理者メニュー > ユーザー管理 にてユーザー作成時に設定可能なオプションについては、以下の内容で作成されます。
         /// <list type="bullet">
         /// <item>
-        ///   <term>スマホオプション</term>
+        ///   <term>セキュアアクセス</term>
         ///   <description>停止</description>
         /// </item>
+        /// </list>
+        /// また、未指定のオプションについては以下の内容で作成されます。
+        /// <list type="bullet">
         /// <item>
-        ///   <term>セキュアアクセス</term>
+        ///   <term>アカウント状態</term>
+        ///   <description>利用</description>
+        /// </item>
+        /// <item>
+        ///   <term>パスワードロック</term>
+        ///   <description>解除</description>
+        /// </item>
+        /// <item>
+        ///   <term>スマホオプションフラグ</term>
         ///   <description>停止</description>
         /// </item>
         /// </list>

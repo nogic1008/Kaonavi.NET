@@ -5,12 +5,15 @@ namespace Kaonavi.Net.Entities;
 /// </summary>
 /// <param name="Url">
 /// Webhookの送信先URL
-/// https:// から始まるURLのみ設定できます。
+/// <para>https:// から始まるURLのみ設定できます。</para>
 /// </param>
-/// <param name="Events">Webhookを送信するイベント</param>
+/// <param name="Events">
+/// Webhookを送信するイベント
+/// <para>一つ以上のイベント名を重複なく指定してください。</para>
+/// </param>
 /// <param name="SecretToken">
 /// 検証用トークン
-/// WebhookのHTTPリクエスト送信時にリクエストヘッダーのKaonavi-Tokenに入る値を指定できます。
+/// <para>WebhookのHTTPリクエスト送信時にリクエストヘッダーのKaonavi-Tokenに入る値を指定できます。</para>
 /// </param>
 public record WebhookConfigPayload(Uri Url, IReadOnlyList<WebhookEvent> Events, string SecretToken);
 

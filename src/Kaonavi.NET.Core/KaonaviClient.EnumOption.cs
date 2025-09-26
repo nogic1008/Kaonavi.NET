@@ -46,6 +46,12 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC%E7%AE%A1%E7%90%86/paths/~1enum_options~1{custom_field_id}/put"/>
         /// </summary>
         /// <remarks>
+        /// APIv2で編集可能な項目
+        /// <list type="bullet">
+        /// <item><inheritdoc cref="FieldInput.PullDown" path="/summary"/></item>
+        /// <item><inheritdoc cref="FieldInput.RadioButton" path="/summary"/></item>
+        /// <item><inheritdoc cref="FieldInput.CheckBox" path="/summary"/></item>
+        /// </list>
         /// <list type="bullet">
         /// <item>並び順は送信された配列順に登録されます。</item>
         /// <item>変更履歴が設定されたシートのマスター情報を更新した際には履歴が作成されます。</item>

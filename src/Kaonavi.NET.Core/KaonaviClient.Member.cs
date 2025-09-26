@@ -110,6 +110,11 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <item>顔写真が登録済みの場合、エラーになります。</item>
         /// </list>
         /// <para>
+        /// <list type="bullet">
+        /// <item><term>対応拡張子</term><description>jpg/jpeg, gif, png</description></item>
+        /// </list>
+        /// </para>
+        /// <para>
         /// 1リクエストあたりの上限
         /// <list type="bullet">
         /// <item><term>メンバー数</term><description>100メンバー</description></item>
@@ -137,6 +142,11 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <item>顔写真が登録済みの場合、顔写真を置き換えます。</item>
         /// <item>顔写真が未登録の場合、エラーになります。</item>
         /// </list>
+        /// <para>
+        /// <list type="bullet">
+        /// <item><term>対応拡張子</term><description>jpg/jpeg, gif, png</description></item>
+        /// </list>
+        /// </para>
         /// <para>
         /// 1リクエストあたりの上限
         /// <list type="bullet">
