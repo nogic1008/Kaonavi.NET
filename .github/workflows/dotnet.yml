@@ -80,4 +80,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ runner.os }},${{ runner.arch }}
           disable_search: true
-          files: ${{ format(vars.TEST_ASSET_FOLDERS, 'net9.0', vars.COVERAGE_REPORT_FILE) }},${{ format(vars.TEST_ASSET_FOLDERS, 'net8.0', vars.COVERAGE_REPORT_FILE) }}
+          files: |
+            ${{ format(vars.TEST_ASSET_FOLDERS, 'net10.0', vars.COVERAGE_REPORT_FILE) }},
+            ${{ format(vars.TEST_ASSET_FOLDERS, 'net9.0', vars.COVERAGE_REPORT_FILE) }},
+            ${{ format(vars.TEST_ASSET_FOLDERS, 'net8.0', vars.COVERAGE_REPORT_FILE) }}
