@@ -211,7 +211,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
     /// <param name="payload">追加/更新対象となるデータ</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
+    /// <exception cref="ObjectDisposedException">このオブジェクトが破棄されている場合にスローされます。</exception>
     private ValueTask<int> CallFaceImageApiAsync(HttpMethod method, IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
