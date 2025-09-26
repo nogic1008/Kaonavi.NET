@@ -102,7 +102,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Put),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe("/departments"),
-                static req => req.Content!.ShouldHaveJsonBody("""
+                static async req => await req.Content!.ShouldHaveJsonBodyAsync("""
                 {
                   "department_data": [
                     {

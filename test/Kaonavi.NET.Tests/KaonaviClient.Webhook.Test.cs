@@ -94,7 +94,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Post),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe("/webhook"),
-                static req => req.Content!.ShouldHaveJsonBody("""
+                static async req => await req.Content!.ShouldHaveJsonBodyAsync("""
                 {
                   "url": "https://example.com/",
                   "events": ["member_created", "member_updated", "member_deleted"],
@@ -141,7 +141,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Patch),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe($"/webhook/{webhookId}"),
-                static req => req.Content!.ShouldHaveJsonBody("""
+                static async req => await req.Content!.ShouldHaveJsonBodyAsync("""
                 {
                   "id": 1,
                   "url": "https://example.com/",

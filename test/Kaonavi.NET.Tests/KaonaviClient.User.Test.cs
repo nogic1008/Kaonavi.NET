@@ -109,7 +109,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Post),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe("/users"),
-                static req => req.Content!.ShouldHaveJsonBody("""
+                static async req => await req.Content!.ShouldHaveJsonBodyAsync("""
                 {
                   "email": "user1@example.com",
                   "member_code": "00001",
@@ -248,7 +248,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Patch),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe($"/users/{userId}"),
-                static req => req.Content!.ShouldHaveJsonBody("""
+                static async req => await req.Content!.ShouldHaveJsonBodyAsync("""
                 {
                   "email": "user1@example.com",
                   "member_code": "00001",

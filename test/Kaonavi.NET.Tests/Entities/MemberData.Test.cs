@@ -1,3 +1,4 @@
+using System.Globalization;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 
@@ -120,6 +121,6 @@ public sealed class MemberDataTest
             static sut => sut.CustomFields.ShouldNotBeNull()
         );
 
-        static DateOnly? ParseDateOrNull(string? value) => DateOnly.TryParseExact(value, "yyyy/MM/dd", out var date) ? date : null;
+        static DateOnly? ParseDateOrNull(string? value) => DateOnly.TryParseExact(value, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) ? date : null;
     }
 }
