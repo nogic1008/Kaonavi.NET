@@ -24,7 +24,20 @@ public partial class KaonaviClient : KaonaviClient.IAdvancedPermission
         /// 現在登録されている<inheritdoc cref="AdvancedPermission" path="/summary"/>を全て、リクエストしたデータで入れ替えます。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E6%8B%A1%E5%BC%B5%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E8%A8%AD%E5%AE%9A/paths/~1advanced_permissions~1{advanced_type}/put"/>
         /// </summary>
-        /// <remarks>更新リクエスト制限の対象APIです。</remarks>
+        /// <remarks>
+        /// 1ユーザーあたりの上限
+        /// <list type="bullet">
+        /// <item>
+        ///   <term><inheritdoc cref="AdvancedType.Member" path="/summary"/></term>
+        ///   <description>追加・除外 各30,000件</description>
+        /// </item>
+        /// <item>
+        ///   <term><inheritdoc cref="AdvancedType.Department" path="/summary"/></term>
+        ///   <description>追加・除外 各1,000件</description>
+        /// </item>
+        /// </list>
+        /// 更新リクエスト制限の対象APIです。
+        /// </remarks>
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="payload">入れ替え対象となるデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>

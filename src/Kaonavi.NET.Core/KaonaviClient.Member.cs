@@ -92,11 +92,28 @@ public partial class KaonaviClient : KaonaviClient.IMember
         public ValueTask<int> DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// メンバーの顔写真をダウンロードするためのURL一覧を取得します。
+        /// <list type="bullet">
+        /// <item>URLの有効期限は15分です。ファイル数や回線状況によっては期限内に全てのダウンロードが完了しない場合があります。その際は、並行処理や一括取得の再リクエストなどの方法をご検討ください。</item>
+        /// <item>URLは発行時点のメンバーの顔写真に紐づいています。</item>
+        /// <item>取得される顔写真はjpg/jpeg形式です。</item>
+        /// </list>
+        /// </summary>
+        /// <param name="updatedSince">指定した日以降に顔写真が更新されたメンバーに絞り込みます。</param>
+        /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
+        public ValueTask<IReadOnlyList<FaceImageInfo>> GetFaceImageListAsync(DateOnly updatedSince, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// 指定したメンバーの顔写真をアップロードします。
         /// <list type="bullet">
         /// <item>顔写真が未登録の場合、アップロードが可能です。</item>
         /// <item>顔写真が登録済みの場合、エラーになります。</item>
         /// </list>
+        /// <para>
+        /// <list type="bullet">
+        /// <item><term>対応拡張子</term><description>jpg/jpeg, gif, png</description></item>
+        /// </list>
+        /// </para>
         /// <para>
         /// 1リクエストあたりの上限
         /// <list type="bullet">
@@ -125,6 +142,11 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <item>顔写真が登録済みの場合、顔写真を置き換えます。</item>
         /// <item>顔写真が未登録の場合、エラーになります。</item>
         /// </list>
+        /// <para>
+        /// <list type="bullet">
+        /// <item><term>対応拡張子</term><description>jpg/jpeg, gif, png</description></item>
+        /// </list>
+        /// </para>
         /// <para>
         /// 1リクエストあたりの上限
         /// <list type="bullet">
@@ -168,6 +190,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
     /// <inheritdoc/>
     ValueTask<int> IMember.DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken)
         => CallTaskApiAsync(HttpMethod.Post, "members/delete", codes, "codes"u8, Context.Default.IReadOnlyListString, cancellationToken);
+
+    /// <inheritdoc/>
+    ValueTask<IReadOnlyList<FaceImageInfo>> IMember.GetFaceImageListAsync(DateOnly updatedSince, CancellationToken cancellationToken)
+        => CallApiAsync(new(HttpMethod.Get, $"members/face_image?updated_since={updatedSince:yyyy-MM-dd}"), "member_data", Context.Default.IReadOnlyListFaceImageInfo, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.AddFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
