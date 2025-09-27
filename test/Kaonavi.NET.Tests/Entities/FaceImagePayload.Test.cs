@@ -3,12 +3,12 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary><see cref="FaceImage"/>の単体テスト</summary>
+/// <summary><see cref="FaceImagePayload"/>の単体テスト</summary>
 [TestClass, TestCategory("Entities")]
-public sealed class FaceImageTest
+public sealed class FaceImagePayloadTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [TestMethod(DisplayName = $"{nameof(FaceImage)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(FaceImagePayload)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeJSON()
     {
         // Arrange
@@ -21,7 +21,7 @@ public sealed class FaceImageTest
         """;
 
         // Act
-        var faceImage = JsonSerializer.Deserialize(json, Context.Default.FaceImage);
+        var faceImage = JsonSerializer.Deserialize(json, Context.Default.FaceImagePayload);
 
         // Assert
         faceImage.ShouldNotBeNull().ShouldSatisfyAllConditions(
