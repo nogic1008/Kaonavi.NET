@@ -39,7 +39,7 @@ internal class Commands(ILogger<Commands> logger, IKaonaviClient client)
     public async Task Layout(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var memberLayout = await client.Layout.ReadMemberLayoutAsync(cancellationToken).ConfigureAwait(false);
+        var memberLayout = await client.Layout.ReadMemberLayoutAsync(false, cancellationToken).ConfigureAwait(false);
         logger.LogInformation("Received Layout: {memberLayout}", memberLayout);
     }
 
