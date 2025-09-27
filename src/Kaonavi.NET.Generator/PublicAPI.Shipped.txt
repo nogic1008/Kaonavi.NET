@@ -1,0 +1,4 @@
+#nullable enable
+Kaonavi.Net.Generator.SheetDataGenerator
+Kaonavi.Net.Generator.SheetDataGenerator.Initialize(Microsoft.CodeAnalysis.IncrementalGeneratorInitializationContext context) -> void
+Kaonavi.Net.Generator.SheetDataGenerator.SheetDataGenerator() -> void

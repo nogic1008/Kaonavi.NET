@@ -1,0 +1,45 @@
+#nullable enable
+Kaonavi.Net.Entities.WebhookEvent
+Kaonavi.Net.Entities.WebhookEvent.MemberCreated = 1 -> Kaonavi.Net.Entities.WebhookEvent
+Kaonavi.Net.Entities.WebhookEvent.MemberDeleted = 3 -> Kaonavi.Net.Entities.WebhookEvent
+Kaonavi.Net.Entities.WebhookEvent.MemberUpdated = 2 -> Kaonavi.Net.Entities.WebhookEvent
+Kaonavi.Net.Json.DateTimeConverter
+Kaonavi.Net.Json.DateTimeConverter.DateTimeConverter() -> void
+Kaonavi.Net.Server.HttpRequestExtensions
+Kaonavi.Net.Server.KaonaviWebhook
+Kaonavi.Net.Server.KaonaviWebhook.Deconstruct(out Kaonavi.Net.Entities.WebhookEvent Event, out System.DateTime EventTime, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Server.Member!>! MemberData) -> void
+Kaonavi.Net.Server.KaonaviWebhook.Event.get -> Kaonavi.Net.Entities.WebhookEvent
+Kaonavi.Net.Server.KaonaviWebhook.Event.init -> void
+Kaonavi.Net.Server.KaonaviWebhook.EventTime.get -> System.DateTime
+Kaonavi.Net.Server.KaonaviWebhook.EventTime.init -> void
+Kaonavi.Net.Server.KaonaviWebhook.KaonaviWebhook(Kaonavi.Net.Entities.WebhookEvent Event, System.DateTime EventTime, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Server.Member!>! MemberData) -> void
+Kaonavi.Net.Server.KaonaviWebhook.KaonaviWebhook(Kaonavi.Net.Server.KaonaviWebhook! original) -> void
+Kaonavi.Net.Server.KaonaviWebhook.MemberData.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Server.Member!>!
+Kaonavi.Net.Server.KaonaviWebhook.MemberData.init -> void
+Kaonavi.Net.Server.Member
+Kaonavi.Net.Server.Member.Code.get -> string!
+Kaonavi.Net.Server.Member.Code.init -> void
+Kaonavi.Net.Server.Member.Deconstruct(out string! Code) -> void
+Kaonavi.Net.Server.Member.Member(Kaonavi.Net.Server.Member! original) -> void
+Kaonavi.Net.Server.Member.Member(string! Code) -> void
+override Kaonavi.Net.Json.DateTimeConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> System.DateTime
+override Kaonavi.Net.Json.DateTimeConverter.Write(System.Text.Json.Utf8JsonWriter! writer, System.DateTime value, System.Text.Json.JsonSerializerOptions! options) -> void
+override Kaonavi.Net.Server.KaonaviWebhook.Equals(object? obj) -> bool
+override Kaonavi.Net.Server.KaonaviWebhook.GetHashCode() -> int
+override Kaonavi.Net.Server.KaonaviWebhook.ToString() -> string!
+override Kaonavi.Net.Server.Member.Equals(object? obj) -> bool
+override Kaonavi.Net.Server.Member.GetHashCode() -> int
+override Kaonavi.Net.Server.Member.ToString() -> string!
+static Kaonavi.Net.Server.HttpRequestExtensions.IsKaonaviWebhookRequest(this Microsoft.AspNetCore.Http.HttpRequest! request, string! token) -> bool
+static Kaonavi.Net.Server.KaonaviWebhook.operator !=(Kaonavi.Net.Server.KaonaviWebhook? left, Kaonavi.Net.Server.KaonaviWebhook? right) -> bool
+static Kaonavi.Net.Server.KaonaviWebhook.operator ==(Kaonavi.Net.Server.KaonaviWebhook? left, Kaonavi.Net.Server.KaonaviWebhook? right) -> bool
+static Kaonavi.Net.Server.Member.operator !=(Kaonavi.Net.Server.Member? left, Kaonavi.Net.Server.Member? right) -> bool
+static Kaonavi.Net.Server.Member.operator ==(Kaonavi.Net.Server.Member? left, Kaonavi.Net.Server.Member? right) -> bool
+virtual Kaonavi.Net.Server.KaonaviWebhook.<Clone>$() -> Kaonavi.Net.Server.KaonaviWebhook!
+virtual Kaonavi.Net.Server.KaonaviWebhook.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Server.KaonaviWebhook.Equals(Kaonavi.Net.Server.KaonaviWebhook? other) -> bool
+virtual Kaonavi.Net.Server.KaonaviWebhook.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Server.Member.<Clone>$() -> Kaonavi.Net.Server.Member!
+virtual Kaonavi.Net.Server.Member.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Server.Member.Equals(Kaonavi.Net.Server.Member? other) -> bool
+virtual Kaonavi.Net.Server.Member.PrintMembers(System.Text.StringBuilder! builder) -> bool

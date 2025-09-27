@@ -1,0 +1,632 @@
+#nullable enable
+Kaonavi.Net.CustomFieldAttribute
+Kaonavi.Net.CustomFieldAttribute.CustomFieldAttribute(int id) -> void
+Kaonavi.Net.CustomFieldAttribute.Id.get -> int
+Kaonavi.Net.Entities.AdvancedPermission
+Kaonavi.Net.Entities.AdvancedPermission.AddCodes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Kaonavi.Net.Entities.AdvancedPermission.AddCodes.init -> void
+Kaonavi.Net.Entities.AdvancedPermission.AdvancedPermission(int UserId, System.Collections.Generic.IReadOnlyList<string!>! AddCodes, System.Collections.Generic.IReadOnlyList<string!>! ExclusionCodes) -> void
+Kaonavi.Net.Entities.AdvancedPermission.AdvancedPermission(Kaonavi.Net.Entities.AdvancedPermission! original) -> void
+Kaonavi.Net.Entities.AdvancedPermission.Deconstruct(out int UserId, out System.Collections.Generic.IReadOnlyList<string!>! AddCodes, out System.Collections.Generic.IReadOnlyList<string!>! ExclusionCodes) -> void
+Kaonavi.Net.Entities.AdvancedPermission.ExclusionCodes.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Kaonavi.Net.Entities.AdvancedPermission.ExclusionCodes.init -> void
+Kaonavi.Net.Entities.AdvancedPermission.UserId.get -> int
+Kaonavi.Net.Entities.AdvancedPermission.UserId.init -> void
+Kaonavi.Net.Entities.AdvancedType
+Kaonavi.Net.Entities.AdvancedType.Department = 1 -> Kaonavi.Net.Entities.AdvancedType
+Kaonavi.Net.Entities.AdvancedType.Member = 0 -> Kaonavi.Net.Entities.AdvancedType
+Kaonavi.Net.Entities.Attachment
+Kaonavi.Net.Entities.Attachment.Attachment(Kaonavi.Net.Entities.Attachment! original) -> void
+Kaonavi.Net.Entities.Attachment.Attachment(string! code, Kaonavi.Net.Entities.Attachment.Record! record) -> void
+Kaonavi.Net.Entities.Attachment.Attachment(string! Code, params System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment.Record!>! Records) -> void
+Kaonavi.Net.Entities.Attachment.Code.get -> string!
+Kaonavi.Net.Entities.Attachment.Code.init -> void
+Kaonavi.Net.Entities.Attachment.Deconstruct(out string! Code, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment.Record!>! Records) -> void
+Kaonavi.Net.Entities.Attachment.Record
+Kaonavi.Net.Entities.Attachment.Record.Content.get -> byte[]!
+Kaonavi.Net.Entities.Attachment.Record.Content.init -> void
+Kaonavi.Net.Entities.Attachment.Record.Deconstruct(out string! FileName, out byte[]! Content) -> void
+Kaonavi.Net.Entities.Attachment.Record.FileName.get -> string!
+Kaonavi.Net.Entities.Attachment.Record.FileName.init -> void
+Kaonavi.Net.Entities.Attachment.Record.Record(Kaonavi.Net.Entities.Attachment.Record! original) -> void
+Kaonavi.Net.Entities.Attachment.Record.Record(string! FileName, byte[]! Content) -> void
+Kaonavi.Net.Entities.Attachment.Records.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment.Record!>!
+Kaonavi.Net.Entities.Attachment.Records.init -> void
+Kaonavi.Net.Entities.CustomFieldLayout
+Kaonavi.Net.Entities.CustomFieldLayout.CustomFieldLayout(int Id, string! Name, bool Required, Kaonavi.Net.Entities.FieldType Type, int? MaxLength, System.Collections.Generic.IReadOnlyList<string?>! Enum, bool ReadOnly = false, Kaonavi.Net.Entities.FieldInput? TypeDetail = null) -> void
+Kaonavi.Net.Entities.CustomFieldLayout.CustomFieldLayout(Kaonavi.Net.Entities.CustomFieldLayout! original) -> void
+Kaonavi.Net.Entities.CustomFieldLayout.Deconstruct(out int Id, out string! Name, out bool Required, out Kaonavi.Net.Entities.FieldType Type, out int? MaxLength, out System.Collections.Generic.IReadOnlyList<string?>! Enum, out bool ReadOnly, out Kaonavi.Net.Entities.FieldInput? TypeDetail) -> void
+Kaonavi.Net.Entities.CustomFieldLayout.Id.get -> int
+Kaonavi.Net.Entities.CustomFieldLayout.Id.init -> void
+Kaonavi.Net.Entities.CustomFieldLayout.TypeDetail.get -> Kaonavi.Net.Entities.FieldInput?
+Kaonavi.Net.Entities.CustomFieldLayout.TypeDetail.init -> void
+Kaonavi.Net.Entities.CustomFieldValue
+Kaonavi.Net.Entities.CustomFieldValue.CustomFieldValue(int id, string! value, string? name = null) -> void
+Kaonavi.Net.Entities.CustomFieldValue.CustomFieldValue(int id, System.Collections.Generic.IReadOnlyList<string!>! values, string? name = null) -> void
+Kaonavi.Net.Entities.CustomFieldValue.CustomFieldValue(Kaonavi.Net.Entities.CustomFieldValue! original) -> void
+Kaonavi.Net.Entities.CustomFieldValue.Id.get -> int
+Kaonavi.Net.Entities.CustomFieldValue.Id.init -> void
+Kaonavi.Net.Entities.CustomFieldValue.Name.get -> string?
+Kaonavi.Net.Entities.CustomFieldValue.Name.init -> void
+Kaonavi.Net.Entities.CustomFieldValue.Value.get -> string!
+Kaonavi.Net.Entities.CustomFieldValue.Value.init -> void
+Kaonavi.Net.Entities.CustomFieldValue.Values.get -> System.Collections.Generic.IReadOnlyList<string!>!
+Kaonavi.Net.Entities.CustomFieldValue.Values.init -> void
+Kaonavi.Net.Entities.DepartmentTree
+Kaonavi.Net.Entities.DepartmentTree.Code.get -> string!
+Kaonavi.Net.Entities.DepartmentTree.Code.init -> void
+Kaonavi.Net.Entities.DepartmentTree.Deconstruct(out string! Code, out string! Name, out string? ParentCode, out string? LeaderMemberCode, out int Order, out string? Memo) -> void
+Kaonavi.Net.Entities.DepartmentTree.DepartmentTree(Kaonavi.Net.Entities.DepartmentTree! original) -> void
+Kaonavi.Net.Entities.DepartmentTree.DepartmentTree(string! Code, string! Name, string? ParentCode, string? LeaderMemberCode, int Order, string? Memo) -> void
+Kaonavi.Net.Entities.DepartmentTree.LeaderMemberCode.get -> string?
+Kaonavi.Net.Entities.DepartmentTree.LeaderMemberCode.init -> void
+Kaonavi.Net.Entities.DepartmentTree.Memo.get -> string?
+Kaonavi.Net.Entities.DepartmentTree.Memo.init -> void
+Kaonavi.Net.Entities.DepartmentTree.Name.get -> string!
+Kaonavi.Net.Entities.DepartmentTree.Name.init -> void
+Kaonavi.Net.Entities.DepartmentTree.Order.get -> int
+Kaonavi.Net.Entities.DepartmentTree.Order.init -> void
+Kaonavi.Net.Entities.DepartmentTree.ParentCode.get -> string?
+Kaonavi.Net.Entities.DepartmentTree.ParentCode.init -> void
+Kaonavi.Net.Entities.EnumOption
+Kaonavi.Net.Entities.EnumOption.Data
+Kaonavi.Net.Entities.EnumOption.Data.Data(int Id, string! Name) -> void
+Kaonavi.Net.Entities.EnumOption.Data.Data(Kaonavi.Net.Entities.EnumOption.Data! original) -> void
+Kaonavi.Net.Entities.EnumOption.Data.Deconstruct(out int Id, out string! Name) -> void
+Kaonavi.Net.Entities.EnumOption.Data.Id.get -> int
+Kaonavi.Net.Entities.EnumOption.Data.Id.init -> void
+Kaonavi.Net.Entities.EnumOption.Data.Name.get -> string!
+Kaonavi.Net.Entities.EnumOption.Data.Name.init -> void
+Kaonavi.Net.Entities.EnumOption.Deconstruct(out string! SheetName, out int Id, out string! Name, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOption.Data!>! EnumOptionData) -> void
+Kaonavi.Net.Entities.EnumOption.EnumOption(Kaonavi.Net.Entities.EnumOption! original) -> void
+Kaonavi.Net.Entities.EnumOption.EnumOption(string! SheetName, int Id, string! Name, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOption.Data!>! EnumOptionData) -> void
+Kaonavi.Net.Entities.EnumOption.EnumOptionData.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOption.Data!>!
+Kaonavi.Net.Entities.EnumOption.EnumOptionData.init -> void
+Kaonavi.Net.Entities.EnumOption.Id.get -> int
+Kaonavi.Net.Entities.EnumOption.Id.init -> void
+Kaonavi.Net.Entities.EnumOption.Name.get -> string!
+Kaonavi.Net.Entities.EnumOption.Name.init -> void
+Kaonavi.Net.Entities.EnumOption.SheetName.get -> string!
+Kaonavi.Net.Entities.EnumOption.SheetName.init -> void
+Kaonavi.Net.Entities.FaceImage
+Kaonavi.Net.Entities.FaceImage.Code.get -> string!
+Kaonavi.Net.Entities.FaceImage.Code.init -> void
+Kaonavi.Net.Entities.FaceImage.Content.get -> byte[]!
+Kaonavi.Net.Entities.FaceImage.Content.init -> void
+Kaonavi.Net.Entities.FaceImage.Deconstruct(out string! Code, out byte[]! Content) -> void
+Kaonavi.Net.Entities.FaceImage.FaceImage(Kaonavi.Net.Entities.FaceImage! original) -> void
+Kaonavi.Net.Entities.FaceImage.FaceImage(string! Code, byte[]! Content) -> void
+Kaonavi.Net.Entities.FaceImageInfo
+Kaonavi.Net.Entities.FaceImageInfo.Code.get -> string!
+Kaonavi.Net.Entities.FaceImageInfo.Code.init -> void
+Kaonavi.Net.Entities.FaceImageInfo.Deconstruct(out string! Code, out string! FileName, out System.Uri! DownloadUrl, out System.DateTime UpdatedAt) -> void
+Kaonavi.Net.Entities.FaceImageInfo.DownloadUrl.get -> System.Uri!
+Kaonavi.Net.Entities.FaceImageInfo.DownloadUrl.init -> void
+Kaonavi.Net.Entities.FaceImageInfo.FaceImageInfo(Kaonavi.Net.Entities.FaceImageInfo! original) -> void
+Kaonavi.Net.Entities.FaceImageInfo.FaceImageInfo(string! Code, string! FileName, System.Uri! DownloadUrl, System.DateTime UpdatedAt) -> void
+Kaonavi.Net.Entities.FaceImageInfo.FileName.get -> string!
+Kaonavi.Net.Entities.FaceImageInfo.FileName.init -> void
+Kaonavi.Net.Entities.FaceImageInfo.UpdatedAt.get -> System.DateTime
+Kaonavi.Net.Entities.FaceImageInfo.UpdatedAt.init -> void
+Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.AttachFile = 9 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.CalcFormula = 11 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.CheckBox = 5 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.Date = 7 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.FaceImage = 10 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.Link = 6 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.NumberBox = 2 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.PullDown = 3 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.RadioButton = 4 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.TextArea = 1 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.TextBox = 0 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldInput.YearMonth = 8 -> Kaonavi.Net.Entities.FieldInput
+Kaonavi.Net.Entities.FieldLayout
+Kaonavi.Net.Entities.FieldLayout.Deconstruct(out string! Name, out bool Required, out Kaonavi.Net.Entities.FieldType Type, out int? MaxLength, out System.Collections.Generic.IReadOnlyList<string?>! Enum, out bool ReadOnly) -> void
+Kaonavi.Net.Entities.FieldLayout.Enum.get -> System.Collections.Generic.IReadOnlyList<string?>!
+Kaonavi.Net.Entities.FieldLayout.Enum.init -> void
+Kaonavi.Net.Entities.FieldLayout.FieldLayout(Kaonavi.Net.Entities.FieldLayout! original) -> void
+Kaonavi.Net.Entities.FieldLayout.FieldLayout(string! Name, bool Required, Kaonavi.Net.Entities.FieldType Type, int? MaxLength, System.Collections.Generic.IReadOnlyList<string?>! Enum, bool ReadOnly = false) -> void
+Kaonavi.Net.Entities.FieldLayout.MaxLength.get -> int?
+Kaonavi.Net.Entities.FieldLayout.MaxLength.init -> void
+Kaonavi.Net.Entities.FieldLayout.Name.get -> string!
+Kaonavi.Net.Entities.FieldLayout.Name.init -> void
+Kaonavi.Net.Entities.FieldLayout.ReadOnly.get -> bool
+Kaonavi.Net.Entities.FieldLayout.ReadOnly.init -> void
+Kaonavi.Net.Entities.FieldLayout.Required.get -> bool
+Kaonavi.Net.Entities.FieldLayout.Required.init -> void
+Kaonavi.Net.Entities.FieldLayout.Type.get -> Kaonavi.Net.Entities.FieldType
+Kaonavi.Net.Entities.FieldLayout.Type.init -> void
+Kaonavi.Net.Entities.FieldType
+Kaonavi.Net.Entities.FieldType.Calc = 4 -> Kaonavi.Net.Entities.FieldType
+Kaonavi.Net.Entities.FieldType.Date = 2 -> Kaonavi.Net.Entities.FieldType
+Kaonavi.Net.Entities.FieldType.Department = 5 -> Kaonavi.Net.Entities.FieldType
+Kaonavi.Net.Entities.FieldType.DepartmentArray = 6 -> Kaonavi.Net.Entities.FieldType
+Kaonavi.Net.Entities.FieldType.Enum = 3 -> Kaonavi.Net.Entities.FieldType
+Kaonavi.Net.Entities.FieldType.Number = 1 -> Kaonavi.Net.Entities.FieldType
+Kaonavi.Net.Entities.FieldType.String = 0 -> Kaonavi.Net.Entities.FieldType
+Kaonavi.Net.Entities.MemberData
+Kaonavi.Net.Entities.MemberData.Birthday.get -> System.DateOnly?
+Kaonavi.Net.Entities.MemberData.Birthday.init -> void
+Kaonavi.Net.Entities.MemberData.Code.get -> string!
+Kaonavi.Net.Entities.MemberData.Code.init -> void
+Kaonavi.Net.Entities.MemberData.CustomFields.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldValue!>?
+Kaonavi.Net.Entities.MemberData.CustomFields.init -> void
+Kaonavi.Net.Entities.MemberData.Deconstruct(out string! Code, out string? Name, out string? NameKana, out string? Mail, out System.DateOnly? EnteredDate, out System.DateOnly? RetiredDate, out string? Gender, out System.DateOnly? Birthday, out Kaonavi.Net.Entities.MemberDepartment? Department, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberDepartment!>? SubDepartments, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldValue!>? CustomFields) -> void
+Kaonavi.Net.Entities.MemberData.Department.get -> Kaonavi.Net.Entities.MemberDepartment?
+Kaonavi.Net.Entities.MemberData.Department.init -> void
+Kaonavi.Net.Entities.MemberData.EnteredDate.get -> System.DateOnly?
+Kaonavi.Net.Entities.MemberData.EnteredDate.init -> void
+Kaonavi.Net.Entities.MemberData.Gender.get -> string?
+Kaonavi.Net.Entities.MemberData.Gender.init -> void
+Kaonavi.Net.Entities.MemberData.Mail.get -> string?
+Kaonavi.Net.Entities.MemberData.Mail.init -> void
+Kaonavi.Net.Entities.MemberData.MemberData(Kaonavi.Net.Entities.MemberData! original) -> void
+Kaonavi.Net.Entities.MemberData.MemberData(string! Code, string? Name = null, string? NameKana = null, string? Mail = null, System.DateOnly? EnteredDate = null, System.DateOnly? RetiredDate = null, string? Gender = null, System.DateOnly? Birthday = null, Kaonavi.Net.Entities.MemberDepartment? Department = null, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberDepartment!>? SubDepartments = null, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldValue!>? CustomFields = null) -> void
+Kaonavi.Net.Entities.MemberData.Name.get -> string?
+Kaonavi.Net.Entities.MemberData.Name.init -> void
+Kaonavi.Net.Entities.MemberData.NameKana.get -> string?
+Kaonavi.Net.Entities.MemberData.NameKana.init -> void
+Kaonavi.Net.Entities.MemberData.RetiredDate.get -> System.DateOnly?
+Kaonavi.Net.Entities.MemberData.RetiredDate.init -> void
+Kaonavi.Net.Entities.MemberData.SubDepartments.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberDepartment!>?
+Kaonavi.Net.Entities.MemberData.SubDepartments.init -> void
+Kaonavi.Net.Entities.MemberDepartment
+Kaonavi.Net.Entities.MemberDepartment.Code.get -> string!
+Kaonavi.Net.Entities.MemberDepartment.Code.init -> void
+Kaonavi.Net.Entities.MemberDepartment.Deconstruct(out string! Code, out string? Name, out System.Collections.Generic.IReadOnlyList<string!>? Names) -> void
+Kaonavi.Net.Entities.MemberDepartment.MemberDepartment(Kaonavi.Net.Entities.MemberDepartment! original) -> void
+Kaonavi.Net.Entities.MemberDepartment.MemberDepartment(string! Code, string? Name = null, System.Collections.Generic.IReadOnlyList<string!>? Names = null) -> void
+Kaonavi.Net.Entities.MemberDepartment.Name.get -> string?
+Kaonavi.Net.Entities.MemberDepartment.Name.init -> void
+Kaonavi.Net.Entities.MemberDepartment.Names.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Kaonavi.Net.Entities.MemberDepartment.Names.init -> void
+Kaonavi.Net.Entities.MemberLayout
+Kaonavi.Net.Entities.MemberLayout.Birthday.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.Birthday.init -> void
+Kaonavi.Net.Entities.MemberLayout.Code.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.Code.init -> void
+Kaonavi.Net.Entities.MemberLayout.CustomFields.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldLayout!>!
+Kaonavi.Net.Entities.MemberLayout.CustomFields.init -> void
+Kaonavi.Net.Entities.MemberLayout.Deconstruct(out Kaonavi.Net.Entities.FieldLayout! Code, out Kaonavi.Net.Entities.FieldLayout! Name, out Kaonavi.Net.Entities.FieldLayout! NameKana, out Kaonavi.Net.Entities.FieldLayout! Mail, out Kaonavi.Net.Entities.FieldLayout! EnteredDate, out Kaonavi.Net.Entities.FieldLayout! RetiredDate, out Kaonavi.Net.Entities.FieldLayout! Gender, out Kaonavi.Net.Entities.FieldLayout! Birthday, out Kaonavi.Net.Entities.FieldLayout! Department, out Kaonavi.Net.Entities.FieldLayout! SubDepartments, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldLayout!>! CustomFields) -> void
+Kaonavi.Net.Entities.MemberLayout.Department.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.Department.init -> void
+Kaonavi.Net.Entities.MemberLayout.EnteredDate.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.EnteredDate.init -> void
+Kaonavi.Net.Entities.MemberLayout.Gender.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.Gender.init -> void
+Kaonavi.Net.Entities.MemberLayout.Mail.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.Mail.init -> void
+Kaonavi.Net.Entities.MemberLayout.MemberLayout(Kaonavi.Net.Entities.FieldLayout! Code, Kaonavi.Net.Entities.FieldLayout! Name, Kaonavi.Net.Entities.FieldLayout! NameKana, Kaonavi.Net.Entities.FieldLayout! Mail, Kaonavi.Net.Entities.FieldLayout! EnteredDate, Kaonavi.Net.Entities.FieldLayout! RetiredDate, Kaonavi.Net.Entities.FieldLayout! Gender, Kaonavi.Net.Entities.FieldLayout! Birthday, Kaonavi.Net.Entities.FieldLayout! Department, Kaonavi.Net.Entities.FieldLayout! SubDepartments, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldLayout!>! CustomFields) -> void
+Kaonavi.Net.Entities.MemberLayout.MemberLayout(Kaonavi.Net.Entities.MemberLayout! original) -> void
+Kaonavi.Net.Entities.MemberLayout.Name.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.Name.init -> void
+Kaonavi.Net.Entities.MemberLayout.NameKana.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.NameKana.init -> void
+Kaonavi.Net.Entities.MemberLayout.RetiredDate.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.RetiredDate.init -> void
+Kaonavi.Net.Entities.MemberLayout.SubDepartments.get -> Kaonavi.Net.Entities.FieldLayout!
+Kaonavi.Net.Entities.MemberLayout.SubDepartments.init -> void
+Kaonavi.Net.Entities.RecordType
+Kaonavi.Net.Entities.RecordType.Multiple = 1 -> Kaonavi.Net.Entities.RecordType
+Kaonavi.Net.Entities.RecordType.Single = 0 -> Kaonavi.Net.Entities.RecordType
+Kaonavi.Net.Entities.Role
+Kaonavi.Net.Entities.Role.Deconstruct(out int Id, out string! Name, out string! Type) -> void
+Kaonavi.Net.Entities.Role.Id.get -> int
+Kaonavi.Net.Entities.Role.Id.init -> void
+Kaonavi.Net.Entities.Role.Name.get -> string!
+Kaonavi.Net.Entities.Role.Name.init -> void
+Kaonavi.Net.Entities.Role.Role(int Id, string! Name, string! Type) -> void
+Kaonavi.Net.Entities.Role.Role(Kaonavi.Net.Entities.Role! original) -> void
+Kaonavi.Net.Entities.Role.Type.get -> string!
+Kaonavi.Net.Entities.Role.Type.init -> void
+Kaonavi.Net.Entities.SheetData
+Kaonavi.Net.Entities.SheetData.Code.get -> string!
+Kaonavi.Net.Entities.SheetData.Code.init -> void
+Kaonavi.Net.Entities.SheetData.Deconstruct(out string! Code, out System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldValue!>!>! Records) -> void
+Kaonavi.Net.Entities.SheetData.Records.get -> System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldValue!>!>!
+Kaonavi.Net.Entities.SheetData.Records.init -> void
+Kaonavi.Net.Entities.SheetData.SheetData(Kaonavi.Net.Entities.SheetData! original) -> void
+Kaonavi.Net.Entities.SheetData.SheetData(string! Code, params System.Collections.Generic.IReadOnlyList<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldValue!>!>! Records) -> void
+Kaonavi.Net.Entities.SheetData.SheetData(string! code, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldValue!>! customFields) -> void
+Kaonavi.Net.Entities.SheetLayout
+Kaonavi.Net.Entities.SheetLayout.CustomFields.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldLayout!>!
+Kaonavi.Net.Entities.SheetLayout.CustomFields.init -> void
+Kaonavi.Net.Entities.SheetLayout.Deconstruct(out int Id, out string! Name, out Kaonavi.Net.Entities.RecordType RecordType, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldLayout!>! CustomFields) -> void
+Kaonavi.Net.Entities.SheetLayout.Id.get -> int
+Kaonavi.Net.Entities.SheetLayout.Id.init -> void
+Kaonavi.Net.Entities.SheetLayout.Name.get -> string!
+Kaonavi.Net.Entities.SheetLayout.Name.init -> void
+Kaonavi.Net.Entities.SheetLayout.RecordType.get -> Kaonavi.Net.Entities.RecordType
+Kaonavi.Net.Entities.SheetLayout.RecordType.init -> void
+Kaonavi.Net.Entities.SheetLayout.SheetLayout(int Id, string! Name, Kaonavi.Net.Entities.RecordType RecordType, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldLayout!>! CustomFields) -> void
+Kaonavi.Net.Entities.SheetLayout.SheetLayout(Kaonavi.Net.Entities.SheetLayout! original) -> void
+Kaonavi.Net.Entities.TaskProgress
+Kaonavi.Net.Entities.TaskProgress.Deconstruct(out int Id, out Kaonavi.Net.Entities.TaskState Status, out System.Collections.Generic.IReadOnlyList<string!>? Messages) -> void
+Kaonavi.Net.Entities.TaskProgress.Id.get -> int
+Kaonavi.Net.Entities.TaskProgress.Id.init -> void
+Kaonavi.Net.Entities.TaskProgress.Messages.get -> System.Collections.Generic.IReadOnlyList<string!>?
+Kaonavi.Net.Entities.TaskProgress.Messages.init -> void
+Kaonavi.Net.Entities.TaskProgress.Status.get -> Kaonavi.Net.Entities.TaskState
+Kaonavi.Net.Entities.TaskProgress.Status.init -> void
+Kaonavi.Net.Entities.TaskProgress.TaskProgress(int Id, Kaonavi.Net.Entities.TaskState Status, System.Collections.Generic.IReadOnlyList<string!>? Messages = null) -> void
+Kaonavi.Net.Entities.TaskProgress.TaskProgress(Kaonavi.Net.Entities.TaskProgress! original) -> void
+Kaonavi.Net.Entities.TaskState
+Kaonavi.Net.Entities.TaskState.Error = 2 -> Kaonavi.Net.Entities.TaskState
+Kaonavi.Net.Entities.TaskState.NG = 1 -> Kaonavi.Net.Entities.TaskState
+Kaonavi.Net.Entities.TaskState.OK = 0 -> Kaonavi.Net.Entities.TaskState
+Kaonavi.Net.Entities.TaskState.Running = 4 -> Kaonavi.Net.Entities.TaskState
+Kaonavi.Net.Entities.TaskState.Waiting = 3 -> Kaonavi.Net.Entities.TaskState
+Kaonavi.Net.Entities.Token
+Kaonavi.Net.Entities.Token.AccessToken.get -> string!
+Kaonavi.Net.Entities.Token.AccessToken.init -> void
+Kaonavi.Net.Entities.Token.Deconstruct(out string! AccessToken, out string! TokenType, out int ExpiresIn) -> void
+Kaonavi.Net.Entities.Token.ExpiresIn.get -> int
+Kaonavi.Net.Entities.Token.ExpiresIn.init -> void
+Kaonavi.Net.Entities.Token.Token(Kaonavi.Net.Entities.Token! original) -> void
+Kaonavi.Net.Entities.Token.Token(string! AccessToken, string! TokenType, int ExpiresIn) -> void
+Kaonavi.Net.Entities.Token.TokenType.get -> string!
+Kaonavi.Net.Entities.Token.TokenType.init -> void
+Kaonavi.Net.Entities.User
+Kaonavi.Net.Entities.User.Deconstruct(out int Id, out string! Email, out string? MemberCode, out Kaonavi.Net.Entities.Role! Role, out System.DateTime? LastLoginAt, out bool IsActive, out bool PasswordLocked, out bool UseSmartphone) -> void
+Kaonavi.Net.Entities.User.Email.get -> string!
+Kaonavi.Net.Entities.User.Email.init -> void
+Kaonavi.Net.Entities.User.Id.get -> int
+Kaonavi.Net.Entities.User.Id.init -> void
+Kaonavi.Net.Entities.User.IsActive.get -> bool
+Kaonavi.Net.Entities.User.IsActive.init -> void
+Kaonavi.Net.Entities.User.LastLoginAt.get -> System.DateTime?
+Kaonavi.Net.Entities.User.LastLoginAt.init -> void
+Kaonavi.Net.Entities.User.MemberCode.get -> string?
+Kaonavi.Net.Entities.User.MemberCode.init -> void
+Kaonavi.Net.Entities.User.PasswordLocked.get -> bool
+Kaonavi.Net.Entities.User.PasswordLocked.init -> void
+Kaonavi.Net.Entities.User.Role.get -> Kaonavi.Net.Entities.Role!
+Kaonavi.Net.Entities.User.Role.init -> void
+Kaonavi.Net.Entities.User.User(int Id, string! Email, string? MemberCode, Kaonavi.Net.Entities.Role! Role, System.DateTime? LastLoginAt = null, bool IsActive = true, bool PasswordLocked = false, bool UseSmartphone = false) -> void
+Kaonavi.Net.Entities.User.User(Kaonavi.Net.Entities.User! original) -> void
+Kaonavi.Net.Entities.User.UseSmartphone.get -> bool
+Kaonavi.Net.Entities.User.UseSmartphone.init -> void
+Kaonavi.Net.Entities.UserPayload
+Kaonavi.Net.Entities.UserPayload.Deconstruct(out string! Email, out string? MemberCode, out string! Password, out Kaonavi.Net.Entities.Role! Role, out bool IsActive, out bool PasswordLocked, out bool UseSmartphone) -> void
+Kaonavi.Net.Entities.UserPayload.Email.get -> string!
+Kaonavi.Net.Entities.UserPayload.Email.init -> void
+Kaonavi.Net.Entities.UserPayload.IsActive.get -> bool
+Kaonavi.Net.Entities.UserPayload.IsActive.init -> void
+Kaonavi.Net.Entities.UserPayload.MemberCode.get -> string?
+Kaonavi.Net.Entities.UserPayload.MemberCode.init -> void
+Kaonavi.Net.Entities.UserPayload.Password.get -> string!
+Kaonavi.Net.Entities.UserPayload.Password.init -> void
+Kaonavi.Net.Entities.UserPayload.PasswordLocked.get -> bool
+Kaonavi.Net.Entities.UserPayload.PasswordLocked.init -> void
+Kaonavi.Net.Entities.UserPayload.Role.get -> Kaonavi.Net.Entities.Role!
+Kaonavi.Net.Entities.UserPayload.Role.init -> void
+Kaonavi.Net.Entities.UserPayload.UserPayload(Kaonavi.Net.Entities.UserPayload! original) -> void
+Kaonavi.Net.Entities.UserPayload.UserPayload(string! email, string? memberCode, string! password, int roleId, bool isActive = true, bool passwordLocked = false, bool useSmartphone = false) -> void
+Kaonavi.Net.Entities.UserPayload.UserPayload(string! Email, string? MemberCode, string! Password, Kaonavi.Net.Entities.Role! Role, bool IsActive = true, bool PasswordLocked = false, bool UseSmartphone = false) -> void
+Kaonavi.Net.Entities.UserPayload.UseSmartphone.get -> bool
+Kaonavi.Net.Entities.UserPayload.UseSmartphone.init -> void
+Kaonavi.Net.Entities.WebhookConfig
+Kaonavi.Net.Entities.WebhookConfig.Deconstruct(out int Id, out System.Uri! Url, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.WebhookEvent>! Events, out string! SecretToken) -> void
+Kaonavi.Net.Entities.WebhookConfig.Id.get -> int
+Kaonavi.Net.Entities.WebhookConfig.Id.init -> void
+Kaonavi.Net.Entities.WebhookConfig.WebhookConfig(int Id, System.Uri! Url, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.WebhookEvent>! Events, string! SecretToken) -> void
+Kaonavi.Net.Entities.WebhookConfig.WebhookConfig(Kaonavi.Net.Entities.WebhookConfig! original) -> void
+Kaonavi.Net.Entities.WebhookConfigPayload
+Kaonavi.Net.Entities.WebhookConfigPayload.Deconstruct(out System.Uri! Url, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.WebhookEvent>! Events, out string! SecretToken) -> void
+Kaonavi.Net.Entities.WebhookConfigPayload.Events.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.WebhookEvent>!
+Kaonavi.Net.Entities.WebhookConfigPayload.Events.init -> void
+Kaonavi.Net.Entities.WebhookConfigPayload.SecretToken.get -> string!
+Kaonavi.Net.Entities.WebhookConfigPayload.SecretToken.init -> void
+Kaonavi.Net.Entities.WebhookConfigPayload.Url.get -> System.Uri!
+Kaonavi.Net.Entities.WebhookConfigPayload.Url.init -> void
+Kaonavi.Net.Entities.WebhookConfigPayload.WebhookConfigPayload(Kaonavi.Net.Entities.WebhookConfigPayload! original) -> void
+Kaonavi.Net.Entities.WebhookConfigPayload.WebhookConfigPayload(System.Uri! Url, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.WebhookEvent>! Events, string! SecretToken) -> void
+Kaonavi.Net.Entities.WebhookEvent
+Kaonavi.Net.Entities.WebhookEvent.MemberCreated = 1 -> Kaonavi.Net.Entities.WebhookEvent
+Kaonavi.Net.Entities.WebhookEvent.MemberDeleted = 3 -> Kaonavi.Net.Entities.WebhookEvent
+Kaonavi.Net.Entities.WebhookEvent.MemberUpdated = 2 -> Kaonavi.Net.Entities.WebhookEvent
+Kaonavi.Net.IKaonaviClient
+Kaonavi.Net.IKaonaviClient.AdvancedPermission.get -> Kaonavi.Net.KaonaviClient.IAdvancedPermission!
+Kaonavi.Net.IKaonaviClient.Department.get -> Kaonavi.Net.KaonaviClient.IDepartment!
+Kaonavi.Net.IKaonaviClient.EnumOption.get -> Kaonavi.Net.KaonaviClient.IEnumOption!
+Kaonavi.Net.IKaonaviClient.Layout.get -> Kaonavi.Net.KaonaviClient.ILayout!
+Kaonavi.Net.IKaonaviClient.Member.get -> Kaonavi.Net.KaonaviClient.IMember!
+Kaonavi.Net.IKaonaviClient.Role.get -> Kaonavi.Net.KaonaviClient.IRole!
+Kaonavi.Net.IKaonaviClient.Sheet.get -> Kaonavi.Net.KaonaviClient.ISheet!
+Kaonavi.Net.IKaonaviClient.Task.get -> Kaonavi.Net.KaonaviClient.ITask!
+Kaonavi.Net.IKaonaviClient.User.get -> Kaonavi.Net.KaonaviClient.IUser!
+Kaonavi.Net.IKaonaviClient.Webhook.get -> Kaonavi.Net.KaonaviClient.IWebhook!
+Kaonavi.Net.ISheetData
+Kaonavi.Net.ISheetData.Code.get -> string!
+Kaonavi.Net.ISheetData.ToCustomFields() -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.CustomFieldValue!>!
+Kaonavi.Net.ISheetDataExtensions
+Kaonavi.Net.Json.BlankNullableDateConverter
+Kaonavi.Net.Json.BlankNullableDateConverter.BlankNullableDateConverter() -> void
+Kaonavi.Net.Json.DateTimeConverter
+Kaonavi.Net.Json.DateTimeConverter.DateTimeConverter() -> void
+Kaonavi.Net.KaonaviClient
+Kaonavi.Net.KaonaviClient.AccessToken.get -> string?
+Kaonavi.Net.KaonaviClient.AccessToken.set -> void
+Kaonavi.Net.KaonaviClient.AdvancedPermission.get -> Kaonavi.Net.KaonaviClient.IAdvancedPermission!
+Kaonavi.Net.KaonaviClient.AuthenticateAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.Token!>
+Kaonavi.Net.KaonaviClient.Department.get -> Kaonavi.Net.KaonaviClient.IDepartment!
+Kaonavi.Net.KaonaviClient.Dispose() -> void
+Kaonavi.Net.KaonaviClient.EnumOption.get -> Kaonavi.Net.KaonaviClient.IEnumOption!
+Kaonavi.Net.KaonaviClient.IAdvancedPermission
+Kaonavi.Net.KaonaviClient.IAdvancedPermission.ListAsync(Kaonavi.Net.Entities.AdvancedType type, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.AdvancedPermission!>!>
+Kaonavi.Net.KaonaviClient.IAdvancedPermission.ReplaceAsync(Kaonavi.Net.Entities.AdvancedType type, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.AdvancedPermission!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IDepartment
+Kaonavi.Net.KaonaviClient.IDepartment.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.DepartmentTree!>!>
+Kaonavi.Net.KaonaviClient.IDepartment.ReplaceAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.DepartmentTree!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IEnumOption
+Kaonavi.Net.KaonaviClient.IEnumOption.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOption!>!>
+Kaonavi.Net.KaonaviClient.IEnumOption.ReadAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.EnumOption!>
+Kaonavi.Net.KaonaviClient.IEnumOption.UpdateAsync(int id, System.Collections.Generic.IReadOnlyList<(int? id, string! name)>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.ILayout
+Kaonavi.Net.KaonaviClient.ILayout.ListAsync(bool getCalcType = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetLayout!>!>
+Kaonavi.Net.KaonaviClient.ILayout.ReadAsync(int id, bool getCalcType = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.SheetLayout!>
+Kaonavi.Net.KaonaviClient.ILayout.ReadMemberLayoutAsync(bool getCalcType, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.MemberLayout!>
+Kaonavi.Net.KaonaviClient.ILayout.ReadMemberLayoutAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.MemberLayout!>
+Kaonavi.Net.KaonaviClient.IMember
+Kaonavi.Net.KaonaviClient.IMember.AddFaceImageAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImage!>! payload, bool enableTrimming = true, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IMember.CreateAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IMember.DeleteAsync(System.Collections.Generic.IReadOnlyList<string!>! codes, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IMember.GetFaceImageListAsync(System.DateOnly updatedSince, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImageInfo!>!>
+Kaonavi.Net.KaonaviClient.IMember.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberData!>!>
+Kaonavi.Net.KaonaviClient.IMember.OverWriteAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IMember.ReplaceAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IMember.UpdateAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IMember.UpdateFaceImageAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImage!>! payload, bool enableTrimming = true, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IRole
+Kaonavi.Net.KaonaviClient.IRole.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Role!>!>
+Kaonavi.Net.KaonaviClient.ISheet
+Kaonavi.Net.KaonaviClient.ISheet.AddFileAsync(int id, int customFieldId, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.ISheet.CreateAsync(int id, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.ISheet.ListAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>!>
+Kaonavi.Net.KaonaviClient.ISheet.ReplaceAsync(int id, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.ISheet.UpdateAsync(int id, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.ISheet.UpdateFileAsync(int id, int customFieldId, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.ITask
+Kaonavi.Net.KaonaviClient.ITask.ReadAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.TaskProgress!>
+Kaonavi.Net.KaonaviClient.IUser
+Kaonavi.Net.KaonaviClient.IUser.CreateAsync(Kaonavi.Net.Entities.UserPayload! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.User!>
+Kaonavi.Net.KaonaviClient.IUser.DeleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+Kaonavi.Net.KaonaviClient.IUser.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.User!>!>
+Kaonavi.Net.KaonaviClient.IUser.ReadAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.User!>
+Kaonavi.Net.KaonaviClient.IUser.UpdateAsync(int id, Kaonavi.Net.Entities.UserPayload! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.User!>
+Kaonavi.Net.KaonaviClient.IWebhook
+Kaonavi.Net.KaonaviClient.IWebhook.CreateAsync(Kaonavi.Net.Entities.WebhookConfigPayload! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.WebhookConfig!>
+Kaonavi.Net.KaonaviClient.IWebhook.DeleteAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask
+Kaonavi.Net.KaonaviClient.IWebhook.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.WebhookConfig!>!>
+Kaonavi.Net.KaonaviClient.IWebhook.UpdateAsync(Kaonavi.Net.Entities.WebhookConfig! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.WebhookConfig!>
+Kaonavi.Net.KaonaviClient.KaonaviClient(System.Net.Http.HttpClient! client, string! consumerKey, string! consumerSecret) -> void
+Kaonavi.Net.KaonaviClient.Layout.get -> Kaonavi.Net.KaonaviClient.ILayout!
+Kaonavi.Net.KaonaviClient.Member.get -> Kaonavi.Net.KaonaviClient.IMember!
+Kaonavi.Net.KaonaviClient.Role.get -> Kaonavi.Net.KaonaviClient.IRole!
+Kaonavi.Net.KaonaviClient.Sheet.get -> Kaonavi.Net.KaonaviClient.ISheet!
+Kaonavi.Net.KaonaviClient.Task.get -> Kaonavi.Net.KaonaviClient.ITask!
+Kaonavi.Net.KaonaviClient.UpdateRequestCount.get -> int
+Kaonavi.Net.KaonaviClient.UseDryRun.get -> bool
+Kaonavi.Net.KaonaviClient.UseDryRun.set -> void
+Kaonavi.Net.KaonaviClient.User.get -> Kaonavi.Net.KaonaviClient.IUser!
+Kaonavi.Net.KaonaviClient.Webhook.get -> Kaonavi.Net.KaonaviClient.IWebhook!
+Kaonavi.Net.SheetSerializableAttribute
+Kaonavi.Net.SheetSerializableAttribute.SheetSerializableAttribute() -> void
+override Kaonavi.Net.Entities.AdvancedPermission.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.AdvancedPermission.GetHashCode() -> int
+override Kaonavi.Net.Entities.AdvancedPermission.ToString() -> string!
+override Kaonavi.Net.Entities.Attachment.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.Attachment.GetHashCode() -> int
+override Kaonavi.Net.Entities.Attachment.Record.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.Attachment.Record.GetHashCode() -> int
+override Kaonavi.Net.Entities.Attachment.Record.ToString() -> string!
+override Kaonavi.Net.Entities.Attachment.ToString() -> string!
+override Kaonavi.Net.Entities.CustomFieldLayout.<Clone>$() -> Kaonavi.Net.Entities.CustomFieldLayout!
+override Kaonavi.Net.Entities.CustomFieldLayout.EqualityContract.get -> System.Type!
+override Kaonavi.Net.Entities.CustomFieldLayout.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.CustomFieldLayout.GetHashCode() -> int
+override Kaonavi.Net.Entities.CustomFieldLayout.PrintMembers(System.Text.StringBuilder! builder) -> bool
+override Kaonavi.Net.Entities.CustomFieldLayout.ToString() -> string!
+override Kaonavi.Net.Entities.CustomFieldValue.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.CustomFieldValue.GetHashCode() -> int
+override Kaonavi.Net.Entities.CustomFieldValue.ToString() -> string!
+override Kaonavi.Net.Entities.DepartmentTree.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.DepartmentTree.GetHashCode() -> int
+override Kaonavi.Net.Entities.DepartmentTree.ToString() -> string!
+override Kaonavi.Net.Entities.EnumOption.Data.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.EnumOption.Data.GetHashCode() -> int
+override Kaonavi.Net.Entities.EnumOption.Data.ToString() -> string!
+override Kaonavi.Net.Entities.EnumOption.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.EnumOption.GetHashCode() -> int
+override Kaonavi.Net.Entities.EnumOption.ToString() -> string!
+override Kaonavi.Net.Entities.FaceImage.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.FaceImage.GetHashCode() -> int
+override Kaonavi.Net.Entities.FaceImage.ToString() -> string!
+override Kaonavi.Net.Entities.FaceImageInfo.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.FaceImageInfo.GetHashCode() -> int
+override Kaonavi.Net.Entities.FaceImageInfo.ToString() -> string!
+override Kaonavi.Net.Entities.FieldLayout.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.FieldLayout.GetHashCode() -> int
+override Kaonavi.Net.Entities.FieldLayout.ToString() -> string!
+override Kaonavi.Net.Entities.MemberData.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.MemberData.GetHashCode() -> int
+override Kaonavi.Net.Entities.MemberData.ToString() -> string!
+override Kaonavi.Net.Entities.MemberDepartment.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.MemberDepartment.GetHashCode() -> int
+override Kaonavi.Net.Entities.MemberDepartment.ToString() -> string!
+override Kaonavi.Net.Entities.MemberLayout.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.MemberLayout.GetHashCode() -> int
+override Kaonavi.Net.Entities.MemberLayout.ToString() -> string!
+override Kaonavi.Net.Entities.Role.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.Role.GetHashCode() -> int
+override Kaonavi.Net.Entities.Role.ToString() -> string!
+override Kaonavi.Net.Entities.SheetData.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.SheetData.GetHashCode() -> int
+override Kaonavi.Net.Entities.SheetData.ToString() -> string!
+override Kaonavi.Net.Entities.SheetLayout.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.SheetLayout.GetHashCode() -> int
+override Kaonavi.Net.Entities.SheetLayout.ToString() -> string!
+override Kaonavi.Net.Entities.TaskProgress.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.TaskProgress.GetHashCode() -> int
+override Kaonavi.Net.Entities.TaskProgress.ToString() -> string!
+override Kaonavi.Net.Entities.Token.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.Token.GetHashCode() -> int
+override Kaonavi.Net.Entities.Token.ToString() -> string!
+override Kaonavi.Net.Entities.User.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.User.GetHashCode() -> int
+override Kaonavi.Net.Entities.User.ToString() -> string!
+override Kaonavi.Net.Entities.UserPayload.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.UserPayload.GetHashCode() -> int
+override Kaonavi.Net.Entities.UserPayload.ToString() -> string!
+override Kaonavi.Net.Entities.WebhookConfig.<Clone>$() -> Kaonavi.Net.Entities.WebhookConfig!
+override Kaonavi.Net.Entities.WebhookConfig.EqualityContract.get -> System.Type!
+override Kaonavi.Net.Entities.WebhookConfig.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.WebhookConfig.GetHashCode() -> int
+override Kaonavi.Net.Entities.WebhookConfig.PrintMembers(System.Text.StringBuilder! builder) -> bool
+override Kaonavi.Net.Entities.WebhookConfig.ToString() -> string!
+override Kaonavi.Net.Entities.WebhookConfigPayload.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.WebhookConfigPayload.GetHashCode() -> int
+override Kaonavi.Net.Entities.WebhookConfigPayload.ToString() -> string!
+override Kaonavi.Net.Json.BlankNullableDateConverter.HandleNull.get -> bool
+override Kaonavi.Net.Json.BlankNullableDateConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> System.DateOnly?
+override Kaonavi.Net.Json.BlankNullableDateConverter.Write(System.Text.Json.Utf8JsonWriter! writer, System.DateOnly? value, System.Text.Json.JsonSerializerOptions! options) -> void
+override Kaonavi.Net.Json.DateTimeConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> System.DateTime
+override Kaonavi.Net.Json.DateTimeConverter.Write(System.Text.Json.Utf8JsonWriter! writer, System.DateTime value, System.Text.Json.JsonSerializerOptions! options) -> void
+override sealed Kaonavi.Net.Entities.CustomFieldLayout.Equals(Kaonavi.Net.Entities.FieldLayout? other) -> bool
+override sealed Kaonavi.Net.Entities.WebhookConfig.Equals(Kaonavi.Net.Entities.WebhookConfigPayload? other) -> bool
+static Kaonavi.Net.Entities.AdvancedPermission.operator !=(Kaonavi.Net.Entities.AdvancedPermission? left, Kaonavi.Net.Entities.AdvancedPermission? right) -> bool
+static Kaonavi.Net.Entities.AdvancedPermission.operator ==(Kaonavi.Net.Entities.AdvancedPermission? left, Kaonavi.Net.Entities.AdvancedPermission? right) -> bool
+static Kaonavi.Net.Entities.Attachment.operator !=(Kaonavi.Net.Entities.Attachment? left, Kaonavi.Net.Entities.Attachment? right) -> bool
+static Kaonavi.Net.Entities.Attachment.operator ==(Kaonavi.Net.Entities.Attachment? left, Kaonavi.Net.Entities.Attachment? right) -> bool
+static Kaonavi.Net.Entities.Attachment.Record.operator !=(Kaonavi.Net.Entities.Attachment.Record? left, Kaonavi.Net.Entities.Attachment.Record? right) -> bool
+static Kaonavi.Net.Entities.Attachment.Record.operator ==(Kaonavi.Net.Entities.Attachment.Record? left, Kaonavi.Net.Entities.Attachment.Record? right) -> bool
+static Kaonavi.Net.Entities.CustomFieldLayout.operator !=(Kaonavi.Net.Entities.CustomFieldLayout? left, Kaonavi.Net.Entities.CustomFieldLayout? right) -> bool
+static Kaonavi.Net.Entities.CustomFieldLayout.operator ==(Kaonavi.Net.Entities.CustomFieldLayout? left, Kaonavi.Net.Entities.CustomFieldLayout? right) -> bool
+static Kaonavi.Net.Entities.CustomFieldValue.operator !=(Kaonavi.Net.Entities.CustomFieldValue? left, Kaonavi.Net.Entities.CustomFieldValue? right) -> bool
+static Kaonavi.Net.Entities.CustomFieldValue.operator ==(Kaonavi.Net.Entities.CustomFieldValue? left, Kaonavi.Net.Entities.CustomFieldValue? right) -> bool
+static Kaonavi.Net.Entities.DepartmentTree.operator !=(Kaonavi.Net.Entities.DepartmentTree? left, Kaonavi.Net.Entities.DepartmentTree? right) -> bool
+static Kaonavi.Net.Entities.DepartmentTree.operator ==(Kaonavi.Net.Entities.DepartmentTree? left, Kaonavi.Net.Entities.DepartmentTree? right) -> bool
+static Kaonavi.Net.Entities.EnumOption.Data.operator !=(Kaonavi.Net.Entities.EnumOption.Data? left, Kaonavi.Net.Entities.EnumOption.Data? right) -> bool
+static Kaonavi.Net.Entities.EnumOption.Data.operator ==(Kaonavi.Net.Entities.EnumOption.Data? left, Kaonavi.Net.Entities.EnumOption.Data? right) -> bool
+static Kaonavi.Net.Entities.EnumOption.operator !=(Kaonavi.Net.Entities.EnumOption? left, Kaonavi.Net.Entities.EnumOption? right) -> bool
+static Kaonavi.Net.Entities.EnumOption.operator ==(Kaonavi.Net.Entities.EnumOption? left, Kaonavi.Net.Entities.EnumOption? right) -> bool
+static Kaonavi.Net.Entities.FaceImage.operator !=(Kaonavi.Net.Entities.FaceImage? left, Kaonavi.Net.Entities.FaceImage? right) -> bool
+static Kaonavi.Net.Entities.FaceImage.operator ==(Kaonavi.Net.Entities.FaceImage? left, Kaonavi.Net.Entities.FaceImage? right) -> bool
+static Kaonavi.Net.Entities.FaceImageInfo.operator !=(Kaonavi.Net.Entities.FaceImageInfo? left, Kaonavi.Net.Entities.FaceImageInfo? right) -> bool
+static Kaonavi.Net.Entities.FaceImageInfo.operator ==(Kaonavi.Net.Entities.FaceImageInfo? left, Kaonavi.Net.Entities.FaceImageInfo? right) -> bool
+static Kaonavi.Net.Entities.FieldLayout.operator !=(Kaonavi.Net.Entities.FieldLayout? left, Kaonavi.Net.Entities.FieldLayout? right) -> bool
+static Kaonavi.Net.Entities.FieldLayout.operator ==(Kaonavi.Net.Entities.FieldLayout? left, Kaonavi.Net.Entities.FieldLayout? right) -> bool
+static Kaonavi.Net.Entities.MemberData.operator !=(Kaonavi.Net.Entities.MemberData? left, Kaonavi.Net.Entities.MemberData? right) -> bool
+static Kaonavi.Net.Entities.MemberData.operator ==(Kaonavi.Net.Entities.MemberData? left, Kaonavi.Net.Entities.MemberData? right) -> bool
+static Kaonavi.Net.Entities.MemberDepartment.operator !=(Kaonavi.Net.Entities.MemberDepartment? left, Kaonavi.Net.Entities.MemberDepartment? right) -> bool
+static Kaonavi.Net.Entities.MemberDepartment.operator ==(Kaonavi.Net.Entities.MemberDepartment? left, Kaonavi.Net.Entities.MemberDepartment? right) -> bool
+static Kaonavi.Net.Entities.MemberLayout.operator !=(Kaonavi.Net.Entities.MemberLayout? left, Kaonavi.Net.Entities.MemberLayout? right) -> bool
+static Kaonavi.Net.Entities.MemberLayout.operator ==(Kaonavi.Net.Entities.MemberLayout? left, Kaonavi.Net.Entities.MemberLayout? right) -> bool
+static Kaonavi.Net.Entities.Role.operator !=(Kaonavi.Net.Entities.Role? left, Kaonavi.Net.Entities.Role? right) -> bool
+static Kaonavi.Net.Entities.Role.operator ==(Kaonavi.Net.Entities.Role? left, Kaonavi.Net.Entities.Role? right) -> bool
+static Kaonavi.Net.Entities.SheetData.operator !=(Kaonavi.Net.Entities.SheetData? left, Kaonavi.Net.Entities.SheetData? right) -> bool
+static Kaonavi.Net.Entities.SheetData.operator ==(Kaonavi.Net.Entities.SheetData? left, Kaonavi.Net.Entities.SheetData? right) -> bool
+static Kaonavi.Net.Entities.SheetLayout.operator !=(Kaonavi.Net.Entities.SheetLayout? left, Kaonavi.Net.Entities.SheetLayout? right) -> bool
+static Kaonavi.Net.Entities.SheetLayout.operator ==(Kaonavi.Net.Entities.SheetLayout? left, Kaonavi.Net.Entities.SheetLayout? right) -> bool
+static Kaonavi.Net.Entities.TaskProgress.operator !=(Kaonavi.Net.Entities.TaskProgress? left, Kaonavi.Net.Entities.TaskProgress? right) -> bool
+static Kaonavi.Net.Entities.TaskProgress.operator ==(Kaonavi.Net.Entities.TaskProgress? left, Kaonavi.Net.Entities.TaskProgress? right) -> bool
+static Kaonavi.Net.Entities.Token.operator !=(Kaonavi.Net.Entities.Token? left, Kaonavi.Net.Entities.Token? right) -> bool
+static Kaonavi.Net.Entities.Token.operator ==(Kaonavi.Net.Entities.Token? left, Kaonavi.Net.Entities.Token? right) -> bool
+static Kaonavi.Net.Entities.User.operator !=(Kaonavi.Net.Entities.User? left, Kaonavi.Net.Entities.User? right) -> bool
+static Kaonavi.Net.Entities.User.operator ==(Kaonavi.Net.Entities.User? left, Kaonavi.Net.Entities.User? right) -> bool
+static Kaonavi.Net.Entities.UserPayload.operator !=(Kaonavi.Net.Entities.UserPayload? left, Kaonavi.Net.Entities.UserPayload? right) -> bool
+static Kaonavi.Net.Entities.UserPayload.operator ==(Kaonavi.Net.Entities.UserPayload? left, Kaonavi.Net.Entities.UserPayload? right) -> bool
+static Kaonavi.Net.Entities.WebhookConfig.operator !=(Kaonavi.Net.Entities.WebhookConfig? left, Kaonavi.Net.Entities.WebhookConfig? right) -> bool
+static Kaonavi.Net.Entities.WebhookConfig.operator ==(Kaonavi.Net.Entities.WebhookConfig? left, Kaonavi.Net.Entities.WebhookConfig? right) -> bool
+static Kaonavi.Net.Entities.WebhookConfigPayload.operator !=(Kaonavi.Net.Entities.WebhookConfigPayload? left, Kaonavi.Net.Entities.WebhookConfigPayload? right) -> bool
+static Kaonavi.Net.Entities.WebhookConfigPayload.operator ==(Kaonavi.Net.Entities.WebhookConfigPayload? left, Kaonavi.Net.Entities.WebhookConfigPayload? right) -> bool
+static Kaonavi.Net.ISheetDataExtensions.ToMultipleSheetData<T>(this T sheets) -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>!
+static Kaonavi.Net.ISheetDataExtensions.ToSingleSheetData<T>(this T sheets) -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>!
+virtual Kaonavi.Net.Entities.AdvancedPermission.<Clone>$() -> Kaonavi.Net.Entities.AdvancedPermission!
+virtual Kaonavi.Net.Entities.AdvancedPermission.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.AdvancedPermission.Equals(Kaonavi.Net.Entities.AdvancedPermission? other) -> bool
+virtual Kaonavi.Net.Entities.AdvancedPermission.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.Attachment.<Clone>$() -> Kaonavi.Net.Entities.Attachment!
+virtual Kaonavi.Net.Entities.Attachment.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.Attachment.Equals(Kaonavi.Net.Entities.Attachment? other) -> bool
+virtual Kaonavi.Net.Entities.Attachment.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.Attachment.Record.<Clone>$() -> Kaonavi.Net.Entities.Attachment.Record!
+virtual Kaonavi.Net.Entities.Attachment.Record.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.Attachment.Record.Equals(Kaonavi.Net.Entities.Attachment.Record? other) -> bool
+virtual Kaonavi.Net.Entities.Attachment.Record.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.CustomFieldLayout.Equals(Kaonavi.Net.Entities.CustomFieldLayout? other) -> bool
+virtual Kaonavi.Net.Entities.CustomFieldValue.<Clone>$() -> Kaonavi.Net.Entities.CustomFieldValue!
+virtual Kaonavi.Net.Entities.CustomFieldValue.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.CustomFieldValue.Equals(Kaonavi.Net.Entities.CustomFieldValue? other) -> bool
+virtual Kaonavi.Net.Entities.CustomFieldValue.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.DepartmentTree.<Clone>$() -> Kaonavi.Net.Entities.DepartmentTree!
+virtual Kaonavi.Net.Entities.DepartmentTree.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.DepartmentTree.Equals(Kaonavi.Net.Entities.DepartmentTree? other) -> bool
+virtual Kaonavi.Net.Entities.DepartmentTree.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.EnumOption.<Clone>$() -> Kaonavi.Net.Entities.EnumOption!
+virtual Kaonavi.Net.Entities.EnumOption.Data.<Clone>$() -> Kaonavi.Net.Entities.EnumOption.Data!
+virtual Kaonavi.Net.Entities.EnumOption.Data.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.EnumOption.Data.Equals(Kaonavi.Net.Entities.EnumOption.Data? other) -> bool
+virtual Kaonavi.Net.Entities.EnumOption.Data.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.EnumOption.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.EnumOption.Equals(Kaonavi.Net.Entities.EnumOption? other) -> bool
+virtual Kaonavi.Net.Entities.EnumOption.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.FaceImage.<Clone>$() -> Kaonavi.Net.Entities.FaceImage!
+virtual Kaonavi.Net.Entities.FaceImage.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.FaceImage.Equals(Kaonavi.Net.Entities.FaceImage? other) -> bool
+virtual Kaonavi.Net.Entities.FaceImage.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.FaceImageInfo.<Clone>$() -> Kaonavi.Net.Entities.FaceImageInfo!
+virtual Kaonavi.Net.Entities.FaceImageInfo.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.FaceImageInfo.Equals(Kaonavi.Net.Entities.FaceImageInfo? other) -> bool
+virtual Kaonavi.Net.Entities.FaceImageInfo.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.FieldLayout.<Clone>$() -> Kaonavi.Net.Entities.FieldLayout!
+virtual Kaonavi.Net.Entities.FieldLayout.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.FieldLayout.Equals(Kaonavi.Net.Entities.FieldLayout? other) -> bool
+virtual Kaonavi.Net.Entities.FieldLayout.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.MemberData.<Clone>$() -> Kaonavi.Net.Entities.MemberData!
+virtual Kaonavi.Net.Entities.MemberData.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.MemberData.Equals(Kaonavi.Net.Entities.MemberData? other) -> bool
+virtual Kaonavi.Net.Entities.MemberData.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.MemberDepartment.<Clone>$() -> Kaonavi.Net.Entities.MemberDepartment!
+virtual Kaonavi.Net.Entities.MemberDepartment.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.MemberDepartment.Equals(Kaonavi.Net.Entities.MemberDepartment? other) -> bool
+virtual Kaonavi.Net.Entities.MemberDepartment.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.MemberLayout.<Clone>$() -> Kaonavi.Net.Entities.MemberLayout!
+virtual Kaonavi.Net.Entities.MemberLayout.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.MemberLayout.Equals(Kaonavi.Net.Entities.MemberLayout? other) -> bool
+virtual Kaonavi.Net.Entities.MemberLayout.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.Role.<Clone>$() -> Kaonavi.Net.Entities.Role!
+virtual Kaonavi.Net.Entities.Role.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.Role.Equals(Kaonavi.Net.Entities.Role? other) -> bool
+virtual Kaonavi.Net.Entities.Role.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.SheetData.<Clone>$() -> Kaonavi.Net.Entities.SheetData!
+virtual Kaonavi.Net.Entities.SheetData.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.SheetData.Equals(Kaonavi.Net.Entities.SheetData? other) -> bool
+virtual Kaonavi.Net.Entities.SheetData.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.SheetLayout.<Clone>$() -> Kaonavi.Net.Entities.SheetLayout!
+virtual Kaonavi.Net.Entities.SheetLayout.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.SheetLayout.Equals(Kaonavi.Net.Entities.SheetLayout? other) -> bool
+virtual Kaonavi.Net.Entities.SheetLayout.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.TaskProgress.<Clone>$() -> Kaonavi.Net.Entities.TaskProgress!
+virtual Kaonavi.Net.Entities.TaskProgress.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.TaskProgress.Equals(Kaonavi.Net.Entities.TaskProgress? other) -> bool
+virtual Kaonavi.Net.Entities.TaskProgress.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.Token.<Clone>$() -> Kaonavi.Net.Entities.Token!
+virtual Kaonavi.Net.Entities.Token.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.Token.Equals(Kaonavi.Net.Entities.Token? other) -> bool
+virtual Kaonavi.Net.Entities.Token.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.User.<Clone>$() -> Kaonavi.Net.Entities.User!
+virtual Kaonavi.Net.Entities.User.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.User.Equals(Kaonavi.Net.Entities.User? other) -> bool
+virtual Kaonavi.Net.Entities.User.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.UserPayload.<Clone>$() -> Kaonavi.Net.Entities.UserPayload!
+virtual Kaonavi.Net.Entities.UserPayload.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.UserPayload.Equals(Kaonavi.Net.Entities.UserPayload? other) -> bool
+virtual Kaonavi.Net.Entities.UserPayload.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.WebhookConfig.Equals(Kaonavi.Net.Entities.WebhookConfig? other) -> bool
+virtual Kaonavi.Net.Entities.WebhookConfigPayload.<Clone>$() -> Kaonavi.Net.Entities.WebhookConfigPayload!
+virtual Kaonavi.Net.Entities.WebhookConfigPayload.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.WebhookConfigPayload.Equals(Kaonavi.Net.Entities.WebhookConfigPayload? other) -> bool
+virtual Kaonavi.Net.Entities.WebhookConfigPayload.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.KaonaviClient.Dispose(bool disposing) -> void
