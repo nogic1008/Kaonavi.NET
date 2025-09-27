@@ -46,7 +46,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+          - windows-latest
+          - windows-11-arm
+          - macos-latest
+          - macos-15-intel
     steps:
       - uses: actions/checkout@v5.0.0
       - name: Setup .NET SDK
@@ -66,6 +72,6 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ runner.os }}
+          flags: ${{ runner.os }},${{ runner.arch }}
           disable_search: true
           files: ${{ format(vars.TEST_ASSET_FOLDERS, 'net9.0', vars.COVERAGE_REPORT_FILE) }},${{ format(vars.TEST_ASSET_FOLDERS, 'net8.0', vars.COVERAGE_REPORT_FILE) }}
