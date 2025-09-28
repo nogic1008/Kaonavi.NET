@@ -134,7 +134,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// </param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        public ValueTask<int> AddFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming = true, CancellationToken cancellationToken = default);
+        public ValueTask<int> AddFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming = true, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 指定したメンバーの顔写真を置き換えます。
@@ -161,7 +161,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <param name="enableTrimming"><inheritdoc cref="IMember.AddFaceImageAsync" path="/param[@name='enableTrimming']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        public ValueTask<int> UpdateFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming = true, CancellationToken cancellationToken = default);
+        public ValueTask<int> UpdateFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming = true, CancellationToken cancellationToken = default);
     }
 
     /// <inheritdoc/>
@@ -196,11 +196,11 @@ public partial class KaonaviClient : KaonaviClient.IMember
         => CallApiAsync(new(HttpMethod.Get, $"members/face_image?updated_since={updatedSince:yyyy-MM-dd}"), "member_data", Context.Default.IReadOnlyListFaceImageInfo, cancellationToken);
 
     /// <inheritdoc/>
-    ValueTask<int> IMember.AddFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
+    ValueTask<int> IMember.AddFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming, CancellationToken cancellationToken)
         => CallFaceImageApiAsync(HttpMethod.Post, payload, enableTrimming, cancellationToken);
 
     /// <inheritdoc/>
-    ValueTask<int> IMember.UpdateFaceImageAsync(IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
+    ValueTask<int> IMember.UpdateFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming, CancellationToken cancellationToken)
         => CallFaceImageApiAsync(HttpMethod.Patch, payload, enableTrimming, cancellationToken);
 
     /// <summary>
@@ -212,7 +212,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
-    private ValueTask<int> CallFaceImageApiAsync(HttpMethod method, IReadOnlyList<FaceImage> payload, bool enableTrimming, CancellationToken cancellationToken)
+    private ValueTask<int> CallFaceImageApiAsync(HttpMethod method, IReadOnlyList<FaceImagePayload> payload, bool enableTrimming, CancellationToken cancellationToken)
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
 
@@ -221,7 +221,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         writer.WriteStartObject();
         writer.WriteBoolean("enable_trimming"u8, enableTrimming);
         writer.WritePropertyName("member_data"u8);
-        JsonSerializer.Serialize(writer, payload, Context.Default.IReadOnlyListFaceImage);
+        JsonSerializer.Serialize(writer, payload, Context.Default.IReadOnlyListFaceImagePayload);
         writer.WriteEndObject();
         writer.Flush();
 
