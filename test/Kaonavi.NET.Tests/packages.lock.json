@@ -4,9 +4,9 @@
     "net8.0": {
       "Microsoft.Extensions.TimeProvider.Testing": {
         "type": "Direct",
-        "requested": "[9.9.0, )",
-        "resolved": "9.9.0",
-        "contentHash": "fJh9agYJLeo0RS251hvZJ6nHrZ5eHqzqwazssGC+jQ1acBK9n65FiJ9EmRntuRC+kLNwfCCMvtXYmWJkO1ixrQ=="
+        "requested": "[9.10.0, )",
+        "resolved": "9.10.0",
+        "contentHash": "hpRMeUOqEz+I5HKu8WXnYr2HYqu2neBX+bgAwQqVLj/UnQxys8JhC6ep4Sp+rPj0mRDxSOiCFASMLxACu0jeRQ=="
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
@@ -429,9 +429,9 @@
     "net9.0": {
       "Microsoft.Extensions.TimeProvider.Testing": {
         "type": "Direct",
-        "requested": "[9.9.0, )",
-        "resolved": "9.9.0",
-        "contentHash": "fJh9agYJLeo0RS251hvZJ6nHrZ5eHqzqwazssGC+jQ1acBK9n65FiJ9EmRntuRC+kLNwfCCMvtXYmWJkO1ixrQ=="
+        "requested": "[9.10.0, )",
+        "resolved": "9.10.0",
+        "contentHash": "hpRMeUOqEz+I5HKu8WXnYr2HYqu2neBX+bgAwQqVLj/UnQxys8JhC6ep4Sp+rPj0mRDxSOiCFASMLxACu0jeRQ=="
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
