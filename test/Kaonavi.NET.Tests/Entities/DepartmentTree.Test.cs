@@ -51,7 +51,7 @@ public sealed class DepartmentTreeTest
     /// <param name="leaderMemberCode"><inheritdoc cref="DepartmentTree" path="/param[@name='LeaderMemberCode']"/></param>
     /// <param name="order"><inheritdoc cref="DepartmentTree" path="/param[@name='Order']"/></param>
     /// <param name="memo"><inheritdoc cref="DepartmentTree" path="/param[@name='Memo']"/></param>
-    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = TestName), TestCategory("JSON Deserialize")]
     [DataRow(SimpleJson, "1000", "取締役会", null, "A0002", 1, "", DisplayName = TestName)]
     [DataRow(NoLeaderJson, "1200", "営業本部", null, null, 2, null, DisplayName = TestName)]
     [DataRow(ChildJson, "2000", "ITグループ", "1500", "A0001", 1, "example", DisplayName = TestName)]

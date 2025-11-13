@@ -105,7 +105,7 @@ public sealed class SheetDataGeneratorTest
     /// </summary>
     /// <param name="code">生成元となるソースコード</param>
     /// <param name="id">コンパイル警告のID</param>
-    [TestMethod("Generator > コンパイル警告が発生する。")]
+    [TestMethod(DisplayName = "Generator > コンパイル警告が発生する。")]
     [DynamicData(nameof(InvalidCodeTestData))]
     public void When_Invalid_Code_Compiler_Warns_With_Diagnostic(string code, string id)
     {

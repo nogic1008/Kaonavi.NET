@@ -10,7 +10,7 @@ public sealed class SheetLayoutTest
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(SheetLayout)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(SheetLayout)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeJSON()
     {
         /*lang=json,strict*/

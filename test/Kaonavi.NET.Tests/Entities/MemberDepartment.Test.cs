@@ -31,7 +31,7 @@ public sealed class MemberDepartmentTest
     /// <param name="code"><inheritdoc cref="MemberDepartment.Code" path="/summary"/></param>
     /// <param name="name"><inheritdoc cref="MemberDepartment.Name" path="/summary"/></param>
     /// <param name="names"><inheritdoc cref="MemberDepartment.Names" path="/summary"/></param>
-    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = TestName), TestCategory("JSON Deserialize")]
     [DataRow(SimpleJson, "1000", null, null, DisplayName = TestName)]
     [DataRow(SingleDepJson, "1000", "取締役会", (string[])["取締役会"], DisplayName = TestName)]
     [DataRow(MultipleJson, "2000", "営業本部 第一営業部 ITグループ", (string[])["営業本部", "第一営業部", "ITグループ"], DisplayName = TestName)]

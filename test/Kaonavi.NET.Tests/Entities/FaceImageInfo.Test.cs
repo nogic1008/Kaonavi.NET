@@ -8,7 +8,7 @@ namespace Kaonavi.Net.Tests.Entities;
 public sealed class FaceImageInfoTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [TestMethod($"{nameof(FaceImageInfo)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(FaceImageInfo)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeJSON()
     {
         // Arrange

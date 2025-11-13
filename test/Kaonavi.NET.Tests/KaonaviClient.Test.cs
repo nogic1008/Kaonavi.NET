@@ -58,7 +58,7 @@ public sealed partial class KaonaviClientTest
     /// <param name="consumerKey"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
     /// <param name="consumerSecret"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
     /// <param name="paramName">例外の原因となったパラメータ名</param>
-    [TestMethod($"{nameof(KaonaviClient)}(constructor) > {nameof(ArgumentNullException)}をスローする。"), TestCategory("Constructor")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient)}(constructor) > {nameof(ArgumentNullException)}をスローする。"), TestCategory("Constructor")]
     [DataRow(null, "foo", "consumerKey", DisplayName = $"{nameof(KaonaviClient)}({nameof(HttpClient)}, null, \"foo\") > {nameof(ArgumentNullException)}(consumerKey)をスローする。")]
     [DataRow("foo", null, "consumerSecret", DisplayName = $"{nameof(KaonaviClient)}({nameof(HttpClient)}, \"foo\", null) > {nameof(ArgumentNullException)}(consumerSecret)をスローする。")]
     public void WhenParamIsNull_Constructor_Throws_ArgumentNullException(string? consumerKey, string? consumerSecret, string paramName)
@@ -67,14 +67,14 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// HttpClientが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient)}(null, \"foo\", \"bar\") > ArgumentNullException(client)をスローする。"), TestCategory("Constructor")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient)}(null, \"foo\", \"bar\") > ArgumentNullException(client)をスローする。"), TestCategory("Constructor")]
     public void WhenClientIsNull_Constructor_Throws_ArgumentNullException()
         => Constructor(null, "foo", "bar").ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("client");
 
     /// <summary>
     /// TimeProviderが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient)}({nameof(HttpClient)}, \"foo\", \"bar\", null) > ArgumentNullException(timeProvider)をスローする。"), TestCategory("Constructor")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient)}({nameof(HttpClient)}, \"foo\", \"bar\", null) > ArgumentNullException(timeProvider)をスローする。"), TestCategory("Constructor")]
     public void WhenTimeProviderIsNull_Constructor_Throws_ArgumentNullException()
         => ((Action)(() => _ = new KaonaviClient(new(), "foo", "bar", null!)))
             .ShouldThrow<ArgumentNullException>().ParamName.ShouldBe("timeProvider");
@@ -82,7 +82,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>のとき、既定値をセットする。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullのとき、既定値をセットする。"), TestCategory("Constructor")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullのとき、既定値をセットする。"), TestCategory("Constructor")]
     public void Constructor_Sets_BaseAddress_WhenIsNull()
     {
         // Arrange
@@ -99,7 +99,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>でないときは、既定値をセットしない。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullでないときは、既定値をセットしない。"), TestCategory("Constructor")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullでないときは、既定値をセットしない。"), TestCategory("Constructor")]
     public void Constructor_DoesNotSet_BaseAddress_WhenNotNull()
     {
         // Arrange
@@ -120,7 +120,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を返す。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Tokenヘッダーの値を返す。"), TestCategory("Properties")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Tokenヘッダーの値を返す。"), TestCategory("Properties")]
     public void AccessToken_Returns_Header_KaonaviToken_Value()
     {
         // Arrange
@@ -138,7 +138,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// Kaonavi-Tokenヘッダーがないとき、<see cref="KaonaviClient.AccessToken"/>は、<see langword="null"/>を返す。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Tokenヘッダーがないとき、nullを返す。"), TestCategory("Properties")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Tokenヘッダーがないとき、nullを返す。"), TestCategory("Properties")]
     public void When_Header_KaonaviToken_IsNull_AccessToken_Returns_Null()
     {
         // Arrange
@@ -155,7 +155,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を設定する。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient.AccessToken)}(set) > Kaonavi-Tokenヘッダーの値を設定する。"), TestCategory("Properties")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient.AccessToken)}(set) > Kaonavi-Tokenヘッダーの値を設定する。"), TestCategory("Properties")]
     public void AccessToken_Sets_Header_KaonaviToken()
     {
         // Arrange
@@ -178,7 +178,7 @@ public sealed partial class KaonaviClientTest
     /// </summary>
     /// <param name="headerValue">Dry-Runヘッダーに設定する値</param>
     /// <param name="expected"><see cref="KaonaviClient.UseDryRun"/></param>
-    [TestMethod($"{nameof(KaonaviClient.UseDryRun)}(get) > Dry-Run: 1 かどうかを返す。"), TestCategory("Properties")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient.UseDryRun)}(get) > Dry-Run: 1 かどうかを返す。"), TestCategory("Properties")]
     [DataRow(null, false, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Runの設定がない場合、 falseを返す。")]
     [DataRow("0", false, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Run: 0 の設定がある場合、 falseを返す。")]
     [DataRow("1", true, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Run: 1 の設定がある場合、 trueを返す。")]
@@ -200,7 +200,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.UseDryRun"/>は、HttpClientのDry-Runヘッダー値を追加/削除する。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient.UseDryRun)}(set) > Dry-Runヘッダーを追加/削除する。"), TestCategory("Properties")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient.UseDryRun)}(set) > Dry-Runヘッダーを追加/削除する。"), TestCategory("Properties")]
     public void UseDryRun_Sets_Header_DryRun()
     {
         // Arrange
@@ -236,7 +236,7 @@ public sealed partial class KaonaviClientTest
     /// <param name="responseBody">エラー時のレスポンス本文</param>
     /// <param name="message">エラーメッセージ</param>
     /// <param name="mediaType">MediaType</param>
-    [TestMethod($"API Caller > ApplicationExceptionをスローする。"), TestCategory("API")]
+    [TestMethod(DisplayName = $"API Caller > ApplicationExceptionをスローする。"), TestCategory("API")]
     [DataRow(HttpStatusCode.Unauthorized, "application/json", /*lang=json,strict*/ """{"errors":["consumer_keyとconsumer_secretの組み合わせが不正です。"]}""", "consumer_keyとconsumer_secretの組み合わせが不正です。", DisplayName = $"API Caller > ApplicationExceptionをスローする。")]
     [DataRow(HttpStatusCode.TooManyRequests, "application/json", /*lang=json,strict*/ """{"errors":["1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。"]}""", "1時間あたりのトークン発行可能数を超過しました。時間をおいてお試しください。", DisplayName = $"API Caller > ApplicationExceptionをスローする。")]
     [DataRow(HttpStatusCode.InternalServerError, "plain/text", "Error", "Error", DisplayName = $"API Caller > ApplicationExceptionをスローする。")]
@@ -262,7 +262,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.AccessToken"/>が<see langword="null"/>のとき、<see cref="KaonaviClient.AuthenticateAsync(CancellationToken)"/>を呼び出す。
     /// </summary>
-    [TestMethod($"API Caller > {nameof(KaonaviClient.AuthenticateAsync)}を呼び出す。"), TestCategory("API")]
+    [TestMethod(DisplayName = $"API Caller > {nameof(KaonaviClient.AuthenticateAsync)}を呼び出す。"), TestCategory("API")]
     public async ValueTask When_AccessToken_IsNull_ApiCaller_Calls_AuthenticateAsync()
     {
         // Arrange
@@ -289,7 +289,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。
     /// </summary>
-    [TestMethod($"API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。"), TestCategory("API")]
+    [TestMethod(DisplayName = $"API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。"), TestCategory("API")]
     public async ValueTask UpdateApi_Waits_UpdateLimit()
     {
         // Arrange
@@ -330,7 +330,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。
     /// </summary>
-    [TestMethod($"API Caller > 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。"), TestCategory("API")]
+    [TestMethod(DisplayName = $"API Caller > 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。"), TestCategory("API")]
     public async ValueTask When_Api_Returns_Error_UpdateApi_DoesNot_Counts_UpdateLimit()
     {
         // Arrange
@@ -351,7 +351,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.Dispose"/>を呼び出した後のAPI呼び出しは、<see cref="ObjectDisposedException"/>の例外をスローする。
     /// </summary>
-    [TestMethod($"API Caller > ${nameof(KaonaviClient.Dispose)}()後にAPIを呼び出そうとした場合、{nameof(ObjectDisposedException)}の例外をスローする。"), TestCategory("API")]
+    [TestMethod(DisplayName = $"API Caller > ${nameof(KaonaviClient.Dispose)}()後にAPIを呼び出そうとした場合、{nameof(ObjectDisposedException)}の例外をスローする。"), TestCategory("API")]
     public async ValueTask When_Disposed_Api_Throws_ObjectDisposedException()
     {
         // Arrange
@@ -375,7 +375,7 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.AuthenticateAsync"/>は、"/token"にBase64文字列のPOSTリクエストを行う。
     /// </summary>
-    [TestMethod($"{nameof(KaonaviClient.AuthenticateAsync)} > POST /token をコールする。")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviClient.AuthenticateAsync)} > POST /token をコールする。")]
     [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("アクセストークン")]
     public async ValueTask AuthenticateAsync_Calls_PostApi()
     {

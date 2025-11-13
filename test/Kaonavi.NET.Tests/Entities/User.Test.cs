@@ -57,7 +57,7 @@ public sealed class UserTest
     /// <param name="isActive"><see cref="User.IsActive"/></param>
     /// <param name="passwordLocked"><see cref="User.PasswordLocked"/></param>
     /// <param name="useSmartphone"><see cref="User.UseSmartphone"/></param>
-    [TestMethod(UserTestName), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = UserTestName), TestCategory("JSON Deserialize")]
     [DataRow(AdminUserJson, 1, "taro@kaonavi.jp", "A0002", 1, "システム管理者", "Adm", true, false, false, DisplayName = UserTestName)]
     [DataRow(NonMemberJson, 2, "hanako@kaonavi.jp", null, 2, "マネージャ", "一般", true, true, true, DisplayName = UserTestName)]
     public void User_CanDeserializeJSON(string json, int id, string email, string? memberCode, int roleId, string roleName, string roleType, bool isActive, bool passwordLocked, bool useSmartphone)

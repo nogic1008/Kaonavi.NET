@@ -10,7 +10,7 @@ public sealed class SheetDataTest
     /// <summary>
     /// <see cref="RecordType.Single"/>のJSONからデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(SheetData)} > 単一レコードのJSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(SheetData)} > 単一レコードのJSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeSingleJSON()
     {
         // Arrange
@@ -49,7 +49,7 @@ public sealed class SheetDataTest
     /// <summary>
     /// <see cref="RecordType.Multiple"/>のJSONからデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(SheetData)} > 複数レコードのJSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(SheetData)} > 複数レコードのJSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeMultipleJSON()
     {
         // Arrange

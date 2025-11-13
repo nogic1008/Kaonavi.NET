@@ -14,7 +14,7 @@ public sealed partial class KaonaviClientTest
         /// <summary>
         /// <see cref="KaonaviClient.Department.ListAsync"/>は、"/departments"にGETリクエストを行う。
         /// </summary>
-        [TestMethod($"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ListAsync)} > GET /departments をコールする。")]
+        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ListAsync)} > GET /departments をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("所属ツリー")]
         public async ValueTask Department_ListAsync_Calls_GetApi()
         {
@@ -77,7 +77,7 @@ public sealed partial class KaonaviClientTest
         /// <summary>
         /// <see cref="KaonaviClient.Department.ReplaceAsync"/>は、"/departments"にPUTリクエストを行う。
         /// </summary>
-        [TestMethod($"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ReplaceAsync)} > PUT /departments をコールする。")]
+        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ReplaceAsync)} > PUT /departments をコールする。")]
         [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("所属ツリー")]
         public async ValueTask Department_ReplaceAsync_Calls_PutApi()
         {
