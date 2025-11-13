@@ -21,7 +21,7 @@ public sealed class TaskProgressTest
     /// <summary>
     /// JSONから<see cref="TaskState"/>にデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(TaskState)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(TaskState)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     [DataRow("\"OK\"", TaskState.OK, DisplayName = $"\"OK\" -> {nameof(TaskState)}.{nameof(TaskState.OK)} にデシリアライズできる。")]
     [DataRow("\"NG\"", TaskState.NG, DisplayName = $"\"NG\" -> {nameof(TaskState)}.{nameof(TaskState.NG)} にデシリアライズできる。")]
     [DataRow("\"ERROR\"", TaskState.Error, DisplayName = $"\"ERROR\" -> {nameof(TaskState)}.{nameof(TaskState.Error)} にデシリアライズできる。")]
@@ -37,7 +37,7 @@ public sealed class TaskProgressTest
     /// <param name="id"><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></param>
     /// <param name="status"><inheritdoc cref="TaskProgress" path="/param[@name='Status']"/></param>
     /// <param name="messages"><inheritdoc cref="TaskProgress" path="/param[@name='Messages']"/></param>
-    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = TestName), TestCategory("JSON Deserialize")]
     [DataRow(TaskOkJson, 1, TaskState.OK, (string[])[], DisplayName = TestName)]
     [DataRow(TaskRunningJson, 2, TaskState.Running, null, DisplayName = TestName)]
     [DataRow(TaskErrorJson, 3, TaskState.NG, (string[])["エラーメッセージ1", "エラーメッセージ2"], DisplayName = TestName)]

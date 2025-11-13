@@ -10,7 +10,7 @@ public sealed class MemberLayoutTest
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(MemberLayout)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(MemberLayout)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeJSON()
     {
         // Arrange

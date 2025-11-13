@@ -16,7 +16,7 @@ public sealed class RoleTest
     /// <param name="id"><inheritdoc cref="Role.Id" path="/summary"/></param>
     /// <param name="name"><inheritdoc cref="Role.Name" path="/summary"/></param>
     /// <param name="type"><inheritdoc cref="Role.Type" path="/summary"/></param>
-    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = TestName), TestCategory("JSON Deserialize")]
     [DataRow(/*lang=json,strict*/ """{ "id": 1, "name": "カオナビ管理者", "type": "Adm" }""", 1, "カオナビ管理者", "Adm", DisplayName = TestName)]
     [DataRow(/*lang=json,strict*/ """{ "id": 2, "name": "カオナビマネージャー", "type": "一般" }""", 2, "カオナビマネージャー", "一般", DisplayName = TestName)]
     public void CanDeserializeJSON(string json, int id, string name, string type)

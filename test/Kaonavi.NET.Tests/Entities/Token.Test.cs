@@ -10,7 +10,7 @@ public sealed class TokenTest
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(Token)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(Token)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeJSON()
     {
         // Arrange

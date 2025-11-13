@@ -11,7 +11,7 @@ public sealed class ToCustomFieldTest
     /// <summary>
     /// <see cref="NormalClassSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
     /// </summary>
-    [TestMethod($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つクラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
+    [TestMethod(DisplayName = $"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つクラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
     public void Class_Generates_ToCustomFields_Method()
     {
         // Arrange
@@ -35,7 +35,7 @@ public sealed class ToCustomFieldTest
     /// <summary>
     /// <see cref="NormalRecordSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
     /// </summary>
-    [TestMethod($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ record クラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
+    [TestMethod(DisplayName = $"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ record クラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
     public void Record_Generates_ToCustomFields_Method()
     {
         // Arrange
@@ -59,7 +59,7 @@ public sealed class ToCustomFieldTest
     /// <summary>
     /// <see cref="NoNamespaceClassSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
     /// </summary>
-    [TestMethod($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たないクラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
+    [TestMethod(DisplayName = $"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たないクラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
     public void Class_Without_Namespace_Generates_ToCustomFields_Method()
     {
         // Arrange
@@ -83,7 +83,7 @@ public sealed class ToCustomFieldTest
     /// <summary>
     /// <see cref="NoNamespaceRecordSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
     /// </summary>
-    [TestMethod($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たない record クラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
+    [TestMethod(DisplayName = $"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たない record クラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
     public void Record_Without_Namespace_Generates_ToCustomFields_Method()
     {
         // Arrange

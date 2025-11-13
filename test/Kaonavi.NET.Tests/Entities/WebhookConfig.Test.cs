@@ -10,7 +10,7 @@ public sealed class WebhookConfigTest
     /// <summary>
     /// JSONから<see cref="WebhookConfig"/>にデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(WebhookConfig)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(WebhookConfig)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void WebhookConfig_CanDeserializeJSON()
     {
         // Arrange

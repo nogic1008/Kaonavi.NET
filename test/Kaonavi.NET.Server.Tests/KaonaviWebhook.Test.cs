@@ -7,7 +7,7 @@ namespace Kaonavi.Net.Server.Tests;
 [TestClass]
 public sealed class KaonaviWebhookTest
 {
-    [TestMethod($"{nameof(KaonaviWebhook)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(KaonaviWebhook)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void Can_Deserialize_JSON()
     {
         // Arrange

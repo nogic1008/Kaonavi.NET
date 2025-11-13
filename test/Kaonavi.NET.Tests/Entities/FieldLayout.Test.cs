@@ -54,7 +54,7 @@ public sealed class FieldLayoutTest
     /// <summary>
     /// JSONから<see cref="FieldType"/>にデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(FieldType)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(FieldType)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     [DataRow("\"string\"", FieldType.String, DisplayName = $"\"string\" -> {nameof(FieldType)}.{nameof(FieldType.String)} にデシリアライズできる。")]
     [DataRow("\"number\"", FieldType.Number, DisplayName = $"\"number\" -> {nameof(FieldType)}.{nameof(FieldType.Number)} にデシリアライズできる。")]
     [DataRow("\"date\"", FieldType.Date, DisplayName = $"\"date\" -> {nameof(FieldType)}.{nameof(FieldType.Date)} にデシリアライズできる。")]
@@ -75,7 +75,7 @@ public sealed class FieldLayoutTest
     /// <param name="maxLength"><inheritdoc cref="FieldLayout.MaxLength" path="/summary"/></param>
     /// <param name="enums"><inheritdoc cref="FieldLayout.Enum" path="/summary"/></param>
     /// <param name="readOnly"><inheritdoc cref="FieldLayout.ReadOnly path="/summary"/></param>
-    [TestMethod(TestName), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = TestName), TestCategory("JSON Deserialize")]
     [DataRow(StringFieldJson, "社員番号", true, FieldType.String, 50, (string[])[], false, DisplayName = TestName)]
     [DataRow(DateFieldJson, "入社日", false, FieldType.Date, null, (string[])[], false, DisplayName = TestName)]
     [DataRow(EnumFieldJson, "性別", false, FieldType.Enum, null, (string[])["男性", "女性"], false, DisplayName = TestName)]
@@ -99,7 +99,7 @@ public sealed class FieldLayoutTest
     /// <summary>
     /// JSONから<see cref="FieldInput"/>にデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(FieldInput)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(FieldInput)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     [DataRow("\"text_box\"", FieldInput.TextBox, DisplayName = $"\"text_box\" -> {nameof(FieldInput)}.{nameof(FieldInput.TextBox)} にデシリアライズできる。")]
     [DataRow("\"text_area\"", FieldInput.TextArea, DisplayName = $"\"text_area\" -> {nameof(FieldInput)}.{nameof(FieldInput.TextArea)} にデシリアライズできる。")]
     [DataRow("\"number_box\"", FieldInput.NumberBox, DisplayName = $"\"number_box\" -> {nameof(FieldInput)}.{nameof(FieldInput.NumberBox)} にデシリアライズできる。")]
@@ -118,7 +118,7 @@ public sealed class FieldLayoutTest
     /// <summary>
     /// JSONから<see cref="CustomFieldLayout"/>にデシリアライズできる。
     /// </summary>
-    [TestMethod($"{nameof(CustomFieldLayout)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(CustomFieldLayout)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CustomFieldLayout_Can_Deserialize_FromJSON()
     {
         // Arrange

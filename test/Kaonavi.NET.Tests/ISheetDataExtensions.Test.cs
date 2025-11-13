@@ -17,7 +17,7 @@ public sealed class ISheetDataExtensionsTest
     /// <summary>
     /// <see cref="ISheetDataExtensions.ToSingleSheetData{T}(T)"/>は、単一レコードであるSheetDataの一覧を返す。
     /// </summary>
-    [TestMethod($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードであるSheetDataの一覧を返す。")]
+    [TestMethod(DisplayName = $"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードであるSheetDataの一覧を返す。")]
     public void ToSingleSheetData_Returns_Single_SheetData()
     {
         // Arrange
@@ -37,7 +37,7 @@ public sealed class ISheetDataExtensionsTest
     /// <summary>
     /// <see cref="ISheetDataExtensions.ToMultipleSheetData{T}(IEnumerable{T})"/>は、複数レコードであるSheetDataの一覧を返す。
     /// </summary>
-    [TestMethod($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードであるSheetDataの一覧を返す。")]
+    [TestMethod(DisplayName = $"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードであるSheetDataの一覧を返す。")]
     public void ToMultipleSheetData_Returns_Multiple_SheetData()
     {
         // Arrange

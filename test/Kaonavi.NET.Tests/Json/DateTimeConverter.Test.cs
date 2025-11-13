@@ -13,7 +13,7 @@ public sealed class DateTimeConverterTest
     /// </summary>
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [TestMethod($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Read)}()"), TestCategory("JSON Converter")]
+    [TestMethod(DisplayName = $"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Read)}()"), TestCategory("JSON Converter")]
     [DataRow(/*lang=json,strict*/ "\"2021-01-01 12:34:56\"", 2021, 1, 1, 12, 34, 56)]
     public void Read_Returns_DateTime(string json, int year, int month, int day, int hour, int minute, int second)
     {
@@ -33,7 +33,7 @@ public sealed class DateTimeConverterTest
     /// </summary>
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [TestMethod($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Write)}()"), TestCategory("JSON Converter")]
+    [TestMethod(DisplayName = $"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Write)}()"), TestCategory("JSON Converter")]
     [DataRow(2021, 1, 1, 12, 34, 56, /*lang=json,strict*/ "\"2021-01-01 12:34:56\"")]
     public void Write_Flushes_JSON(int year, int month, int day, int hour, int minute, int second, string json)
     {

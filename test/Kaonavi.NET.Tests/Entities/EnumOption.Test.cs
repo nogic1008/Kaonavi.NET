@@ -8,7 +8,7 @@ namespace Kaonavi.Net.Tests.Entities;
 public sealed class EnumOptionTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [TestMethod($"{nameof(EnumOption)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(EnumOption)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeJSON()
     {
         // Arrange

@@ -13,7 +13,7 @@ public sealed class BlankNullableDateConverterTest
     /// </summary>
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [TestMethod($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Read)}()"), TestCategory("JSON Converter")]
+    [TestMethod(DisplayName = $"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Read)}()"), TestCategory("JSON Converter")]
     [DataRow(/*lang=json,strict*/ "\"2021-01-01\"", 2021, 1, 1)]
     [DataRow(/*lang=json,strict*/ "\"\"", null, 0, 0)]
     [DataRow(/*lang=json,strict*/ "null", null, 0, 0)]
@@ -38,7 +38,7 @@ public sealed class BlankNullableDateConverterTest
     /// </summary>
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [TestMethod($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Write)}()"), TestCategory("JSON Converter")]
+    [TestMethod(DisplayName = $"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Write)}()"), TestCategory("JSON Converter")]
     [DataRow(2021, 1, 1, /*lang=json,strict*/ "\"2021-01-01\"")]
     [DataRow(null, 0, 0, /*lang=json,strict*/ "\"\"")]
     public void Write_Flushes_JSON(int? year, int month, int day, string json)
