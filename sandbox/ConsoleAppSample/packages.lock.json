@@ -4,9 +4,9 @@
     "net10.0": {
       "ConsoleAppFramework": {
         "type": "Direct",
-        "requested": "[5.7.4, )",
-        "resolved": "5.7.4",
-        "contentHash": "pI9Cwa+AZFhiLKA5vBo7O7GbHy23ZPO+6l33rKbfgMvsyPYz04TMgX+7Brj73aFU3KMhVBbOzKqLab2Z46RqqQ=="
+        "requested": "[5.7.9, )",
+        "resolved": "5.7.9",
+        "contentHash": "EX6Zy4N7sNjJPUBGHTaj4InbbyjG36/0uRG1QxWX+t5W0dqVzu4i8Kx9mU0t5S7eLPGqNOoeZr2m1V2k3H2YtA=="
       },
       "Microsoft.Extensions.Configuration.Json": {
         "type": "Direct",
