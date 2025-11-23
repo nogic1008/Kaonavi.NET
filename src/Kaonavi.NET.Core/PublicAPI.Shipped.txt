@@ -88,14 +88,6 @@ Kaonavi.Net.Entities.EnumOption.Name.get -> string!
 Kaonavi.Net.Entities.EnumOption.Name.init -> void
 Kaonavi.Net.Entities.EnumOption.SheetName.get -> string!
 Kaonavi.Net.Entities.EnumOption.SheetName.init -> void
-Kaonavi.Net.Entities.FaceImage
-Kaonavi.Net.Entities.FaceImage.Code.get -> string!
-Kaonavi.Net.Entities.FaceImage.Code.init -> void
-Kaonavi.Net.Entities.FaceImage.Content.get -> byte[]!
-Kaonavi.Net.Entities.FaceImage.Content.init -> void
-Kaonavi.Net.Entities.FaceImage.Deconstruct(out string! Code, out byte[]! Content) -> void
-Kaonavi.Net.Entities.FaceImage.FaceImage(Kaonavi.Net.Entities.FaceImage! original) -> void
-Kaonavi.Net.Entities.FaceImage.FaceImage(string! Code, byte[]! Content) -> void
 Kaonavi.Net.Entities.FaceImageInfo
 Kaonavi.Net.Entities.FaceImageInfo.Code.get -> string!
 Kaonavi.Net.Entities.FaceImageInfo.Code.init -> void
@@ -366,10 +358,7 @@ Kaonavi.Net.KaonaviClient.IEnumOption.UpdateAsync(int id, System.Collections.Gen
 Kaonavi.Net.KaonaviClient.ILayout
 Kaonavi.Net.KaonaviClient.ILayout.ListAsync(bool getCalcType = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetLayout!>!>
 Kaonavi.Net.KaonaviClient.ILayout.ReadAsync(int id, bool getCalcType = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.SheetLayout!>
-Kaonavi.Net.KaonaviClient.ILayout.ReadMemberLayoutAsync(bool getCalcType, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.MemberLayout!>
-Kaonavi.Net.KaonaviClient.ILayout.ReadMemberLayoutAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.MemberLayout!>
 Kaonavi.Net.KaonaviClient.IMember
-Kaonavi.Net.KaonaviClient.IMember.AddFaceImageAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImage!>! payload, bool enableTrimming = true, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.IMember.CreateAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.IMember.DeleteAsync(System.Collections.Generic.IReadOnlyList<string!>! codes, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.IMember.GetFaceImageListAsync(System.DateOnly updatedSince, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImageInfo!>!>
@@ -377,7 +366,6 @@ Kaonavi.Net.KaonaviClient.IMember.ListAsync(System.Threading.CancellationToken c
 Kaonavi.Net.KaonaviClient.IMember.OverWriteAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.IMember.ReplaceAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.IMember.UpdateAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.MemberData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
-Kaonavi.Net.KaonaviClient.IMember.UpdateFaceImageAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImage!>! payload, bool enableTrimming = true, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.IRole
 Kaonavi.Net.KaonaviClient.IRole.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Role!>!>
 Kaonavi.Net.KaonaviClient.ISheet
@@ -440,9 +428,6 @@ override Kaonavi.Net.Entities.EnumOption.Data.ToString() -> string!
 override Kaonavi.Net.Entities.EnumOption.Equals(object? obj) -> bool
 override Kaonavi.Net.Entities.EnumOption.GetHashCode() -> int
 override Kaonavi.Net.Entities.EnumOption.ToString() -> string!
-override Kaonavi.Net.Entities.FaceImage.Equals(object? obj) -> bool
-override Kaonavi.Net.Entities.FaceImage.GetHashCode() -> int
-override Kaonavi.Net.Entities.FaceImage.ToString() -> string!
 override Kaonavi.Net.Entities.FaceImageInfo.Equals(object? obj) -> bool
 override Kaonavi.Net.Entities.FaceImageInfo.GetHashCode() -> int
 override Kaonavi.Net.Entities.FaceImageInfo.ToString() -> string!
@@ -511,8 +496,6 @@ static Kaonavi.Net.Entities.EnumOption.Data.operator !=(Kaonavi.Net.Entities.Enu
 static Kaonavi.Net.Entities.EnumOption.Data.operator ==(Kaonavi.Net.Entities.EnumOption.Data? left, Kaonavi.Net.Entities.EnumOption.Data? right) -> bool
 static Kaonavi.Net.Entities.EnumOption.operator !=(Kaonavi.Net.Entities.EnumOption? left, Kaonavi.Net.Entities.EnumOption? right) -> bool
 static Kaonavi.Net.Entities.EnumOption.operator ==(Kaonavi.Net.Entities.EnumOption? left, Kaonavi.Net.Entities.EnumOption? right) -> bool
-static Kaonavi.Net.Entities.FaceImage.operator !=(Kaonavi.Net.Entities.FaceImage? left, Kaonavi.Net.Entities.FaceImage? right) -> bool
-static Kaonavi.Net.Entities.FaceImage.operator ==(Kaonavi.Net.Entities.FaceImage? left, Kaonavi.Net.Entities.FaceImage? right) -> bool
 static Kaonavi.Net.Entities.FaceImageInfo.operator !=(Kaonavi.Net.Entities.FaceImageInfo? left, Kaonavi.Net.Entities.FaceImageInfo? right) -> bool
 static Kaonavi.Net.Entities.FaceImageInfo.operator ==(Kaonavi.Net.Entities.FaceImageInfo? left, Kaonavi.Net.Entities.FaceImageInfo? right) -> bool
 static Kaonavi.Net.Entities.FieldLayout.operator !=(Kaonavi.Net.Entities.FieldLayout? left, Kaonavi.Net.Entities.FieldLayout? right) -> bool
@@ -572,10 +555,6 @@ virtual Kaonavi.Net.Entities.EnumOption.Data.PrintMembers(System.Text.StringBuil
 virtual Kaonavi.Net.Entities.EnumOption.EqualityContract.get -> System.Type!
 virtual Kaonavi.Net.Entities.EnumOption.Equals(Kaonavi.Net.Entities.EnumOption? other) -> bool
 virtual Kaonavi.Net.Entities.EnumOption.PrintMembers(System.Text.StringBuilder! builder) -> bool
-virtual Kaonavi.Net.Entities.FaceImage.<Clone>$() -> Kaonavi.Net.Entities.FaceImage!
-virtual Kaonavi.Net.Entities.FaceImage.EqualityContract.get -> System.Type!
-virtual Kaonavi.Net.Entities.FaceImage.Equals(Kaonavi.Net.Entities.FaceImage? other) -> bool
-virtual Kaonavi.Net.Entities.FaceImage.PrintMembers(System.Text.StringBuilder! builder) -> bool
 virtual Kaonavi.Net.Entities.FaceImageInfo.<Clone>$() -> Kaonavi.Net.Entities.FaceImageInfo!
 virtual Kaonavi.Net.Entities.FaceImageInfo.EqualityContract.get -> System.Type!
 virtual Kaonavi.Net.Entities.FaceImageInfo.Equals(Kaonavi.Net.Entities.FaceImageInfo? other) -> bool
