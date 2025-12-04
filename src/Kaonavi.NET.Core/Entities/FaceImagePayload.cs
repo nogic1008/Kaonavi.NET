@@ -5,4 +5,4 @@ namespace Kaonavi.Net.Entities;
 /// </summary>
 /// <param name="Code">社員番号</param>
 /// <param name="Content">顔写真画像(5MBまで)</param>
-public record FaceImage(string Code, [property: JsonPropertyName("base64_face_image")] byte[] Content);
+public record FaceImagePayload(string Code, [property: JsonPropertyName("base64_face_image")] byte[] Content);

@@ -6,7 +6,7 @@ namespace Kaonavi.Net.Json;
 [JsonSerializable(typeof(IReadOnlyList<Attachment>))]
 [JsonSerializable(typeof(IReadOnlyList<DepartmentTree>))]
 [JsonSerializable(typeof(IReadOnlyList<EnumOption>))]
-[JsonSerializable(typeof(IReadOnlyList<FaceImage>))]
+[JsonSerializable(typeof(IReadOnlyList<FaceImagePayload>))]
 [JsonSerializable(typeof(IReadOnlyList<FaceImageInfo>))]
 [JsonSerializable(typeof(IReadOnlyList<JsonElement>))]
 [JsonSerializable(typeof(IReadOnlyList<MemberData>))]
