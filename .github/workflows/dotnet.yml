@@ -68,7 +68,7 @@ jobs:
         run: dotnet test --no-build --coverage --coverage-output-format cobertura --coverage-output "${{ vars.COVERAGE_REPORT_FILE }}"
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v5.5.1
+        uses: codecov/codecov-action@v5.5.2
         if: ${{ !cancelled() }}
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
