@@ -22,16 +22,16 @@
       },
       "Microsoft.Extensions.Http": {
         "type": "Direct",
-        "requested": "[10.0.0, )",
-        "resolved": "10.0.0",
-        "contentHash": "r+mSvm/Ryc/iYcc9zcUG5VP9EBB8PL1rgVU6macEaYk45vmGRk9PntM3aynFKN6s3Q4WW36kedTycIctctpTUQ==",
+        "requested": "[10.0.1, )",
+        "resolved": "10.0.1",
+        "contentHash": "ZXJup9ReE1Ot3M8jqcw1b/lnc8USxyYS3cyLsssU39u04TES9JNGviWUGIvP3K7mMU3TF7kQl2aS0SmVwegflw==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "10.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Diagnostics": "10.0.0",
-          "Microsoft.Extensions.Logging": "10.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Options": "10.0.0"
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.1",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.1",
+          "Microsoft.Extensions.Diagnostics": "10.0.1",
+          "Microsoft.Extensions.Logging": "10.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.1",
+          "Microsoft.Extensions.Options": "10.0.1"
         }
       },
       "Microsoft.Extensions.Logging.Console": {
@@ -100,21 +100,21 @@
       },
       "Microsoft.Extensions.Diagnostics": {
         "type": "Transitive",
-        "resolved": "10.0.0",
-        "contentHash": "xjkxIPgrT0mKTfBwb+CVqZnRchyZgzKIfDQOp8z+WUC6vPe3WokIf71z+hJPkH0YBUYJwa7Z/al1R087ib9oiw==",
+        "resolved": "10.0.1",
+        "contentHash": "YaocqxscJLxLit0F5yq2XyB+9C7rSRfeTL7MJIl7XwaOoUO3i0EqfO2kmtjiRduYWw7yjcSINEApYZbzjau2gQ==",
         "dependencies": {
-          "Microsoft.Extensions.Configuration": "10.0.0",
-          "Microsoft.Extensions.Diagnostics.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Options.ConfigurationExtensions": "10.0.0"
+          "Microsoft.Extensions.Configuration": "10.0.1",
+          "Microsoft.Extensions.Diagnostics.Abstractions": "10.0.1",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "10.0.1"
         }
       },
       "Microsoft.Extensions.Diagnostics.Abstractions": {
         "type": "Transitive",
-        "resolved": "10.0.0",
-        "contentHash": "SfK89ytD61S7DgzorFljSkUeluC1ncn6dtZgwc0ot39f/BEYWBl5jpgvodxduoYAs1d9HG8faCDRZxE95UMo2A==",
+        "resolved": "10.0.1",
+        "contentHash": "QMoMrkNpnQym5mpfdxfxpRDuqLpsOuztguFvzH9p+Ex+do+uLFoi7UkAsBO4e9/tNR3eMFraFf2fOAi2cp3jjA==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.0",
-          "Microsoft.Extensions.Options": "10.0.0"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.1",
+          "Microsoft.Extensions.Options": "10.0.1"
         }
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
