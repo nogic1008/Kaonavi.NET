@@ -1,5 +1,5 @@
 # Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# https://docs.github.com/code-security/reference/supply-chain-security/dependabot-options-reference
 
 version: 2
 updates:
@@ -10,13 +10,26 @@ updates:
       interval: daily
       time: '08:00'
       timezone: Japan
-    milestone: 10
+    cooldown:
+      default-days: 5
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
+    ignore:
+      # Pin source generators to support older .NET SDKs and Visual Studio versions
+      - dependency-name: Microsoft.CodeAnalysis.Analyzers
+      - dependency-name: Microsoft.CodeAnalysis.CSharp
+      # Ignore major updates for Microsoft.* and System.* to avoid potential breaking changes
+      - dependency-name: Microsoft.*
+        update-types:
+          - version-update:semver-major
+      - dependency-name: System.*
+        update-types:
+          - version-update:semver-major
     labels:
       - 'dependabot :robot:'
     commit-message:
-      prefix: fix
-      prefix-development: chore
-      include: scope
+      prefix: chore(deps)
 
   # GitHub Actions (/.github/workflows/*.yml)
   - package-ecosystem: github-actions
@@ -25,7 +38,8 @@ updates:
       interval: daily
       time: '08:00'
       timezone: Japan
-    milestone: 10
+    cooldown:
+      default-days: 5
     labels:
       - 'dependabot :robot:'
     commit-message:
@@ -38,7 +52,15 @@ updates:
       interval: daily
       time: '08:00'
       timezone: Japan
-    milestone: 10
+    cooldown:
+      default-days: 5
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
+    ignore:
+      - dependency-name: dotnet-sdk
+        update-types:
+          - version-update:semver-major
     labels:
       - 'dependabot :robot:'
     commit-message:
@@ -51,7 +73,8 @@ updates:
       interval: daily
       time: '08:00'
       timezone: Japan
-    milestone: 10
+    cooldown:
+      default-days: 5
     labels:
       - 'dependabot :robot:'
     commit-message:
