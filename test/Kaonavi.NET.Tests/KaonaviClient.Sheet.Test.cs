@@ -312,7 +312,6 @@ public sealed partial class KaonaviClientTest
             );
         }
 
-
         /// <summary>
         /// <inheritdoc cref="KaonaviClient.ISheet.AddFileAsync" path="/param[@name='id']"/>または<inheritdoc cref="KaonaviClient.ISheet.AddFileAsync" path="/param[@name='customFieldId']"/>が<c>0</c>未満のとき、
         /// <see cref="KaonaviClient.Sheet.AddFileAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
