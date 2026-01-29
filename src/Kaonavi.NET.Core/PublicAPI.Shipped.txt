@@ -15,23 +15,6 @@ Kaonavi.Net.Entities.AdvancedPermission.UserId.init -> void
 Kaonavi.Net.Entities.AdvancedType
 Kaonavi.Net.Entities.AdvancedType.Department = 1 -> Kaonavi.Net.Entities.AdvancedType
 Kaonavi.Net.Entities.AdvancedType.Member = 0 -> Kaonavi.Net.Entities.AdvancedType
-Kaonavi.Net.Entities.Attachment
-Kaonavi.Net.Entities.Attachment.Attachment(Kaonavi.Net.Entities.Attachment! original) -> void
-Kaonavi.Net.Entities.Attachment.Attachment(string! code, Kaonavi.Net.Entities.Attachment.Record! record) -> void
-Kaonavi.Net.Entities.Attachment.Attachment(string! Code, params System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment.Record!>! Records) -> void
-Kaonavi.Net.Entities.Attachment.Code.get -> string!
-Kaonavi.Net.Entities.Attachment.Code.init -> void
-Kaonavi.Net.Entities.Attachment.Deconstruct(out string! Code, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment.Record!>! Records) -> void
-Kaonavi.Net.Entities.Attachment.Record
-Kaonavi.Net.Entities.Attachment.Record.Content.get -> byte[]!
-Kaonavi.Net.Entities.Attachment.Record.Content.init -> void
-Kaonavi.Net.Entities.Attachment.Record.Deconstruct(out string! FileName, out byte[]! Content) -> void
-Kaonavi.Net.Entities.Attachment.Record.FileName.get -> string!
-Kaonavi.Net.Entities.Attachment.Record.FileName.init -> void
-Kaonavi.Net.Entities.Attachment.Record.Record(Kaonavi.Net.Entities.Attachment.Record! original) -> void
-Kaonavi.Net.Entities.Attachment.Record.Record(string! FileName, byte[]! Content) -> void
-Kaonavi.Net.Entities.Attachment.Records.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment.Record!>!
-Kaonavi.Net.Entities.Attachment.Records.init -> void
 Kaonavi.Net.Entities.CustomFieldLayout
 Kaonavi.Net.Entities.CustomFieldLayout.CustomFieldLayout(int Id, string! Name, bool Required, Kaonavi.Net.Entities.FieldType Type, int? MaxLength, System.Collections.Generic.IReadOnlyList<string?>! Enum, bool ReadOnly = false, Kaonavi.Net.Entities.FieldInput? TypeDetail = null) -> void
 Kaonavi.Net.Entities.CustomFieldLayout.CustomFieldLayout(Kaonavi.Net.Entities.CustomFieldLayout! original) -> void
@@ -369,12 +352,10 @@ Kaonavi.Net.KaonaviClient.IMember.UpdateAsync(System.Collections.Generic.IReadOn
 Kaonavi.Net.KaonaviClient.IRole
 Kaonavi.Net.KaonaviClient.IRole.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Role!>!>
 Kaonavi.Net.KaonaviClient.ISheet
-Kaonavi.Net.KaonaviClient.ISheet.AddFileAsync(int id, int customFieldId, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.ISheet.CreateAsync(int id, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.ISheet.ListAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>!>
 Kaonavi.Net.KaonaviClient.ISheet.ReplaceAsync(int id, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.ISheet.UpdateAsync(int id, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
-Kaonavi.Net.KaonaviClient.ISheet.UpdateFileAsync(int id, int customFieldId, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.Attachment!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.ITask
 Kaonavi.Net.KaonaviClient.ITask.ReadAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.TaskProgress!>
 Kaonavi.Net.KaonaviClient.IUser
@@ -404,12 +385,6 @@ Kaonavi.Net.SheetSerializableAttribute.SheetSerializableAttribute() -> void
 override Kaonavi.Net.Entities.AdvancedPermission.Equals(object? obj) -> bool
 override Kaonavi.Net.Entities.AdvancedPermission.GetHashCode() -> int
 override Kaonavi.Net.Entities.AdvancedPermission.ToString() -> string!
-override Kaonavi.Net.Entities.Attachment.Equals(object? obj) -> bool
-override Kaonavi.Net.Entities.Attachment.GetHashCode() -> int
-override Kaonavi.Net.Entities.Attachment.Record.Equals(object? obj) -> bool
-override Kaonavi.Net.Entities.Attachment.Record.GetHashCode() -> int
-override Kaonavi.Net.Entities.Attachment.Record.ToString() -> string!
-override Kaonavi.Net.Entities.Attachment.ToString() -> string!
 override Kaonavi.Net.Entities.CustomFieldLayout.<Clone>$() -> Kaonavi.Net.Entities.CustomFieldLayout!
 override Kaonavi.Net.Entities.CustomFieldLayout.EqualityContract.get -> System.Type!
 override Kaonavi.Net.Entities.CustomFieldLayout.Equals(object? obj) -> bool
@@ -482,10 +457,6 @@ override sealed Kaonavi.Net.Entities.CustomFieldLayout.Equals(Kaonavi.Net.Entiti
 override sealed Kaonavi.Net.Entities.WebhookConfig.Equals(Kaonavi.Net.Entities.WebhookConfigPayload? other) -> bool
 static Kaonavi.Net.Entities.AdvancedPermission.operator !=(Kaonavi.Net.Entities.AdvancedPermission? left, Kaonavi.Net.Entities.AdvancedPermission? right) -> bool
 static Kaonavi.Net.Entities.AdvancedPermission.operator ==(Kaonavi.Net.Entities.AdvancedPermission? left, Kaonavi.Net.Entities.AdvancedPermission? right) -> bool
-static Kaonavi.Net.Entities.Attachment.operator !=(Kaonavi.Net.Entities.Attachment? left, Kaonavi.Net.Entities.Attachment? right) -> bool
-static Kaonavi.Net.Entities.Attachment.operator ==(Kaonavi.Net.Entities.Attachment? left, Kaonavi.Net.Entities.Attachment? right) -> bool
-static Kaonavi.Net.Entities.Attachment.Record.operator !=(Kaonavi.Net.Entities.Attachment.Record? left, Kaonavi.Net.Entities.Attachment.Record? right) -> bool
-static Kaonavi.Net.Entities.Attachment.Record.operator ==(Kaonavi.Net.Entities.Attachment.Record? left, Kaonavi.Net.Entities.Attachment.Record? right) -> bool
 static Kaonavi.Net.Entities.CustomFieldLayout.operator !=(Kaonavi.Net.Entities.CustomFieldLayout? left, Kaonavi.Net.Entities.CustomFieldLayout? right) -> bool
 static Kaonavi.Net.Entities.CustomFieldLayout.operator ==(Kaonavi.Net.Entities.CustomFieldLayout? left, Kaonavi.Net.Entities.CustomFieldLayout? right) -> bool
 static Kaonavi.Net.Entities.CustomFieldValue.operator !=(Kaonavi.Net.Entities.CustomFieldValue? left, Kaonavi.Net.Entities.CustomFieldValue? right) -> bool
@@ -530,14 +501,6 @@ virtual Kaonavi.Net.Entities.AdvancedPermission.<Clone>$() -> Kaonavi.Net.Entiti
 virtual Kaonavi.Net.Entities.AdvancedPermission.EqualityContract.get -> System.Type!
 virtual Kaonavi.Net.Entities.AdvancedPermission.Equals(Kaonavi.Net.Entities.AdvancedPermission? other) -> bool
 virtual Kaonavi.Net.Entities.AdvancedPermission.PrintMembers(System.Text.StringBuilder! builder) -> bool
-virtual Kaonavi.Net.Entities.Attachment.<Clone>$() -> Kaonavi.Net.Entities.Attachment!
-virtual Kaonavi.Net.Entities.Attachment.EqualityContract.get -> System.Type!
-virtual Kaonavi.Net.Entities.Attachment.Equals(Kaonavi.Net.Entities.Attachment? other) -> bool
-virtual Kaonavi.Net.Entities.Attachment.PrintMembers(System.Text.StringBuilder! builder) -> bool
-virtual Kaonavi.Net.Entities.Attachment.Record.<Clone>$() -> Kaonavi.Net.Entities.Attachment.Record!
-virtual Kaonavi.Net.Entities.Attachment.Record.EqualityContract.get -> System.Type!
-virtual Kaonavi.Net.Entities.Attachment.Record.Equals(Kaonavi.Net.Entities.Attachment.Record? other) -> bool
-virtual Kaonavi.Net.Entities.Attachment.Record.PrintMembers(System.Text.StringBuilder! builder) -> bool
 virtual Kaonavi.Net.Entities.CustomFieldLayout.Equals(Kaonavi.Net.Entities.CustomFieldLayout? other) -> bool
 virtual Kaonavi.Net.Entities.CustomFieldValue.<Clone>$() -> Kaonavi.Net.Entities.CustomFieldValue!
 virtual Kaonavi.Net.Entities.CustomFieldValue.EqualityContract.get -> System.Type!

@@ -50,7 +50,7 @@ public sealed partial class KaonaviClientTest
 
         /// <summary>シート情報 添付ファイルAPIのリクエストPayload</summary>
         /*lang=json,strict*/
-        private const string AttachmentJson = """
+        private const string AttachmentPayloadJson = """
         [
           {
             "code": "A0001",
@@ -64,7 +64,8 @@ public sealed partial class KaonaviClientTest
         ]
         """;
         /// <summary>シート情報 添付ファイルAPIのリクエストPayload</summary>
-        private static readonly IReadOnlyList<Attachment> _attachmentPayload = JsonSerializer.Deserialize(AttachmentJson, Context.Default.IReadOnlyListAttachment)!;
+        private static readonly IReadOnlyList<AttachmentPayload> _attachmentPayload
+            = JsonSerializer.Deserialize(AttachmentPayloadJson, Context.Default.IReadOnlyListAttachmentPayload)!;
 
         /// <summary>
         /// <inheritdoc cref="KaonaviClient.ISheet.ListAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
@@ -361,7 +362,7 @@ public sealed partial class KaonaviClientTest
             mockedApi.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Post),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe($"/sheets/{sheetId}/custom_fields/{customFieldId}/file"),
-                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, AttachmentJson)
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, AttachmentPayloadJson)
             );
         }
 
@@ -401,7 +402,7 @@ public sealed partial class KaonaviClientTest
             // Arrange
             const int sheetId = 1;
             const int customFieldId = 1;
-            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_attachmentPayload, Context.Default.IReadOnlyListAttachment)}}}";
+            string expectedJson = $"{{\"member_data\":{JsonSerializer.Serialize(_attachmentPayload, Context.Default.IReadOnlyListAttachmentPayload)}}}";
 
             var handler = new Mock<HttpMessageHandler>();
             _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/sheets/{sheetId}/custom_fields/{customFieldId}/file")
@@ -416,7 +417,7 @@ public sealed partial class KaonaviClientTest
             handler.ShouldBeCalledOnce(
                 static req => req.Method.ShouldBe(HttpMethod.Patch),
                 static req => req.RequestUri?.PathAndQuery.ShouldBe($"/sheets/{sheetId}/custom_fields/{customFieldId}/file"),
-                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, AttachmentJson)
+                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, AttachmentPayloadJson)
             );
         }
     }
