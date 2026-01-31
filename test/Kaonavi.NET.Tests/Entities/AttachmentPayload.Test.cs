@@ -3,12 +3,12 @@ using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Entities;
 
-/// <summary><see cref="Attachment"/>の単体テスト</summary>
+/// <summary><see cref="AttachmentPayload"/>の単体テスト</summary>
 [TestClass, TestCategory("Entities")]
-public sealed class AttachmentTest
+public sealed class AttachmentPayloadTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [TestMethod(DisplayName = $"{nameof(Attachment)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
+    [TestMethod(DisplayName = $"{nameof(AttachmentPayload)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
     public void CanDeserializeJSON()
     {
         // Arrange
@@ -26,7 +26,7 @@ public sealed class AttachmentTest
         """;
 
         // Act
-        var attachment = JsonSerializer.Deserialize(json, Context.Default.Attachment);
+        var attachment = JsonSerializer.Deserialize(json, Context.Default.AttachmentPayload);
 
         // Assert
         attachment.ShouldNotBeNull().ShouldSatisfyAllConditions(

@@ -290,7 +290,7 @@ public sealed partial class KaonaviClientTest
         ]
         """;
         /// <summary>メンバー情報 顔写真 APIのリクエストPayload</summary>
-        private static readonly IReadOnlyList<FaceImage> _faceImagePayload = JsonSerializer.Deserialize(FaceImagePayloadJson, Context.Default.IReadOnlyListFaceImage)!;
+        private static readonly IReadOnlyList<FaceImagePayload> _faceImagePayload = JsonSerializer.Deserialize(FaceImagePayloadJson, Context.Default.IReadOnlyListFaceImagePayload)!;
 
 
         /// <summary>

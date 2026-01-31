@@ -7,14 +7,14 @@ namespace Kaonavi.Net.Entities;
 /// <para><see cref="RecordType.Multiple"/>の場合にのみ複数の値が返却されます。</para>
 /// </param>
 [method: JsonConstructor]
-public record Attachment(string Code, params IReadOnlyList<Attachment.Record> Records)
+public record AttachmentPayload(string Code, params IReadOnlyList<AttachmentPayload.Record> Records)
 {
     /// <summary>
     /// 単一レコードシート向けに、Attachmentの新しいインスタンスを生成します。
     /// </summary>
     /// <param name="code"><inheritdoc cref="Code" path="/summary"/></param>
     /// <param name="record">設定値</param>
-    public Attachment(string code, Record record)
+    public AttachmentPayload(string code, Record record)
         : this(code, [record]) { }
 
     /// <summary>添付ファイル情報</summary>
