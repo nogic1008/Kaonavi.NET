@@ -11,16 +11,13 @@ public partial class KaonaviClient : KaonaviClient.ILayout
     /// </summary>
     public interface ILayout
     {
-        /// <inheritdoc cref="ReadMemberLayoutAsync(bool, CancellationToken)"/>
-        public ValueTask<MemberLayout> ReadMemberLayoutAsync(CancellationToken cancellationToken = default) => ReadMemberLayoutAsync(false, cancellationToken);
-
         /// <summary>
         /// 使用可能なメンバーのレイアウト設定情報を全て取得します。
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%AC%E3%82%A4%E3%82%A2%E3%82%A6%E3%83%88%E8%A8%AD%E5%AE%9A/paths/~1member_layouts/get"/>
         /// </summary>
         /// <param name="getCalcType">計算式パーツの取得</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<MemberLayout> ReadMemberLayoutAsync(bool getCalcType, CancellationToken cancellationToken = default);
+        public ValueTask<MemberLayout> ReadMemberLayoutAsync(bool getCalcType = false, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 使用可能なシートのレイアウト設定情報を全て取得します。
