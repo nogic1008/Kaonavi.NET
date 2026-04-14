@@ -1,4 +1,8 @@
 #nullable enable
+Kaonavi.Net.Json.DateOnlyConverter
+Kaonavi.Net.Json.DateOnlyConverter.DateOnlyConverter() -> void
+override Kaonavi.Net.Json.DateOnlyConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type! typeToConvert, System.Text.Json.JsonSerializerOptions! options) -> System.DateOnly
+override Kaonavi.Net.Json.DateOnlyConverter.Write(System.Text.Json.Utf8JsonWriter! writer, System.DateOnly value, System.Text.Json.JsonSerializerOptions! options) -> void
 Kaonavi.Net.Entities.AttachmentPayload
 Kaonavi.Net.Entities.AttachmentPayload.AttachmentPayload(Kaonavi.Net.Entities.AttachmentPayload! original) -> void
 Kaonavi.Net.Entities.AttachmentPayload.AttachmentPayload(string! code, Kaonavi.Net.Entities.AttachmentPayload.Record! record) -> void
