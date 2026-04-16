@@ -16,7 +16,9 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # enable GitHub OIDC token issuance
+      id-token: write # enable GitHub OIDC token issuance
+      attestations: write
+      contents: read
 
     steps:
       - uses: actions/checkout@v6.0.2
@@ -25,10 +27,10 @@ jobs:
         with:
           dotnet-version: ${{ vars.DOTNET_SDK_VERSIONS }}
           cache: true
-          cache-dependency-path: '**/packages.lock.json'
+          cache-dependency-path: Directory.Packages.props
 
       - name: Login to NuGet (with OIDC)
-        uses: NuGet/login@v1
+        uses: NuGet/login@d22cc5f58ff5b88bf9bd452535b4335137e24544 #v1.1.0
         id: login
         with:
           user: ${{ vars.NUGET_USER_NAME }}
@@ -40,9 +42,15 @@ jobs:
         env:
           TAG_VERSION: ${{ github.event.release.tag_name }} # v0.0.0-abc
 
+      - name: Generate Attestation for packages
+        uses: actions/attest@v4.1.0
+        with:
+          subject-path: "nupkgs/*.nupkg"
+
       - name: Publish to NuGet
         run: dotnet nuget push "nupkgs/*.nupkg" --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }}
-      - uses: actions/upload-artifact@v7.0.0
+      - name: Upload Packages
+        uses: actions/upload-artifact@v7.0.0
         with:
           name: packages
           path: nupkgs/
