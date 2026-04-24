@@ -313,6 +313,84 @@ public sealed partial class KaonaviClientTest
         }
 
         /// <summary>
+        /// <inheritdoc cref="KaonaviClient.ISheet.ListFileAsync" path="/param[@name='id']"/>または<inheritdoc cref="KaonaviClient.ISheet.ListFileAsync" path="/param[@name='customFieldId']"/>が<c>0</c>未満のとき、
+        /// <see cref="KaonaviClient.Sheet.ListFileAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
+        /// </summary>
+        /// <inheritdoc cref="KaonaviClient.ISheet.ListFileAsync" path="/param[@name='id']"/>
+        /// <inheritdoc cref="KaonaviClient.ISheet.ListFileAsync" path="/param[@name='customFieldId']"/>
+        /// <param name="paramName">例外発生の原因となるパラメータ名</param>
+        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)} > ArgumentOutOfRangeException をスローする。")]
+        [DataRow(-1, 1, nameof(id), DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)}(-1, 1, []) > ArgumentOutOfRangeException をスローする。")]
+        [DataRow(1, -1, nameof(customFieldId), DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)}(1, -1, []) > ArgumentOutOfRangeException をスローする。")]
+        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("シート情報")]
+        public async ValueTask When_Id_IsNegative_Sheet_ListFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName)
+        {
+            // Arrange
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+
+            // Act
+            var sut = CreateSut(mockedApi);
+            var act = async () => _ = await sut.Sheet.ListFileAsync(id, customFieldId);
+
+            // Assert
+            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe(paramName);
+            mockedApi.ShouldNotBeCalled();
+        }
+
+        /// <summary>
+        /// <see cref="KaonaviClient.Sheet.ListFileAsync"/>は、<paramref name="expectedUri"/>にGETリクエストを行う。
+        /// </summary>
+        /// <param name="date">updatedSinceに渡す日付パラメータ(<c>null</c>指定時は<c>default</c>)</param>
+        /// <param name="expectedUri">GETリクエスト先のURI</param>
+        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)} > GET /sheets/:sheetId/custom_fields/:customFieldId/file をコールする。")]
+        [DataRow(null, "/sheets/1/custom_fields/1/file", DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)}(1, 1) > GET /sheets/1/custom_fields/1/file をコールする。")]
+        [DataRow("2020-10-25", "/sheets/1/custom_fields/1/file?updated_since=2020-10-25", DisplayName = $"{nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)}(1, 1, 2020-10-25) > GET /sheets/1/custom_fields/1/file?updated_since=2020-10-25 をコールする。")]
+        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("シート情報")]
+        public async ValueTask Sheet_ListFileAsync_Calls_GetApi(string? date, string expectedUri)
+        {
+            // Arrange
+            const int sheetId = 1;
+            const int customFieldId = 1;
+            /*lang=json,strict*/
+            const string responseJson = """
+            {
+              "member_data": [
+                {
+                  "code": "A0001",
+                  "records": [
+                    {
+                      "file_name": "A0001.jpg",
+                      "download_url": "https://example.com/image/xxxx.jpg?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID",
+                      "updated_at": "2020-10-01 01:23:45"
+                    },
+                    {
+                      "file_name": "A0001.txt",
+                      "download_url": "https://example.com/image/xxxx.txt?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID",
+                      "updated_at": "2020-10-01 01:23:45"
+                    }
+                  ]
+                }
+              ]
+            }
+            """;
+            var mockedApi = new Mock<HttpMessageHandler>();
+            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery.StartsWith($"/sheets/{sheetId}") ?? false)
+                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+
+            // Act
+            var sut = CreateSut(mockedApi, "token");
+            var members = await sut.Sheet.ListFileAsync(sheetId, customFieldId, date is not null ? DateOnly.Parse(date) : default);
+
+            // Assert
+            members.ShouldNotBeEmpty();
+            mockedApi.ShouldBeCalledOnce(
+                static req => req.Method.ShouldBe(HttpMethod.Get),
+                req => req.RequestUri?.PathAndQuery.ShouldBe(expectedUri)
+            );
+        }
+
+        /// <summary>
         /// <inheritdoc cref="KaonaviClient.ISheet.AddFileAsync" path="/param[@name='id']"/>または<inheritdoc cref="KaonaviClient.ISheet.AddFileAsync" path="/param[@name='customFieldId']"/>が<c>0</c>未満のとき、
         /// <see cref="KaonaviClient.Sheet.AddFileAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>

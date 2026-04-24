@@ -76,6 +76,29 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         public ValueTask<int> CreateAsync(int id, IReadOnlyList<SheetData> payload, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// <paramref name="id"/>と一致するシートのファイルパーツのファイルをダウンロードするためのURL一覧を取得します。
+        /// <list type="bullet">
+        /// <item>
+        ///   URLの有効期限は15分です。ファイル数や回線状況によっては期限内に全てのダウンロードが完了しない場合があります。
+        ///   その際は、並行処理や一括取得の再リクエストなどの方法をご検討ください。
+        /// </item>
+        /// <item>
+        ///   URLは発行時点の添付ファイルに紐づいています。
+        /// </item>
+        /// <item>
+        ///   ファイルが登録されているレコードのみ、取得対象となります。
+        /// </item>
+        /// </list>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}~1custom_fields~1{custom_field_id}~1file/get"/>
+        /// </summary>
+        /// <param name="id"><inheritdoc cref="SheetLayout" path="/param[@name='Id']"/></param>
+        /// <param name="customFieldId"><inheritdoc cref="CustomFieldLayout" path="/param[@name='Id']"/></param>
+        /// <param name="updatedSince">指定した日以降に更新されたファイルに絞り込みます。</param>
+        /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
+        /// <returns>メンバーごとの添付ファイル情報のリスト</returns>
+        public ValueTask<IReadOnlyList<AttachmentInfo>> ListFileAsync(int id, int customFieldId, DateOnly updatedSince = default, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// <paramref name="id"/>と一致するシートのファイルパーツにファイルをアップロードします。
         /// <list type="bullet">
         /// <item>
@@ -211,6 +234,16 @@ public partial class KaonaviClient : KaonaviClient.ISheet
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         return CallTaskApiAsync(HttpMethod.Post, $"sheets/{id:D}/add", payload, "member_data"u8, Context.Default.IReadOnlyListSheetData, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>または<paramref name="customFieldId"/>が0より小さい場合にスローされます。</exception>
+    public ValueTask<IReadOnlyList<AttachmentInfo>> ListFileAsync(int id, int customFieldId, DateOnly updatedSince = default, CancellationToken cancellationToken = default)
+    {
+        ArgumentOutOfRangeException.ThrowIfNegative(id);
+        ArgumentOutOfRangeException.ThrowIfNegative(customFieldId);
+        string uriString = $"sheets/{id:D}/custom_fields/{customFieldId:D}/file{(updatedSince != default ? $"?updated_since={updatedSince:o}" : "")}";
+        return CallApiAsync(new(HttpMethod.Get, uriString), "member_data", Context.Default.IReadOnlyListAttachmentInfo, cancellationToken);
     }
 
     /// <inheritdoc/>
