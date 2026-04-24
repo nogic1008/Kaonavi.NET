@@ -3,6 +3,7 @@ using Kaonavi.Net.Entities;
 namespace Kaonavi.Net.Json;
 
 [JsonSerializable(typeof(IReadOnlyList<AdvancedPermission>))]
+[JsonSerializable(typeof(IReadOnlyList<AttachmentInfo>))]
 [JsonSerializable(typeof(IReadOnlyList<AttachmentPayload>))]
 [JsonSerializable(typeof(IReadOnlyList<DepartmentTree>))]
 [JsonSerializable(typeof(IReadOnlyList<EnumOption>))]
