@@ -13,7 +13,7 @@ internal class JsonElementAssertion : Assertion<JsonElement>
         : this(context, JsonElement.Parse(expected)) { }
     public JsonElementAssertion(AssertionContext<JsonElement> context, ReadOnlySpan<byte> expected)
         : this(context, JsonElement.Parse(expected)) { }
- 
+
     public JsonElementAssertion(AssertionContext<string> context, JsonElement expected)
         : base(context.Map(static json => JsonDocument.Parse(json!).RootElement)) => _expected = expected;
     public JsonElementAssertion(AssertionContext<string> context, [StringSyntax(StringSyntaxAttribute.Json)] string expected)
