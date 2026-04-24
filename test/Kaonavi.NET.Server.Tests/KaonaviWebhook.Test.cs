@@ -3,12 +3,11 @@ using Kaonavi.Net.Entities;
 
 namespace Kaonavi.Net.Server.Tests;
 
-[TestCategory("Server"), TestCategory("Entities")]
-[TestClass]
+[Category("Server"), Category("Entities")]
 public sealed class KaonaviWebhookTest
 {
-    [TestMethod(DisplayName = $"{nameof(KaonaviWebhook)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
-    public void Can_Deserialize_JSON()
+    [Test($"{nameof(KaonaviWebhook)} > JSONからデシリアライズできる。"), Category("JSON Deserialize")]
+    public async Task Can_Deserialize_JSON()
     {
         // Arrange
         const string json = /*lang=json,strict*/ """
@@ -30,10 +29,9 @@ public sealed class KaonaviWebhookTest
         var actual = JsonSerializer.Deserialize(json, Context.Default.KaonaviWebhook);
 
         // Assert
-        actual.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            static sut => sut.Event.ShouldBe(WebhookEvent.MemberCreated),
-            static sut => sut.EventTime.ShouldBe(new DateTime(2023, 4, 11, 9, 40, 45)),
-            static sut => sut.MemberData.ShouldBe([new("A0001"), new("A0002")])
-        );
+        await Assert.That(actual)
+            .Member(static o => o.Event, static o => o.IsEqualTo(WebhookEvent.MemberCreated))
+            .And.Member(static o => o.EventTime, static o => o.IsEqualTo(new DateTime(2023, 4, 11, 9, 40, 45)))
+            .And.Member(static o => o.MemberData, static o => o.IsEquivalentTo((Member[])[new("A0001"), new("A0002")]));
     }
 }
