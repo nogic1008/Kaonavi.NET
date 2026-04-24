@@ -1,10 +1,11 @@
+using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="AdvancedPermission"/>の単体テスト</summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class AdvancedPermissionTest
 {
     // lang=json,strict
@@ -31,19 +32,18 @@ public sealed class AdvancedPermissionTest
     /// <param name="userId"><inheritdoc cref="AdvancedPermission.UserId" path="/summary"/></param>
     /// <param name="addCodes"><inheritdoc cref="AdvancedPermission.AddCodes" path="/summary"/></param>
     /// <param name="exclusionCodes"><inheritdoc cref="AdvancedPermission.ExclusionCodes" path="/summary"/></param>
-    [TestMethod(DisplayName = TestName), TestCategory("JSON Deserialize")]
-    [DataRow(AdvancedPermissionJson, 1, (string[])["0001", "0002", "0003"], (string[])["0001", "0002", "0003"], DisplayName = TestName)]
-    [DataRow(AdvancedPermissionEmptyJson, 2, (string[])[], (string[])[], DisplayName = TestName)]
-    public void CanDeserializeJSON(string json, int userId, string[] addCodes, string[] exclusionCodes)
+    [Test(TestName), Category("JSON Deserialize")]
+    [Arguments(AdvancedPermissionJson, 1, (string[])["0001", "0002", "0003"], (string[])["0001", "0002", "0003"], DisplayName = TestName)]
+    [Arguments(AdvancedPermissionEmptyJson, 2, (string[])[], (string[])[], DisplayName = TestName)]
+    public async Task CanDeserializeJSON(string json, int userId, string[] addCodes, string[] exclusionCodes)
     {
         // Arrange - Act
-        var advancedPermission = JsonSerializer.Deserialize(json, Context.Default.AdvancedPermission);
+        var advancedPermission = JsonSerializer.Deserialize(json, JsonContext.Default.AdvancedPermission);
 
         // Assert
-        advancedPermission.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            sut => sut.UserId.ShouldBe(userId),
-            sut => sut.AddCodes.ShouldBe(addCodes),
-            sut => sut.ExclusionCodes.ShouldBe(exclusionCodes)
-        );
+        await Assert.That(advancedPermission).IsNotNull()
+            .And.Member(static o => o.UserId, o => o.IsEqualTo(userId))
+            .And.Member(static o => o.AddCodes, o => o.IsEquivalentTo(addCodes))
+            .And.Member(static o => o.ExclusionCodes, o => o.IsEquivalentTo(exclusionCodes));
     }
 }

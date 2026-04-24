@@ -4,7 +4,7 @@ using RandomFixtureKit;
 namespace Kaonavi.Net.Tests;
 
 /// <summary><see cref="ISheetDataExtensions"/>の単体テスト</summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class ISheetDataExtensionsTest
 {
     public class TestSheetData : ISheetData
@@ -17,8 +17,8 @@ public sealed class ISheetDataExtensionsTest
     /// <summary>
     /// <see cref="ISheetDataExtensions.ToSingleSheetData{T}(T)"/>は、単一レコードであるSheetDataの一覧を返す。
     /// </summary>
-    [TestMethod(DisplayName = $"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードであるSheetDataの一覧を返す。")]
-    public void ToSingleSheetData_Returns_Single_SheetData()
+    [Test($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードであるSheetDataの一覧を返す。")]
+    public async Task ToSingleSheetData_Returns_Single_SheetData()
     {
         // Arrange
         const int length = 10;
@@ -28,17 +28,15 @@ public sealed class ISheetDataExtensionsTest
         var actual = values.ToSingleSheetData();
 
         // Assert
-        actual.ShouldSatisfyAllConditions(
-            static sut => sut.Count.ShouldBe(length),
-            static sut => sut.ShouldAllBe(d => d.Records.Count == 1)
-        );
+        await Assert.That(actual).Count().IsEqualTo(length)
+            .And.All(static o => o.Records.Count == 1);
     }
 
     /// <summary>
     /// <see cref="ISheetDataExtensions.ToMultipleSheetData{T}(IEnumerable{T})"/>は、複数レコードであるSheetDataの一覧を返す。
     /// </summary>
-    [TestMethod(DisplayName = $"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードであるSheetDataの一覧を返す。")]
-    public void ToMultipleSheetData_Returns_Multiple_SheetData()
+    [Test($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードであるSheetDataの一覧を返す。")]
+    public async Task ToMultipleSheetData_Returns_Multiple_SheetData()
     {
         // Arrange
         const int codeLength = 10;
@@ -51,9 +49,8 @@ public sealed class ISheetDataExtensionsTest
         var actual = values.ToMultipleSheetData();
 
         // Assert
-        actual.ShouldSatisfyAllConditions(
-            static sut => sut.Count.ShouldBe(codeLength),
-            static sut => sut.ShouldAllBe(d => d.Records.Count == nameLength)
-        );
+        await Assert.That(actual).IsNotNull()
+            .And.Count().IsEqualTo(codeLength)
+            .And.All(static o => o.Records.Count == nameLength);
     }
 }

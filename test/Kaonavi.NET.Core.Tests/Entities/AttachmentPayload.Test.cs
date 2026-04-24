@@ -1,19 +1,21 @@
+using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="AttachmentPayload"/>の単体テスト</summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class AttachmentPayloadTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [TestMethod(DisplayName = $"{nameof(AttachmentPayload)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
-    public void CanDeserializeJSON()
+    [Test($"{nameof(AttachmentPayload)} > JSONからデシリアライズできる。")]
+    [Category("JSON Deserialize")]
+    public async Task CanDeserializeJSON()
     {
         // Arrange
         // lang=json,strict
-        const string json = """
+        var json = """
         {
           "code": "A0001",
           "records": [
@@ -23,18 +25,16 @@ public sealed class AttachmentPayloadTest
             }
           ]
         }
-        """;
+        """u8;
 
         // Act
-        var attachment = JsonSerializer.Deserialize(json, Context.Default.AttachmentPayload);
+        var attachment = JsonSerializer.Deserialize(json, JsonContext.Default.AttachmentPayload);
 
         // Assert
-        attachment.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            static sut => sut.Code.ShouldBe("A0001"),
-            static sut => sut.Records.ShouldHaveSingleItem().ShouldSatisfyAllConditions(
-                static sut => sut.FileName.ShouldBe("sample.txt"),
-                static sut => sut.Content.ShouldBe(Convert.FromBase64String("44GT44KM44Gv44K144Oz44OX44Or44OG44Kt44K544OI44Gn44GZ44CC"))
-            )
-        );
+        await Assert.That(attachment).IsNotNull()
+            .And.Member(static o => o.Code, static o => o.IsEqualTo<string>("A0001"))
+            .And.Member(static o => o.Records.Count, static o => o.IsEqualTo(1))
+            .And.Member(static o => o.Records[0].FileName, static o => o.IsEqualTo<string>("sample.txt"))
+            .And.Member(static o => o.Records[0].Content, static o => o.IsEquivalentTo(Convert.FromBase64String("44GT44KM44Gv44K144Oz44OX44Or44OG44Kt44K544OI44Gn44GZ44CC")));
     }
 }

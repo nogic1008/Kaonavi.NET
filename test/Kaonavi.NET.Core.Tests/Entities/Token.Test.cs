@@ -1,36 +1,37 @@
+using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="Token"/>の単体テスト</summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class TokenTest
 {
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [TestMethod(DisplayName = $"{nameof(Token)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
-    public void CanDeserializeJSON()
+    [Test($"{nameof(Token)} > JSONからデシリアライズできる。")]
+    [Category("JSON Deserialize")]
+    public async Task CanDeserializeJSON()
     {
         // Arrange
         /*lang=json,strict*/
-        const string jsonString = """
+        var json = """
         {
           "access_token": "25396f58-10f8-c228-7f0f-818b1d666b2e",
           "token_type": "Bearer",
           "expires_in": 3600
         }
-        """;
+        """u8;
 
         // Act
-        var token = JsonSerializer.Deserialize(jsonString, Context.Default.Token);
+        var token = JsonSerializer.Deserialize(json, JsonContext.Default.Token);
 
         // Assert
-        token.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            static sut => sut.AccessToken.ShouldBe("25396f58-10f8-c228-7f0f-818b1d666b2e"),
-            static sut => sut.TokenType.ShouldBe("Bearer"),
-            static sut => sut.ExpiresIn.ShouldBe(3600)
-        );
+        await Assert.That(token).IsNotNull()
+            .And.Member(static o => o.AccessToken, static o => o.IsEqualTo<string>("25396f58-10f8-c228-7f0f-818b1d666b2e"))
+            .And.Member(static o => o.TokenType, static o => o.IsEqualTo<string>("Bearer"))
+            .And.Member(static o => o.ExpiresIn, static o => o.IsEqualTo(3600));
     }
 }

@@ -1,21 +1,23 @@
+using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="MemberLayout"/>の単体テスト</summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class MemberLayoutTest
 {
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [TestMethod(DisplayName = $"{nameof(MemberLayout)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
-    public void CanDeserializeJSON()
+    [Test($"{nameof(MemberLayout)} > JSONからデシリアライズできる。")]
+    [Category("JSON Deserialize")]
+    public async Task CanDeserializeJSON()
     {
         // Arrange
         /*lang=json,strict*/
-        const string json = """
+        var json = """
         {
           "code": {
             "name": "社員番号",
@@ -106,25 +108,23 @@ public sealed class MemberLayoutTest
             }
           ]
         }
-        """;
+        """u8;
 
         // Act
-        var memberLayout = JsonSerializer.Deserialize(json, Context.Default.MemberLayout);
+        var memberLayout = JsonSerializer.Deserialize(json, JsonContext.Default.MemberLayout);
 
         // Assert
-        memberLayout.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            static sut => sut.Code.Name.ShouldBe("社員番号"),
-            static sut => sut.Name.Required.ShouldBeFalse(),
-            static sut => sut.NameKana.Type.ShouldBe(FieldType.String),
-            static sut => sut.Mail.MaxLength.ShouldBe(100),
-            static sut => sut.EnteredDate.Type.ShouldBe(FieldType.Date),
-            static sut => sut.RetiredDate.Enum.ShouldBeEmpty(),
-            static sut => sut.Gender.Enum.ShouldBe(["男性", "女性"]),
-            static sut => sut.Birthday.MaxLength.ShouldBeNull(),
-            static sut => sut.Department.Type.ShouldBe(FieldType.Department),
-            static sut => sut.SubDepartments.Type.ShouldBe(FieldType.DepartmentArray),
-            static sut => sut.CustomFields.Count.ShouldBe(2),
-            static sut => sut.CustomFields[^1].Enum.ShouldBe(["部長", "課長", "マネージャー", null])
-        );
+        await Assert.That(memberLayout).IsNotNull()
+            .And.Member(static o => o.Code.Name, static o => o.IsEqualTo<string>("社員番号"))
+            .And.Member(static o => o.Name.Required, static o => o.IsFalse())
+            .And.Member(static o => o.NameKana.Type, static o => o.IsEqualTo(FieldType.String))
+            .And.Member(static o => o.Mail.MaxLength, static o => o.IsEqualTo(100))
+            .And.Member(static o => o.EnteredDate.Type, static o => o.IsEqualTo(FieldType.Date))
+            .And.Member(static o => o.RetiredDate.Enum, static o => o.IsEmpty())
+            .And.Member(static o => o.Gender.Enum, static o => o.IsEquivalentTo((string?[])["男性", "女性"]))
+            .And.Member(static o => o.Birthday.MaxLength, static o => o.IsNull())
+            .And.Member(static o => o.Department.Type, static o => o.IsEqualTo(FieldType.Department))
+            .And.Member(static o => o.SubDepartments.Type, static o => o.IsEqualTo(FieldType.DepartmentArray))
+            .And.Member(static o => o.CustomFields, static o => o.Count().IsEqualTo(2).And.Contains(l => l.Enum.SequenceEqual(["部長", "課長", "マネージャー", null])));
     }
 }

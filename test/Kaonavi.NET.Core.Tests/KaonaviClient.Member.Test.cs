@@ -1,15 +1,15 @@
+using System.Text.Json;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Json;
 using Kaonavi.Net.Tests.Assertions;
-using Moq;
-using Moq.Contrib.HttpClient;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests;
 
 public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Member"/>の単体テスト</summary>
-    [TestClass]
+    [Category("API"), Category("メンバー情報")]
     public sealed class MemberTest
     {
         /// <summary><inheritdoc cref="KaonaviClient.Member" path="/summary/text()"/>のリクエストPayload</summary>
@@ -51,14 +51,15 @@ public sealed partial class KaonaviClientTest
         ]
         """;
         /// <summary><inheritdoc cref="KaonaviClient.Member" path="/summary/text()"/>のリクエストPayload</summary>
-        private static readonly IReadOnlyList<MemberData> _payload = JsonSerializer.Deserialize(PayloadJson, Context.Default.IReadOnlyListMemberData)!;
+        private static readonly IReadOnlyList<MemberData> _payload = JsonSerializer.Deserialize(PayloadJson, JsonContext.Default.IReadOnlyListMemberData)!;
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.ListAsync"/>は、"/members"にGETリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ListAsync)} > GET /members をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("メンバー情報")]
-        public async ValueTask Member_ListAsync_Calls_GetApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.ListAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ListAsync)} > GET /members をコールする。")]
+        [Category(nameof(HttpMethod.Get))]
+        public async Task Member_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             /*lang=json,strict*/
@@ -135,148 +136,128 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
-                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnGet("/members").RespondWithJson(responseJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            var members = await sut.Member.ListAsync();
+            var sut = CreateSut(client, "token");
+            var members = await sut.Member.ListAsync(cancellationToken);
 
             // Assert
-            members.ShouldNotBeEmpty();
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Get),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members")
-            );
+            await Assert.That(members).IsNotEmpty();
+            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path("/members"), Times.Once);
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.CreateAsync"/>は、"/members"にPOSTリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.CreateAsync)} > POST /members をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("メンバー情報")]
-        public async ValueTask Member_CreateAsync_Calls_PostApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.CreateAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.CreateAsync)} > POST /members をコールする。")]
+        [Category(nameof(HttpMethod.Post))]
+        public async Task Member_CreateAsync_Calls_PostApi(CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
-                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnPost("/members").RespondWithJson(TaskJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            int taskId = await sut.Member.CreateAsync(_payload);
+            var sut = CreateSut(client, "token");
+            int taskId = await sut.Member.CreateAsync(_payload, cancellationToken);
 
             // Assert
-            taskId.ShouldBe(TaskId);
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Post),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members"),
-                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, PayloadJson)
-            );
+            await Assert.That(taskId).IsEqualTo(TaskId);
+            client.Handler.Verify(r => r.Method(HttpMethod.Post).Path("/members"), Times.Once);
+            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals($$"""{"member_data": {{PayloadJson}}}""");
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.ReplaceAsync"/>は、"/members"にPUTリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ReplaceAsync)} > PUT /members をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("メンバー情報")]
-        public async ValueTask Member_ReplaceAsync_Calls_PutApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ReplaceAsync)} > PUT /members をコールする。")]
+        [Category(nameof(HttpMethod.Put))]
+        public async Task Member_ReplaceAsync_Calls_PutApi(CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
-                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnPut("/members").RespondWithJson(TaskJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            int taskId = await sut.Member.ReplaceAsync(_payload);
+            var sut = CreateSut(client, "token");
+            int taskId = await sut.Member.ReplaceAsync(_payload, cancellationToken);
 
             // Assert
-            taskId.ShouldBe(TaskId);
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Put),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members"),
-                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, PayloadJson)
-            );
+            await Assert.That(taskId).IsEqualTo(TaskId);
+            client.Handler.Verify(r => r.Method(HttpMethod.Put).Path("/members"), Times.Once);
+            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals($$"""{"member_data": {{PayloadJson}}}""");
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.UpdateAsync"/>は、"/members"にPATCHリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateAsync)} > PATCH /members をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("メンバー情報")]
-        public async ValueTask Member_UpdateAsync_Calls_PatchApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateAsync)} > PATCH /members をコールする。")]
+        [Category(nameof(HttpMethod.Patch))]
+        public async Task Member_UpdateAsync_Calls_PatchApi(CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members")
-                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnRequest(req => req.Method(HttpMethod.Patch).Path("/members")).RespondWithJson(TaskJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            int taskId = await sut.Member.UpdateAsync(_payload);
+            var sut = CreateSut(client, "token");
+            int taskId = await sut.Member.UpdateAsync(_payload, cancellationToken);
 
             // Assert
-            taskId.ShouldBe(TaskId);
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Patch),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members"),
-                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, PayloadJson)
-            );
+            await Assert.That(taskId).IsEqualTo(TaskId);
+            client.Handler.Verify(r => r.Method(HttpMethod.Patch).Path("/members"), Times.Once);
+            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals($$"""{"member_data": {{PayloadJson}}}""");
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.OverWriteAsync"/>は、"/members/overwrite"にPUTリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.OverWriteAsync)} > PUT /members/overwrite をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Put)), TestCategory("メンバー情報")]
-        public async ValueTask Member_OverWriteAsync_Calls_PutApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.OverWriteAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.OverWriteAsync)} > PUT /members/overwrite をコールする。")]
+        [Category(nameof(HttpMethod.Put))]
+        public async Task Member_OverWriteAsync_Calls_PutApi(CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/overwrite")
-                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnPut("/members/overwrite").RespondWithJson(TaskJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            int taskId = await sut.Member.OverWriteAsync(_payload);
+            var sut = CreateSut(client, "token");
+            int taskId = await sut.Member.OverWriteAsync(_payload, cancellationToken);
 
             // Assert
-            taskId.ShouldBe(TaskId);
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Put),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/overwrite"),
-                static req => req.Content!.ShouldHaveJsonBody("member_data"u8, PayloadJson)
-            );
+            await Assert.That(taskId).IsEqualTo(TaskId);
+            client.Handler.Verify(r => r.Method(HttpMethod.Put).Path("/members/overwrite"), Times.Once);
+            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals($$"""{"member_data": {{PayloadJson}}}""");
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.DeleteAsync"/>は、"/members/delete"にPOSTリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.DeleteAsync)} > POST /members/delete をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("メンバー情報")]
-        public async ValueTask Member_DeleteAsync_Calls_PostApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.DeleteAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.DeleteAsync)} > POST /members/delete をコールする。")]
+        [Category(nameof(HttpMethod.Post))]
+        public async Task Member_DeleteAsync_Calls_PostApi(CancellationToken cancellationToken = default)
         {
             // Arrange
-            string[] codes = _payload.Select(d => d.Code).ToArray();
-            string expectedJson = $"{{\"codes\":{JsonSerializer.Serialize(codes, Context.Default.IReadOnlyListString)}}}";
+            string[] codes = [.. _payload.Select(d => d.Code)];
 
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/delete")
-                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnPost("/members/delete").RespondWithJson(TaskJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            int taskId = await sut.Member.DeleteAsync(codes);
+            var sut = CreateSut(client, "token");
+            int taskId = await sut.Member.DeleteAsync(codes, cancellationToken);
 
             // Assert
-            taskId.ShouldBe(TaskId);
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Post),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/delete"),
-                static req => req.Content!.ShouldHaveJsonBody("""{ "codes": ["A0002", "A0001"] }""")
-            );
+            await Assert.That(taskId).IsEqualTo(TaskId);
+            client.Handler.Verify(r => r.Method(HttpMethod.Post).Path("/members/delete"), Times.Once);
+            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals("""{ "codes": ["A0002", "A0001"] }""");
         }
 
         /// <summary>メンバー情報 顔写真 APIのリクエストPayload</summary>
@@ -290,15 +271,16 @@ public sealed partial class KaonaviClientTest
         ]
         """;
         /// <summary>メンバー情報 顔写真 APIのリクエストPayload</summary>
-        private static readonly IReadOnlyList<FaceImagePayload> _faceImagePayload = JsonSerializer.Deserialize(FaceImagePayloadJson, Context.Default.IReadOnlyListFaceImagePayload)!;
+        private static readonly IReadOnlyList<FaceImagePayload> _faceImagePayload = JsonSerializer.Deserialize(FaceImagePayloadJson, JsonContext.Default.IReadOnlyListFaceImagePayload)!;
 
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.GetFaceImageListAsync"/>は、"/members/face_image"にGETリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.GetFaceImageListAsync)} > GET /members/face_image をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("メンバー情報")]
-        public async ValueTask Member_GetFaceImageListAsync_Calls_GetApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.GetFaceImageListAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.GetFaceImageListAsync)} > GET /members/face_image をコールする。")]
+        [Category(nameof(HttpMethod.Get))]
+        public async Task Member_GetFaceImageListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             /*lang=json,strict*/
@@ -320,76 +302,64 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image?updated_since=2020-10-01")
-                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnGet("/members/face_image?updated_since=2020-10-01").RespondWithJson(responseJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            var faceImages = await sut.Member.GetFaceImageListAsync(new DateOnly(2020, 10, 1));
+            var sut = CreateSut(client, "token");
+            var faceImages = await sut.Member.GetFaceImageListAsync(new(2020, 10, 1), cancellationToken);
 
             // Assert
-            faceImages.ShouldNotBeEmpty();
-
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Get),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/face_image?updated_since=2020-10-01")
-            );
+            await Assert.That(faceImages).IsNotEmpty();
+            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path("/members/face_image?updated_since=2020-10-01"), Times.Once);
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.AddFaceImageAsync"/>は、"/members/face_image"にPOSTリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.AddFaceImageAsync)} > POST /members/face_image をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("メンバー情報")]
-        [DataRow(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
-        [DataRow(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
-        public async ValueTask Member_AddFaceImageAsync_Calls_PostApi(bool enableTrimming, string expectedJson)
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.AddFaceImageAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.AddFaceImageAsync)} > POST /members/face_image をコールする。")]
+        [Category(nameof(HttpMethod.Post))]
+        [Arguments(true, /*lang=json,strict*/ $$$"""{ "enable_trimming": true, "member_data": {{{FaceImagePayloadJson}}} }""")]
+        [Arguments(false, /*lang=json,strict*/ $$$"""{ "enable_trimming": false, "member_data": {{{FaceImagePayloadJson}}} }""")]
+        public async Task Member_AddFaceImageAsync_Calls_PostApi(bool enableTrimming, string expectedJson, CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image")
-                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnPost("/members/face_image").RespondWithJson(TaskJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            int taskId = await sut.Member.AddFaceImageAsync(_faceImagePayload, enableTrimming);
+            var sut = CreateSut(client, "token");
+            int taskId = await sut.Member.AddFaceImageAsync(_faceImagePayload, enableTrimming, cancellationToken);
 
             // Assert
-            taskId.ShouldBe(TaskId);
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Post),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/face_image"),
-                req => req.Content!.ShouldHaveJsonBody(expectedJson)
-            );
+            await Assert.That(taskId).IsEqualTo(TaskId);
+            client.Handler.Verify(r => r.Method(HttpMethod.Post).Path("/members/face_image"), Times.Once);
+            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals(expectedJson);
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.UpdateFaceImageAsync"/>は、"/members/face_image"にPATCHリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateFaceImageAsync)} > PATCH /members/face_image をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("メンバー情報")]
-        [DataRow(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
-        [DataRow(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
-        public async ValueTask Member_UpdateFaceImageAsync_Calls_PatchApi(bool enableTrimming, string expectedJson)
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.UpdateFaceImageAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateFaceImageAsync)} > PATCH /members/face_image をコールする。")]
+        [Category(nameof(HttpMethod.Patch))]
+        [Arguments(true, /*lang=json,strict*/ $$$"""{ "enable_trimming": true, "member_data": {{{FaceImagePayloadJson}}} }""")]
+        [Arguments(false, /*lang=json,strict*/ $$$"""{ "enable_trimming": false, "member_data": {{{FaceImagePayloadJson}}} }""")]
+        public async Task Member_UpdateFaceImageAsync_Calls_PatchApi(bool enableTrimming, string expectedJson, CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/members/face_image")
-                .ReturnsResponse(HttpStatusCode.OK, TaskJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnRequest(req => req.Method(HttpMethod.Patch).Path("/members/face_image")).RespondWithJson(TaskJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            int taskId = await sut.Member.UpdateFaceImageAsync(_faceImagePayload, enableTrimming);
+            var sut = CreateSut(client, "token");
+            int taskId = await sut.Member.UpdateFaceImageAsync(_faceImagePayload, enableTrimming, cancellationToken);
 
             // Assert
-            taskId.ShouldBe(TaskId);
-
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Patch),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/members/face_image"),
-                req => req.Content!.ShouldHaveJsonBody(expectedJson)
-            );
+            await Assert.That(taskId).IsEqualTo(TaskId);
+            client.Handler.Verify(r => r.Method(HttpMethod.Patch).Path("/members/face_image"), Times.Once);
+            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals(expectedJson);
         }
     }
 }

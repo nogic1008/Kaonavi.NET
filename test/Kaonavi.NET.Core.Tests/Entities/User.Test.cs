@@ -1,48 +1,54 @@
+using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="User"/>の単体テスト</summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class UserTest
 {
-    /*lang=json,strict*/
-    private const string AdminUserJson = """
-    {
-      "id": 1,
-      "email":"taro@kaonavi.jp",
-      "member_code":"A0002",
-      "role":{
-        "id":1,
-        "name":"システム管理者",
-        "type":"Adm"
-      },
-      "is_active": true,
-      "password_locked": false,
-      "use_smartphone": false,
-      "last_login_at": "2021-11-01 12:00:00"
-    }
-    """;
-    /*lang=json,strict*/
-    private const string NonMemberJson = """
-    {
-      "id": 2,
-      "email": "hanako@kaonavi.jp",
-      "member_code": null,
-      "role": {
-        "id": 2,
-        "name": "マネージャ",
-        "type": "一般"
-      },
-      "is_active": true,
-      "password_locked": true,
-      "use_smartphone": true,
-      "last_login_at": "2021-11-01 12:00:00"
-    }
-    """;
+    private const string TestName = $"{nameof(User)} > JSONからデシリアライズできる。";
 
-    private const string UserTestName = $"{nameof(User)} > JSONからデシリアライズできる。";
+    /// <summary><see cref="CanDeserializeJSON"/>のテストデータ</summary>
+    public static IEnumerable<TestDataRow<(string json, int id, string email, string? memberCode, int roleId, string roleName, string roleType, bool isActive, bool passwordLocked, bool useSmartphone)>> TestData
+    {
+        get
+        {
+            yield return new((/*lang=json,strict*/ """
+            {
+              "id": 1,
+              "email":"taro@kaonavi.jp",
+              "member_code":"A0002",
+              "role":{
+                "id":1,
+                "name":"システム管理者",
+                "type":"Adm"
+              },
+              "is_active": true,
+              "password_locked": false,
+              "use_smartphone": false,
+              "last_login_at": "2021-11-01 12:00:00"
+            }
+            """, 1, "taro@kaonavi.jp", "A0002", 1, "システム管理者", "Adm", true, false, false)) { DisplayName = TestName };
+            yield return new((/*lang=json,strict*/ """
+            {
+              "id": 2,
+              "email": "hanako@kaonavi.jp",
+              "member_code": null,
+              "role": {
+                "id": 2,
+                "name": "マネージャ",
+                "type": "一般"
+              },
+              "is_active": true,
+              "password_locked": true,
+              "use_smartphone": true,
+              "last_login_at": "2021-11-01 12:00:00"
+            }
+            """, 2, "hanako@kaonavi.jp", null, 2, "マネージャ", "一般", true, true, true)) { DisplayName = TestName };
+        }
+    }
 
     /// <summary>
     /// JSONから<see cref="User"/>にデシリアライズできる。
@@ -57,23 +63,22 @@ public sealed class UserTest
     /// <param name="isActive"><see cref="User.IsActive"/></param>
     /// <param name="passwordLocked"><see cref="User.PasswordLocked"/></param>
     /// <param name="useSmartphone"><see cref="User.UseSmartphone"/></param>
-    [TestMethod(DisplayName = UserTestName), TestCategory("JSON Deserialize")]
-    [DataRow(AdminUserJson, 1, "taro@kaonavi.jp", "A0002", 1, "システム管理者", "Adm", true, false, false, DisplayName = UserTestName)]
-    [DataRow(NonMemberJson, 2, "hanako@kaonavi.jp", null, 2, "マネージャ", "一般", true, true, true, DisplayName = UserTestName)]
-    public void User_CanDeserializeJSON(string json, int id, string email, string? memberCode, int roleId, string roleName, string roleType, bool isActive, bool passwordLocked, bool useSmartphone)
+    [Test(TestName)]
+    [Category("JSON Deserialize")]
+    [MethodDataSource(nameof(TestData))]
+    public async Task CanDeserializeJSON(string json, int id, string email, string? memberCode, int roleId, string roleName, string roleType, bool isActive, bool passwordLocked, bool useSmartphone)
     {
         // Arrange - Act
-        var user = JsonSerializer.Deserialize(json, Context.Default.User);
+        var user = JsonSerializer.Deserialize(json, JsonContext.Default.User);
 
         // Assert
-        user.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            sut => sut.Id.ShouldBe(id),
-            sut => sut.Email.ShouldBe(email),
-            sut => sut.MemberCode.ShouldBe(memberCode),
-            sut => sut.Role.ShouldBe(new(roleId, roleName, roleType)),
-            sut => sut.IsActive.ShouldBe(isActive),
-            sut => sut.PasswordLocked.ShouldBe(passwordLocked),
-            sut => sut.UseSmartphone.ShouldBe(useSmartphone)
-        );
+        await Assert.That(user).IsNotNull()
+            .And.Member(sut => sut.Id, o => o.IsEqualTo(id))
+            .And.Member(sut => sut.Email, o => o.IsEqualTo<string>(email))
+            .And.Member(sut => sut.MemberCode, o => o.IsEqualTo<string>(memberCode))
+            .And.Member(sut => sut.Role, o => o.IsEqualTo(new(roleId, roleName, roleType)))
+            .And.Member(sut => sut.IsActive, o => o.IsEqualTo(isActive))
+            .And.Member(sut => sut.PasswordLocked, o => o.IsEqualTo(passwordLocked))
+            .And.Member(sut => sut.UseSmartphone, o => o.IsEqualTo(useSmartphone));
     }
 }

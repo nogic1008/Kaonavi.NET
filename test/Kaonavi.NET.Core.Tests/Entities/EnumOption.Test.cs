@@ -1,19 +1,21 @@
+using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="EnumOption"/>の単体テスト</summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class EnumOptionTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [TestMethod(DisplayName = $"{nameof(EnumOption)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
-    public void CanDeserializeJSON()
+    [Test($"{nameof(EnumOption)} > JSONからデシリアライズできる。")]
+    [Category("JSON Deserialize")]
+    public async Task CanDeserializeJSON()
     {
         // Arrange
         /*lang=json,strict*/
-        const string jsonString = """
+        var json = """
         {
           "sheet_name": "役職情報",
           "id": 10,
@@ -24,17 +26,16 @@ public sealed class EnumOptionTest
             { "id": 3, "name": "課長" }
           ]
         }
-        """;
+        """u8;
 
         // Act
-        var enumOption = JsonSerializer.Deserialize(jsonString, Context.Default.EnumOption);
+        var enumOption = JsonSerializer.Deserialize(json, JsonContext.Default.EnumOption);
 
         // Assert
-        enumOption.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            static sut => sut.SheetName.ShouldBe("役職情報"),
-            static sut => sut.Id.ShouldBe(10),
-            static sut => sut.Name.ShouldBe("役職"),
-            static sut => sut.EnumOptionData.ShouldBe([new(1, "社長"), new(2, "部長"), new(3, "課長")])
-        );
+        await Assert.That(enumOption).IsNotNull()
+            .And.Member(static o => o.SheetName, static o => o.IsEqualTo<string>("役職情報"))
+            .And.Member(static o => o.Id, static o => o.IsEqualTo(10))
+            .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("役職"))
+            .And.Member(static o => o.EnumOptionData, static o => o.IsEquivalentTo((EnumOption.Data[])[new(1, "社長"), new(2, "部長"), new(3, "課長")]));
     }
 }

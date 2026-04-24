@@ -1,42 +1,38 @@
-using Kaonavi.Net.Tests.Assertions;
-using Moq;
-using Moq.Contrib.HttpClient;
-
 namespace Kaonavi.Net.Tests;
 
 public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Task"/>の単体テスト</summary>
-    [TestClass]
+    [Category("API"), Category("タスク進捗状況")]
     public sealed class TaskTest
     {
         /// <summary>
         /// <inheritdoc cref="KaonaviClient.ITask.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
         /// <see cref="KaonaviClient.Task.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("タスク進捗状況")]
-        public async ValueTask When_Id_IsNegative_Task_ReadAsync_Throws_ArgumentOutOfRangeException()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ITask.ReadAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+        [Category(nameof(HttpMethod.Get))]
+        public async Task When_Id_IsNegative_Task_ReadAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnAnyRequest().Respond(HttpStatusCode.OK);
 
-            // Act
-            var sut = CreateSut(mockedApi);
-            var act = async () => _ = await sut.Task.ReadAsync(-1);
-
-            // Assert
-            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
-            mockedApi.ShouldNotBeCalled();
+            // Act - Assert
+            var sut = CreateSut(client);
+            await Assert.That(async () => _ = await sut.Task.ReadAsync(-1, cancellationToken))
+                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.Task.ReadAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > GET /tasks/:taskId をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("タスク進捗状況")]
-        public async ValueTask Task_ReadAsync_Calls_GetApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ITask.ReadAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > GET /tasks/:taskId をコールする。")]
+        [Category(nameof(HttpMethod.Get))]
+        public async Task Task_ReadAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             const int taskId = 1;
@@ -52,20 +48,17 @@ public sealed partial class KaonaviClientTest
             }
             """;
 
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/tasks/{taskId}")
-                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnGet($"/tasks/{taskId}").RespondWithJson(responseJson);
 
             // Act
-            var sut = CreateSut(handler, "token");
-            var task = await sut.Task.ReadAsync(taskId);
+            var sut = CreateSut(client, "token");
+            var task = await sut.Task.ReadAsync(taskId, cancellationToken);
 
             // Assert
-            task.ShouldNotBeNull();
-            handler.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Get),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/tasks/{taskId}")
-            );
+            await Assert.That(task).IsNotNull();
+            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path($"/tasks/{taskId}"), Times.Once);
         }
     }
 }
+

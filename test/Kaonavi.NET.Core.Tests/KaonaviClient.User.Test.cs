@@ -1,22 +1,21 @@
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Tests.Assertions;
-using Moq;
-using Moq.Contrib.HttpClient;
 
 namespace Kaonavi.Net.Tests;
 
 public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.User"/>の単体テスト</summary>
-    [TestClass]
+    [Category("API"), Category("ユーザー情報")]
     public sealed class UserTest
     {
         /// <summary>
         /// <see cref="KaonaviClient.User.ListAsync"/>は、"/users"にGETリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ListAsync)} > GET /users をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
-        public async ValueTask User_ListAsync_Calls_GetApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.ListAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ListAsync)} > GET /users をコールする。")]
+        [Category(nameof(HttpMethod.Get))]
+        public async Task User_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             /*lang=json,strict*/
@@ -54,28 +53,25 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
-                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnGet("/users").RespondWithJson(responseJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            var users = await sut.User.ListAsync();
+            var sut = CreateSut(client, "token");
+            var users = await sut.User.ListAsync(cancellationToken);
 
             // Assert
-            users.ShouldNotBeEmpty();
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Get),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/users")
-            );
+            await Assert.That(users).IsNotEmpty();
+            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path("/users"), Times.Once);
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.User.CreateAsync"/>は、"/users"にPOSTリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.CreateAsync)} > POST /users をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Post)), TestCategory("ユーザー情報")]
-        public async ValueTask User_CreateAsync_Calls_PostApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.CreateAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.CreateAsync)} > POST /users をコールする。")]
+        [Category(nameof(HttpMethod.Post))]
+        public async Task User_CreateAsync_Calls_PostApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             /*lang=json,strict*/
@@ -96,60 +92,56 @@ public sealed partial class KaonaviClientTest
             """;
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
 
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/users")
-                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnPost("/users").RespondWithJson(responseJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            var user = await sut.User.CreateAsync(payload);
+            var sut = CreateSut(client, "token");
+            var user = await sut.User.CreateAsync(payload, cancellationToken);
 
             // Assert
-            user.ShouldNotBeNull();
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Post),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/users"),
-                static req => req.Content!.ShouldHaveJsonBody("""
-                {
-                  "email": "user1@example.com",
-                  "member_code": "00001",
-                  "password": "password",
-                  "role": { "id": 1 },
-                  "is_active": true,
-                  "password_locked": false,
-                  "use_smartphone": false
-                }
-                """)
-            );
+            await Assert.That(user).IsNotNull();
+            client.Handler.Verify(r => r.Method(HttpMethod.Post).Path("/users"), Times.Once);
+            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals("""
+            {
+              "email": "user1@example.com",
+              "member_code": "00001",
+              "password": "password",
+              "role": { "id": 1 },
+              "is_active": true,
+              "password_locked": false,
+              "use_smartphone": false
+            }
+            """);
         }
 
         /// <summary>
         /// <inheritdoc cref="KaonaviClient.IUser.ReadAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
         /// <see cref="KaonaviClient.User.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
-        public async ValueTask When_Id_IsNegative_User_ReadAsync_Throws_ArgumentOutOfRangeException()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.ReadAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+        [Category(nameof(HttpMethod.Get))]
+        public async Task When_Id_IsNegative_User_ReadAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnAnyRequest().Respond(HttpStatusCode.OK);
 
-            // Act
-            var sut = CreateSut(mockedApi);
-            var act = async () => _ = await sut.User.ReadAsync(-1);
-
-            // Assert
-            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
-            mockedApi.ShouldNotBeCalled();
+            // Act - Assert
+            var sut = CreateSut(client);
+            await Assert.That(async () => _ = await sut.User.ReadAsync(-1, cancellationToken))
+                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.User.ReadAsync"/>は、"/users/{userId}"にGETリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > GET /users/:userId をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ユーザー情報")]
-        public async ValueTask User_ReadAsync_Calls_GetApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.ReadAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > GET /users/:userId をコールする。")]
+        [Category(nameof(HttpMethod.Get))]
+        public async Task User_ReadAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             const int userId = 1;
@@ -171,49 +163,45 @@ public sealed partial class KaonaviClientTest
             }
             """;
 
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
-                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnGet($"/users/{userId}").RespondWithJson(responseJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            var user = await sut.User.ReadAsync(userId);
+            var sut = CreateSut(client, "token");
+            var user = await sut.User.ReadAsync(userId, cancellationToken);
 
             // Assert
-            user.ShouldNotBeNull();
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Get),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/users/{userId}")
-            );
+            await Assert.That(user).IsNotNull();
+            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path($"/users/{userId}"), Times.Once);
         }
 
         /// <summary>
         /// <inheritdoc cref="KaonaviClient.IUser.UpdateAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
         /// <see cref="KaonaviClient.User.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("ユーザー情報")]
-        public async ValueTask When_Id_IsNegative_User_UpdateAsync_Throws_ArgumentOutOfRangeException()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+        [Category(nameof(HttpMethod.Patch))]
+        public async Task When_Id_IsNegative_User_UpdateAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnAnyRequest().Respond(HttpStatusCode.OK);
 
-            // Act
-            var sut = CreateSut(mockedApi);
-            var act = async () => _ = await sut.User.UpdateAsync(-1, null!);
-
-            // Assert
-            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
-            mockedApi.ShouldNotBeCalled();
+            // Act - Assert
+            var sut = CreateSut(client);
+            await Assert.That(async () => _ = await sut.User.UpdateAsync(-1, null!, cancellationToken))
+                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.User.UpdateAsync"/>は、"/users/{userId}"にPATCHリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > PATCH /users/:userId をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Patch)), TestCategory("ユーザー情報")]
-        public async ValueTask User_UpdateAsync_Calls_PatchApi()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > PATCH /users/:userId をコールする。")]
+        [Category(nameof(HttpMethod.Patch))]
+        public async Task User_UpdateAsync_Calls_PatchApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             const int userId = 1;
@@ -235,76 +223,67 @@ public sealed partial class KaonaviClientTest
             """;
             var payload = new UserPayload("user1@example.com", "00001", "password", 1);
 
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
-                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnRequest(req => req.Method(HttpMethod.Patch).Path($"/users/{userId}")).RespondWithJson(responseJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            var user = await sut.User.UpdateAsync(userId, payload);
+            var sut = CreateSut(client, "token");
+            var user = await sut.User.UpdateAsync(userId, payload, cancellationToken);
 
             // Assert
-            user.ShouldNotBeNull();
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Patch),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/users/{userId}"),
-                static req => req.Content!.ShouldHaveJsonBody("""
-                {
-                  "email": "user1@example.com",
-                  "member_code": "00001",
-                  "password": "password",
-                  "role": { "id": 1 },
-                  "is_active": true,
-                  "password_locked": false,
-                  "use_smartphone": false
-                }
-                """)
-            );
+            await Assert.That(user).IsNotNull();
+            client.Handler.Verify(r => r.Method(HttpMethod.Patch).Path($"/users/{userId}"), Times.Once);
+            await Assert.That(client.Handler.Requests[0].Body).IsValidJsonObject().And.IsJsonEquals("""
+            {
+              "email": "user1@example.com",
+              "member_code": "00001",
+              "password": "password",
+              "role": { "id": 1 },
+              "is_active": true,
+              "password_locked": false,
+              "use_smartphone": false
+            }
+            """);
         }
 
         /// <summary>
         /// <inheritdoc cref="KaonaviClient.IUser.DeleteAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
         /// <see cref="KaonaviClient.User.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("ユーザー情報")]
-        public async ValueTask When_Id_IsNegative_User_DeleteAsync_Throws_ArgumentOutOfRangeException()
+        /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.DeleteAsync" path="/param[@name='cancellationToken']"/></param>
+        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
+        [Category(nameof(HttpMethod.Delete))]
+        public async Task When_Id_IsNegative_User_DeleteAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupAnyRequest().ReturnsResponse(HttpStatusCode.OK);
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnAnyRequest().Respond(HttpStatusCode.OK);
 
-            // Act
-            var sut = CreateSut(mockedApi);
-            var act = async () => await sut.User.DeleteAsync(-1);
-
-            // Assert
-            (await act.ShouldThrowAsync<ArgumentOutOfRangeException>()).ParamName.ShouldBe("id");
-            mockedApi.ShouldNotBeCalled();
+            // Act - Assert
+            var sut = CreateSut(client);
+            await Assert.That(async () => await sut.User.DeleteAsync(-1, cancellationToken))
+                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.User.DeleteAsync"/>は、"/users/{userId}"にDELETEリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > DELETE /users/:userId をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Delete)), TestCategory("ユーザー情報")]
-        public async ValueTask User_DeleteAsync_Calls_DeleteApi()
+        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > DELETE /users/:userId をコールする。")]
+        [Category(nameof(HttpMethod.Delete))]
+        public async Task User_DeleteAsync_Calls_DeleteApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             const int userId = 1;
-            var handler = new Mock<HttpMessageHandler>();
-            _ = handler.SetupRequest(req => req.RequestUri?.PathAndQuery == $"/users/{userId}")
-                .ReturnsResponse(HttpStatusCode.NoContent);
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnDelete($"/users/{userId}").RespondWithString("", HttpStatusCode.NoContent);
 
             // Act
-            var sut = CreateSut(handler, "token");
-            await sut.User.DeleteAsync(userId);
+            var sut = CreateSut(client, "token");
+            await sut.User.DeleteAsync(userId, cancellationToken);
 
             // Assert
-            handler.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Delete),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe($"/users/{userId}")
-            );
+            client.Handler.Verify(r => r.Method(HttpMethod.Delete).Path($"/users/{userId}"), Times.Once);
         }
     }
 }

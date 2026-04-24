@@ -1,20 +1,22 @@
+using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="SheetLayout"/>の単体テスト</summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class SheetLayoutTest
 {
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [TestMethod(DisplayName = $"{nameof(SheetLayout)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
-    public void CanDeserializeJSON()
+    [Test($"{nameof(SheetLayout)} > JSONからデシリアライズできる。")]
+    [Category("JSON Deserialize")]
+    public async Task CanDeserializeJSON()
     {
         /*lang=json,strict*/
-        const string jsonString = """
+        var json = """
         {
           "id": 12,
           "name": "住所・連絡先",
@@ -38,17 +40,16 @@ public sealed class SheetLayoutTest
             }
           ]
         }
-        """;
+        """u8;
 
         // Act
-        var sheetLayout = JsonSerializer.Deserialize(jsonString, Context.Default.SheetLayout);
+        var sheetLayout = JsonSerializer.Deserialize(json, JsonContext.Default.SheetLayout);
 
         // Assert
-        sheetLayout.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            static sut => sut.Id.ShouldBe(12),
-            static sut => sut.Name.ShouldBe("住所・連絡先"),
-            static sut => sut.RecordType.ShouldBe(RecordType.Multiple),
-            static sut => sut.CustomFields.Count.ShouldBe(2)
-        );
+        await Assert.That(sheetLayout).IsNotNull()
+            .And.Member(static o => o.Id, o => o.IsEqualTo(12))
+            .And.Member(static o => o.Name, o => o.IsEqualTo<string>("住所・連絡先"))
+            .And.Member(static o => o.RecordType, o => o.IsEqualTo(RecordType.Multiple))
+            .And.Member(static o => o.CustomFields.Count, o => o.IsEqualTo(2));
     }
 }

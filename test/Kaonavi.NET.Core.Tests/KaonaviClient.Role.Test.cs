@@ -1,21 +1,17 @@
-using Kaonavi.Net.Tests.Assertions;
-using Moq;
-using Moq.Contrib.HttpClient;
-
 namespace Kaonavi.Net.Tests;
 
 public sealed partial class KaonaviClientTest
 {
     /// <summary><see cref="KaonaviClient.Role"/>の単体テスト</summary>
-    [TestClass]
+    [Category("API"), Category("ロール")]
     public sealed class RoleTest
     {
         /// <summary>
         /// <see cref="KaonaviClient.Role.ListAsync"/>は、"/roles"にGETリクエストを行う。
         /// </summary>
-        [TestMethod(DisplayName = $"{nameof(KaonaviClient.Role)}.{nameof(KaonaviClient.Role.ListAsync)} > GET /roles をコールする。")]
-        [TestCategory("API"), TestCategory(nameof(HttpMethod.Get)), TestCategory("ロール")]
-        public async ValueTask Role_ListAsync_Calls_GetApi()
+        [Test($"{nameof(KaonaviClient.Role)}.{nameof(KaonaviClient.Role.ListAsync)} > GET /roles をコールする。")]
+        [Category(nameof(HttpMethod.Get))]
+        public async Task Role_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             /*lang=json,strict*/
@@ -35,20 +31,16 @@ public sealed partial class KaonaviClientTest
               ]
             }
             """;
-            var mockedApi = new Mock<HttpMessageHandler>();
-            _ = mockedApi.SetupRequest(req => req.RequestUri?.PathAndQuery == "/roles")
-                .ReturnsResponse(HttpStatusCode.OK, responseJson, "application/json");
+            using var client = Mock.HttpClient(BaseUriString);
+            client.Handler.OnGet("/roles").RespondWithJson(responseJson);
 
             // Act
-            var sut = CreateSut(mockedApi, "token");
-            var roles = await sut.Role.ListAsync();
+            var sut = CreateSut(client, "token");
+            var roles = await sut.Role.ListAsync(cancellationToken);
 
             // Assert
-            roles.ShouldNotBeEmpty();
-            mockedApi.ShouldBeCalledOnce(
-                static req => req.Method.ShouldBe(HttpMethod.Get),
-                static req => req.RequestUri?.PathAndQuery.ShouldBe("/roles")
-            );
+            await Assert.That(roles).IsNotEmpty();
+            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path("/roles"), Times.Once);
         }
     }
 }

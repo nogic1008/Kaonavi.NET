@@ -1,11 +1,12 @@
 using System.Buffers;
 using System.Text;
+using System.Text.Json;
 using Kaonavi.Net.Json;
 
 namespace Kaonavi.Net.Tests.Json;
 
 /// <summary><see cref="DateTimeConverter"/>の単体テスト</summary>
-[TestClass]
+[Category("JSON Converter")]
 public sealed class DateTimeConverterTest
 {
     /// <summary>
@@ -13,9 +14,9 @@ public sealed class DateTimeConverterTest
     /// </summary>
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [TestMethod(DisplayName = $"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Read)}()"), TestCategory("JSON Converter")]
-    [DataRow(/*lang=json,strict*/ "\"2021-01-01 12:34:56\"", 2021, 1, 1, 12, 34, 56)]
-    public void Read_Returns_DateTime(string json, int year, int month, int day, int hour, int minute, int second)
+    [Test($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Read)}()")]
+    [Arguments(/*lang=json,strict*/ "\"2021-01-01 12:34:56\"", 2021, 1, 1, 12, 34, 56)]
+    public async Task Read_Returns_DateTime(string json, int year, int month, int day, int hour, int minute, int second)
     {
         // Arrange
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
@@ -25,7 +26,7 @@ public sealed class DateTimeConverterTest
         // Act
         var actual = sut.Read(ref reader, typeof(DateTime), JsonSerializerOptions.Default);
         // Assert
-        actual.ShouldBe(new(year, month, day, hour, minute, second));
+        await Assert.That(actual).IsEqualTo(new(year, month, day, hour, minute, second));
     }
 
     /// <summary>
@@ -33,9 +34,9 @@ public sealed class DateTimeConverterTest
     /// </summary>
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [TestMethod(DisplayName = $"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Write)}()"), TestCategory("JSON Converter")]
-    [DataRow(2021, 1, 1, 12, 34, 56, /*lang=json,strict*/ "\"2021-01-01 12:34:56\"")]
-    public void Write_Flushes_JSON(int year, int month, int day, int hour, int minute, int second, string json)
+    [Test($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Write)}()")]
+    [Arguments(2021, 1, 1, 12, 34, 56, /*lang=json,strict*/ "\"2021-01-01 12:34:56\"")]
+    public async Task Write_Flushes_JSON(int year, int month, int day, int hour, int minute, int second, string json)
     {
         // Arrange
         var buffer = new ArrayBufferWriter<byte>();
@@ -47,6 +48,6 @@ public sealed class DateTimeConverterTest
         writer.Flush();
 
         // Assert
-        buffer.WrittenSpan.ToArray().ShouldBe(Encoding.UTF8.GetBytes(json));
+        await Assert.That(buffer.WrittenSpan.ToArray()).IsEquivalentTo(Encoding.UTF8.GetBytes(json));
     }
 }

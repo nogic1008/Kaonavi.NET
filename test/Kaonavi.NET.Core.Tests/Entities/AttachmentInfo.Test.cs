@@ -1,19 +1,20 @@
+using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary><see cref="AttachmentInfo"/>の単体テスト</summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class AttachmentInfoTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [TestMethod(DisplayName = $"{nameof(AttachmentInfo)} > JSONからデシリアライズできる。"), TestCategory("JSON Deserialize")]
-    public void CanDeserializeJSON()
+    [Test($"{nameof(AttachmentInfo)} > JSONからデシリアライズできる。"), Category("JSON Deserialize")]
+    public async Task CanDeserializeJSON()
     {
         // Arrange
         // lang=json,strict
-        const string json = """
+        var json = """
         {
           "code": "A0001",
           "records": [
@@ -29,26 +30,25 @@ public sealed class AttachmentInfoTest
             }
           ]
         }
-        """;
+        """u8;
 
         // Act
-        var attachment = JsonSerializer.Deserialize(json, Context.Default.AttachmentInfo);
+        var attachment = JsonSerializer.Deserialize(json, JsonContext.Default.AttachmentInfo);
 
         // Assert
-        attachment.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            static sut => sut.Code.ShouldBe("A0001"),
-            static sut => sut.Records.ShouldContain(new AttachmentInfoRecord(
+        await Assert.That(attachment).IsNotNull()
+            .And.Member(static o => o.Code, static o => o.IsEqualTo<string>("A0001"))
+            .And.Member(static o => o.Records, static o => o.IsEquivalentTo((AttachmentInfoRecord[])[
+                new(
                     "A0001.jpg",
                     new("https://example.com/image/xxxx.jpg?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID"),
                     DateTime.Parse("2020-10-01 01:23:45")
-                )
-            ),
-            static sut => sut.Records.ShouldContain(new AttachmentInfoRecord(
+                ),
+                new(
                     "A0001.txt",
                     new("https://example.com/image/xxxx.txt?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID"),
                     DateTime.Parse("2020-10-01 01:23:45")
                 )
-            )
-        );
+            ]));
     }
 }

@@ -1,28 +1,40 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
+using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
 
 /// <summary>
 /// <see cref="MemberDepartment"/>の単体テスト
 /// </summary>
-[TestClass, TestCategory("Entities")]
+[Category("Entities")]
 public sealed class MemberDepartmentTest
 {
-    /*lang=json,strict*/
-    private const string SimpleJson = """{ "code": "1000" }""";
-    /*lang=json,strict*/
-    private const string SingleDepJson = """{ "code": "1000", "name":"取締役会", "names": ["取締役会"] }""";
-    /*lang=json,strict*/
-    private const string MultipleJson = """
-    {
-      "code": "2000",
-      "name": "営業本部 第一営業部 ITグループ",
-      "names": ["営業本部", "第一営業部", "ITグループ"]
-    }
-    """;
-
     private const string TestName = $"{nameof(MemberDepartment)} > JSONからデシリアライズできる。";
+
+    /// <summary><see cref="CanDeserializeJSON"/>のテストデータ</summary>
+    public static IEnumerable<TestDataRow<(string json, string code, string? name, string[]? names)>> TestData
+    {
+        get
+        {
+            yield return new((/*lang=json,strict*/ """{ "code": "1000" }""", "1000", null, null)) { DisplayName = TestName };
+            yield return new((/*lang=json,strict*/ """
+            {
+              "code": "1000",
+              "name":"取締役会",
+              "names": ["取締役会"]
+            }
+            """, "1000", "取締役会", ["取締役会"])) { DisplayName = TestName };
+            yield return new((/*lang=json,strict*/ """
+            {
+              "code": "2000",
+              "name": "営業本部 第一営業部 ITグループ",
+              "names": ["営業本部", "第一営業部", "ITグループ"]
+            }
+            """, "2000", "営業本部 第一営業部 ITグループ", ["営業本部", "第一営業部", "ITグループ"])) { DisplayName = TestName };
+        }
+    }
 
     /// <summary>
     /// JSONからデシリアライズできる。
@@ -31,20 +43,18 @@ public sealed class MemberDepartmentTest
     /// <param name="code"><inheritdoc cref="MemberDepartment.Code" path="/summary"/></param>
     /// <param name="name"><inheritdoc cref="MemberDepartment.Name" path="/summary"/></param>
     /// <param name="names"><inheritdoc cref="MemberDepartment.Names" path="/summary"/></param>
-    [TestMethod(DisplayName = TestName), TestCategory("JSON Deserialize")]
-    [DataRow(SimpleJson, "1000", null, null, DisplayName = TestName)]
-    [DataRow(SingleDepJson, "1000", "取締役会", (string[])["取締役会"], DisplayName = TestName)]
-    [DataRow(MultipleJson, "2000", "営業本部 第一営業部 ITグループ", (string[])["営業本部", "第一営業部", "ITグループ"], DisplayName = TestName)]
-    public void CanDeserializeJSON(string json, string code, string? name, string[]? names)
+    [Test(TestName)]
+    [Category("JSON Deserialize")]
+    [MethodDataSource(nameof(TestData))]
+    public async Task CanDeserializeJSON([StringSyntax(StringSyntaxAttribute.Json)] string json, string code, string? name, string[]? names)
     {
         // Arrange - Act
-        var memberDepartment = JsonSerializer.Deserialize(json, Context.Default.MemberDepartment);
+        var memberDepartment = JsonSerializer.Deserialize(json, JsonContext.Default.MemberDepartment);
 
         // Assert
-        memberDepartment.ShouldNotBeNull().ShouldSatisfyAllConditions(
-            sut => sut.Code.ShouldBe(code),
-            sut => sut.Name.ShouldBe(name),
-            sut => sut.Names.ShouldBe(names)
-        );
+        await Assert.That(memberDepartment).IsNotNull()
+            .And.Member(sut => sut.Code, o => o.IsEqualTo<string>(code))
+            .And.Member(sut => sut.Name!, o => name is null ? o.IsNull() : o.IsEqualTo<string>(name))
+            .And.Member(sut => sut.Names!, o => names is null ? o.IsNull() : o.IsEquivalentTo(names));
     }
 }
