@@ -257,7 +257,7 @@ public sealed partial class KaonaviClientTest
             // Assert
             await Assert.That(taskId).IsEqualTo(TaskId);
             client.Handler.Verify(r => r.Method(HttpMethod.Post).Path("/members/delete"), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals("""{ "codes": ["A0002", "A0001"] }""");
+            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals("""{ "codes": ["A0002", "A0001"] }"""u8);
         }
 
         /// <summary>メンバー情報 顔写真 APIのリクエストPayload</summary>
@@ -272,7 +272,6 @@ public sealed partial class KaonaviClientTest
         """;
         /// <summary>メンバー情報 顔写真 APIのリクエストPayload</summary>
         private static readonly IReadOnlyList<FaceImagePayload> _faceImagePayload = JsonSerializer.Deserialize(FaceImagePayloadJson, JsonContext.Default.IReadOnlyListFaceImagePayload)!;
-
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.GetFaceImageListAsync"/>は、"/members/face_image"にGETリクエストを行う。
@@ -320,8 +319,8 @@ public sealed partial class KaonaviClientTest
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.AddFaceImageAsync" path="/param[@name='cancellationToken']"/></param>
         [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.AddFaceImageAsync)} > POST /members/face_image をコールする。")]
         [Category(nameof(HttpMethod.Post))]
-        [Arguments(true, /*lang=json,strict*/ $$$"""{ "enable_trimming": true, "member_data": {{{FaceImagePayloadJson}}} }""")]
-        [Arguments(false, /*lang=json,strict*/ $$$"""{ "enable_trimming": false, "member_data": {{{FaceImagePayloadJson}}} }""")]
+        [Arguments(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
+        [Arguments(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
         public async Task Member_AddFaceImageAsync_Calls_PostApi(bool enableTrimming, string expectedJson, CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -344,8 +343,8 @@ public sealed partial class KaonaviClientTest
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.UpdateFaceImageAsync" path="/param[@name='cancellationToken']"/></param>
         [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateFaceImageAsync)} > PATCH /members/face_image をコールする。")]
         [Category(nameof(HttpMethod.Patch))]
-        [Arguments(true, /*lang=json,strict*/ $$$"""{ "enable_trimming": true, "member_data": {{{FaceImagePayloadJson}}} }""")]
-        [Arguments(false, /*lang=json,strict*/ $$$"""{ "enable_trimming": false, "member_data": {{{FaceImagePayloadJson}}} }""")]
+        [Arguments(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
+        [Arguments(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
         public async Task Member_UpdateFaceImageAsync_Calls_PatchApi(bool enableTrimming, string expectedJson, CancellationToken cancellationToken = default)
         {
             // Arrange

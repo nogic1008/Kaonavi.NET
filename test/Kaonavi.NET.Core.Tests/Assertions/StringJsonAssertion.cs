@@ -21,8 +21,8 @@ internal class JsonElementAssertion : Assertion<JsonElement>
     public JsonElementAssertion(AssertionContext<string> context, ReadOnlySpan<byte> expected)
         : this(context, JsonElement.Parse(expected)) { }
 
+    /// <inheritdoc/>
     protected override Task<AssertionResult> CheckAsync(EvaluationMetadata<JsonElement> metadata)
-
     {
         var val = metadata.Value;
         var exception = metadata.Exception;
@@ -35,26 +35,15 @@ internal class JsonElementAssertion : Assertion<JsonElement>
             return Task.FromResult(AssertionResult.Failed($"'{val.GetRawText()}' does not equal '{_expected.GetRawText()}'"));
     }
 
+    /// <inheritdoc/>
     protected override string GetExpectation() => $"to equal \"{_expected.GetRawText()}\"";
 }
 
 internal static class JsonElementAssertionExtensions
 {
-    extension(IAssertionSource<JsonElement> source)
-    {
-        public JsonElementAssertion IsJsonEquals([StringSyntax(StringSyntaxAttribute.Json)] string expected)
-            => new(source.Context, expected);
-        public JsonElementAssertion IsJsonEquals(JsonElement expected)
-            => new(source.Context, expected);
-        public JsonElementAssertion IsJsonEquals(ReadOnlySpan<byte> expected)
-            => new(source.Context, expected);
-    }
-
     extension(IAssertionSource<string> source)
     {
         public JsonElementAssertion IsJsonEquals([StringSyntax(StringSyntaxAttribute.Json)] string expected)
-            => new(source.Context, expected);
-        public JsonElementAssertion IsJsonEquals(JsonElement expected)
             => new(source.Context, expected);
         public JsonElementAssertion IsJsonEquals(ReadOnlySpan<byte> expected)
             => new(source.Context, expected);
