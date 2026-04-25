@@ -21,7 +21,7 @@ public sealed class TaskProgressTest
     /// <summary>
     /// JSONから<see cref="TaskState"/>にデシリアライズできる。
     /// </summary>
-    [Test($"{nameof(TaskStatus)} > JSONからデシリアライズできる。")]
+    [Test($"{nameof(TaskState)} > JSONからデシリアライズできる。")]
     [Category("JSON Deserialize")]
     [Arguments("\"OK\"", TaskState.OK, DisplayName = $"OK -> {nameof(TaskState)}.{nameof(TaskState.OK)} にデシリアライズできる。")]
     [Arguments("\"NG\"", TaskState.NG, DisplayName = $"NG -> {nameof(TaskState)}.{nameof(TaskState.NG)} にデシリアライズできる。")]
