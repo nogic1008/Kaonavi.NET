@@ -275,6 +275,6 @@ public sealed class SheetDataGeneratorTest
 
         // Assert
         await Assert.That(warnings).IsEmpty();
-        await Assert.That(sb.ToString()).IsEqualTo(expected.Replace("\n", Environment.NewLine));
+        await Assert.That(sb.ToString().ReplaceLineEndings("\n")).IsEqualTo(expected.ReplaceLineEndings("\n"));
     }
 }
