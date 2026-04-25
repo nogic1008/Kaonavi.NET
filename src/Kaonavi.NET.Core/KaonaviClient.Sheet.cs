@@ -190,7 +190,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         ///   </description>
         /// </item>
         /// </list>
-        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}~1custom_fields~1{custom_field_id}~1file/post"/>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%B7%E3%83%BC%E3%83%88%E6%83%85%E5%A0%B1/paths/~1sheets~1{sheet_id}~1custom_fields~1{custom_field_id}~1file/patch"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="id"><inheritdoc cref="SheetLayout" path="/param[@name='Id']"/></param>
