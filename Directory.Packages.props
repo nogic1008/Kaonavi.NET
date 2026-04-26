@@ -21,8 +21,8 @@
     <PackageVersion Include="Shouldly" Version="4.3.0" />
     <PackageVersion Include="System.Net.Http.Json" Version="10.0.0" />
     <PackageVersion Include="System.Text.Json" Version="10.0.0" />
-    <PackageVersion Include="TUnit" Version="1.37.36" />
-    <PackageVersion Include="TUnit.Mocks" Version="1.37.36-beta" />
-    <PackageVersion Include="TUnit.Mocks.Http" Version="1.37.36-beta" />
+    <PackageVersion Include="TUnit" Version="1.39.0" />
+    <PackageVersion Include="TUnit.Mocks" Version="1.39.0-beta" />
+    <PackageVersion Include="TUnit.Mocks.Http" Version="1.39.0-beta" />
   </ItemGroup>
 </Project>
