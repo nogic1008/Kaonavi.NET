@@ -2,7 +2,6 @@ using System.Text;
 using System.Text.Json;
 using Kaonavi.Net.Entities;
 using Microsoft.Extensions.Time.Testing;
-using RandomFixtureKit;
 using TUnit.Mocks.Http;
 using JsonContext = Kaonavi.Net.Json.Context;
 
@@ -119,7 +118,7 @@ public sealed partial class KaonaviClientTest
     {
         // Arrange
         var client = new HttpClient();
-        string headerValue = FixtureFactory.Create<string>(resolver: StandardResolver.NonNull);
+        const string headerValue = "token";
         client.DefaultRequestHeaders.Add("Kaonavi-Token", headerValue);
 
         // Act
@@ -156,7 +155,7 @@ public sealed partial class KaonaviClientTest
     {
         // Arrange
         var client = new HttpClient();
-        string headerValue = FixtureFactory.Create<string>(resolver: StandardResolver.NonNull);
+        const string headerValue = "token";
 
         // Act
         _ = new KaonaviClient(client, "foo", "bar")
@@ -244,14 +243,11 @@ public sealed partial class KaonaviClientTest
     public async Task When_AccessToken_IsNull_ApiCaller_Calls_AuthenticateAsync(CancellationToken cancellationToken = default)
     {
         // Arrange
-        string key = FixtureFactory.Create<string>(resolver: StandardResolver.NonNull);
-        string secret = FixtureFactory.Create<string>(resolver: StandardResolver.NonNull);
-
         using var client = Mock.HttpClient(BaseUriString);
         client.Handler.OnAnyRequest().RespondWithString("Error", HttpStatusCode.InternalServerError);
 
         // Act - Assert
-        var sut = CreateSut(client, key: key, secret: secret);
+        var sut = CreateSut(client);
         await Assert.That(async () => await sut.Layout.ReadMemberLayoutAsync(cancellationToken: cancellationToken))
             .Throws<ApplicationException>().WithMessage("Error");
         client.Handler.Verify(r => r.Method(HttpMethod.Post).Path("/token"), Times.Once);
@@ -350,9 +346,9 @@ public sealed partial class KaonaviClientTest
     public async Task AuthenticateAsync_Calls_PostApi(CancellationToken cancellationToken = default)
     {
         // Arrange
-        string key = FixtureFactory.Create<string>();
-        string secret = FixtureFactory.Create<string>();
-        var response = new Token(FixtureFactory.Create<string>(), "Bearer", 3600);
+        const string key = "test_key";
+        const string secret = "test_secret";
+        var response = new Token("token", "Bearer", 3600);
         string responseJson = JsonSerializer.Serialize(response, JsonContext.Default.Token);
 
         using var client = Mock.HttpClient(BaseUriString);

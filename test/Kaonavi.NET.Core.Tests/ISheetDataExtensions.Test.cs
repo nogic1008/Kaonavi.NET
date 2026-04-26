@@ -1,5 +1,4 @@
 using Kaonavi.Net.Entities;
-using RandomFixtureKit;
 
 namespace Kaonavi.Net.Tests;
 
@@ -22,7 +21,8 @@ public sealed class ISheetDataExtensionsTest
     {
         // Arrange
         const int length = 10;
-        var values = FixtureFactory.CreateMany<TestSheetData>(length);
+        var values = Enumerable.Range(0, length)
+            .Select(static i => new TestSheetData { Code = i.ToString(), Name = i.ToString() });
 
         // Act
         var actual = values.ToSingleSheetData();
@@ -40,10 +40,10 @@ public sealed class ISheetDataExtensionsTest
     {
         // Arrange
         const int codeLength = 10;
-        string[] codes = FixtureFactory.CreateMany<string>(codeLength);
         const int nameLength = 3;
-        string[] names = FixtureFactory.CreateMany<string>(nameLength);
-        var values = codes.SelectMany(code => names.Select(name => new TestSheetData { Code = code, Name = name }));
+        // 同一Codeを持つレコードがそれぞれ3件ずつ存在するデータ(3*10=30件)を生成
+        var values = Enumerable.Range(0, codeLength * nameLength)
+            .Select(static i => new TestSheetData { Code = (i / nameLength).ToString(), Name = (i % nameLength).ToString() });
 
         // Act
         var actual = values.ToMultipleSheetData();

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using RandomFixtureKit;
 
 namespace Kaonavi.Net.Server.Tests;
 
@@ -90,7 +89,7 @@ public sealed class HttpRequestExtensionsTest
     public async Task When_Header_Contains_Specified_Token_IsKaonaviWebhookRequest_Returns_True()
     {
         // Arrange
-        string token = FixtureFactory.Create<string>();
+        const string token = "token";
         var request = HttpRequest.Mock();
         request.ContentType.Returns("application/json");
         var headers = IHeaderDictionary.Mock();
