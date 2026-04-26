@@ -98,6 +98,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <item>URLは発行時点のメンバーの顔写真に紐づいています。</item>
         /// <item>取得される顔写真はjpg/jpeg形式です。</item>
         /// </list>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1face_image/get"/>
         /// </summary>
         /// <param name="updatedSince">指定した日以降に顔写真が更新されたメンバーに絞り込みます。</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
@@ -154,7 +155,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <item><term>ファイルサイズ</term><description>各5MBまで</description></item>
         /// </list>
         /// </para>
-        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1face_image/post"/>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1face_image/patch"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">更新対象となるデータ</param>

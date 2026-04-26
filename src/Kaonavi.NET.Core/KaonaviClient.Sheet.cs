@@ -126,11 +126,11 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         ///     <list type="bullet">
         ///       <item>
         ///         <term>ファイル数</term>
-        ///         <description>100ファイル</description>
+        ///         <description>1,000ファイル</description>
         ///       </item>
         ///       <item>
         ///         <term>ファイルサイズ</term>
-        ///         <description>各5MBまで</description>
+        ///         <description>各ファイル5MBまで</description>
         ///       </item>
         ///     </list>
         ///   </description>
@@ -180,11 +180,11 @@ public partial class KaonaviClient : KaonaviClient.ISheet
         ///     <list type="bullet">
         ///       <item>
         ///         <term>ファイル数</term>
-        ///         <description>100ファイル</description>
+        ///         <description>1,000ファイル</description>
         ///       </item>
         ///       <item>
         ///         <term>ファイルサイズ</term>
-        ///         <description>各5MBまで</description>
+        ///         <description>各ファイル5MBまで</description>
         ///       </item>
         ///     </list>
         ///   </description>
