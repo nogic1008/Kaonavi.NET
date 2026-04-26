@@ -304,7 +304,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         }
         catch (HttpRequestException ex)
         {
-            string errorMessage = response.Content.Headers.ContentType!.MediaType == "application/json"
+            string errorMessage = response.Content.Headers.ContentType?.MediaType == "application/json"
                 // { "errors": ["エラーメッセージ1", "エラーメッセージ2",...] }
                 ? string.Join("\n", (await response.Content.ReadFromJsonAsync(Context.Default.JsonElement, cancellationToken)).GetProperty("errors"u8).EnumerateArray().Select(e => e.GetString()))
                 : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);

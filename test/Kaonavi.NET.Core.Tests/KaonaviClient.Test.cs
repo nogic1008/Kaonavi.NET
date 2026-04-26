@@ -230,9 +230,34 @@ public sealed partial class KaonaviClientTest
     /// サーバー側がエラーを返したとき、<see cref="ApplicationException"/>の例外をスローする。
     /// </summary>
     /// <param name="statusCode">HTTPステータスコード</param>
-    /// <param name="responseBody">エラー時のレスポンス本文</param>
-    /// <param name="message">エラーメッセージ</param>
     /// <param name="mediaType">MediaType</param>
+    /// <param name="responseBody">エラー時のレスポンス本文</param>
+    /// <param name="expectedMessage">エラーメッセージ</param>
+    [Test($"API Caller > サーバー側がエラーを返したとき、{nameof(ApplicationException)}の例外をスローする。")]
+    [Category("API")]
+    [Arguments(HttpStatusCode.InternalServerError, null, "Internal Server Error", "Internal Server Error", DisplayName = "サーバーが500 Internal Server Errorを返したとき、ApplicationExceptionをスローする。")]
+    [Arguments(HttpStatusCode.BadRequest, "application/json", /* lang=json,strict */"""{"errors":["test"]}""", "test", DisplayName = "サーバーが400 Bad Requestでエラー内容をJSONで返したとき、ApplicationExceptionをスローする。")]
+    public async Task When_Server_Returns_Error_Api_Throws_ApplicationException(HttpStatusCode statusCode, string? mediaType, string responseBody, string expectedMessage)
+    {
+        // Arrange
+        using var client = Mock.HttpClient(BaseUriString);
+        var response = new HttpResponseMessage(statusCode)
+        {
+            Content = new StringContent(responseBody, Encoding.UTF8)
+            {
+                Headers =
+                {
+                    ContentType = mediaType is not null ? new(mediaType) : null
+                }
+            }
+        };
+        client.Handler.OnAnyRequest().RespondWith(response);
+
+        // Act - Assert
+        var sut = CreateSut(client, "token");
+        await Assert.That(async () => await sut.Layout.ReadMemberLayoutAsync())
+            .Throws<ApplicationException>().WithMessage(expectedMessage);
+    }
 
     /// <summary>
     /// <see cref="KaonaviClient.AccessToken"/>が<see langword="null"/>のとき、<see cref="KaonaviClient.AuthenticateAsync(CancellationToken)"/>を呼び出す。
