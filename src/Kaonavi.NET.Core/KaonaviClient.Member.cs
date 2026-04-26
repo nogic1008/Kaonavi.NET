@@ -101,7 +101,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// </summary>
         /// <param name="updatedSince">指定した日以降に顔写真が更新されたメンバーに絞り込みます。</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<IReadOnlyList<FaceImageInfo>> GetFaceImageListAsync(DateOnly updatedSince, CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<FaceImageInfo>> GetFaceImageListAsync(DateOnly updatedSince = default, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 指定したメンバーの顔写真をアップロードします。
@@ -193,7 +193,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
 
     /// <inheritdoc/>
     ValueTask<IReadOnlyList<FaceImageInfo>> IMember.GetFaceImageListAsync(DateOnly updatedSince, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, $"members/face_image?updated_since={updatedSince:yyyy-MM-dd}"), "member_data", Context.Default.IReadOnlyListFaceImageInfo, cancellationToken);
+        => CallApiAsync(new(HttpMethod.Get, $"members/face_image{(updatedSince != default ? $"?updated_since={updatedSince:o}" : "")}"), "member_data", Context.Default.IReadOnlyListFaceImageInfo, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.AddFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming, CancellationToken cancellationToken)

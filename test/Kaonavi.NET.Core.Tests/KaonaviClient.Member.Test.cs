@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
 using Kaonavi.Net.Tests.Assertions;
 using JsonContext = Kaonavi.Net.Json.Context;
 
@@ -279,7 +278,9 @@ public sealed partial class KaonaviClientTest
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.GetFaceImageListAsync" path="/param[@name='cancellationToken']"/></param>
         [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.GetFaceImageListAsync)} > GET /members/face_image をコールする。")]
         [Category(nameof(HttpMethod.Get))]
-        public async Task Member_GetFaceImageListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
+        [Arguments(null, "/members/face_image", DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.GetFaceImageListAsync)}() > GET /members/face_image をコールする。")]
+        [Arguments("2020-10-25", "/members/face_image?updated_since=2020-10-25", DisplayName = $"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.GetFaceImageListAsync)}(2020-10-25) > GET /members/face_image?updated_since=2020-10-25 をコールする。")]
+        public async Task Member_GetFaceImageListAsync_Calls_GetApi(string? date, string expectedUri, CancellationToken cancellationToken = default)
         {
             // Arrange
             /*lang=json,strict*/
@@ -302,15 +303,15 @@ public sealed partial class KaonaviClientTest
             }
             """;
             using var client = Mock.HttpClient(BaseUriString);
-            client.Handler.OnGet("/members/face_image?updated_since=2020-10-01").RespondWithJson(responseJson);
+            client.Handler.OnGet(expectedUri).RespondWithJson(responseJson);
 
             // Act
             var sut = CreateSut(client, "token");
-            var faceImages = await sut.Member.GetFaceImageListAsync(new(2020, 10, 1), cancellationToken);
+            var faceImages = await sut.Member.GetFaceImageListAsync(date is not null ? DateOnly.Parse(date) : default, cancellationToken);
 
             // Assert
             await Assert.That(faceImages).IsNotEmpty();
-            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path("/members/face_image?updated_since=2020-10-01"), Times.Once);
+            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path(expectedUri), Times.Once);
         }
 
         /// <summary>
