@@ -29,19 +29,29 @@ public class MemberData
 }
 ```
 
-### Primary Constructor を必須にする
+### Primary Constructor を主眼にする
 
-`record class` は必ず primary constructor 形式で定義する。プロパティを個別宣言する形式は採用しない。
+`record class` は **Primary Constructor で型の主データ（+ get/init 型プロパティ）を定義する**ことを原則とする。
+
+- コンストラクターのオーバーロードが必要な場合や、`get` only プロパティ・派生プロパティを実装する場合は、`record` のブロック形式を許容する。
+- その場合でも、主となるデータ定義は Primary Constructor を起点に設計し、補助的な実装のみをブロック側に置く。
 
 ```csharp
-// 良い例
+// 原則
 public record DepartmentTree(string Code, string Name, string? ParentCode = null);
 
-// 悪い例（primary constructor を使わない）
-public record DepartmentTree
+// 例外1: get only の派生プロパティが必要な場合
+public record DepartmentTree(string Code, string Name, string? ParentCode = null)
 {
-    public string Code { get; init; } = string.Empty;
-    public string Name { get; init; } = string.Empty;
+    /// <summary>ルート部門かどうか</summary>
+    public bool IsRoot => ParentCode is null;
+}
+
+// 例外2: コンストラクターのオーバーロードが必要な場合
+public record DateRange(DateOnly Start, DateOnly End)
+{
+    public DateRange(DateTime start, DateTime end)
+        : this(DateOnly.FromDateTime(start), DateOnly.FromDateTime(end)) { }
 }
 ```
 

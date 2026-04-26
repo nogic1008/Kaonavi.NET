@@ -42,7 +42,7 @@ public I{Category} {Category} => this;
 
 1. `KaonaviClient.{Category}.cs` を追加し、`public I{Category} {Category} => this;` を実装する。
 2. `IKaonaviClient.cs` に `KaonaviClient.I{Category} {Category} { get; }` を追加する。
-3. `PublicAPI.Unshipped.txt` に追加した公開 API シグネチャを記載する。
+3. `dotnet build` を実行し、`PublicApiAnalyzers` の診断に従って `PublicAPI.Unshipped.txt` を更新する（手動で推測して列挙しない）。
 
 ---
 

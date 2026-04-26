@@ -91,9 +91,10 @@ private class Comparer : IEqualityComparer<(TypeDeclarationSyntax, Compilation)>
 ## 診断（エラー / 警告）の発行
 
 - 診断コードは `DiagnosticDescriptors.cs` に集約して定義する。
-- コードは `KAONAVI000` の形式（docs/analyzer/ に対応するドキュメントを追加する）。
+- コードは `KAONAVI000` の形式。新しい診断コードを追加する際は、対応するドキュメントを `docs/analyzer/KAONAVI000.md` に作成する。
+  - 既存のドキュメント（例: `docs/analyzer/KAONAVI001.md`）を参考にして内容を記述する。
 - リソース文字列はデフォルトを英語（`Resources.resx`）、日本語訳を `Resources.ja-JP.resx` に記述する。
-- `Resources.Designer.cs` は自動生成されるため手動編集しない。
+  - `Resources.Designer.cs` は自動生成されるため手動編集しない。
 
 ```csharp
 // DiagnosticDescriptors.cs に追加する例
@@ -106,6 +107,14 @@ internal static readonly DiagnosticDescriptor KAONAVI999 = new(
     isEnabledByDefault: true);
 ```
 
+### `AnalyzerReleases.*.md` の管理
+
+診断ルールは `Microsoft.CodeAnalysis.Analyzers` によって `AnalyzerReleases.*.md` で管理されている。
+
+- **`AnalyzerReleases.Unshipped.md`**: Analyzer が自動生成するため、**手動編集しない。**ビルド後に追加した診断コードが反映されていることを確認する。
+- **`AnalyzerReleases.Shipped.md`**: リリース時に `AnalyzerReleases.Unshipped.md` の内容を移動する。その際、各エントリの Notes 列に `docs/analyzer/KAONAVI000.md` へのリンクを追加する。
+  - 通常の開発中は手動編集しない。
+
 ---
 
 ## コード生成（`Emit` メソッド）
@@ -116,15 +125,6 @@ internal static readonly DiagnosticDescriptor KAONAVI999 = new(
 - エラー時は `context.ReportDiagnostic()` を呼び、`AddSource` は呼ばない。
 
 ---
-
-## `[ExcludeFromCodeCoverage]`
-
-テストで到達できないコード（Initialize 内のキャッシュ用クラス等）には `[ExcludeFromCodeCoverage]` を付けてカバレッジ計測から除外する：
-
-```csharp
-[ExcludeFromCodeCoverage] // For cache on Initialize
-private class Comparer : IEqualityComparer<...> { ... }
-```
 
 ## テスト
 
