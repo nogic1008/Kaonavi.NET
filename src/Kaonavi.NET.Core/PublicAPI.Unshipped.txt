@@ -42,6 +42,9 @@ Kaonavi.Net.Entities.FaceImagePayload.Content.init -> void
 Kaonavi.Net.Entities.FaceImagePayload.Deconstruct(out string! Code, out byte[]! Content) -> void
 Kaonavi.Net.Entities.FaceImagePayload.FaceImagePayload(Kaonavi.Net.Entities.FaceImagePayload! original) -> void
 Kaonavi.Net.Entities.FaceImagePayload.FaceImagePayload(string! Code, byte[]! Content) -> void
+Kaonavi.Net.IKaonaviClient.AccessToken.get -> string?
+Kaonavi.Net.IKaonaviClient.AccessToken.set -> void
+Kaonavi.Net.IKaonaviClient.AuthenticateAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.Token!>
 Kaonavi.Net.KaonaviClient.ILayout.ReadMemberLayoutAsync(bool getCalcType = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.MemberLayout!>
 Kaonavi.Net.KaonaviClient.IMember.AddFaceImageAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImagePayload!>! payload, bool enableTrimming = true, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.IMember.GetFaceImageListAsync(System.DateOnly updatedSince = default(System.DateOnly), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImageInfo!>!>

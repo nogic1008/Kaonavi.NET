@@ -1,8 +1,23 @@
+using Kaonavi.Net.Entities;
+
 namespace Kaonavi.Net;
 
 /// <summary>カオナビ API v2の抽象化</summary>
 public interface IKaonaviClient
 {
+    /// <summary>
+    /// アクセストークン文字列を取得または設定します。
+    /// 各種API呼び出し時、この項目が<see langword="null"/>の場合は自動的に<see cref="AuthenticateAsync"/>を呼び出します。
+    /// </summary>
+    public string? AccessToken { get; set; }
+
+    /// <summary>
+    /// アクセストークンを発行します。
+    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3/paths/~1token/post"/>
+    /// </summary>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
+    public ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default);
+
     /// <inheritdoc cref="KaonaviClient.ITask"/>
     public KaonaviClient.ITask Task { get; }
 

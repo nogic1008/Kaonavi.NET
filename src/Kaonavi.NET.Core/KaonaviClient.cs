@@ -36,10 +36,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
 
     #region Properties
     private const string TokenHeader = "Kaonavi-Token";
-    /// <summary>
-    /// アクセストークン文字列を取得または設定します。
-    /// 各種API呼び出し時、この項目が<see langword="null"/>の場合は自動的に<see cref="AuthenticateAsync"/>を呼び出します。
-    /// </summary>
+    /// <inheritdoc/>
     public string? AccessToken
     {
         get => _client.DefaultRequestHeaders.TryGetValues(TokenHeader, out var values) ? values.First() : null;
@@ -99,6 +96,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <exception cref="ArgumentNullException">
     /// <paramref name="client"/>, <paramref name="consumerKey"/>, <paramref name="consumerSecret"/>または<paramref name="timeProvider"/>が<see langword="null"/>の場合にスローされます。
     /// </exception>
+    /// <remarks>このコンストラクターはテストプロジェクト向けに提供されています。</remarks>
     internal KaonaviClient(HttpClient client, string consumerKey, string consumerSecret, TimeProvider timeProvider)
     {
         ArgumentNullException.ThrowIfNull(client);
@@ -142,11 +140,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     }
     #endregion IDisposable
 
-    /// <summary>
-    /// アクセストークンを発行します。
-    /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%82%A2%E3%82%AF%E3%82%BB%E3%82%B9%E3%83%88%E3%83%BC%E3%82%AF%E3%83%B3/paths/~1token/post"/>
-    /// </summary>
-    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
+    /// <inheritdoc/>
     /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
     public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
     {
@@ -256,9 +250,9 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// 制限を超える場合は、呼び出し可能になるまで待機します。
     /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#section/%E3%83%AA%E3%82%AF%E3%82%A8%E3%82%B9%E3%83%88%E5%88%B6%E9%99%90"/>
     /// </summary>
-    /// <param name="request"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="request">APIに対するリクエスト</param>
+    /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
+    /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     private async ValueTask<int> CallRequestLimitApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
