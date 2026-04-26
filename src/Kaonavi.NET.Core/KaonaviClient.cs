@@ -65,8 +65,11 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         }
     }
 
-    /// <summary>更新リクエストの呼び出し履歴</summary>
-    private readonly ConcurrentQueue<ITimer> _requestQueues = new();
+    /// <summary>
+    /// 更新リクエスト制限解除タイマーの追跡。
+    /// .NETにはConcurrentなSetが存在しないため、値を使用しない<see cref="ConcurrentDictionary{TKey, TValue}"/>で代替しています。
+    /// </summary>
+    private readonly ConcurrentDictionary<ITimer, byte> _requestTimers = new();
     /// <summary>更新リクエストの呼び出し制限管理</summary>
     private readonly SemaphoreSlim _semaphore = new(UpdateRequestLimit, UpdateRequestLimit);
 
@@ -124,8 +127,9 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
             if (disposing)
             {
                 _semaphore.Dispose();
-                while (_requestQueues.TryDequeue(out var timer))
+                foreach (var timer in _requestTimers.Keys)
                     timer.Dispose();
+                _requestTimers.Clear();
                 // HttpClientは外部から渡されたものなので、ここでDisposeしない
             }
             _disposedValue = true;
@@ -263,19 +267,21 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
             int taskId = (await CallApiAsync(request, Context.Default.JsonElement, cancellationToken).ConfigureAwait(false)).GetProperty("task_id"u8).GetInt32();
 
             timer = _timeProvider.CreateTimer(OnFinished, null, TimeSpan.FromSeconds(WaitSeconds), Timeout.InfiniteTimeSpan);
-            _requestQueues.Enqueue(timer);
+            _ = _requestTimers.TryAdd(timer, 0);
             return taskId;
         }
         catch
         {
-            timer?.Dispose();
+            if (timer is not null && _requestTimers.TryRemove(timer, out _))
+                timer.Dispose();
             _semaphore.Release();
             throw;
         }
 
-        void OnFinished(object? _)
+        void OnFinished(object? state)
         {
-            if (_requestQueues.TryDequeue(out var timer))
+            _ = state;
+            if (timer is not null && _requestTimers.TryRemove(timer, out _))
                 timer.Dispose();
             _semaphore.Release();
         }
