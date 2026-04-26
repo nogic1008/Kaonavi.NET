@@ -21,8 +21,8 @@ public sealed class HttpRequestExtensionsTest
     public async Task When_ContentType_Is_Not_ApplicationJson_IsKaonaviWebhookRequest_Returns_False(string contentType)
     {
         // Arrange
-        var request = new Mock<HttpRequest>();
-        request.SetupGet(x => x.ContentType).Returns(contentType);
+        var request = HttpRequest.Mock();
+        request.ContentType.Returns(contentType);
 
         // Act - Assert
         await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token")).IsFalse();
@@ -37,9 +37,11 @@ public sealed class HttpRequestExtensionsTest
     public async Task When_UserAgent_Is_Not_KaonaviWebhook_IsKaonaviWebhookRequest_Returns_False(string? userAgent)
     {
         // Arrange
-        var request = new Mock<HttpRequest>();
-        request.SetupGet(x => x.ContentType).Returns("application/json");
-        request.SetupGet(x => x.Headers.UserAgent).Returns(new StringValues(userAgent));
+        var request = HttpRequest.Mock();
+        request.ContentType.Returns("application/json");
+        var headers = IHeaderDictionary.Mock();
+        headers.UserAgent.Returns(new StringValues(userAgent));
+        request.Headers.Returns(headers.Object);
 
         // Act - Assert
         await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token")).IsFalse();
@@ -52,10 +54,12 @@ public sealed class HttpRequestExtensionsTest
     public async Task When_Header_Does_Not_Contain_KaonaviToken_IsKaonaviWebhookRequest_Returns_False()
     {
         // Arrange
-        var request = new Mock<HttpRequest>();
-        request.SetupGet(x => x.ContentType).Returns("application/json");
-        request.SetupGet(x => x.Headers.UserAgent).Returns(new StringValues("Kaonavi-Webhook"));
-        request.Setup(x => x.Headers.TryGetValue("Kaonavi-Token", out It.Ref<StringValues>.IsAny)).Returns(false);
+        var request = HttpRequest.Mock();
+        request.ContentType.Returns("application/json");
+        var headers = IHeaderDictionary.Mock();
+        headers.UserAgent.Returns(new StringValues("Kaonavi-Webhook"));
+        headers.TryGetValue("Kaonavi-Token").Returns(false);
+        request.Headers.Returns(headers.Object);
 
         // Act - Assert
         await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token")).IsFalse();
@@ -68,18 +72,15 @@ public sealed class HttpRequestExtensionsTest
     public async Task When_Header_Does_Not_Contain_Specified_Token_IsKaonaviWebhookRequest_Returns_False()
     {
         // Arrange
-        var request = new Mock<HttpRequest>();
-        request.SetupGet(x => x.ContentType).Returns("application/json");
-        request.SetupGet(x => x.Headers.UserAgent).Returns(new StringValues("Kaonavi-Webhook"));
-        request.Setup(x => x.Headers.TryGetValue("Kaonavi-Token", out It.Ref<StringValues>.IsAny))
-            .Callback(MockCallback)
-            .Returns(true);
+        var request = HttpRequest.Mock();
+        request.ContentType.Returns("application/json");
+        var headers = IHeaderDictionary.Mock();
+        headers.UserAgent.Returns(new StringValues("Kaonavi-Webhook"));
+        headers.TryGetValue("Kaonavi-Token").Returns(true).SetsOutValue("another-token");
+        request.Headers.Returns(headers.Object);
 
         // Act - Assert
         await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token")).IsFalse();
-
-        static void MockCallback(string key, out StringValues values)
-            => values = new StringValues("another-token");
     }
 
     /// <summary>
@@ -90,17 +91,14 @@ public sealed class HttpRequestExtensionsTest
     {
         // Arrange
         string token = FixtureFactory.Create<string>();
-        var request = new Mock<HttpRequest>();
-        request.SetupGet(x => x.ContentType).Returns("application/json");
-        request.SetupGet(x => x.Headers.UserAgent).Returns(new StringValues("Kaonavi-Webhook"));
-        request.Setup(x => x.Headers.TryGetValue("Kaonavi-Token", out It.Ref<StringValues>.IsAny))
-            .Callback(MockCallback)
-            .Returns(true);
+        var request = HttpRequest.Mock();
+        request.ContentType.Returns("application/json");
+        var headers = IHeaderDictionary.Mock();
+        headers.UserAgent.Returns(new StringValues("Kaonavi-Webhook"));
+        headers.TryGetValue("Kaonavi-Token").Returns(true).SetsOutValue(token);
+        request.Headers.Returns(headers.Object);
 
         // Act - Assert
         await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, token)).IsTrue();
-
-        void MockCallback(string key, out StringValues values)
-            => values = new StringValues(token);
     }
 }
