@@ -238,7 +238,7 @@ public partial class KaonaviClient : KaonaviClient.ISheet
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>または<paramref name="customFieldId"/>が0より小さい場合にスローされます。</exception>
-    public ValueTask<IReadOnlyList<AttachmentInfo>> ListFileAsync(int id, int customFieldId, DateOnly updatedSince = default, CancellationToken cancellationToken = default)
+    ValueTask<IReadOnlyList<AttachmentInfo>> ISheet.ListFileAsync(int id, int customFieldId, DateOnly updatedSince, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
         ArgumentOutOfRangeException.ThrowIfNegative(customFieldId);
