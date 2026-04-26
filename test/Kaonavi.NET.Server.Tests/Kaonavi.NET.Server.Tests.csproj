@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="RandomFixtureKit" />
     <PackageReference Include="System.Text.Json" Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))" />
     <PackageReference Include="TUnit" />
     <PackageReference Include="TUnit.Mocks" />
