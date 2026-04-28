@@ -118,10 +118,11 @@ public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationTo
 | 一覧取得 | `ListAsync()` |
 | 単一取得 | `ReadAsync()` |
 | 新規作成 | `CreateAsync()` |
-| 更新 | `UpdateAsync()` |
+| 部分更新 | `UpdateAsync()` |
+| 全置換 | `ReplaceAsync()` |
+| 上書き追加 | `OverWriteAsync()` |
 | 削除 | `DeleteAsync()` |
 | 追加（リスト操作） | `AddAsync()` |
-| 削除（リスト操作） | `RemoveAsync()` |
 
 ---
 
