@@ -157,7 +157,7 @@ public sealed partial class KaonaviClientTest
 
             // Act
             var sut = CreateSut(client, "token");
-            int taskId = await sut.EnumOption.UpdateAsync(id, [(1, "社長"), (null, "本部長"), (2, "マネージャー")], cancellationToken);
+            int taskId = await sut.EnumOption.UpdateAsync(id, [new(1, "社長"), new("本部長"), new(2, "マネージャー")], cancellationToken);
 
             // Assert
             await Assert.That(taskId).IsEqualTo(TaskId);

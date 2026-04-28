@@ -52,18 +52,7 @@ Kaonavi.Net.Entities.DepartmentTree.Order.init -> void
 Kaonavi.Net.Entities.DepartmentTree.ParentCode.get -> string?
 Kaonavi.Net.Entities.DepartmentTree.ParentCode.init -> void
 Kaonavi.Net.Entities.EnumOption
-Kaonavi.Net.Entities.EnumOption.Data
-Kaonavi.Net.Entities.EnumOption.Data.Data(int Id, string! Name) -> void
-Kaonavi.Net.Entities.EnumOption.Data.Data(Kaonavi.Net.Entities.EnumOption.Data! original) -> void
-Kaonavi.Net.Entities.EnumOption.Data.Deconstruct(out int Id, out string! Name) -> void
-Kaonavi.Net.Entities.EnumOption.Data.Id.get -> int
-Kaonavi.Net.Entities.EnumOption.Data.Id.init -> void
-Kaonavi.Net.Entities.EnumOption.Data.Name.get -> string!
-Kaonavi.Net.Entities.EnumOption.Data.Name.init -> void
-Kaonavi.Net.Entities.EnumOption.Deconstruct(out string! SheetName, out int Id, out string! Name, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOption.Data!>! EnumOptionData) -> void
 Kaonavi.Net.Entities.EnumOption.EnumOption(Kaonavi.Net.Entities.EnumOption! original) -> void
-Kaonavi.Net.Entities.EnumOption.EnumOption(string! SheetName, int Id, string! Name, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOption.Data!>! EnumOptionData) -> void
-Kaonavi.Net.Entities.EnumOption.EnumOptionData.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOption.Data!>!
 Kaonavi.Net.Entities.EnumOption.EnumOptionData.init -> void
 Kaonavi.Net.Entities.EnumOption.Id.get -> int
 Kaonavi.Net.Entities.EnumOption.Id.init -> void
@@ -337,7 +326,6 @@ Kaonavi.Net.KaonaviClient.IDepartment.ReplaceAsync(System.Collections.Generic.IR
 Kaonavi.Net.KaonaviClient.IEnumOption
 Kaonavi.Net.KaonaviClient.IEnumOption.ListAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOption!>!>
 Kaonavi.Net.KaonaviClient.IEnumOption.ReadAsync(int id, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.EnumOption!>
-Kaonavi.Net.KaonaviClient.IEnumOption.UpdateAsync(int id, System.Collections.Generic.IReadOnlyList<(int? id, string! name)>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.ILayout
 Kaonavi.Net.KaonaviClient.ILayout.ListAsync(bool getCalcType = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.SheetLayout!>!>
 Kaonavi.Net.KaonaviClient.ILayout.ReadAsync(int id, bool getCalcType = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.SheetLayout!>
@@ -396,9 +384,6 @@ override Kaonavi.Net.Entities.CustomFieldValue.ToString() -> string!
 override Kaonavi.Net.Entities.DepartmentTree.Equals(object? obj) -> bool
 override Kaonavi.Net.Entities.DepartmentTree.GetHashCode() -> int
 override Kaonavi.Net.Entities.DepartmentTree.ToString() -> string!
-override Kaonavi.Net.Entities.EnumOption.Data.Equals(object? obj) -> bool
-override Kaonavi.Net.Entities.EnumOption.Data.GetHashCode() -> int
-override Kaonavi.Net.Entities.EnumOption.Data.ToString() -> string!
 override Kaonavi.Net.Entities.EnumOption.Equals(object? obj) -> bool
 override Kaonavi.Net.Entities.EnumOption.GetHashCode() -> int
 override Kaonavi.Net.Entities.EnumOption.ToString() -> string!
@@ -462,8 +447,6 @@ static Kaonavi.Net.Entities.CustomFieldValue.operator !=(Kaonavi.Net.Entities.Cu
 static Kaonavi.Net.Entities.CustomFieldValue.operator ==(Kaonavi.Net.Entities.CustomFieldValue? left, Kaonavi.Net.Entities.CustomFieldValue? right) -> bool
 static Kaonavi.Net.Entities.DepartmentTree.operator !=(Kaonavi.Net.Entities.DepartmentTree? left, Kaonavi.Net.Entities.DepartmentTree? right) -> bool
 static Kaonavi.Net.Entities.DepartmentTree.operator ==(Kaonavi.Net.Entities.DepartmentTree? left, Kaonavi.Net.Entities.DepartmentTree? right) -> bool
-static Kaonavi.Net.Entities.EnumOption.Data.operator !=(Kaonavi.Net.Entities.EnumOption.Data? left, Kaonavi.Net.Entities.EnumOption.Data? right) -> bool
-static Kaonavi.Net.Entities.EnumOption.Data.operator ==(Kaonavi.Net.Entities.EnumOption.Data? left, Kaonavi.Net.Entities.EnumOption.Data? right) -> bool
 static Kaonavi.Net.Entities.EnumOption.operator !=(Kaonavi.Net.Entities.EnumOption? left, Kaonavi.Net.Entities.EnumOption? right) -> bool
 static Kaonavi.Net.Entities.EnumOption.operator ==(Kaonavi.Net.Entities.EnumOption? left, Kaonavi.Net.Entities.EnumOption? right) -> bool
 static Kaonavi.Net.Entities.FaceImageInfo.operator !=(Kaonavi.Net.Entities.FaceImageInfo? left, Kaonavi.Net.Entities.FaceImageInfo? right) -> bool
@@ -510,10 +493,6 @@ virtual Kaonavi.Net.Entities.DepartmentTree.EqualityContract.get -> System.Type!
 virtual Kaonavi.Net.Entities.DepartmentTree.Equals(Kaonavi.Net.Entities.DepartmentTree? other) -> bool
 virtual Kaonavi.Net.Entities.DepartmentTree.PrintMembers(System.Text.StringBuilder! builder) -> bool
 virtual Kaonavi.Net.Entities.EnumOption.<Clone>$() -> Kaonavi.Net.Entities.EnumOption!
-virtual Kaonavi.Net.Entities.EnumOption.Data.<Clone>$() -> Kaonavi.Net.Entities.EnumOption.Data!
-virtual Kaonavi.Net.Entities.EnumOption.Data.EqualityContract.get -> System.Type!
-virtual Kaonavi.Net.Entities.EnumOption.Data.Equals(Kaonavi.Net.Entities.EnumOption.Data? other) -> bool
-virtual Kaonavi.Net.Entities.EnumOption.Data.PrintMembers(System.Text.StringBuilder! builder) -> bool
 virtual Kaonavi.Net.Entities.EnumOption.EqualityContract.get -> System.Type!
 virtual Kaonavi.Net.Entities.EnumOption.Equals(Kaonavi.Net.Entities.EnumOption? other) -> bool
 virtual Kaonavi.Net.Entities.EnumOption.PrintMembers(System.Text.StringBuilder! builder) -> bool

@@ -16,7 +16,7 @@ namespace Kaonavi.Net.Json;
 [JsonSerializable(typeof(IReadOnlyList<SheetLayout>))]
 [JsonSerializable(typeof(IReadOnlyList<User>))]
 [JsonSerializable(typeof(IReadOnlyList<WebhookConfig>))]
-[JsonSerializable(typeof(IReadOnlyList<(int? id, string name)>), GenerationMode = JsonSourceGenerationMode.Serialization)]
+[JsonSerializable(typeof(IReadOnlyList<EnumOptionData>))]
 [JsonSerializable(typeof(MemberLayout))]
 [JsonSerializable(typeof(TaskProgress))]
 [JsonSerializable(typeof(Token))]

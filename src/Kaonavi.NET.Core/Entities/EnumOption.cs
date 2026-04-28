@@ -11,11 +11,21 @@ public record EnumOption(
     string SheetName,
     int Id,
     string Name,
-    IReadOnlyList<EnumOption.Data> EnumOptionData
+    IReadOnlyList<EnumOptionData> EnumOptionData
+);
+
+/// <summary>マスター項目値</summary>
+/// <param name="Id">マスターID</param>
+/// <param name="Name">マスター名</param>
+[method: JsonConstructor]
+public record EnumOptionData(
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] int Id,
+    string Name
 )
 {
-    /// <summary>マスター項目値</summary>
-    /// <param name="Id">マスターID</param>
-    /// <param name="Name">マスター名</param>
-    public record Data(int Id, string Name);
+    /// <summary>
+    /// マスター名を指定して、マスター項目値を生成します。
+    /// </summary>
+    /// <param name="name">マスター名</param>
+    public EnumOptionData(string name) : this(default, name) { }
 }
