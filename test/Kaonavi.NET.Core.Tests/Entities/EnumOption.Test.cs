@@ -9,8 +9,8 @@ namespace Kaonavi.Net.Tests.Entities;
 public sealed class EnumOptionTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [Test($"{nameof(EnumOption)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(EnumOption)} > JSONからデシリアライズできる。")]
     public async Task CanDeserializeJSON()
     {
         // Arrange
@@ -36,6 +36,6 @@ public sealed class EnumOptionTest
             .And.Member(static o => o.SheetName, static o => o.IsEqualTo<string>("役職情報"))
             .And.Member(static o => o.Id, static o => o.IsEqualTo(10))
             .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("役職"))
-            .And.Member(static o => o.EnumOptionData, static o => o.IsEquivalentTo((EnumOption.Data[])[new(1, "社長"), new(2, "部長"), new(3, "課長")]));
+            .And.Member(static o => o.EnumOptionData, static o => o.IsEquivalentTo((EnumOptionData[])[new(1, "社長"), new(2, "部長"), new(3, "課長")]));
     }
 }

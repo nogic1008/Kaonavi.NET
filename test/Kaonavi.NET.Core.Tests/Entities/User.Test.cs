@@ -8,8 +8,6 @@ namespace Kaonavi.Net.Tests.Entities;
 [Category("Entities")]
 public sealed class UserTest
 {
-    private const string TestName = $"{nameof(User)} > JSONからデシリアライズできる。";
-
     /// <summary><see cref="CanDeserializeJSON"/>のテストデータ</summary>
     public static IEnumerable<TestDataRow<(string json, int id, string email, string? memberCode, int roleId, string roleName, string roleType, bool isActive, bool passwordLocked, bool useSmartphone)>> TestData
     {
@@ -30,7 +28,7 @@ public sealed class UserTest
               "use_smartphone": false,
               "last_login_at": "2021-11-01 12:00:00"
             }
-            """, 1, "taro@kaonavi.jp", "A0002", 1, "システム管理者", "Adm", true, false, false)) { DisplayName = TestName };
+            """, 1, "taro@kaonavi.jp", "A0002", 1, "システム管理者", "Adm", true, false, false));
             yield return new((/*lang=json,strict*/ """
             {
               "id": 2,
@@ -46,7 +44,7 @@ public sealed class UserTest
               "use_smartphone": true,
               "last_login_at": "2021-11-01 12:00:00"
             }
-            """, 2, "hanako@kaonavi.jp", null, 2, "マネージャ", "一般", true, true, true)) { DisplayName = TestName };
+            """, 2, "hanako@kaonavi.jp", null, 2, "マネージャ", "一般", true, true, true));
         }
     }
 
@@ -63,8 +61,8 @@ public sealed class UserTest
     /// <param name="isActive"><see cref="User.IsActive"/></param>
     /// <param name="passwordLocked"><see cref="User.PasswordLocked"/></param>
     /// <param name="useSmartphone"><see cref="User.UseSmartphone"/></param>
-    [Test(TestName)]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(User)} > $json からデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
     public async Task CanDeserializeJSON(string json, int id, string email, string? memberCode, int roleId, string roleName, string roleType, bool isActive, bool passwordLocked, bool useSmartphone)
     {

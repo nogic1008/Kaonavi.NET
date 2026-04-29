@@ -98,10 +98,11 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <item>URLは発行時点のメンバーの顔写真に紐づいています。</item>
         /// <item>取得される顔写真はjpg/jpeg形式です。</item>
         /// </list>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1face_image/get"/>
         /// </summary>
         /// <param name="updatedSince">指定した日以降に顔写真が更新されたメンバーに絞り込みます。</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<IReadOnlyList<FaceImageInfo>> GetFaceImageListAsync(DateOnly updatedSince, CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<FaceImageInfo>> GetFaceImageListAsync(DateOnly updatedSince = default, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// 指定したメンバーの顔写真をアップロードします。
@@ -154,7 +155,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <item><term>ファイルサイズ</term><description>各5MBまで</description></item>
         /// </list>
         /// </para>
-        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1face_image/post"/>
+        /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members~1face_image/patch"/>
         /// </summary>
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">更新対象となるデータ</param>
@@ -193,7 +194,7 @@ public partial class KaonaviClient : KaonaviClient.IMember
 
     /// <inheritdoc/>
     ValueTask<IReadOnlyList<FaceImageInfo>> IMember.GetFaceImageListAsync(DateOnly updatedSince, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, $"members/face_image?updated_since={updatedSince:yyyy-MM-dd}"), "member_data", Context.Default.IReadOnlyListFaceImageInfo, cancellationToken);
+        => CallApiAsync(new(HttpMethod.Get, $"members/face_image{(updatedSince != default ? $"?updated_since={updatedSince:o}" : "")}"), "member_data", Context.Default.IReadOnlyListFaceImageInfo, cancellationToken);
 
     /// <inheritdoc/>
     ValueTask<int> IMember.AddFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming, CancellationToken cancellationToken)

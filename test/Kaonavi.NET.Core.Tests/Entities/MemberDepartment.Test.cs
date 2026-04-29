@@ -11,28 +11,26 @@ namespace Kaonavi.Net.Tests.Entities;
 [Category("Entities")]
 public sealed class MemberDepartmentTest
 {
-    private const string TestName = $"{nameof(MemberDepartment)} > JSONからデシリアライズできる。";
-
     /// <summary><see cref="CanDeserializeJSON"/>のテストデータ</summary>
     public static IEnumerable<TestDataRow<(string json, string code, string? name, string[]? names)>> TestData
     {
         get
         {
-            yield return new((/*lang=json,strict*/ """{ "code": "1000" }""", "1000", null, null)) { DisplayName = TestName };
+            yield return new((/*lang=json,strict*/ """{ "code": "1000" }""", "1000", null, null));
             yield return new((/*lang=json,strict*/ """
             {
               "code": "1000",
               "name":"取締役会",
               "names": ["取締役会"]
             }
-            """, "1000", "取締役会", ["取締役会"])) { DisplayName = TestName };
+            """, "1000", "取締役会", ["取締役会"]));
             yield return new((/*lang=json,strict*/ """
             {
               "code": "2000",
               "name": "営業本部 第一営業部 ITグループ",
               "names": ["営業本部", "第一営業部", "ITグループ"]
             }
-            """, "2000", "営業本部 第一営業部 ITグループ", ["営業本部", "第一営業部", "ITグループ"])) { DisplayName = TestName };
+            """, "2000", "営業本部 第一営業部 ITグループ", ["営業本部", "第一営業部", "ITグループ"]));
         }
     }
 
@@ -43,8 +41,8 @@ public sealed class MemberDepartmentTest
     /// <param name="code"><inheritdoc cref="MemberDepartment.Code" path="/summary"/></param>
     /// <param name="name"><inheritdoc cref="MemberDepartment.Name" path="/summary"/></param>
     /// <param name="names"><inheritdoc cref="MemberDepartment.Names" path="/summary"/></param>
-    [Test(TestName)]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(MemberDepartment)} > $json からデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
     public async Task CanDeserializeJSON([StringSyntax(StringSyntaxAttribute.Json)] string json, string code, string? name, string[]? names)
     {

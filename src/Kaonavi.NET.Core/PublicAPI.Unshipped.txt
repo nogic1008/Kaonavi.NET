@@ -2,9 +2,9 @@
 Kaonavi.Net.Entities.AttachmentInfo
 Kaonavi.Net.Entities.AttachmentInfo.AttachmentInfo(Kaonavi.Net.Entities.AttachmentInfo! original) -> void
 Kaonavi.Net.Entities.AttachmentInfo.AttachmentInfo(string! Code, params System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.AttachmentInfoRecord!>! Records) -> void
-Kaonavi.Net.Entities.AttachmentInfo.Deconstruct(out string! Code, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.AttachmentInfoRecord!>! Records) -> void
 Kaonavi.Net.Entities.AttachmentInfo.Code.get -> string!
 Kaonavi.Net.Entities.AttachmentInfo.Code.init -> void
+Kaonavi.Net.Entities.AttachmentInfo.Deconstruct(out string! Code, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.AttachmentInfoRecord!>! Records) -> void
 Kaonavi.Net.Entities.AttachmentInfo.Records.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.AttachmentInfoRecord!>!
 Kaonavi.Net.Entities.AttachmentInfo.Records.init -> void
 Kaonavi.Net.Entities.AttachmentInfoRecord
@@ -34,6 +34,18 @@ Kaonavi.Net.Entities.AttachmentPayloadRecord.Content.init -> void
 Kaonavi.Net.Entities.AttachmentPayloadRecord.Deconstruct(out string! FileName, out byte[]! Content) -> void
 Kaonavi.Net.Entities.AttachmentPayloadRecord.FileName.get -> string!
 Kaonavi.Net.Entities.AttachmentPayloadRecord.FileName.init -> void
+Kaonavi.Net.Entities.EnumOption.Deconstruct(out string! SheetName, out int Id, out string! Name, out System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOptionData!>! EnumOptionData) -> void
+Kaonavi.Net.Entities.EnumOption.EnumOption(string! SheetName, int Id, string! Name, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOptionData!>! EnumOptionData) -> void
+Kaonavi.Net.Entities.EnumOption.EnumOptionData.get -> System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOptionData!>!
+Kaonavi.Net.Entities.EnumOptionData
+Kaonavi.Net.Entities.EnumOptionData.Deconstruct(out int Id, out string! Name) -> void
+Kaonavi.Net.Entities.EnumOptionData.EnumOptionData(int Id, string! Name) -> void
+Kaonavi.Net.Entities.EnumOptionData.EnumOptionData(Kaonavi.Net.Entities.EnumOptionData! original) -> void
+Kaonavi.Net.Entities.EnumOptionData.EnumOptionData(string! name) -> void
+Kaonavi.Net.Entities.EnumOptionData.Id.get -> int
+Kaonavi.Net.Entities.EnumOptionData.Id.init -> void
+Kaonavi.Net.Entities.EnumOptionData.Name.get -> string!
+Kaonavi.Net.Entities.EnumOptionData.Name.init -> void
 Kaonavi.Net.Entities.FaceImagePayload
 Kaonavi.Net.Entities.FaceImagePayload.Code.get -> string!
 Kaonavi.Net.Entities.FaceImagePayload.Code.init -> void
@@ -42,8 +54,13 @@ Kaonavi.Net.Entities.FaceImagePayload.Content.init -> void
 Kaonavi.Net.Entities.FaceImagePayload.Deconstruct(out string! Code, out byte[]! Content) -> void
 Kaonavi.Net.Entities.FaceImagePayload.FaceImagePayload(Kaonavi.Net.Entities.FaceImagePayload! original) -> void
 Kaonavi.Net.Entities.FaceImagePayload.FaceImagePayload(string! Code, byte[]! Content) -> void
+Kaonavi.Net.IKaonaviClient.AccessToken.get -> string?
+Kaonavi.Net.IKaonaviClient.AccessToken.set -> void
+Kaonavi.Net.IKaonaviClient.AuthenticateAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.Token!>
+Kaonavi.Net.KaonaviClient.IEnumOption.UpdateAsync(int id, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.EnumOptionData!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.ILayout.ReadMemberLayoutAsync(bool getCalcType = false, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<Kaonavi.Net.Entities.MemberLayout!>
 Kaonavi.Net.KaonaviClient.IMember.AddFaceImageAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImagePayload!>! payload, bool enableTrimming = true, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
+Kaonavi.Net.KaonaviClient.IMember.GetFaceImageListAsync(System.DateOnly updatedSince = default(System.DateOnly), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImageInfo!>!>
 Kaonavi.Net.KaonaviClient.IMember.UpdateFaceImageAsync(System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.FaceImagePayload!>! payload, bool enableTrimming = true, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.ISheet.AddFileAsync(int id, int customFieldId, System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.AttachmentPayload!>! payload, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<int>
 Kaonavi.Net.KaonaviClient.ISheet.ListFileAsync(int id, int customFieldId, System.DateOnly updatedSince = default(System.DateOnly), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken)) -> System.Threading.Tasks.ValueTask<System.Collections.Generic.IReadOnlyList<Kaonavi.Net.Entities.AttachmentInfo!>!>
@@ -60,6 +77,9 @@ override Kaonavi.Net.Entities.AttachmentPayload.ToString() -> string!
 override Kaonavi.Net.Entities.AttachmentPayloadRecord.Equals(object? obj) -> bool
 override Kaonavi.Net.Entities.AttachmentPayloadRecord.GetHashCode() -> int
 override Kaonavi.Net.Entities.AttachmentPayloadRecord.ToString() -> string!
+override Kaonavi.Net.Entities.EnumOptionData.Equals(object? obj) -> bool
+override Kaonavi.Net.Entities.EnumOptionData.GetHashCode() -> int
+override Kaonavi.Net.Entities.EnumOptionData.ToString() -> string!
 override Kaonavi.Net.Entities.FaceImagePayload.Equals(object? obj) -> bool
 override Kaonavi.Net.Entities.FaceImagePayload.GetHashCode() -> int
 override Kaonavi.Net.Entities.FaceImagePayload.ToString() -> string!
@@ -71,6 +91,8 @@ static Kaonavi.Net.Entities.AttachmentPayload.operator !=(Kaonavi.Net.Entities.A
 static Kaonavi.Net.Entities.AttachmentPayload.operator ==(Kaonavi.Net.Entities.AttachmentPayload? left, Kaonavi.Net.Entities.AttachmentPayload? right) -> bool
 static Kaonavi.Net.Entities.AttachmentPayloadRecord.operator !=(Kaonavi.Net.Entities.AttachmentPayloadRecord? left, Kaonavi.Net.Entities.AttachmentPayloadRecord? right) -> bool
 static Kaonavi.Net.Entities.AttachmentPayloadRecord.operator ==(Kaonavi.Net.Entities.AttachmentPayloadRecord? left, Kaonavi.Net.Entities.AttachmentPayloadRecord? right) -> bool
+static Kaonavi.Net.Entities.EnumOptionData.operator !=(Kaonavi.Net.Entities.EnumOptionData? left, Kaonavi.Net.Entities.EnumOptionData? right) -> bool
+static Kaonavi.Net.Entities.EnumOptionData.operator ==(Kaonavi.Net.Entities.EnumOptionData? left, Kaonavi.Net.Entities.EnumOptionData? right) -> bool
 static Kaonavi.Net.Entities.FaceImagePayload.operator !=(Kaonavi.Net.Entities.FaceImagePayload? left, Kaonavi.Net.Entities.FaceImagePayload? right) -> bool
 static Kaonavi.Net.Entities.FaceImagePayload.operator ==(Kaonavi.Net.Entities.FaceImagePayload? left, Kaonavi.Net.Entities.FaceImagePayload? right) -> bool
 virtual Kaonavi.Net.Entities.AttachmentInfo.<Clone>$() -> Kaonavi.Net.Entities.AttachmentInfo!
@@ -89,6 +111,10 @@ virtual Kaonavi.Net.Entities.AttachmentPayloadRecord.<Clone>$() -> Kaonavi.Net.E
 virtual Kaonavi.Net.Entities.AttachmentPayloadRecord.EqualityContract.get -> System.Type!
 virtual Kaonavi.Net.Entities.AttachmentPayloadRecord.Equals(Kaonavi.Net.Entities.AttachmentPayloadRecord? other) -> bool
 virtual Kaonavi.Net.Entities.AttachmentPayloadRecord.PrintMembers(System.Text.StringBuilder! builder) -> bool
+virtual Kaonavi.Net.Entities.EnumOptionData.<Clone>$() -> Kaonavi.Net.Entities.EnumOptionData!
+virtual Kaonavi.Net.Entities.EnumOptionData.EqualityContract.get -> System.Type!
+virtual Kaonavi.Net.Entities.EnumOptionData.Equals(Kaonavi.Net.Entities.EnumOptionData? other) -> bool
+virtual Kaonavi.Net.Entities.EnumOptionData.PrintMembers(System.Text.StringBuilder! builder) -> bool
 virtual Kaonavi.Net.Entities.FaceImagePayload.<Clone>$() -> Kaonavi.Net.Entities.FaceImagePayload!
 virtual Kaonavi.Net.Entities.FaceImagePayload.EqualityContract.get -> System.Type!
 virtual Kaonavi.Net.Entities.FaceImagePayload.Equals(Kaonavi.Net.Entities.FaceImagePayload? other) -> bool

@@ -25,16 +25,15 @@ public sealed class AdvancedPermissionTest
     }
     """;
 
-    private const string TestName = $"{nameof(AdvancedPermission)} > JSONからデシリアライズできる。";
-
     /// <summary>JSONからデシリアライズできる。</summary>
     /// <param name="json">JSON文字列</param>
     /// <param name="userId"><inheritdoc cref="AdvancedPermission.UserId" path="/summary"/></param>
     /// <param name="addCodes"><inheritdoc cref="AdvancedPermission.AddCodes" path="/summary"/></param>
     /// <param name="exclusionCodes"><inheritdoc cref="AdvancedPermission.ExclusionCodes" path="/summary"/></param>
-    [Test(TestName), Category("JSON Deserialize")]
-    [Arguments(AdvancedPermissionJson, 1, (string[])["0001", "0002", "0003"], (string[])["0001", "0002", "0003"], DisplayName = TestName)]
-    [Arguments(AdvancedPermissionEmptyJson, 2, (string[])[], (string[])[], DisplayName = TestName)]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(AdvancedPermission)} > $json からデシリアライズできる。")]
+    [Arguments(AdvancedPermissionJson, 1, (string[])["0001", "0002", "0003"], (string[])["0001", "0002", "0003"])]
+    [Arguments(AdvancedPermissionEmptyJson, 2, (string[])[], (string[])[])]
     public async Task CanDeserializeJSON(string json, int userId, string[] addCodes, string[] exclusionCodes)
     {
         // Arrange - Act

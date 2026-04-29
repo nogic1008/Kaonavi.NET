@@ -13,8 +13,9 @@ public sealed class DateTimeConverterTest
     /// <see cref="DateTimeConverter.Read"/>は、JSON文字列から<see cref="DateTime"/>に変換できる。
     /// </summary>
     /// <param name="json">JSON文字列</param>
-    /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [Test($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Read)}()")]
+    /// <inheritdoc cref="DateTime(int, int, int, int, int, int)" path="/param"/>
+    [Test]
+    [DisplayName($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Read)}($json) returns {nameof(DateTime)}($year, $month, $day, $hour, $minute, $second)")]
     [Arguments(/*lang=json,strict*/ "\"2021-01-01 12:34:56\"", 2021, 1, 1, 12, 34, 56)]
     public async Task Read_Returns_DateTime(string json, int year, int month, int day, int hour, int minute, int second)
     {
@@ -33,8 +34,9 @@ public sealed class DateTimeConverterTest
     /// <see cref="DateTimeConverter.Write"/>は、<see cref="DateTime"/>からJSON文字列に変換できる。
     /// </summary>
     /// <param name="json">JSON文字列</param>
-    /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [Test($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Write)}()")]
+    /// <inheritdoc cref="DateTime(int, int, int, int, int, int)" path="/param"/>
+    [Test]
+    [DisplayName($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Write)}({nameof(DateTime)}($year, $month, $day, $hour, $minute, $second)) returns $json")]
     [Arguments(2021, 1, 1, 12, 34, 56, /*lang=json,strict*/ "\"2021-01-01 12:34:56\"")]
     public async Task Write_Flushes_JSON(int year, int month, int day, int hour, int minute, int second, string json)
     {

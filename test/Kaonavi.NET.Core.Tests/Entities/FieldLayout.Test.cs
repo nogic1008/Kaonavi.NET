@@ -11,22 +11,17 @@ public sealed class FieldLayoutTest
     /// <summary>
     /// JSONから<see cref="FieldType"/>にデシリアライズできる。
     /// </summary>
-    [Test($"{nameof(FieldType)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
-    [Arguments("\"string\"", FieldType.String, DisplayName = $"string -> {nameof(FieldType)}.{nameof(FieldType.String)} にデシリアライズできる。")]
-    [Arguments("\"number\"", FieldType.Number, DisplayName = $"number -> {nameof(FieldType)}.{nameof(FieldType.Number)} にデシリアライズできる。")]
-    [Arguments("\"date\"", FieldType.Date, DisplayName = $"date -> {nameof(FieldType)}.{nameof(FieldType.Date)} にデシリアライズできる。")]
-    [Arguments("\"enum\"", FieldType.Enum, DisplayName = $"enum -> {nameof(FieldType)}.{nameof(FieldType.Enum)} にデシリアライズできる。")]
-    [Arguments("\"calc\"", FieldType.Calc, DisplayName = $"calc -> {nameof(FieldType)}.{nameof(FieldType.Calc)} にデシリアライズできる。")]
-    [Arguments("\"department\"", FieldType.Department, DisplayName = $"department -> {nameof(FieldType)}.{nameof(FieldType.Department)} にデシリアライズできる。")]
-    [Arguments("\"department[]\"", FieldType.DepartmentArray, DisplayName = $"department[] -> {nameof(FieldType)}.{nameof(FieldType.DepartmentArray)} にデシリアライズできる。")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(FieldType)} > $json から {nameof(FieldType)}.$expected にデシリアライズできる。")]
+    [Arguments("\"string\"", FieldType.String)]
+    [Arguments("\"number\"", FieldType.Number)]
+    [Arguments("\"date\"", FieldType.Date)]
+    [Arguments("\"enum\"", FieldType.Enum)]
+    [Arguments("\"calc\"", FieldType.Calc)]
+    [Arguments("\"department\"", FieldType.Department)]
+    [Arguments("\"department[]\"", FieldType.DepartmentArray)]
     public async Task FieldType_Can_Deserialize_FromJSON(string json, FieldType expected)
-    {
-        var result = JsonSerializer.Deserialize(json, JsonContext.Default.FieldType);
-        await Assert.That(result).IsEqualTo(expected);
-    }
-
-    private const string TestName = $"{nameof(FieldLayout)} > JSONからデシリアライズできる。";
+        => await Assert.That(JsonSerializer.Deserialize(json, JsonContext.Default.FieldType)).IsEqualTo(expected);
 
     /// <summary><see cref="FieldLayout_Can_Deserialize_FromJSON"/>のテストデータ</summary>
     public static IEnumerable<TestDataRow<(string json, string name, bool required, FieldType type, int? maxLength, string?[] enums, bool readOnly)>> TestData
@@ -41,7 +36,7 @@ public sealed class FieldLayoutTest
               "max_length": 50,
               "enum": []
             }
-            """, "社員番号", true, FieldType.String, 50, [], false)) { DisplayName = TestName };
+            """, "社員番号", true, FieldType.String, 50, [], false));
             yield return new((/*lang=json,strict*/ """
             {
               "name": "入社日",
@@ -50,7 +45,7 @@ public sealed class FieldLayoutTest
               "max_length": null,
               "enum": []
             }
-            """, "入社日", false, FieldType.Date, null, [], false)) { DisplayName = TestName };
+            """, "入社日", false, FieldType.Date, null, [], false));
             yield return new((/*lang=json,strict*/ """
             {
               "name": "性別",
@@ -59,7 +54,7 @@ public sealed class FieldLayoutTest
               "max_length": null,
               "enum": ["男性", "女性"]
             }
-            """, "性別", false, FieldType.Enum, null, ["男性", "女性"], false)) { DisplayName = TestName };
+            """, "性別", false, FieldType.Enum, null, ["男性", "女性"], false));
             yield return new((/*lang=json,strict*/ """
             {
               "name": "勤続年数",
@@ -69,7 +64,7 @@ public sealed class FieldLayoutTest
               "enum": [],
               "read_only": true
             }
-            """, "勤続年数", false, FieldType.Calc, null, [], true)) { DisplayName = TestName };
+            """, "勤続年数", false, FieldType.Calc, null, [], true));
         }
     }
 
@@ -83,8 +78,8 @@ public sealed class FieldLayoutTest
     /// <param name="maxLength"><inheritdoc cref="FieldLayout.MaxLength" path="/summary"/></param>
     /// <param name="enums"><inheritdoc cref="FieldLayout.Enum" path="/summary"/></param>
     /// <param name="readOnly"><inheritdoc cref="FieldLayout.ReadOnly" path="/summary"/></param>
-    [Test(TestName)]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(FieldLayout)} > $json からデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
     public async Task FieldLayout_Can_Deserialize_FromJSON(string json, string name, bool required, FieldType type, int? maxLength, string?[] enums, bool readOnly)
     {
@@ -104,20 +99,20 @@ public sealed class FieldLayoutTest
     /// <summary>
     /// JSONから<see cref="FieldInput"/>にデシリアライズできる。
     /// </summary>
-    [Test($"{nameof(FieldInput)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
-    [Arguments("\"text_box\"", FieldInput.TextBox, DisplayName = $"text_box -> {nameof(FieldInput)}.{nameof(FieldInput.TextBox)} にデシリアライズできる。")]
-    [Arguments("\"text_area\"", FieldInput.TextArea, DisplayName = $"text_area -> {nameof(FieldInput)}.{nameof(FieldInput.TextArea)} にデシリアライズできる。")]
-    [Arguments("\"number_box\"", FieldInput.NumberBox, DisplayName = $"number_box -> {nameof(FieldInput)}.{nameof(FieldInput.NumberBox)} にデシリアライズできる。")]
-    [Arguments("\"pull_down\"", FieldInput.PullDown, DisplayName = $"pull_down -> {nameof(FieldInput)}.{nameof(FieldInput.PullDown)} にデシリアライズできる。")]
-    [Arguments("\"radio_button\"", FieldInput.RadioButton, DisplayName = $"radio_button -> {nameof(FieldInput)}.{nameof(FieldInput.RadioButton)} にデシリアライズできる。")]
-    [Arguments("\"check_box\"", FieldInput.CheckBox, DisplayName = $"check_box -> {nameof(FieldInput)}.{nameof(FieldInput.CheckBox)} にデシリアライズできる。")]
-    [Arguments("\"link\"", FieldInput.Link, DisplayName = $"link -> {nameof(FieldInput)}.{nameof(FieldInput.Link)} にデシリアライズできる。")]
-    [Arguments("\"date\"", FieldInput.Date, DisplayName = $"date -> {nameof(FieldInput)}.{nameof(FieldInput.Date)} にデシリアライズできる。")]
-    [Arguments("\"year_month\"", FieldInput.YearMonth, DisplayName = $"year_month -> {nameof(FieldInput)}.{nameof(FieldInput.YearMonth)} にデシリアライズできる。")]
-    [Arguments("\"attach_file\"", FieldInput.AttachFile, DisplayName = $"attach_file -> {nameof(FieldInput)}.{nameof(FieldInput.AttachFile)} にデシリアライズできる。")]
-    [Arguments("\"face_image\"", FieldInput.FaceImage, DisplayName = $"face_image -> {nameof(FieldInput)}.{nameof(FieldInput.FaceImage)} にデシリアライズできる。")]
-    [Arguments("\"calc_formula\"", FieldInput.CalcFormula, DisplayName = $"calc_formula -> {nameof(FieldInput)}.{nameof(FieldInput.CalcFormula)} にデシリアライズできる。")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(FieldInput)} > $json から {nameof(FieldInput)}.$expected にデシリアライズできる。")]
+    [Arguments("\"text_box\"", FieldInput.TextBox)]
+    [Arguments("\"text_area\"", FieldInput.TextArea)]
+    [Arguments("\"number_box\"", FieldInput.NumberBox)]
+    [Arguments("\"pull_down\"", FieldInput.PullDown)]
+    [Arguments("\"radio_button\"", FieldInput.RadioButton)]
+    [Arguments("\"check_box\"", FieldInput.CheckBox)]
+    [Arguments("\"link\"", FieldInput.Link)]
+    [Arguments("\"date\"", FieldInput.Date)]
+    [Arguments("\"year_month\"", FieldInput.YearMonth)]
+    [Arguments("\"attach_file\"", FieldInput.AttachFile)]
+    [Arguments("\"face_image\"", FieldInput.FaceImage)]
+    [Arguments("\"calc_formula\"", FieldInput.CalcFormula)]
     public async Task FieldInput_Can_Deserialize_FromJSON(string json, FieldInput expected)
     {
         var result = JsonSerializer.Deserialize(json, JsonContext.Default.FieldInput);
@@ -127,8 +122,8 @@ public sealed class FieldLayoutTest
     /// <summary>
     /// JSONから<see cref="CustomFieldLayout"/>にデシリアライズできる。
     /// </summary>
-    [Test($"{nameof(CustomFieldLayout)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(CustomFieldLayout)} > JSONからデシリアライズできる。")]
     public async Task CustomFieldLayout_Can_Deserialize_FromJSON()
     {
         // Arrange

@@ -11,8 +11,8 @@ public sealed class TokenTest
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [Test($"{nameof(Token)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(Token)} > JSONからデシリアライズできる。")]
     public async Task CanDeserializeJSON()
     {
         // Arrange

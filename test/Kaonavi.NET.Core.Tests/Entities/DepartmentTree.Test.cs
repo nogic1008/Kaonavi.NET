@@ -9,10 +9,8 @@ namespace Kaonavi.Net.Tests.Entities;
 [Category("Entities")]
 public sealed class DepartmentTreeTest
 {
-    private const string TestName = $"{nameof(DepartmentTree)} > JSONからデシリアライズできる。";
-
     /// <summary><see cref="CanDeserializeJSON"/>のテストデータ</summary>
-    public static IEnumerable<TestDataRow<(string json, string code, string name, string? parentCode, string? leaderMemberCode, int order, string? memo)>> TestData
+    public static IEnumerable<TestDataRow<(string json, DepartmentTree expected)>> TestData
     {
         get
         {
@@ -25,7 +23,7 @@ public sealed class DepartmentTreeTest
               "order": 1,
               "memo": ""
             }
-            """, "1000", "取締役会", null, "A0002", 1, "")) { DisplayName = TestName };
+            """, new("1000", "取締役会", null, "A0002", 1, "")));
             yield return new((/*lang=json,strict*/ """
             {
               "code": "1200",
@@ -35,7 +33,7 @@ public sealed class DepartmentTreeTest
               "order": 2,
               "memo": null
             }
-            """, "1200", "営業本部", null, null, 2, null)) { DisplayName = TestName };
+            """, new("1200", "営業本部", null, null, 2, null)));
             yield return new((/*lang=json,strict*/ """
             {
               "code": "2000",
@@ -45,24 +43,19 @@ public sealed class DepartmentTreeTest
               "order": 1,
               "memo": "example"
             }
-            """, "2000", "ITグループ", "1500", "A0001", 1, "example")) { DisplayName = TestName };
+            """, new("2000", "ITグループ", "1500", "A0001", 1, "example")));
         }
     }
 
     /// <summary>JSONからデシリアライズできる。</summary>
     /// <param name="json">JSON文字列</param>
-    /// <param name="code"><inheritdoc cref="DepartmentTree" path="/param[@name='Code']"/></param>
-    /// <param name="name"><inheritdoc cref="DepartmentTree" path="/param[@name='Name']"/></param>
-    /// <param name="parentCode"><inheritdoc cref="DepartmentTree" path="/param[@name='ParentCode']"/></param>
-    /// <param name="leaderMemberCode"><inheritdoc cref="DepartmentTree" path="/param[@name='LeaderMemberCode']"/></param>
-    /// <param name="order"><inheritdoc cref="DepartmentTree" path="/param[@name='Order']"/></param>
-    /// <param name="memo"><inheritdoc cref="DepartmentTree" path="/param[@name='Memo']"/></param>
-    [Test(TestName)]
-    [Category("JSON Deserialize")]
+    /// <param name="expected">期待される<see cref="DepartmentTree"/>オブジェクト</param>
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(DepartmentTree)} > $json から $expected にデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
-    public async Task CanDeserializeJSON([StringSyntax(StringSyntaxAttribute.Json)] string json, string code, string name, string? parentCode, string? leaderMemberCode, int order, string? memo)
+    public async Task CanDeserializeJSON([StringSyntax(StringSyntaxAttribute.Json)] string json, DepartmentTree expected)
     {
         var result = JsonSerializer.Deserialize(json, JsonContext.Default.DepartmentTree);
-        await Assert.That(result).IsEqualTo(new(code, name, parentCode, leaderMemberCode, order, memo));
+        await Assert.That(result).IsEqualTo(expected);
     }
 }

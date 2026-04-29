@@ -13,8 +13,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.User.ListAsync"/>は、"/users"にGETリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.ListAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ListAsync)} > GET /users をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ListAsync)}() > GET /users をコールする。")]
         public async Task User_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -69,8 +69,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.User.CreateAsync"/>は、"/users"にPOSTリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.CreateAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.CreateAsync)} > POST /users をコールする。")]
-        [Category(nameof(HttpMethod.Post))]
+        [Test, Category(nameof(HttpMethod.Post))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.CreateAsync)}(payload) > POST /users をコールする。")]
         public async Task User_CreateAsync_Calls_PostApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -120,8 +120,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.User.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.ReadAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
         public async Task When_Id_IsNegative_User_ReadAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -139,8 +139,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.User.ReadAsync"/>は、"/users/{userId}"にGETリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.ReadAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)} > GET /users/:userId をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.ReadAsync)}(1) > GET /users/1 をコールする。")]
         public async Task User_ReadAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -180,8 +180,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.User.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [Category(nameof(HttpMethod.Patch))]
+        [Test, Category(nameof(HttpMethod.Patch))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)}(-1, payload) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
         public async Task When_Id_IsNegative_User_UpdateAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -199,8 +199,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.User.UpdateAsync"/>は、"/users/{userId}"にPATCHリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)} > PATCH /users/:userId をコールする。")]
-        [Category(nameof(HttpMethod.Patch))]
+        [Test, Category(nameof(HttpMethod.Patch))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.UpdateAsync)}(1, payload) > PATCH /users/1 をコールする。")]
         public async Task User_UpdateAsync_Calls_PatchApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -251,8 +251,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.User.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IUser.DeleteAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [Category(nameof(HttpMethod.Delete))]
+        [Test, Category(nameof(HttpMethod.Delete))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
         public async Task When_Id_IsNegative_User_DeleteAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -269,8 +269,8 @@ public sealed partial class KaonaviClientTest
         /// <summary>
         /// <see cref="KaonaviClient.User.DeleteAsync"/>は、"/users/{userId}"にDELETEリクエストを行う。
         /// </summary>
-        [Test($"{nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)} > DELETE /users/:userId をコールする。")]
-        [Category(nameof(HttpMethod.Delete))]
+        [Test, Category(nameof(HttpMethod.Delete))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.User)}.{nameof(KaonaviClient.User.DeleteAsync)}(1) > DELETE /users/1 をコールする。")]
         public async Task User_DeleteAsync_Calls_DeleteApi(CancellationToken cancellationToken = default)
         {
             // Arrange

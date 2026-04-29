@@ -14,9 +14,10 @@ public sealed class ISheetDataExtensionsTest
     }
 
     /// <summary>
-    /// <see cref="ISheetDataExtensions.ToSingleSheetData{T}(T)"/>は、単一レコードであるSheetDataの一覧を返す。
+    /// <see cref="ISheetDataExtensions.ToSingleSheetData{T}(T)"/>は、単一レコードである<see cref="SheetData"/>の一覧を返す。
     /// </summary>
-    [Test($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードであるSheetDataの一覧を返す。")]
+    [Test]
+    [DisplayName($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードである {nameof(SheetData)} の一覧を返す。")]
     public async Task ToSingleSheetData_Returns_Single_SheetData()
     {
         // Arrange
@@ -33,9 +34,10 @@ public sealed class ISheetDataExtensionsTest
     }
 
     /// <summary>
-    /// <see cref="ISheetDataExtensions.ToMultipleSheetData{T}(IEnumerable{T})"/>は、複数レコードであるSheetDataの一覧を返す。
+    /// <see cref="ISheetDataExtensions.ToMultipleSheetData{T}(IEnumerable{T})"/>は、複数レコードである<see cref="SheetData"/>の一覧を返す。
     /// </summary>
-    [Test($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードであるSheetDataの一覧を返す。")]
+    [Test]
+    [DisplayName($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードである {nameof(SheetData)} の一覧を返す。")]
     public async Task ToMultipleSheetData_Returns_Multiple_SheetData()
     {
         // Arrange

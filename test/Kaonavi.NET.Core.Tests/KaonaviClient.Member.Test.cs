@@ -1,6 +1,5 @@
 using System.Text.Json;
 using Kaonavi.Net.Entities;
-using Kaonavi.Net.Json;
 using Kaonavi.Net.Tests.Assertions;
 using JsonContext = Kaonavi.Net.Json.Context;
 
@@ -57,8 +56,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Member.ListAsync"/>は、"/members"にGETリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.ListAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ListAsync)} > GET /members をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ListAsync)}() > GET /members をコールする。")]
         public async Task Member_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -152,8 +151,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Member.CreateAsync"/>は、"/members"にPOSTリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.CreateAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.CreateAsync)} > POST /members をコールする。")]
-        [Category(nameof(HttpMethod.Post))]
+        [Test, Category(nameof(HttpMethod.Post))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.CreateAsync)}(payload) > POST /members をコールする。")]
         public async Task Member_CreateAsync_Calls_PostApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -174,8 +173,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Member.ReplaceAsync"/>は、"/members"にPUTリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ReplaceAsync)} > PUT /members をコールする。")]
-        [Category(nameof(HttpMethod.Put))]
+        [Test, Category(nameof(HttpMethod.Put))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ReplaceAsync)}(payload) > PUT /members をコールする。")]
         public async Task Member_ReplaceAsync_Calls_PutApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -196,8 +195,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Member.UpdateAsync"/>は、"/members"にPATCHリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateAsync)} > PATCH /members をコールする。")]
-        [Category(nameof(HttpMethod.Patch))]
+        [Test, Category(nameof(HttpMethod.Patch))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateAsync)}(payload) > PATCH /members をコールする。")]
         public async Task Member_UpdateAsync_Calls_PatchApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -218,8 +217,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Member.OverWriteAsync"/>は、"/members/overwrite"にPUTリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.OverWriteAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.OverWriteAsync)} > PUT /members/overwrite をコールする。")]
-        [Category(nameof(HttpMethod.Put))]
+        [Test, Category(nameof(HttpMethod.Put))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.OverWriteAsync)}(payload) > PUT /members/overwrite をコールする。")]
         public async Task Member_OverWriteAsync_Calls_PutApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -240,8 +239,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Member.DeleteAsync"/>は、"/members/delete"にPOSTリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.DeleteAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.DeleteAsync)} > POST /members/delete をコールする。")]
-        [Category(nameof(HttpMethod.Post))]
+        [Test, Category(nameof(HttpMethod.Post))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.DeleteAsync)}(codes) > POST /members/delete をコールする。")]
         public async Task Member_DeleteAsync_Calls_PostApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -276,10 +275,14 @@ public sealed partial class KaonaviClientTest
         /// <summary>
         /// <see cref="KaonaviClient.Member.GetFaceImageListAsync"/>は、"/members/face_image"にGETリクエストを行う。
         /// </summary>
+        /// <param name="date">updatedSinceに指定する日付</param>
+        /// <param name="expectedUri">APIにリクエストされるURI</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.GetFaceImageListAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.GetFaceImageListAsync)} > GET /members/face_image をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
-        public async Task Member_GetFaceImageListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.GetFaceImageListAsync)}($date) > GET $expectedUri をコールする。")]
+        [Arguments(null, "/members/face_image")]
+        [Arguments("2020-10-25", "/members/face_image?updated_since=2020-10-25")]
+        public async Task Member_GetFaceImageListAsync_Calls_GetApi(string? date, string expectedUri, CancellationToken cancellationToken = default)
         {
             // Arrange
             /*lang=json,strict*/
@@ -302,23 +305,23 @@ public sealed partial class KaonaviClientTest
             }
             """;
             using var client = Mock.HttpClient(BaseUriString);
-            client.Handler.OnGet("/members/face_image?updated_since=2020-10-01").RespondWithJson(responseJson);
+            client.Handler.OnGet(expectedUri).RespondWithJson(responseJson);
 
             // Act
             var sut = CreateSut(client, "token");
-            var faceImages = await sut.Member.GetFaceImageListAsync(new(2020, 10, 1), cancellationToken);
+            var faceImages = await sut.Member.GetFaceImageListAsync(date is not null ? DateOnly.Parse(date) : default, cancellationToken);
 
             // Assert
             await Assert.That(faceImages).IsNotEmpty();
-            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path("/members/face_image?updated_since=2020-10-01"), Times.Once);
+            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path(expectedUri), Times.Once);
         }
 
         /// <summary>
         /// <see cref="KaonaviClient.Member.AddFaceImageAsync"/>は、"/members/face_image"にPOSTリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.AddFaceImageAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.AddFaceImageAsync)} > POST /members/face_image をコールする。")]
-        [Category(nameof(HttpMethod.Post))]
+        [Test, Category(nameof(HttpMethod.Post))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.AddFaceImageAsync)}($enableTrimming) > POST /members/face_image をコールする。")]
         [Arguments(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
         [Arguments(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
         public async Task Member_AddFaceImageAsync_Calls_PostApi(bool enableTrimming, string expectedJson, CancellationToken cancellationToken = default)
@@ -341,8 +344,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Member.UpdateFaceImageAsync"/>は、"/members/face_image"にPATCHリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.UpdateFaceImageAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateFaceImageAsync)} > PATCH /members/face_image をコールする。")]
-        [Category(nameof(HttpMethod.Patch))]
+        [Test, Category(nameof(HttpMethod.Patch))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.UpdateFaceImageAsync)}(payload, $enableTrimming) > PATCH /members/face_image をコールする。")]
         [Arguments(true, /*lang=json,strict*/ $$"""{ "enable_trimming": true, "member_data": {{FaceImagePayloadJson}} }""")]
         [Arguments(false, /*lang=json,strict*/ $$"""{ "enable_trimming": false, "member_data": {{FaceImagePayloadJson}} }""")]
         public async Task Member_UpdateFaceImageAsync_Calls_PatchApi(bool enableTrimming, string expectedJson, CancellationToken cancellationToken = default)

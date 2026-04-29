@@ -13,8 +13,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Department.ListAsync"/>は、"/departments"にGETリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IDepartment.ListAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ListAsync)} > GET /departments をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ListAsync)}() > GET /departments をコールする。")]
         public async Task Department_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -45,8 +45,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Department.ReplaceAsync"/>は、"/departments"にPUTリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IDepartment.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ReplaceAsync)} > PUT /departments をコールする。")]
-        [Category(nameof(HttpMethod.Put))]
+        [Test, Category(nameof(HttpMethod.Put))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ReplaceAsync)}(payload) > PUT /departments をコールする。")]
         public async Task Department_ReplaceAsync_Calls_PutApi(CancellationToken cancellationToken = default)
         {
             // Arrange
