@@ -8,8 +8,6 @@ namespace Kaonavi.Net.Tests.Entities;
 [Category("Entities")]
 public sealed class MemberDataTest
 {
-    private const string TestName = $"{nameof(MemberData)} > JSONからデシリアライズできる。";
-
     /// <summary><see cref="CanDeserializeJSON"/>のテストデータ</summary>
     public static IEnumerable<TestDataRow<(string json, string code, string? name, string? nameKana, string? mail, string? enteredDate, string? retiredDate, string? gender, string? birthday, string departmentCode)>> TestData
     {
@@ -71,8 +69,8 @@ public sealed class MemberDataTest
     /// <param name="gender"><inheritdoc cref="MemberData.Gender" path="/summary"/></param>
     /// <param name="birthday"><see cref="MemberData.Birthday"/>の文字列表現</param>
     /// <param name="departmentCode"><inheritdoc cref="MemberDepartment.Code" path="/summary"/></param>
-    [Test(TestName)]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(MemberData)} > $json からデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
     public async Task CanDeserializeJSON(string json, string code, string? name, string? nameKana, string? mail, string? enteredDate, string? retiredDate, string? gender, string? birthday, string departmentCode)
     {

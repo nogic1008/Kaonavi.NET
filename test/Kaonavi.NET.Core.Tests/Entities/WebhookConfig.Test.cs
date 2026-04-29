@@ -11,8 +11,8 @@ public sealed class WebhookConfigTest
     /// <summary>
     /// JSONから<see cref="WebhookConfig"/>にデシリアライズできる。
     /// </summary>
-    [Test($"{nameof(WebhookConfig)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(WebhookConfig)} > JSONからデシリアライズできる。")]
     public async Task WebhookConfig_CanDeserializeJSON()
     {
         // Arrange

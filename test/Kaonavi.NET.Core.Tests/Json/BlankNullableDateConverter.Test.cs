@@ -13,8 +13,9 @@ public sealed class BlankNullableDateConverterTest
     /// <see cref="BlankNullableDateConverter.Read"/>は、JSON文字列から<see cref="DateOnly"/>?に変換できる。
     /// </summary>
     /// <param name="json">JSON文字列</param>
-    /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [Test($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Read)}()")]
+    /// <inheritdoc cref="DateOnly(int, int, int)" path="/param"/>
+    [Test]
+    [DisplayName($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Read)}($json) returns {nameof(DateOnly)}($year, $month, $day)")]
     [Arguments(/*lang=json,strict*/ "\"2021-01-01\"", 2021, 1, 1)]
     [Arguments(/*lang=json,strict*/ "\"\"", null, 0, 0)]
     [Arguments(/*lang=json,strict*/ "null", null, 0, 0)]
@@ -38,8 +39,9 @@ public sealed class BlankNullableDateConverterTest
     /// <see cref="BlankNullableDateConverter.Write"/>は、<see cref="DateOnly"/>?からJSON文字列に変換できる。
     /// </summary>
     /// <param name="json">JSON文字列</param>
-    /// <inheritdoc cref="DateTime.DateTime(int, int, int, int, int, int)" path="/param"/>
-    [Test($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Write)}()")]
+    /// <inheritdoc cref="DateOnly(int, int, int)" path="/param"/>
+    [Test]
+    [DisplayName($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Write)}({nameof(DateOnly)}($year, $month, $day)) returns $json")]
     [Arguments(2021, 1, 1, /*lang=json,strict*/ "\"2021-01-01\"")]
     [Arguments(null, 0, 0, /*lang=json,strict*/ "\"\"")]
     public async Task Write_Flushes_JSON(int? year, int month, int day, string json)

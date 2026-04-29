@@ -11,8 +11,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Task.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ITask.ReadAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
         public async Task When_Id_IsNegative_Task_ReadAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -30,8 +30,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Task.ReadAsync"/>は、"/tasks/{taskId}"にGETリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ITask.ReadAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)} > GET /tasks/:taskId をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)}(1) > GET /tasks/1 をコールする。")]
         public async Task Task_ReadAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange

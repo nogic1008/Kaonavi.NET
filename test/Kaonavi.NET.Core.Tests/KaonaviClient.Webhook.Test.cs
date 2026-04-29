@@ -13,8 +13,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Webhook.ListAsync"/>は、"/webhook"にGETリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.ListAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.ListAsync)} > GET /webhook をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.ListAsync)}() > GET /webhook をコールする。")]
         public async ValueTask Webhook_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -57,8 +57,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Webhook.CreateAsync"/>は、"/webhook"にPOSTリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.CreateAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.CreateAsync)} > POST /webhook をコールする。")]
-        [Category(nameof(HttpMethod.Post))]
+        [Test, Category(nameof(HttpMethod.Post))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.CreateAsync)}(payload) > POST /webhook をコールする。")]
         public async ValueTask Webhook_CreateAsync_Calls_PostApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -75,7 +75,7 @@ public sealed partial class KaonaviClientTest
               "secret_token": "token"
             }
             """;
-            var payload = new WebhookConfigPayload(_baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
+            var payload = new WebhookConfigPayload(new(BaseUriString), [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
 
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnPost("/webhook").RespondWithJson(responseJson);
@@ -101,8 +101,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Webhook.UpdateAsync"/>は、"/webhook/{webhookId}"にPATCHリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.UpdateAsync)} > PATCH /webhook/:webhookId をコールする。")]
-        [Category(nameof(HttpMethod.Patch))]
+        [Test, Category(nameof(HttpMethod.Patch))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.UpdateAsync)}(1, payload) > PATCH /webhook/1 をコールする。")]
         public async Task Webhook_UpdateAsync_Calls_PatchApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -120,7 +120,7 @@ public sealed partial class KaonaviClientTest
               "secret_token": "token"
             }
             """;
-            var payload = new WebhookConfig(webhookId, _baseUri, [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
+            var payload = new WebhookConfig(webhookId, new(BaseUriString), [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
 
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnRequest(req => req.Method(HttpMethod.Patch).Path($"/webhook/{webhookId}")).RespondWithJson(responseJson);
@@ -147,8 +147,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Webhook.DeleteAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.DeleteAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [Category(nameof(HttpMethod.Delete))]
+        [Test, Category(nameof(HttpMethod.Delete))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
         public async Task When_Id_IsNegative_Webhook_DeleteAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -166,8 +166,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Webhook.DeleteAsync"/>は、"/webhook/{webhookId}"にDELETEリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.DeleteAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)} > DELETE /webhook/:webhookId をコールする。")]
-        [Category(nameof(HttpMethod.Delete))]
+        [Test, Category(nameof(HttpMethod.Delete))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)}(1) > DELETE /webhook/1 をコールする。")]
         public async Task Webhook_DeleteAsync_Calls_DeleteApi(CancellationToken cancellationToken = default)
         {
             // Arrange

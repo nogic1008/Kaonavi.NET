@@ -12,8 +12,6 @@ public sealed partial class KaonaviClientTest
 {
     /// <summary>テスト用の<see cref="HttpClient.BaseAddress"/></summary>
     private const string BaseUriString = "https://example.com/";
-    /// <summary>テスト用の<see cref="HttpClient.BaseAddress"/></summary>
-    private static readonly Uri _baseUri = new("https://example.com/");
 
     /// <summary><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></summary>
     private const int TaskId = 1;
@@ -37,43 +35,36 @@ public sealed partial class KaonaviClientTest
         };
 
     #region Constructor
+
+    /// <summary><see cref="WhenParamIsNull_Constructor_Throws_ArgumentNullException"/>のテストデータ</summary>
+    public static IEnumerable<TestDataRow<(HttpClient? client, string? consumerKey, string? consumerSecret, TimeProvider? timeProvider, string paramName)>> ConstructorTestData
+    {
+        get
+        {
+            yield return new((null, "<non-null>", "<non-null>", TimeProvider.System, "client"));
+            yield return new((new(), null, "<non-null>", TimeProvider.System, "consumerKey"));
+            yield return new((new(), "<non-null>", null, TimeProvider.System, "consumerSecret"));
+            yield return new((new(), "<non-null>", "<non-null>", null, "timeProvider"));
+        }
+    }
+
     /// <summary>
-    /// <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
+    /// <paramref name="client"/>, <paramref name="consumerKey"/>, <paramref name="consumerSecret"/>または<paramref name="timeProvider"/>が<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
     /// </summary>
-    /// <param name="consumerKey"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerKey']"/></param>
-    /// <param name="consumerSecret"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='consumerSecret']"/></param>
+    /// <inheritdoc cref="KaonaviClient(HttpClient, string, string, TimeProvider)" path="/param"/>
     /// <param name="paramName">例外の原因となったパラメータ名</param>
-    [Test($"{nameof(KaonaviClient)}(constructor) > {nameof(ArgumentNullException)}をスローする。")]
-    [Category("Constructor")]
-    [Arguments(null, "foo", "consumerKey", DisplayName = $"{nameof(KaonaviClient)}({nameof(HttpClient)}, null, <non-null>) > {nameof(ArgumentNullException)}(consumerKey)をスローする。")]
-    [Arguments("foo", null, "consumerSecret", DisplayName = $"{nameof(KaonaviClient)}({nameof(HttpClient)}, <non-null>, null) > {nameof(ArgumentNullException)}(consumerSecret)をスローする。")]
-    public async Task WhenParamIsNull_Constructor_Throws_ArgumentNullException(string? consumerKey, string? consumerSecret, string paramName)
-        => await Assert.That(() => _ = new KaonaviClient(new(), consumerKey!, consumerSecret!))
+    [Test, Category("Constructor")]
+    [DisplayName($"{nameof(KaonaviClient)} > .ctor($client, $consumerKey, $consumerSecret, $timeProvider) > {nameof(ArgumentNullException)}(\"$paramName\") をスローする。")]
+    [MethodDataSource(nameof(ConstructorTestData))]
+    public async Task WhenParamIsNull_Constructor_Throws_ArgumentNullException(HttpClient? client, string? consumerKey, string? consumerSecret, TimeProvider? timeProvider, string paramName)
+        => await Assert.That(() => _ = new KaonaviClient(client!, consumerKey!, consumerSecret!, timeProvider!))
             .Throws<ArgumentNullException>().WithParameterName(paramName);
-
-    /// <summary>
-    /// HttpClientが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
-    /// </summary>
-    [Test($"{nameof(KaonaviClient)}(null, <non-null>, <non-null>) > ArgumentNullException(client)をスローする。")]
-    [Category("Constructor")]
-    public async Task WhenClientIsNull_Constructor_Throws_ArgumentNullException()
-        => await Assert.That(() => _ = new KaonaviClient(null!, "foo", "bar"))
-            .Throws<ArgumentNullException>().WithParameterName("client");
-
-    /// <summary>
-    /// TimeProviderが<see langword="null"/>のとき、<see cref="ArgumentNullException"/>の例外をスローする。
-    /// </summary>
-    [Test($"{nameof(KaonaviClient)}({nameof(HttpClient)}, <non-null>, <non-null>, null) > ArgumentNullException(timeProvider)をスローする。")]
-    [Category("Constructor")]
-    public async Task WhenTimeProviderIsNull_Constructor_Throws_ArgumentNullException()
-        => await Assert.That(() => _ = new KaonaviClient(new(), "foo", "bar", null!))
-            .Throws<ArgumentNullException>().WithParameterName("timeProvider");
 
     /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>のとき、既定値をセットする。
     /// </summary>
-    [Test($"{nameof(KaonaviClient)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullのとき、既定値をセットする。")]
-    [Category("Constructor")]
+    [Test, Category("Constructor")]
+    [DisplayName($"{nameof(KaonaviClient)} > .ctor() > {nameof(HttpClient.BaseAddress)} が null のとき、既定値をセットする。")]
     public async Task Constructor_Sets_BaseAddress_WhenIsNull()
     {
         // Arrange
@@ -90,21 +81,22 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="HttpClient.BaseAddress"/>が<see langword="null"/>でないときは、既定値をセットしない。
     /// </summary>
-    [Test($"{nameof(KaonaviClient)}(constructor) > {nameof(HttpClient.BaseAddress)}がnullでないときは、既定値をセットしない。")]
-    [Category("Constructor")]
+    [Test, Category("Constructor")]
+    [DisplayName($"{nameof(KaonaviClient)} > .ctor() > {nameof(HttpClient.BaseAddress)} が null でないときは、既定値をセットしない。")]
     public async Task Constructor_DoesNotSet_BaseAddress_WhenNotNull()
     {
         // Arrange
+        var uri = new Uri("https://another.example.com/");
         var client = new HttpClient
         {
-            BaseAddress = _baseUri
+            BaseAddress = uri
         };
 
         // Act
         _ = new KaonaviClient(client, "foo", "bar");
 
         // Assert
-        await Assert.That(client.BaseAddress).IsEqualTo(_baseUri);
+        await Assert.That(client.BaseAddress).IsEqualTo(uri);
     }
     #endregion Constructor
 
@@ -112,8 +104,8 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を返す。
     /// </summary>
-    [Test($"{nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Tokenヘッダーの値を返す。")]
-    [Category("Properties")]
+    [Test, Category("Properties")]
+    [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Token ヘッダーの値を返す。")]
     public async Task AccessToken_Returns_Header_KaonaviToken_Value()
     {
         // Arrange
@@ -131,8 +123,8 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// Kaonavi-Tokenヘッダーがないとき、<see cref="KaonaviClient.AccessToken"/>は、<see langword="null"/>を返す。
     /// </summary>
-    [Test($"{nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Tokenヘッダーがないとき、nullを返す。")]
-    [Category("Properties")]
+    [Test, Category("Properties")]
+    [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AccessToken)}(get) > Kaonavi-Token ヘッダーがないとき、null を返す。")]
     public async Task When_Header_KaonaviToken_IsNull_AccessToken_Returns_Null()
     {
         // Arrange
@@ -149,8 +141,8 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.AccessToken"/>は、Kaonavi-Tokenヘッダーの値を設定する。
     /// </summary>
-    [Test($"{nameof(KaonaviClient.AccessToken)}(set) > Kaonavi-Tokenヘッダーの値を設定する。")]
-    [Category("Properties")]
+    [Test, Category("Properties")]
+    [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AccessToken)}(set) > Kaonavi-Token ヘッダーの値を設定する。")]
     public async Task AccessToken_Sets_Header_KaonaviToken()
     {
         // Arrange
@@ -173,12 +165,12 @@ public sealed partial class KaonaviClientTest
     /// </summary>
     /// <param name="headerValue">Dry-Runヘッダーに設定する値</param>
     /// <param name="expected"><see cref="KaonaviClient.UseDryRun"/></param>
-    [Test($"{nameof(KaonaviClient.UseDryRun)}(get) > Dry-Run: 1 かどうかを返す。")]
-    [Category("Properties")]
-    [Arguments(null, false, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Runの設定がない場合、 falseを返す。")]
-    [Arguments("0", false, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Run: 0 の設定がある場合、 falseを返す。")]
-    [Arguments("1", true, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Run: 1 の設定がある場合、 trueを返す。")]
-    [Arguments("foo", false, DisplayName = $"{nameof(KaonaviClient.UseDryRun)} > Headerに Dry-Run: foo の設定がある場合、 falseを返す。")]
+    [Test, Category("Properties")]
+    [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.UseDryRun)}(get) > Header の Dry-Run が $headerValue の場合、$expected を返す。")]
+    [Arguments(null, false)]
+    [Arguments("0", false)]
+    [Arguments("1", true)]
+    [Arguments("foo", false)]
     public async Task UseDryRun_Returns_Header_DryRun_Is1(string? headerValue, bool expected)
     {
         // Arrange
@@ -196,8 +188,8 @@ public sealed partial class KaonaviClientTest
     /// <summary>
     /// <see cref="KaonaviClient.UseDryRun"/>は、HttpClientのDry-Runヘッダー値を追加/削除する。
     /// </summary>
-    [Test($"{nameof(KaonaviClient.UseDryRun)}(set) > Dry-Runヘッダーを追加/削除する。")]
-    [Category("Properties")]
+    [Test, Category("Properties")]
+    [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.UseDryRun)}(set) > Dry-Run ヘッダーを追加/削除する。")]
     public async Task UseDryRun_Sets_Header_DryRun()
     {
         // Arrange
@@ -233,10 +225,10 @@ public sealed partial class KaonaviClientTest
     /// <param name="mediaType">MediaType</param>
     /// <param name="responseBody">エラー時のレスポンス本文</param>
     /// <param name="expectedMessage">エラーメッセージ</param>
-    [Test($"API Caller > サーバー側がエラーを返したとき、{nameof(ApplicationException)}の例外をスローする。")]
-    [Category("API")]
-    [Arguments(HttpStatusCode.InternalServerError, null, "Internal Server Error", "Internal Server Error", DisplayName = "サーバーが500 Internal Server Errorを返したとき、ApplicationExceptionをスローする。")]
-    [Arguments(HttpStatusCode.BadRequest, "application/json", /* lang=json,strict */"""{"errors":["test"]}""", "test", DisplayName = "サーバーが400 Bad Requestでエラー内容をJSONで返したとき、ApplicationExceptionをスローする。")]
+    [Test, Category("API")]
+    [DisplayName($"{nameof(KaonaviClient)} > API Caller > サーバーが {nameof(HttpStatusCode)}.$statusCode を返したとき、{nameof(ApplicationException)}(\"$expectedMessage\") をスローする。")]
+    [Arguments(HttpStatusCode.InternalServerError, null, "Internal Server Error", "Internal Server Error")]
+    [Arguments(HttpStatusCode.BadRequest, "application/json", /* lang=json,strict */"""{"errors":["test"]}""", "test")]
     public async Task When_Server_Returns_Error_Api_Throws_ApplicationException(HttpStatusCode statusCode, string? mediaType, string responseBody, string expectedMessage)
     {
         // Arrange
@@ -263,8 +255,8 @@ public sealed partial class KaonaviClientTest
     /// <see cref="KaonaviClient.AccessToken"/>が<see langword="null"/>のとき、<see cref="KaonaviClient.AuthenticateAsync(CancellationToken)"/>を呼び出す。
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.AuthenticateAsync" path="/param[@name='cancellationToken']"/></param>
-    [Test($"API Caller > {nameof(KaonaviClient.AuthenticateAsync)}を呼び出す。")]
-    [Category("API")]
+    [Test, Category("API")]
+    [DisplayName($"{nameof(KaonaviClient)} > API Caller > {nameof(KaonaviClient.AccessToken)} が null のとき、{nameof(KaonaviClient.AuthenticateAsync)}() を呼び出す。")]
     public async Task When_AccessToken_IsNull_ApiCaller_Calls_AuthenticateAsync(CancellationToken cancellationToken = default)
     {
         // Arrange
@@ -282,8 +274,8 @@ public sealed partial class KaonaviClientTest
     /// 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.CreateAsync" path="/param[@name='cancellationToken']"/></param>
-    [Test("API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。")]
-    [Category("API")]
+    [Test, Category("API")]
+    [DisplayName($"{nameof(KaonaviClient)} > API Caller > 更新リクエスト制限の対象となるAPIは、6回目の呼び出し前に1分間待機する。")]
     public async Task UpdateApi_Waits_UpdateLimit(CancellationToken cancellationToken = default)
     {
         // Arrange
@@ -323,8 +315,8 @@ public sealed partial class KaonaviClientTest
     /// 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.OverWriteAsync" path="/param[@name='cancellationToken']"/></param>
-    [Test("API Caller > 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。")]
-    [Category("API")]
+    [Test, Category("API")]
+    [DisplayName($"{nameof(KaonaviClient)} > API Caller > 更新リクエスト制限の対象となるAPIは、エラー発生時に実行回数としてカウントされない。")]
     public async Task When_Api_Returns_Error_UpdateApi_DoesNot_Counts_UpdateLimit(CancellationToken cancellationToken = default)
     {
         // Arrange
@@ -340,11 +332,11 @@ public sealed partial class KaonaviClientTest
     }
 
     /// <summary>
-    /// <see cref="KaonaviClient.Dispose"/>を呼び出した後のAPI呼び出しは、<see cref="ObjectDisposedException"/>の例外をスローする。
+    /// <see cref="KaonaviClient.Dispose"/>を呼び出した後のAPI呼び出しは、<see cref="ObjectDisposedException"/>をスローする。
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IMember.OverWriteAsync" path="/param[@name='cancellationToken']"/></param>
-    [Test($"API Caller > ${nameof(KaonaviClient.Dispose)}()後にAPIを呼び出そうとした場合、{nameof(ObjectDisposedException)}の例外をスローする。")]
-    [Category("API")]
+    [Test, Category("API")]
+    [DisplayName($"{nameof(KaonaviClient)} > API Caller > {nameof(KaonaviClient.Dispose)}() 後にAPIを呼び出そうとした場合、{nameof(ObjectDisposedException)} をスローする。")]
     public async Task When_Disposed_Api_Throws_ObjectDisposedException(CancellationToken cancellationToken = default)
     {
         // Arrange
@@ -366,8 +358,8 @@ public sealed partial class KaonaviClientTest
     /// <see cref="KaonaviClient.AuthenticateAsync"/>は、"/token"にBase64文字列のPOSTリクエストを行う。
     /// </summary>
     /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.AuthenticateAsync" path="/param[@name='cancellationToken']"/></param>
-    [Test($"{nameof(KaonaviClient.AuthenticateAsync)} > POST /token をコールする。")]
-    [Category("API"), Category(nameof(HttpMethod.Post)), Category("アクセストークン")]
+    [Test, Category("API"), Category(nameof(HttpMethod.Post)), Category("アクセストークン")]
+    [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AuthenticateAsync)}() > POST /token をコールする。")]
     public async Task AuthenticateAsync_Calls_PostApi(CancellationToken cancellationToken = default)
     {
         // Arrange

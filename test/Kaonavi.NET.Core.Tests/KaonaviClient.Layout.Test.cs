@@ -12,10 +12,10 @@ public sealed partial class KaonaviClientTest
         /// <param name="getCalcType"><inheritdoc cref="KaonaviClient.ILayout.ReadMemberLayoutAsync" path="/param[@name='getCalcType']"/></param>
         /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ILayout.ReadMemberLayoutAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadMemberLayoutAsync)} > GET /member_layouts をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
-        [Arguments(false, "/member_layouts", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadMemberLayoutAsync)}(false) > GET /member_layouts をコールする。")]
-        [Arguments(true, "/member_layouts?get_calc_type=true", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadMemberLayoutAsync)}(true) > GET /member_layouts?get_calc_type=true をコールする。")]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadMemberLayoutAsync)}($getCalcType) > GET $expectedEndpoint をコールする。")]
+        [Arguments(false, "/member_layouts")]
+        [Arguments(true, "/member_layouts?get_calc_type=true")]
         public async Task Layout_ReadMemberLayoutAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint, CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -139,10 +139,10 @@ public sealed partial class KaonaviClientTest
         /// <param name="getCalcType"><inheritdoc cref="KaonaviClient.ILayout.ListAsync" path="/param[@name='getCalcType']"/></param>
         /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ILayout.ListAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)} > GET /sheet_layouts をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
-        [Arguments(false, "/sheet_layouts", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}(false) > GET /sheet_layouts をコールする。")]
-        [Arguments(true, "/sheet_layouts?get_calc_type=true", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}(true) > GET /sheet_layouts?get_calc_type=true をコールする。")]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}($getCalcType) > GET $expectedEndpoint をコールする。")]
+        [Arguments(false, "/sheet_layouts")]
+        [Arguments(true, "/sheet_layouts?get_calc_type=true")]
         public async Task Layout_ListAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint, CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -193,8 +193,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Layout.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ILayout.ReadAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(-1) > ArgumentOutOfRangeException をスローする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
         public async Task When_Id_IsNegative_Layout_ReadAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -214,10 +214,10 @@ public sealed partial class KaonaviClientTest
         /// <param name="getCalcType"><inheritdoc cref="KaonaviClient.ILayout.ReadAsync" path="/param[@name='getCalcType']"/></param>
         /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ILayout.ReadAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)} > GET /sheet_layouts/:id をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
-        [Arguments(false, "/sheet_layouts/12", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(12, false) > GET /sheet_layouts/12 をコールする。")]
-        [Arguments(true, "/sheet_layouts/12?get_calc_type=true", DisplayName = $"{nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(12, true) > GET /sheet_layouts/12?get_calc_type=true をコールする。")]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}($getCalcType) > GET $expectedEndpoint をコールする。")]
+        [Arguments(false, "/sheet_layouts/12")]
+        [Arguments(true, "/sheet_layouts/12?get_calc_type=true")]
         public async Task Layout_ReadAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint, CancellationToken cancellationToken = default)
         {
             // Arrange

@@ -26,7 +26,10 @@ public sealed class SheetDataGeneratorTest
                 public string Name { get; set; }
             }
             """;
-            yield return new((NotPartialCode, "KAONAVI001")) { DisplayName = $"{nameof(SheetDataGenerator)} > partial クラスでない場合、KAONAVI001のコンパイル警告が発生する。" };
+            yield return new((NotPartialCode, "KAONAVI001"))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > partial クラスでない場合、KAONAVI001 のコンパイル警告が発生する。"
+            };
 
             // lang=c#, strict
             const string NestedClassCode = """
@@ -38,7 +41,10 @@ public sealed class SheetDataGeneratorTest
                 public partial record Bar(string Code, [property: CustomField(101)] string Name) : ISheetData;
             }
             """;
-            yield return new((NestedClassCode, "KAONAVI002")) { DisplayName = $"{nameof(SheetDataGenerator)} > 入れ子にされたクラスの場合、KAONAVI002のコンパイル警告が発生する。" };
+            yield return new((NestedClassCode, "KAONAVI002"))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > 入れ子にされたクラスの場合、KAONAVI002 のコンパイル警告が発生する。"
+            };
 
             // lang=c#, strict
             const string NotISheetDataCode = """
@@ -51,7 +57,10 @@ public sealed class SheetDataGeneratorTest
                 public IReadOnlyList<CustomFieldValue> ToCustomFields() => [];
             }
             """;
-            yield return new((NotISheetDataCode, "KAONAVI003")) { DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(ISheetData)}を継承していない場合、KAONAVI003のコンパイル警告が発生する。" };
+            yield return new((NotISheetDataCode, "KAONAVI003"))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(ISheetData)} を継承していない場合、KAONAVI003 のコンパイル警告が発生する。"
+            };
 
             // lang=c#, strict
             const string ImplementedCode = """
@@ -64,7 +73,10 @@ public sealed class SheetDataGeneratorTest
                 public IReadOnlyList<CustomFieldValue> ToCustomFields() => [];
             }
             """;
-            yield return new((ImplementedCode, "KAONAVI004")) { DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(ISheetData.ToCustomFields)}メソッドを手動で実装している場合、KAONAVI004のコンパイル警告が発生する。" };
+            yield return new((ImplementedCode, "KAONAVI004"))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(ISheetData.ToCustomFields)} メソッドを手動で実装している場合、KAONAVI004 のコンパイル警告が発生する。"
+            };
 
             // lang=c#, strict
             const string NoCustomFieldCode = """
@@ -73,7 +85,10 @@ public sealed class SheetDataGeneratorTest
             [SheetSerializable]
             public partial record Foo(string Code, string Name) : ISheetData;
             """;
-            yield return new((NoCustomFieldCode, "KAONAVI005")) { DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(CustomFieldAttribute)}を設定したプロパティがない場合、KAONAVI005のコンパイル警告が発生する。" };
+            yield return new((NoCustomFieldCode, "KAONAVI005"))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(CustomFieldAttribute)} を設定したプロパティがない場合、KAONAVI005 のコンパイル警告が発生する。"
+            };
 
             // lang=c#, strict
             const string DuplicateCustomFieldCode = """
@@ -82,7 +97,10 @@ public sealed class SheetDataGeneratorTest
             [SheetSerializable]
             public partial record Foo(string Code, [property: CustomField(101)] string Name1, [property: CustomField(101)] string Name2) : ISheetData;
             """;
-            yield return new((DuplicateCustomFieldCode, "KAONAVI006")) { DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(CustomFieldAttribute)}のidが重複したプロパティがある場合、KAONAVI006のコンパイル警告が発生する。" };
+            yield return new((DuplicateCustomFieldCode, "KAONAVI006"))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(CustomFieldAttribute)} の id が重複したプロパティがある場合、KAONAVI006 のコンパイル警告が発生する。"
+            };
 
             // lang=c#, strict
             const string NoGetAccessorCode = """
@@ -96,7 +114,10 @@ public sealed class SheetDataGeneratorTest
                 public string Name { set; }
             }
             """;
-            yield return new((NoGetAccessorCode, "KAONAVI007")) { DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(CustomFieldAttribute)}属性を持つプロパティが get アクセサーを持っていない場合、KAONAVI007のコンパイル警告が発生する。" };
+            yield return new((NoGetAccessorCode, "KAONAVI007"))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > {nameof(CustomFieldAttribute)} 属性を持つプロパティが get アクセサーを持っていない場合、KAONAVI007 のコンパイル警告が発生する。"
+            };
         }
     }
 
@@ -105,7 +126,7 @@ public sealed class SheetDataGeneratorTest
     /// </summary>
     /// <param name="code">生成元となるソースコード</param>
     /// <param name="id">コンパイル警告のID</param>
-    [Test("Generator > コンパイル警告が発生する。")]
+    [Test]
     [MethodDataSource(nameof(InvalidCodeTestData))]
     public async Task When_Invalid_Code_Compiler_Warns_With_Diagnostic(string code, string id)
     {
@@ -172,7 +193,10 @@ public sealed class SheetDataGeneratorTest
             }
             
             """;
-            yield return new((LanguageVersion.CSharp9, PartialClassCode, CSharp9GeneratedCode)) { DisplayName = $"{nameof(SheetDataGenerator)} > C# 9.0 の場合、ネストされた名前空間 および 配列の初期化子を使用してソース生成する。" };
+            yield return new((LanguageVersion.CSharp9, PartialClassCode, CSharp9GeneratedCode))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > C# 9.0 の場合、ネストされた名前空間 および 配列の初期化子を使用してソース生成する。"
+            };
 
             // lang=c#, strict
             const string PartialRecordCode = """
@@ -215,7 +239,10 @@ public sealed class SheetDataGeneratorTest
             }
             
             """;
-            yield return new((LanguageVersion.CSharp11, PartialRecordCode, CSharp11GeneratedCode)) { DisplayName = $"{nameof(SheetDataGenerator)} > C# 11.0 の場合、ファイルスコープ名前空間 および 配列の初期化子を使用してソース生成する。" };
+            yield return new((LanguageVersion.CSharp11, PartialRecordCode, CSharp11GeneratedCode))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > C# 11.0 の場合、ファイルスコープ名前空間 および 配列の初期化子を使用してソース生成する。"
+            };
 
             // lang=c#, strict
             const string CSharp12GeneratedCode = """
@@ -249,7 +276,10 @@ public sealed class SheetDataGeneratorTest
             }
 
             """;
-            yield return new((LanguageVersion.CSharp12, PartialRecordCode, CSharp12GeneratedCode)) { DisplayName = $"{nameof(SheetDataGenerator)} > C# 12.0 の場合、ファイルスコープ名前空間 および コレクション式を使用してソース生成する。" };
+            yield return new((LanguageVersion.CSharp12, PartialRecordCode, CSharp12GeneratedCode))
+            {
+                DisplayName = $"{nameof(SheetDataGenerator)} > C# 12.0 の場合、ファイルスコープ名前空間 および コレクション式を使用してソース生成する。"
+            };
         }
     }
 

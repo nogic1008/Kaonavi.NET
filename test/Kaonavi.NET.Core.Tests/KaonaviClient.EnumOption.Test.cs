@@ -12,8 +12,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.EnumOption.ListAsync"/>は、"/enum_options"にGETリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IEnumOption.ListAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ListAsync)} > GET /enum_options をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ListAsync)}() > GET /enum_options をコールする。")]
         public async Task EnumOption_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -72,8 +72,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.EnumOption.ReadAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IEnumOption.ReadAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ReadAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ReadAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
         public async Task When_Id_IsNegative_EnumOption_ReadAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -91,8 +91,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.EnumOption.ReadAsync"/>は、"/enum_options/{id}"にGETリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IEnumOption.ReadAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ReadAsync)} > GET /enum_options/:id をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.ReadAsync)}(10) > GET /enum_options/10 をコールする。")]
         public async Task EnumOption_ReadAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -127,8 +127,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.EnumOption.UpdateAsync"/>は<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IEnumOption.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.UpdateAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [Category(nameof(HttpMethod.Put))]
+        [Test, Category(nameof(HttpMethod.Put))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.UpdateAsync)}(-1, payload) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
         public async Task When_Id_IsNegative_EnumOption_UpdateAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -146,8 +146,8 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.EnumOption.UpdateAsync"/>は、"/enum_options/{id}"にPUTリクエストを行う。
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IEnumOption.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.UpdateAsync)} > PUT /enum_options/:id をコールする。")]
-        [Category(nameof(HttpMethod.Put))]
+        [Test, Category(nameof(HttpMethod.Put))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.EnumOption)}.{nameof(KaonaviClient.EnumOption.UpdateAsync)}(10, payload) > PUT /enum_options/10 をコールする。")]
         public async Task EnumOption_UpdateAsync_Calls_PutApi(CancellationToken cancellationToken = default)
         {
             // Arrange

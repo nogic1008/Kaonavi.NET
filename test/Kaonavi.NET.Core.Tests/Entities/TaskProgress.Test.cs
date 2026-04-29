@@ -21,20 +21,16 @@ public sealed class TaskProgressTest
     /// <summary>
     /// JSONから<see cref="TaskState"/>にデシリアライズできる。
     /// </summary>
-    [Test($"{nameof(TaskState)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
-    [Arguments("\"OK\"", TaskState.OK, DisplayName = $"OK -> {nameof(TaskState)}.{nameof(TaskState.OK)} にデシリアライズできる。")]
-    [Arguments("\"NG\"", TaskState.NG, DisplayName = $"NG -> {nameof(TaskState)}.{nameof(TaskState.NG)} にデシリアライズできる。")]
-    [Arguments("\"ERROR\"", TaskState.Error, DisplayName = $"ERROR -> {nameof(TaskState)}.{nameof(TaskState.Error)} にデシリアライズできる。")]
-    [Arguments("\"WAITING\"", TaskState.Waiting, DisplayName = $"WAITING -> {nameof(TaskState)}.{nameof(TaskState.Waiting)} にデシリアライズできる。")]
-    [Arguments("\"RUNNING\"", TaskState.Running, DisplayName = $"RUNNING -> {nameof(TaskState)}.{nameof(TaskState.Running)} にデシリアライズできる。")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(TaskState)} > $json から {nameof(TaskState)}.$expected にデシリアライズできる。")]
+    [Arguments("\"OK\"", TaskState.OK)]
+    [Arguments("\"NG\"", TaskState.NG)]
+    [Arguments("\"ERROR\"", TaskState.Error)]
+    [Arguments("\"WAITING\"", TaskState.Waiting)]
+    [Arguments("\"RUNNING\"", TaskState.Running)]
     public async Task FieldType_Can_Deserialize_FromJSON(string json, TaskState expected)
-    {
-        var result = JsonSerializer.Deserialize(json, JsonContext.Default.TaskState);
-        await Assert.That(result).IsEqualTo(expected);
-    }
-
-    private const string TestName = $"{nameof(TaskProgress)} > JSONからデシリアライズできる。";
+        => await Assert.That(JsonSerializer.Deserialize(json, JsonContext.Default.TaskState))
+            .IsEqualTo(expected);
 
     /// <summary><see cref="TaskProgress_Can_Deserialize_FromJSON"/>のテストデータ</summary>
     public static IEnumerable<TestDataRow<(string json, int id, TaskState status, string[]? messages)>> TestData
@@ -47,20 +43,20 @@ public sealed class TaskProgressTest
               "status": "OK",
               "messages": []
             }
-            """, 1, TaskState.OK, [])) { DisplayName = TestName };
+            """, 1, TaskState.OK, []));
             yield return new((/*lang=json,strict*/ """
             {
               "id": 2,
               "status": "RUNNING"
             }
-            """, 2, TaskState.Running, null)) { DisplayName = TestName };
+            """, 2, TaskState.Running, null));
             yield return new((/*lang=json,strict*/ """
             {
               "id": 3,
               "status": "NG",
               "messages": ["エラーメッセージ1", "エラーメッセージ2"]
             }
-            """, 3, TaskState.NG, ["エラーメッセージ1", "エラーメッセージ2"])) { DisplayName = TestName };
+            """, 3, TaskState.NG, ["エラーメッセージ1", "エラーメッセージ2"]));
         }
     }
 
@@ -71,8 +67,8 @@ public sealed class TaskProgressTest
     /// <param name="id"><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></param>
     /// <param name="status"><inheritdoc cref="TaskProgress" path="/param[@name='Status']"/></param>
     /// <param name="messages"><inheritdoc cref="TaskProgress" path="/param[@name='Messages']"/></param>
-    [Test(TestName)]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(TaskProgress)} > $json からデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
     public async Task TaskProgress_Can_Deserialize_FromJSON([StringSyntax(StringSyntaxAttribute.Json)] string json, int id, TaskState status, string[]? messages)
     {

@@ -9,8 +9,8 @@ public sealed partial class KaonaviClientTest
         /// <summary>
         /// <see cref="KaonaviClient.Role.ListAsync"/>は、"/roles"にGETリクエストを行う。
         /// </summary>
-        [Test($"{nameof(KaonaviClient.Role)}.{nameof(KaonaviClient.Role.ListAsync)} > GET /roles をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Role)}.{nameof(KaonaviClient.Role.ListAsync)}() > GET /roles をコールする。")]
         public async Task Role_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange

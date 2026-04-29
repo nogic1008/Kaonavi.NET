@@ -11,8 +11,8 @@ public sealed class SheetLayoutTest
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [Test($"{nameof(SheetLayout)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(SheetLayout)} > JSONからデシリアライズできる。")]
     public async Task CanDeserializeJSON()
     {
         /*lang=json,strict*/

@@ -11,8 +11,8 @@ public sealed class MemberLayoutTest
     /// <summary>
     /// JSONからデシリアライズできる。
     /// </summary>
-    [Test($"{nameof(MemberLayout)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(MemberLayout)} > JSONからデシリアライズできる。")]
     public async Task CanDeserializeJSON()
     {
         // Arrange

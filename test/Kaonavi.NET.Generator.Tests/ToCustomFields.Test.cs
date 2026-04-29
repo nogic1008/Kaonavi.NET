@@ -22,7 +22,8 @@ public sealed class ToCustomFieldsTest
     /// <summary>
     /// <see cref="NormalClassSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
     /// </summary>
-    [Test($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つクラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
+    [Test]
+    [DisplayName($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つクラスがある場合、{nameof(ISheetData.ToCustomFields)}() をソース生成する。")]
     public async Task Class_Generates_ToCustomFields_Method()
         => await Task.WhenAll(
             FixtureFactory.CreateMany<NormalClassSheetData>(10)
@@ -41,7 +42,8 @@ public sealed class ToCustomFieldsTest
     /// <summary>
     /// <see cref="NormalRecordSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
     /// </summary>
-    [Test($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ record クラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
+    [Test]
+    [DisplayName($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ record クラスがある場合、{nameof(ISheetData.ToCustomFields)}() をソース生成する。")]
     public async Task Record_Generates_ToCustomFields_Method()
         => await Task.WhenAll(
             FixtureFactory.CreateMany<NormalRecordSheetData>(10)
@@ -60,7 +62,8 @@ public sealed class ToCustomFieldsTest
     /// <summary>
     /// <see cref="NoNamespaceClassSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
     /// </summary>
-    [Test($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たないクラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
+    [Test]
+    [DisplayName($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たないクラスがある場合、{nameof(ISheetData.ToCustomFields)}() をソース生成する。")]
     public async Task Class_Without_Namespace_Generates_ToCustomFields_Method()
         => await Task.WhenAll(
             FixtureFactory.CreateMany<NoNamespaceClassSheetData>(10)
@@ -79,7 +82,8 @@ public sealed class ToCustomFieldsTest
     /// <summary>
     /// <see cref="NoNamespaceRecordSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。
     /// </summary>
-    [Test($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たない record クラスがある場合、{nameof(ISheetData.ToCustomFields)}()をソース生成する。")]
+    [Test]
+    [DisplayName($"Generator > [{nameof(SheetSerializableAttribute)}]属性を持つ名前空間を持たない record クラスがある場合、{nameof(ISheetData.ToCustomFields)}() をソース生成する。")]
     public async Task Record_Without_Namespace_Generates_ToCustomFields_Method()
         => await Task.WhenAll(
             FixtureFactory.CreateMany<NoNamespaceRecordSheetData>(10)

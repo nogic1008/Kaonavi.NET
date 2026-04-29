@@ -9,8 +9,8 @@ namespace Kaonavi.Net.Tests.Entities;
 public sealed class AttachmentPayloadTest
 {
     /// <summary>JSONからデシリアライズできる。</summary>
-    [Test($"{nameof(AttachmentPayload)} > JSONからデシリアライズできる。")]
-    [Category("JSON Deserialize")]
+    [Test, Category("JSON Deserialize")]
+    [DisplayName($"{nameof(AttachmentPayload)} > JSONからデシリアライズできる。")]
     public async Task CanDeserializeJSON()
     {
         // Arrange

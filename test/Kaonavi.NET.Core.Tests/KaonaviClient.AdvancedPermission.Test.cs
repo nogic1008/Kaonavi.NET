@@ -10,14 +10,14 @@ public sealed partial class KaonaviClientTest
     public sealed class AdvancedPermissionTest
     {
         /// <summary>
-        /// <paramref name="type"/>が不正な値であるとき、<see cref="KaonaviClient.AdvancedPermission.ListAsync"/>は、ArgumentOutOfRangeExceptionをスローする。
+        /// <paramref name="type"/>が不正な値であるとき、<see cref="KaonaviClient.AdvancedPermission.ListAsync"/>は、<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IAdvancedPermission.ListAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [Category(nameof(HttpMethod.Get))]
-        [Arguments((AdvancedType)10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})10) > ArgumentOutOfRangeExceptionをスローする。")]
-        [Arguments((AdvancedType)(-1), DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}(({nameof(AdvancedType)})-1) > ArgumentOutOfRangeExceptionをスローする。")]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}($type) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
+        [Arguments((AdvancedType)10)]
+        [Arguments((AdvancedType)(-1))]
         public async Task When_Type_IsInvalid_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(AdvancedType type, CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -37,10 +37,10 @@ public sealed partial class KaonaviClientTest
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IAdvancedPermission.ListAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)} > GET /advanced_permissions/:advancedType をコールする。")]
-        [Category(nameof(HttpMethod.Get))]
-        [Arguments(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > GET /advanced_permissions/member をコールする。")]
-        [Arguments(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > GET /advanced_permissions/department をコールする。")]
+        [Test, Category(nameof(HttpMethod.Get))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.$type) > GET $endpoint をコールする。")]
+        [Arguments(AdvancedType.Member, "/advanced_permissions/member")]
+        [Arguments(AdvancedType.Department, "/advanced_permissions/department")]
         public async Task AdvancedPermission_ListAsync_Calls_GetApi(AdvancedType type, string endpoint, CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -90,14 +90,14 @@ public sealed partial class KaonaviClientTest
         }
 
         /// <summary>
-        /// <paramref name="type"/>が不正な値であるとき、<see cref="KaonaviClient.AdvancedPermission.ReplaceAsync"/>は、ArgumentOutOfRangeExceptionをスローする。
+        /// <paramref name="type"/>が不正な値であるとき、<see cref="KaonaviClient.AdvancedPermission.ReplaceAsync"/>は、<see cref="ArgumentOutOfRangeException"/>をスローする。
         /// </summary>
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IAdvancedPermission.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)} > ArgumentOutOfRangeExceptionをスローする。")]
-        [Category(nameof(HttpMethod.Put))]
-        [Arguments((AdvancedType)10, DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})10, []) > ArgumentOutOfRangeExceptionをスローする。")]
-        [Arguments((AdvancedType)(-1), DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}(({nameof(AdvancedType)})-1, []) > ArgumentOutOfRangeExceptionをスローする。")]
+        [Test, Category(nameof(HttpMethod.Put))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}($type, payload) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
+        [Arguments((AdvancedType)10)]
+        [Arguments((AdvancedType)(-1))]
         public async Task When_Type_IsInvalid_AdvancedPermission_ReplaceAsync_Throws_ArgumentOutOfRangeException(AdvancedType type, CancellationToken cancellationToken = default)
         {
             // Arrange
@@ -117,10 +117,10 @@ public sealed partial class KaonaviClientTest
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IAdvancedPermission.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
-        [Test($"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)} > PUT /advanced_permissions/:advancedType をコールする。")]
-        [Category(nameof(HttpMethod.Put))]
-        [Arguments(AdvancedType.Member, "/advanced_permissions/member", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Member)}) > PUT /advanced_permissions/member をコールする。")]
-        [Arguments(AdvancedType.Department, "/advanced_permissions/department", DisplayName = $"{nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.{nameof(AdvancedType.Department)}) > PUT /advanced_permissions/department をコールする。")]
+        [Test, Category(nameof(HttpMethod.Put))]
+        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.$type, payload) > PUT $endpoint をコールする。")]
+        [Arguments(AdvancedType.Member, "/advanced_permissions/member")]
+        [Arguments(AdvancedType.Department, "/advanced_permissions/department")]
         public async Task AdvancedPermission_ReplaceAsync_Calls_PutApi(AdvancedType type, string endpoint, CancellationToken cancellationToken = default)
         {
             // Arrange
