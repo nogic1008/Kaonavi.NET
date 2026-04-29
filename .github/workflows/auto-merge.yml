@@ -12,4 +12,5 @@ jobs:
     name: Auto merge
     if: github.event.review.state == 'approved'
     uses: ddradar/.github/.github/workflows/auto-merge.yml@main
-    secrets: inherit
+    secrets:
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
