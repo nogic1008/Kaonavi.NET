@@ -99,7 +99,6 @@ public record MemberData(string Code, string? Name = null);
 - カスタム変換が必要な場合は `[property: JsonConverter(typeof(SomeConverter))]` をパラメータに付ける。現状では、以下のConverterを定義している。
   - `BlankNullableDateConverter`: JSONの空文字列を `null` として扱う `DateOnly?`
   - `DateTimeConverter`: `DateTime` のカスタムフォーマット(`yyyy-MM-dd HH:mm:ss`)
-  - `EnumOptionPayloadConverter`: `{ id: 1, name: "name" }`をタプルに変換
 
 ```csharp
 public record MemberData(

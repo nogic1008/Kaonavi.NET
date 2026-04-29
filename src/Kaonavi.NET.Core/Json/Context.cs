@@ -23,13 +23,10 @@ namespace Kaonavi.Net.Json;
 [JsonSerializable(typeof(User))]
 [JsonSerializable(typeof(UserPayload))]
 [JsonSerializable(typeof(WebhookConfigPayload))]
-#pragma warning disable CS3016 // CLS Compliant
 [JsonSourceGenerationOptions(
     JsonSerializerDefaults.Web,
     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     PropertyNamingPolicy = JsonKnownNamingPolicy.SnakeCaseLower,
-    UseStringEnumConverter = true,
-    Converters = [typeof(EnumOptionPayloadConverter)]
+    UseStringEnumConverter = true
 )]
-#pragma warning restore CS3016 // CLS Compliant
 internal partial class Context : JsonSerializerContext;
