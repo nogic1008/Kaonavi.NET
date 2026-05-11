@@ -15,6 +15,18 @@ updates:
       semver-major-days: 30
       semver-minor-days: 7
       semver-patch-days: 3
+    groups:
+      test-tools:
+        patterns:
+          - RandomFixtureKit
+          - TUnit
+          - TUnit.*
+      sandbox:
+        patterns:
+          - ConsoleAppFramework
+          - Microsoft.Extensions.Configuration.Json
+          - Microsoft.Extensions.Http
+          - Microsoft.Extensions.Logging.Console
     ignore:
       # Pin source generators to support older .NET SDKs and Visual Studio versions
       - dependency-name: Microsoft.CodeAnalysis.Analyzers
