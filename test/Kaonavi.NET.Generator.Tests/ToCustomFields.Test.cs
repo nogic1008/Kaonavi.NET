@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Kaonavi.Net.Entities;
 using Kaonavi.Net.Generator.Tests.Entities;
@@ -17,7 +18,14 @@ public sealed class ToCustomFieldsTest
     /// <param name="expected">期待される<see cref="ISheetData.ToCustomFields"/>の戻り値</param>
     /// <returns></returns>
     private async static Task AssertCustomFields<T>(T value, IReadOnlyList<CustomFieldValue> expected) where T : ISheetData
-        => await Assert.That(value.ToCustomFields()).IsEquivalentTo(expected);
+    {
+        var actual = value.ToCustomFields();
+        using (Assert.Multiple())
+        {
+            for (int i = 0; i < expected.Count; i++)
+                await Assert.That(actual[i]).IsEqualTo(expected[i]);
+        }
+    }
 
     /// <summary>
     /// <see cref="NormalClassSheetData"/>の<see cref="ISheetData.ToCustomFields"/>メソッドがソース生成される。

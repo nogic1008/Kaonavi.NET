@@ -157,7 +157,7 @@ public sealed partial class KaonaviClientTest
 
         // Assert
         await Assert.That(client.DefaultRequestHeaders.TryGetValues("Kaonavi-Token", out var values)).IsTrue();
-        await Assert.That(values).IsNotNull().And.IsEquivalentTo([headerValue]);
+        await Assert.That(values).HasSingleItem().And.Contains(headerValue);
     }
 
     /// <summary>
@@ -204,7 +204,7 @@ public sealed partial class KaonaviClientTest
 
         // Assert
         await Assert.That(client.DefaultRequestHeaders.TryGetValues("Dry-Run", out var values)).IsTrue();
-        await Assert.That(values).IsNotNull().And.IsEquivalentTo(["1"]);
+        await Assert.That(values).HasSingleItem().And.Contains("1");
         #endregion UseDryRun = true
 
         #region UseDryRun = false

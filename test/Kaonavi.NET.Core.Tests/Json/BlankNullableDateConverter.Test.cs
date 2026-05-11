@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using Kaonavi.Net.Json;
@@ -29,7 +30,7 @@ public sealed class BlankNullableDateConverterTest
         var sut = new BlankNullableDateConverter();
 
         // Act
-        var actual = sut.Read(ref reader, typeof(DateOnly?), JsonSerializerOptions.Default);
+        var actual = sut.Read(ref reader, typeof(DateOnly?), new(JsonSerializerDefaults.Web));
 
         // Assert
         await Assert.That(actual).IsEqualTo(expected);
@@ -44,6 +45,7 @@ public sealed class BlankNullableDateConverterTest
     [DisplayName($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Write)}({nameof(DateOnly)}($year, $month, $day)) returns $json")]
     [Arguments(2021, 1, 1, /*lang=json,strict*/ "\"2021-01-01\"")]
     [Arguments(null, 0, 0, /*lang=json,strict*/ "\"\"")]
+    [RequiresUnreferencedCode("Calls TUnit.Assertions.Extensions.IsEquivalentToAssertionExtensions.IsEquivalentTo<TCollection, TItem>(IEnumerable<TItem>, CollectionOrdering, String, String)")]
     public async Task Write_Flushes_JSON(int? year, int month, int day, string json)
     {
         // Arrange
@@ -53,7 +55,7 @@ public sealed class BlankNullableDateConverterTest
         var sut = new BlankNullableDateConverter();
 
         // Act
-        sut.Write(writer, value, JsonSerializerOptions.Default);
+        sut.Write(writer, value, new(JsonSerializerDefaults.Web));
         writer.Flush();
 
         // Assert

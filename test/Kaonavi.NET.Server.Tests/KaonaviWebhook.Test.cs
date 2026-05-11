@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Kaonavi.Net.Entities;
 
@@ -8,6 +9,7 @@ public sealed class KaonaviWebhookTest
 {
     [Test, Category("JSON Deserialize")]
     [DisplayName($"{nameof(KaonaviWebhook)} > JSONからデシリアライズできる。")]
+    [RequiresUnreferencedCode("Calls TUnit.Assertions.Extensions.IsEquivalentToAssertionExtensions.IsEquivalentTo<TCollection, TItem>(IEnumerable<TItem>, CollectionOrdering, String, String)")]
     public async Task Can_Deserialize_JSON()
     {
         // Arrange

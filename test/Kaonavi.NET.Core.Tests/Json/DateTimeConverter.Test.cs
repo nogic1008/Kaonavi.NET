@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using Kaonavi.Net.Json;
@@ -25,7 +26,7 @@ public sealed class DateTimeConverterTest
             reader.Read();
         var sut = new DateTimeConverter();
         // Act
-        var actual = sut.Read(ref reader, typeof(DateTime), JsonSerializerOptions.Default);
+        var actual = sut.Read(ref reader, typeof(DateTime), new(JsonSerializerDefaults.Web));
         // Assert
         await Assert.That(actual).IsEqualTo(new(year, month, day, hour, minute, second));
     }
@@ -38,6 +39,7 @@ public sealed class DateTimeConverterTest
     [Test]
     [DisplayName($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Write)}({nameof(DateTime)}($year, $month, $day, $hour, $minute, $second)) returns $json")]
     [Arguments(2021, 1, 1, 12, 34, 56, /*lang=json,strict*/ "\"2021-01-01 12:34:56\"")]
+    [RequiresUnreferencedCode("Calls TUnit.Assertions.Extensions.IsEquivalentToAssertionExtensions.IsEquivalentTo<TCollection, TItem>(IEnumerable<TItem>, CollectionOrdering, String, String)")]
     public async Task Write_Flushes_JSON(int year, int month, int day, int hour, int minute, int second, string json)
     {
         // Arrange
@@ -46,7 +48,7 @@ public sealed class DateTimeConverterTest
         var sut = new DateTimeConverter();
 
         // Act
-        sut.Write(writer, new(year, month, day, hour, minute, second), JsonSerializerOptions.Default);
+        sut.Write(writer, new(year, month, day, hour, minute, second), new(JsonSerializerDefaults.Web));
         writer.Flush();
 
         // Assert
