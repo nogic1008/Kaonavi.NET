@@ -104,8 +104,8 @@ Git コミットメッセージの例:
 
 | Job Name | Description |
 | --- | --- |
-|[Lint](./.github/workflows/dotnet.yml#L16)|コードフォーマットのチェック|
-|[Debug Build & Test](./.github/workflows/dotnet.yml#L28)|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linux(ARM含む)と.NET 8.0/9.0/10.0の各環境で実施)|
+|[Lint](./.github/workflows/dotnet.yml#L16)|コードフォーマットのチェック(`dotnet format` と `csharpier` を使用)|
+|[Debug Build & Test](./.github/workflows/dotnet.yml#L38)|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linux(ARM含む)と.NET 8.0/9.0/10.0の各環境で実施)|
 
 ## Thanks
 

@@ -16,14 +16,24 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6.0.2
       - name: Setup .NET SDK # detected from global.json
         uses: actions/setup-dotnet@v5.2.0
+      - name: Restore .NET tools
+        run: dotnet tool restore
       - name: Add Problem Matcher for dotnet-format
         run: echo "::add-matcher::.github/dotnet-format.json"
-      - name: Lint
-        run: dotnet format --verify-no-changes --verbosity detailed
+
+      - name: Lint with dotnet-format
+        run: |
+          dotnet format style --verify-no-changes --verbosity detailed
+          dotnet format analyzers --verify-no-changes --verbosity detailed
+
+      - name: Format Check with csharpier
+        run: dotnet csharpier check . --log-format msbuild
 
   test:
     name: Debug Build & Test
