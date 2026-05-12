@@ -21,10 +21,10 @@
 
 - Visual Studio 2022 (バージョン 17.3)以降
   - 当プロジェクトはオープンソースのため、[Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/)が利用可能です。
-  - .NET 9.0 (9.0.200以降) および .NET 8.0 SDK がインストール内容に含まれているか確認してください。
+  - .NET 10.0 (10.0.203以降), 9.0 および .NET 8.0 SDK がインストール内容に含まれているか確認してください。
   - ソース ジェネレーター部分をデバッグするためには、.NET Compiler Platform SDK を追加でインストールしてください。
 - [Visual Studio Code](https://code.visualstudio.com/) + [EditorConfig 拡張機能](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) + [C# Dev Kit](https://learn.microsoft.com/visualstudio/subscriptions/vs-c-sharp-dev-kit)
-  - .NET 9.0 および .NET 8.0 SDK は個別にインストールしてください。
+  - .NET 10.0, 9.0 および .NET 8.0 SDK は個別にインストールしてください。
   - Gitのインストールが必要です。(Visual Studio Codeの初回実行時、インストールを促されます)
   - C# Dev Kitがライセンス上利用できない場合は、[C# 拡張機能](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)を代わりに使用できます。
 - Dev Container
@@ -67,7 +67,7 @@
 - 変更の為にテストが必要ならば、そのテストも追加または変更してください。
 - commit は合理的(ロジック単位)に分けてください。また目的と関係のないコードの変更は含めないでください(コードフォーマットの変更、不要コードの削除など)。
 - commit メッセージが正しいフォーマットであることを確認してください。commit メッセージはできるだけ英語でお願いします。
-- commit メッセージには、下記の修飾子を先頭につけてください。([angular.js/DEVELOPERS.md](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#type)に準じます)
+- commit メッセージには、下記の修飾子を先頭につけてください。([Conventional Commits](https://www.conventionalcommits.org/)に準じます)
   - **feat**: 新機能
   - **fix**: バグ修正
   - **docs**: ドキュメントの修正のみ
@@ -105,8 +105,7 @@ Git コミットメッセージの例:
 | Job Name | Description |
 | --- | --- |
 |[Lint](./.github/workflows/dotnet.yml#L16)|コードフォーマットのチェック|
-|[Validate NuGet Lock Files](./.github/workflows/dotnet.yml#L28)|NuGet パッケージのロックファイル(`packages.lock.json`)の検証|
-|[Debug Build & Test](./.github/workflows/dotnet.yml#L43)|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linuxと.NET 8.0/9.0の各環境で実施)|
+|[Debug Build & Test](./.github/workflows/dotnet.yml#L28)|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linux(ARM含む)と.NET 8.0/9.0/10.0の各環境で実施)|
 
 ## Thanks
 
