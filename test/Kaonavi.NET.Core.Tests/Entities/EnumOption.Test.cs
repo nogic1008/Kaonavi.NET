@@ -36,6 +36,6 @@ public sealed class EnumOptionTest
             .And.Member(static o => o.SheetName, static o => o.IsEqualTo<string>("役職情報"))
             .And.Member(static o => o.Id, static o => o.IsEqualTo(10))
             .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("役職"))
-            .And.Member(static o => o.EnumOptionData, static o => o.IsEquivalentTo((EnumOptionData[])[new(1, "社長"), new(2, "部長"), new(3, "課長")]));
+            .And.Member(static o => o.EnumOptionData, static o => o.IsSequenceEqualTo((EnumOptionData[])[new(1, "社長"), new(2, "部長"), new(3, "課長")]));
     }
 }

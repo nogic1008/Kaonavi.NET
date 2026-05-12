@@ -79,6 +79,6 @@ public sealed class TaskProgressTest
         await Assert.That(taskProgress).IsNotNull()
             .And.Member(sut => sut.Id, o => o.IsEqualTo(id))
             .And.Member(sut => sut.Status, o => o.IsEqualTo(status))
-            .And.Member(sut => sut.Messages!, o => messages is null ? o.IsNull() : o.IsEquivalentTo(messages));
+            .And.Member(sut => sut.Messages!, o => messages is null ? o.IsNull() : o.IsSequenceEqualTo(messages));
     }
 }

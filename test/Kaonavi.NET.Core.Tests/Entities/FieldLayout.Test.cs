@@ -92,7 +92,7 @@ public sealed class FieldLayoutTest
             .And.Member(sut => sut.Required, o => o.IsEqualTo(required))
             .And.Member(sut => sut.Type, o => o.IsEqualTo(type))
             .And.Member(sut => sut.MaxLength, o => o.IsEqualTo(maxLength))
-            .And.Member(sut => sut.Enum, o => o.IsEquivalentTo(enums))
+            .And.Member(sut => sut.Enum, o => o.IsSequenceEqualTo(enums))
             .And.Member(sut => sut.ReadOnly, o => o.IsEqualTo(readOnly));
     }
 
@@ -150,7 +150,7 @@ public sealed class FieldLayoutTest
             .And.Member(static o => o.Required, static o => o.IsFalse())
             .And.Member(static o => o.Type, static o => o.IsEqualTo(FieldType.Enum))
             .And.Member(static o => o.MaxLength, static o => o.IsNull())
-            .And.Member(static o => o.Enum, static o => o.IsEquivalentTo((string?[])["A", "B", "O", "AB"]))
+            .And.Member(static o => o.Enum, static o => o.IsSequenceEqualTo((string?[])["A", "B", "O", "AB"]))
             .And.Member(static o => o.ReadOnly, static o => o.IsFalse())
             .And.Member(static o => o.TypeDetail, static o => o.IsEqualTo(FieldInput.TextBox));
     }

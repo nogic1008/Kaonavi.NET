@@ -42,7 +42,7 @@ public sealed class AdvancedPermissionTest
         // Assert
         await Assert.That(advancedPermission).IsNotNull()
             .And.Member(static o => o.UserId, o => o.IsEqualTo(userId))
-            .And.Member(static o => o.AddCodes, o => o.IsEquivalentTo(addCodes))
-            .And.Member(static o => o.ExclusionCodes, o => o.IsEquivalentTo(exclusionCodes));
+            .And.Member(static o => o.AddCodes, o => o.IsSequenceEqualTo(addCodes))
+            .And.Member(static o => o.ExclusionCodes, o => o.IsSequenceEqualTo(exclusionCodes));
     }
 }

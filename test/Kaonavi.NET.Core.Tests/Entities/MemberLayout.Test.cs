@@ -121,7 +121,7 @@ public sealed class MemberLayoutTest
             .And.Member(static o => o.Mail.MaxLength, static o => o.IsEqualTo(100))
             .And.Member(static o => o.EnteredDate.Type, static o => o.IsEqualTo(FieldType.Date))
             .And.Member(static o => o.RetiredDate.Enum, static o => o.IsEmpty())
-            .And.Member(static o => o.Gender.Enum, static o => o.IsEquivalentTo((string?[])["男性", "女性"]))
+            .And.Member(static o => o.Gender.Enum, static o => o.IsSequenceEqualTo((string?[])["男性", "女性"]))
             .And.Member(static o => o.Birthday.MaxLength, static o => o.IsNull())
             .And.Member(static o => o.Department.Type, static o => o.IsEqualTo(FieldType.Department))
             .And.Member(static o => o.SubDepartments.Type, static o => o.IsEqualTo(FieldType.DepartmentArray))

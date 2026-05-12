@@ -1,5 +1,4 @@
 using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using Kaonavi.Net.Json;
@@ -45,7 +44,6 @@ public sealed class BlankNullableDateConverterTest
     [DisplayName($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Write)}({nameof(DateOnly)}($year, $month, $day)) returns $json")]
     [Arguments(2021, 1, 1, /*lang=json,strict*/ "\"2021-01-01\"")]
     [Arguments(null, 0, 0, /*lang=json,strict*/ "\"\"")]
-    [RequiresUnreferencedCode("Calls TUnit.Assertions.Extensions.IsEquivalentToAssertionExtensions.IsEquivalentTo<TCollection, TItem>(IEnumerable<TItem>, CollectionOrdering, String, String)")]
     public async Task Write_Flushes_JSON(int? year, int month, int day, string json)
     {
         // Arrange
@@ -59,6 +57,6 @@ public sealed class BlankNullableDateConverterTest
         writer.Flush();
 
         // Assert
-        await Assert.That(buffer.WrittenSpan.ToArray()).IsEquivalentTo(Encoding.UTF8.GetBytes(json));
+        await Assert.That(buffer.WrittenSpan.ToArray()).IsSequenceEqualTo(Encoding.UTF8.GetBytes(json));
     }
 }

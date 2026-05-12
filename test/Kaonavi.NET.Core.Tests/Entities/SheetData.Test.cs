@@ -35,15 +35,15 @@ public sealed class SheetDataTest
 
         // Assert
         await Assert.That(sheetData).IsNotNull()
-            .And.Member(static o => o.Code, o => o.IsEqualTo<string>("A0002"))
-            .And.Member(static o => o.Records, o => o.HasSingleItem())
-            .And.Member(static o => o.Records[0], o => o.HasSingleItem())
+            .And.Member(static o => o.Code, static o => o.IsEqualTo<string>("A0002"))
+            .And.Member(static o => o.Records, static o => o.HasSingleItem())
+            .And.Member(static o => o.Records[0], static o => o.HasSingleItem())
             .And.Member(
                 static o => o.Records[0][0],
-                o => o.IsNotNull()
-                    .And.Member(static o => o.Id, o => o.IsEqualTo(1000))
-                    .And.Member(static o => o.Name!, o => o.IsEqualTo<string>("住所"))
-                    .And.Member(static o => o.Values, o => o.IsEquivalentTo(["東京都港区x-x-x"]))
+                static o => o.IsNotNull()
+                    .And.Member(static o => o.Id, static o => o.IsEqualTo(1000))
+                    .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("住所"))
+                    .And.Member(static o => o.Values, static o => o.IsSequenceEqualTo(["東京都港区x-x-x"]))
             );
     }
 
@@ -97,37 +97,37 @@ public sealed class SheetDataTest
 
         // Assert
         await Assert.That(sheetData).IsNotNull()
-            .And.Member(static o => o.Code, o => o.IsEqualTo<string>("A0001"))
-            .And.Member(static o => o.Records, o => o.Count().IsEqualTo(2))
-            .And.Member(static o => o.Records[0], o => o.Count().IsEqualTo(2))
+            .And.Member(static o => o.Code, static o => o.IsEqualTo<string>("A0001"))
+            .And.Member(static o => o.Records, static o => o.Count().IsEqualTo(2))
+            .And.Member(static o => o.Records[0], static o => o.Count().IsEqualTo(2))
             .And.Member(
                 static o => o.Records[0][0],
-                o => o.IsNotNull()
-                    .And.Member(static o => o.Id, o => o.IsEqualTo(1000))
-                    .And.Member(static o => o.Name!, o => o.IsEqualTo<string>("住所"))
-                    .And.Member(static o => o.Values, o => o.IsEquivalentTo(["大阪府大阪市y番y号"]))
+                static o => o.IsNotNull()
+                    .And.Member(static o => o.Id, static o => o.IsEqualTo(1000))
+                    .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("住所"))
+                    .And.Member(static o => o.Values, static o => o.IsSequenceEqualTo(["大阪府大阪市y番y号"]))
             )
             .And.Member(
                 static o => o.Records[0][1],
-                o => o.IsNotNull()
-                    .And.Member(static o => o.Id, o => o.IsEqualTo(1001))
-                    .And.Member(static o => o.Name!, o => o.IsEqualTo<string>("電話番号"))
-                    .And.Member(static o => o.Values, o => o.IsEquivalentTo(["06-yyyy-yyyy"]))
+                static o => o.IsNotNull()
+                    .And.Member(static o => o.Id, static o => o.IsEqualTo(1001))
+                    .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("電話番号"))
+                    .And.Member(static o => o.Values, static o => o.IsSequenceEqualTo(["06-yyyy-yyyy"]))
             )
-            .And.Member(static o => o.Records[1], o => o.Count().IsEqualTo(2))
+            .And.Member(static o => o.Records[1], static o => o.Count().IsEqualTo(2))
             .And.Member(
                 static o => o.Records[1][0],
-                o => o.IsNotNull()
-                    .And.Member(static o => o.Id, o => o.IsEqualTo(1000))
-                    .And.Member(static o => o.Name!, o => o.IsEqualTo<string>("住所"))
-                    .And.Member(static o => o.Values, o => o.IsEquivalentTo(["愛知県名古屋市z丁目z番z号"]))
+                static o => o.IsNotNull()
+                    .And.Member(static o => o.Id, static o => o.IsEqualTo(1000))
+                    .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("住所"))
+                    .And.Member(static o => o.Values, static o => o.IsSequenceEqualTo(["愛知県名古屋市z丁目z番z号"]))
             )
             .And.Member(
                 static o => o.Records[1][1],
-                o => o.IsNotNull()
-                    .And.Member(static o => o.Id, o => o.IsEqualTo(1001))
-                    .And.Member(static o => o.Name!, o => o.IsEqualTo<string>("電話番号"))
-                    .And.Member(static o => o.Values, o => o.IsEquivalentTo(["052-zzzz-zzzz"]))
+                static o => o.IsNotNull()
+                    .And.Member(static o => o.Id, static o => o.IsEqualTo(1001))
+                    .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("電話番号"))
+                    .And.Member(static o => o.Values, static o => o.IsSequenceEqualTo(["052-zzzz-zzzz"]))
             );
     }
 }

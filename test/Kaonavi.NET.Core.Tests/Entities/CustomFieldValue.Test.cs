@@ -29,6 +29,6 @@ public sealed class CustomFieldValueTest
             .And.Member(static sut => sut.Id, o => o.IsEqualTo(id))
             .And.Member(static sut => sut.Name!, o => name is null ? o.IsNull() : o.IsEqualTo<string>(name))
             .And.Member(static sut => sut.Value, o => values.Length == 0 ? o.IsEmpty() : o.IsEqualTo<string>(values[0]))
-            .And.Member(static sut => sut.Values, o => o.IsEquivalentTo(values));
+            .And.Member(static sut => sut.Values, o => o.IsSequenceEqualTo(values));
     }
 }
