@@ -21,14 +21,13 @@ public class CollectionIsSequenceEqualAssertion<TCollection, TItem>(
         var exception = metadata.Exception;
 
         if (exception is not null)
-            return Task.FromResult(
-                AssertionResult.Failed($"threw {exception.GetType().Name}", exception)
-            );
+            return Task.FromResult(AssertionResult.Failed($"threw {exception.GetType().Name}"));
 
         if (value is null)
             return Task.FromResult(AssertionResult.Failed("collection was null"));
         if (value.SequenceEqual(_expected))
             return Task.FromResult(AssertionResult.Passed);
+
         return Task.FromResult(
             AssertionResult.Failed(
                 $"'{string.Join(", ", value)}' does not equal '{string.Join(", ", _expected)}'"

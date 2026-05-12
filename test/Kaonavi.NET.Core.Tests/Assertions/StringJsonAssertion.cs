@@ -43,12 +43,11 @@ internal class JsonElementAssertion : Assertion<JsonElement>
             return Task.FromResult(AssertionResult.Failed($"threw {exception.GetType().Name}"));
         if (JsonElement.DeepEquals(val, _expected))
             return Task.FromResult(AssertionResult.Passed);
-        else
-            return Task.FromResult(
-                AssertionResult.Failed(
-                    $"'{val.GetRawText()}' does not equal '{_expected.GetRawText()}'"
-                )
-            );
+        return Task.FromResult(
+            AssertionResult.Failed(
+                $"'{val.GetRawText()}' does not equal '{_expected.GetRawText()}'"
+            )
+        );
     }
 
     /// <inheritdoc/>

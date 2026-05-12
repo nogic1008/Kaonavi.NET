@@ -422,3 +422,6 @@ dotnet_naming_rule.interface_types_must_be_prefixed_with_i.symbols = interface_t
 dotnet_naming_rule.interface_types_must_be_prefixed_with_i.style = prefix_interface_interface_with_i
 
 #### End Naming rules ###
+
+# Disable rules that conflict with csharpier
+dotnet_diagnostic.IDE0055.severity = none
