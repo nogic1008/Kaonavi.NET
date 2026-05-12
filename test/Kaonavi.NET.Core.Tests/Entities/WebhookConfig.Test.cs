@@ -33,7 +33,7 @@ public sealed class WebhookConfigTest
         await Assert.That(webhookConfig).IsNotNull()
             .And.Member(static o => o.Id, static o => o.IsEqualTo(1))
             .And.Member(static o => o.Url, static o => o.IsEqualTo(new("https://example.com")))
-            .And.Member(static o => o.Events, static o => o.IsEquivalentTo([WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted]))
+            .And.Member(static o => o.Events, static o => o.IsSequenceEqualTo([WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted]))
             .And.Member(static o => o.SecretToken, static o => o.IsEqualTo<string>("string"));
     }
 }

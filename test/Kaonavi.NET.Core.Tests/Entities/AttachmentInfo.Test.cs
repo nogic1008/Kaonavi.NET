@@ -39,7 +39,7 @@ public sealed class AttachmentInfoTest
         // Assert
         await Assert.That(attachment).IsNotNull()
             .And.Member(static o => o.Code, static o => o.IsEqualTo<string>("A0001"))
-            .And.Member(static o => o.Records, static o => o.IsEquivalentTo((AttachmentInfoRecord[])[
+            .And.Member(static o => o.Records, static o => o.IsSequenceEqualTo((AttachmentInfoRecord[])[
                 new(
                     "A0001.jpg",
                     new("https://example.com/image/xxxx.jpg?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID"),

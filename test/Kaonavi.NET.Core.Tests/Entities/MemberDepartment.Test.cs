@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using Kaonavi.Net.Entities;
+using TUnit.Assertions.Enums;
 using JsonContext = Kaonavi.Net.Json.Context;
 
 namespace Kaonavi.Net.Tests.Entities;
@@ -52,7 +53,7 @@ public sealed class MemberDepartmentTest
         // Assert
         await Assert.That(memberDepartment).IsNotNull()
             .And.Member(sut => sut.Code, o => o.IsEqualTo<string>(code))
-            .And.Member(sut => sut.Name!, o => name is null ? o.IsNull() : o.IsEqualTo<string>(name))
-            .And.Member(sut => sut.Names!, o => names is null ? o.IsNull() : o.IsEquivalentTo(names));
+            .And.Member(sut => sut.Name, o => name is null ? o.IsNull() : o.IsEqualTo<string>(name))
+            .And.Member(sut => sut.Names!, o => names is null ? o.IsNull() : o.IsSequenceEqualTo(names));
     }
 }

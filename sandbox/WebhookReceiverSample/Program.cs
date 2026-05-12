@@ -1,4 +1,3 @@
-using Kaonavi.Net.Entities;
 using Kaonavi.Net.Server;
 using Microsoft.AspNetCore.Mvc;
 

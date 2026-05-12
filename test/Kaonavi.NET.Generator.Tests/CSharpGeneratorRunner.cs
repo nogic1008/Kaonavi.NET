@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -11,6 +12,7 @@ internal static class CSharpGeneratorRunner
     private static Compilation _baseCompilation = default!;
 
     [ModuleInitializer]
+    [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
     public static void InitializeCompilation()
     {
         var references = AppDomain.CurrentDomain.GetAssemblies()

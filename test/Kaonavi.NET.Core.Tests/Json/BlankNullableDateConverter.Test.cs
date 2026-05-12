@@ -29,7 +29,7 @@ public sealed class BlankNullableDateConverterTest
         var sut = new BlankNullableDateConverter();
 
         // Act
-        var actual = sut.Read(ref reader, typeof(DateOnly?), JsonSerializerOptions.Default);
+        var actual = sut.Read(ref reader, typeof(DateOnly?), new(JsonSerializerDefaults.Web));
 
         // Assert
         await Assert.That(actual).IsEqualTo(expected);
@@ -53,10 +53,10 @@ public sealed class BlankNullableDateConverterTest
         var sut = new BlankNullableDateConverter();
 
         // Act
-        sut.Write(writer, value, JsonSerializerOptions.Default);
+        sut.Write(writer, value, new(JsonSerializerDefaults.Web));
         writer.Flush();
 
         // Assert
-        await Assert.That(buffer.WrittenSpan.ToArray()).IsEquivalentTo(Encoding.UTF8.GetBytes(json));
+        await Assert.That(buffer.WrittenSpan.ToArray()).IsSequenceEqualTo(Encoding.UTF8.GetBytes(json));
     }
 }

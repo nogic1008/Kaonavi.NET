@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Kaonavi.Net.Entities;
+using TUnit.Assertions.Enums;
 
 namespace Kaonavi.Net.Server.Tests;
 
@@ -33,6 +34,6 @@ public sealed class KaonaviWebhookTest
         await Assert.That(actual)
             .Member(static o => o.Event, static o => o.IsEqualTo(WebhookEvent.MemberCreated))
             .And.Member(static o => o.EventTime, static o => o.IsEqualTo(new DateTime(2023, 4, 11, 9, 40, 45)))
-            .And.Member(static o => o.MemberData, static o => o.IsEquivalentTo((Member[])[new("A0001"), new("A0002")]));
+            .And.Member(static o => o.MemberData, static o => o.IsEquivalentTo([new("A0001"), new("A0002")], EqualityComparer<Member>.Default, CollectionOrdering.Matching));
     }
 }
