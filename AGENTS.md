@@ -41,7 +41,7 @@ dotnet run script.cs
 - **ターゲット**: .NET 8 以上（Generator のみ .NET Standard 2.0）
 - **HTTPクライアント**: `System.Net.Http.HttpClient`
 - **JSON**: `System.Text.Json`
-- **テスト**: TUnit + TUnit.Mocks.Http
+- **テスト**: TUnit
 
 ---
 

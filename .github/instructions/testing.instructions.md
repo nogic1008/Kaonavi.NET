@@ -60,29 +60,35 @@ public async Task When_Id_IsNegative_DeleteAsync_Throws_ArgumentOutOfRangeExcept
 
 ### `[Test]` 属性
 
-`[Test]` の引数にはテストの**日本語の説明**を文字列で記述する。
+`[Test]` の引数で**説明は付けない**。（`"`などが含まれる場合、ソース生成に失敗するため）
+代わりに XML ドキュメントコメントと`[DisplayName]`属性で説明を付ける。
 
 ```csharp
-[Test($"{nameof(KaonaviClient)}(constructor) > {nameof(ArgumentNullException)}をスローする。")]
+[Test, Category(nameof(HttpMethod.Get))]
+[DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Member)}.{nameof(KaonaviClient.Member.ListAsync)}() > GET /members をコールする。")]
+public async Task Member_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
 ```
 
 - 説明は `対象 > 条件 > 期待結果` の形式で記述する。
 - `nameof()` を積極的に使い、リファクタリング耐性を持たせる。
 - XMLドキュメントコメントでも同様の説明を付ける。
 
-### `DisplayName`（`[Arguments]` との組み合わせ）
+### `DisplayName`（パラメータテスト）
 
-パラメータ化テストでは `DisplayName` を使って各ケースを明確にする：
+パラメータ化テストでは `DisplayName`属性 にプレースホルダを使い、テストデータの値が表示されるようにする。
+`[Test]` 属性と同じく、`[Arguments]`属性の`DisplayName`プロパティで**説明は付けない**。（`"`などが含まれる場合、ソース生成に失敗するため）
 
 ```csharp
-[Arguments(null, "foo", "consumerKey",
-    DisplayName = $"{nameof(KaonaviClient)}(null, <non-null>) > ArgumentNullException(consumerKey)")]
+[Test]
+[DisplayName($"{nameof(KaonaviClient)} > .ctor($client, $consumerKey, $consumerSecret, $timeProvider) > {nameof(ArgumentNullException)}(\"$paramName\") をスローする。")]
+[MethodDataSource(nameof(ConstructorTestData))]
+public async Task WhenParamIsNull_Constructor_Throws_ArgumentNullException(HttpClient? client, string? consumerKey, string? consumerSecret, TimeProvider? timeProvider, string paramName)
 ```
 
 ### パラメータテストのデータ渡し
 
 - 値が短く、可読性を損なわないケース（`bool`、`int`、短い文字列、enum など）は `Arguments` を使う。
-- JSON の長文、複雑なオブジェクト、引数が多いケースは、`...TestData` という名前のメンバーデータを用意して `MethodDataSource` で渡す。
+- JSON の長文、複雑なオブジェクト、複数のテストで使い回す、引数が多いケースなどは、`...TestData` という名前のメンバーデータを用意して `MethodDataSource` で渡す。
 
 ```csharp
 // 短い値: Arguments
@@ -107,6 +113,7 @@ public async Task CanDeserializeJSON(string json, int id) { ... }
 ## アサーション
 
 TUnit の`Assert`クラスを使う。
+AOT 互換性のため、`[RequiresUnreferencedCode]` 属性などでマークされたメソッドは使用しない。
 
 ```csharp
 // 例外の検証
