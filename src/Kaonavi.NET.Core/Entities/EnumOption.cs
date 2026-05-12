@@ -27,5 +27,6 @@ public record EnumOptionData(
     /// マスター名を指定して、マスター項目値を生成します。
     /// </summary>
     /// <param name="name">マスター名</param>
-    public EnumOptionData(string name) : this(default, name) { }
+    public EnumOptionData(string name)
+        : this(default, name) { }
 }

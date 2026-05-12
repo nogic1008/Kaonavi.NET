@@ -6,27 +6,31 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-var app = ConsoleApp.Create()
+var app = ConsoleApp
+    .Create()
     .ConfigureDefaultConfiguration()
     .ConfigureLogging(static services => services.AddConsole())
-    .ConfigureServices(static (configuration, services) =>
-    {
-        // IOptions
-        services.Configure<KaonaviOptions>(configuration.GetSection(nameof(KaonaviOptions)));
-
-        // IKaonaviClient
-        services.AddHttpClient<IKaonaviClient, KaonaviClient>((client, provider) =>
+    .ConfigureServices(
+        static (configuration, services) =>
         {
-            var options = provider.GetRequiredService<IOptions<KaonaviOptions>>().Value;
-            return new(client, options.ConsumerKey, options.ConsumerSecret)
-            {
-                UseDryRun = options.UseDryRun
-            };
-        });
-    });
+            // IOptions
+            services.Configure<KaonaviOptions>(configuration.GetSection(nameof(KaonaviOptions)));
+
+            // IKaonaviClient
+            services.AddHttpClient<IKaonaviClient, KaonaviClient>(
+                (client, provider) =>
+                {
+                    var options = provider.GetRequiredService<IOptions<KaonaviOptions>>().Value;
+                    return new(client, options.ConsumerKey, options.ConsumerSecret)
+                    {
+                        UseDryRun = options.UseDryRun,
+                    };
+                }
+            );
+        }
+    );
 app.Add<Commands>();
 app.Run(args);
-
 
 /// <summary>
 /// カオナビのAPIを操作するコマンド群
@@ -39,7 +43,9 @@ internal class Commands(ILogger<Commands> logger, IKaonaviClient client)
     public async Task Layout(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var memberLayout = await client.Layout.ReadMemberLayoutAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
+        var memberLayout = await client
+            .Layout.ReadMemberLayoutAsync(cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
         logger.LogInformation("Received Layout: {memberLayout}", memberLayout);
     }
 
@@ -47,8 +53,9 @@ internal class Commands(ILogger<Commands> logger, IKaonaviClient client)
     public async Task Download(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var employees = (await client.Member.ListAsync(cancellationToken).ConfigureAwait(false))
-            .Select(m => new EmployeeData(m));
+        var employees = (
+            await client.Member.ListAsync(cancellationToken).ConfigureAwait(false)
+        ).Select(m => new EmployeeData(m));
         logger.LogInformation("Received Data: {employees}", employees);
     }
 
@@ -56,13 +63,34 @@ internal class Commands(ILogger<Commands> logger, IKaonaviClient client)
     public async Task Upload(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var employees = Enumerable.Range(1, 9)
-            .Select(i => new EmployeeData($"100{i}", $"User {i}", $"User {i}", $"{i}000", $"100{i}@example.com", "男", new(1990, 1, 1), "A", new(2012, 4, 1)));
-        var customSheets = Enumerable.Range(1, 9)
-            .Select(i => new CustomSheetData($"100{i}", $"100-000{i}", $"Address {i}", new(2023, 1, i)));
-        int taskId1 = await client.Member.UpdateAsync([.. employees.Select(e => e.ToMemberData())], cancellationToken).ConfigureAwait(false);
+        var employees = Enumerable
+            .Range(1, 9)
+            .Select(i => new EmployeeData(
+                $"100{i}",
+                $"User {i}",
+                $"User {i}",
+                $"{i}000",
+                $"100{i}@example.com",
+                "男",
+                new(1990, 1, 1),
+                "A",
+                new(2012, 4, 1)
+            ));
+        var customSheets = Enumerable
+            .Range(1, 9)
+            .Select(i => new CustomSheetData(
+                $"100{i}",
+                $"100-000{i}",
+                $"Address {i}",
+                new(2023, 1, i)
+            ));
+        int taskId1 = await client
+            .Member.UpdateAsync([.. employees.Select(e => e.ToMemberData())], cancellationToken)
+            .ConfigureAwait(false);
         logger.LogInformation("Start task at (TaskId: {taskId})", taskId1);
-        int taskId2 = await client.Sheet.UpdateAsync(1, customSheets.ToSingleSheetData(), cancellationToken).ConfigureAwait(false);
+        int taskId2 = await client
+            .Sheet.UpdateAsync(1, customSheets.ToSingleSheetData(), cancellationToken)
+            .ConfigureAwait(false);
         logger.LogInformation("Start task at (TaskId: {taskId})", taskId2);
     }
 

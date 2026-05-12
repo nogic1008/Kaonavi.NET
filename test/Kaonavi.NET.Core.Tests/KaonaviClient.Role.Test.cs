@@ -10,27 +10,29 @@ public sealed partial class KaonaviClientTest
         /// <see cref="KaonaviClient.Role.ListAsync"/>は、"/roles"にGETリクエストを行う。
         /// </summary>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Role)}.{nameof(KaonaviClient.Role.ListAsync)}() > GET /roles をコールする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Role)}.{nameof(KaonaviClient.Role.ListAsync)}() > GET /roles をコールする。"
+        )]
         public async Task Role_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "role_data": [
                 {
-                  "id": 1,
-                  "name": "カオナビ管理者",
-                  "type": "Adm"
-                },
-                {
-                  "id": 2,
-                  "name": "カオナビマネージャー",
-                  "type": "一般"
+                  "role_data": [
+                    {
+                      "id": 1,
+                      "name": "カオナビ管理者",
+                      "type": "Adm"
+                    },
+                    {
+                      "id": 2,
+                      "name": "カオナビマネージャー",
+                      "type": "一般"
+                    }
+                  ]
                 }
-              ]
-            }
-            """;
+                """;
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet("/roles").RespondWithJson(responseJson);
 

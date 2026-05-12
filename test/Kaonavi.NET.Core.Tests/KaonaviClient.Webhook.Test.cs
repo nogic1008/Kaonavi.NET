@@ -14,33 +14,37 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.ListAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.ListAsync)}() > GET /webhook をコールする。")]
-        public async ValueTask Webhook_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.ListAsync)}() > GET /webhook をコールする。"
+        )]
+        public async ValueTask Webhook_ListAsync_Calls_GetApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "webhook_data": [
                 {
-                  "id": 1,
-                  "url": "https://example.com/",
-                  "events": ["member_created","member_deleted"],
-                  "secret_token": "string",
-                  "updated_at": "2021-12-01 12:00:00",
-                  "created_at": "2021-11-01 12:00:00"
-                },
-                {
-                  "id": 2,
-                  "url": "https://example.com/",
-                  "events": ["member_updated"],
-                  "secret_token": "string",
-                  "updated_at": "2021-12-01 12:00:00",
-                  "created_at": "2021-11-01 12:00:00"
+                  "webhook_data": [
+                    {
+                      "id": 1,
+                      "url": "https://example.com/",
+                      "events": ["member_created","member_deleted"],
+                      "secret_token": "string",
+                      "updated_at": "2021-12-01 12:00:00",
+                      "created_at": "2021-11-01 12:00:00"
+                    },
+                    {
+                      "id": 2,
+                      "url": "https://example.com/",
+                      "events": ["member_updated"],
+                      "secret_token": "string",
+                      "updated_at": "2021-12-01 12:00:00",
+                      "created_at": "2021-11-01 12:00:00"
+                    }
+                  ]
                 }
-              ]
-            }
-            """;
+                """;
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet("/webhook").RespondWithJson(responseJson);
 
@@ -58,24 +62,36 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.CreateAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Post))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.CreateAsync)}(payload) > POST /webhook をコールする。")]
-        public async ValueTask Webhook_CreateAsync_Calls_PostApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.CreateAsync)}(payload) > POST /webhook をコールする。"
+        )]
+        public async ValueTask Webhook_CreateAsync_Calls_PostApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "id": 1,
-              "url": "https://example.com/",
-              "events": [
-                "member_created",
-                "member_updated",
-                "member_deleted"
-              ],
-              "secret_token": "token"
-            }
-            """;
-            var payload = new WebhookConfigPayload(new(BaseUriString), [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
+                {
+                  "id": 1,
+                  "url": "https://example.com/",
+                  "events": [
+                    "member_created",
+                    "member_updated",
+                    "member_deleted"
+                  ],
+                  "secret_token": "token"
+                }
+                """;
+            var payload = new WebhookConfigPayload(
+                new(BaseUriString),
+                [
+                    WebhookEvent.MemberCreated,
+                    WebhookEvent.MemberUpdated,
+                    WebhookEvent.MemberDeleted,
+                ],
+                "token"
+            );
 
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnPost("/webhook").RespondWithJson(responseJson);
@@ -87,14 +103,18 @@ public sealed partial class KaonaviClientTest
             // Assert
             await Assert.That(webhook).IsNotNull();
             client.Handler.Verify(r => r.Method(HttpMethod.Post).Path("/webhook"), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsValidJsonObject()
-                .And.IsJsonEquals("""
+            await Assert
+                .That(client.Handler.Requests[0].Body)
+                .IsValidJsonObject()
+                .And.IsJsonEquals(
+                    """
                 {
                   "url": "https://example.com/",
                   "events": ["member_created", "member_updated", "member_deleted"],
                   "secret_token": "token"
                 }
-                """u8);
+                """u8
+                );
         }
 
         /// <summary>
@@ -102,28 +122,45 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Patch))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.UpdateAsync)}(1, payload) > PATCH /webhook/1 をコールする。")]
-        public async Task Webhook_UpdateAsync_Calls_PatchApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.UpdateAsync)}(1, payload) > PATCH /webhook/1 をコールする。"
+        )]
+        public async Task Webhook_UpdateAsync_Calls_PatchApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             const int webhookId = 1;
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "id": 1,
-              "url": "https://example.com/",
-              "events": [
-                "member_created",
-                "member_updated",
-                "member_deleted"
-              ],
-              "secret_token": "token"
-            }
-            """;
-            var payload = new WebhookConfig(webhookId, new(BaseUriString), [WebhookEvent.MemberCreated, WebhookEvent.MemberUpdated, WebhookEvent.MemberDeleted], "token");
+                {
+                  "id": 1,
+                  "url": "https://example.com/",
+                  "events": [
+                    "member_created",
+                    "member_updated",
+                    "member_deleted"
+                  ],
+                  "secret_token": "token"
+                }
+                """;
+            var payload = new WebhookConfig(
+                webhookId,
+                new(BaseUriString),
+                [
+                    WebhookEvent.MemberCreated,
+                    WebhookEvent.MemberUpdated,
+                    WebhookEvent.MemberDeleted,
+                ],
+                "token"
+            );
 
             using var client = Mock.HttpClient(BaseUriString);
-            client.Handler.OnRequest(req => req.Method(HttpMethod.Patch).Path($"/webhook/{webhookId}")).RespondWithJson(responseJson);
+            client
+                .Handler.OnRequest(req =>
+                    req.Method(HttpMethod.Patch).Path($"/webhook/{webhookId}")
+                )
+                .RespondWithJson(responseJson);
 
             // Act
             var sut = CreateSut(client, "token");
@@ -131,15 +168,23 @@ public sealed partial class KaonaviClientTest
 
             // Assert
             await Assert.That(webhook).IsNotNull();
-            client.Handler.Verify(r => r.Method(HttpMethod.Patch).Path($"/webhook/{webhookId}"), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsValidJsonObject().And.IsJsonEquals("""
+            client.Handler.Verify(
+                r => r.Method(HttpMethod.Patch).Path($"/webhook/{webhookId}"),
+                Times.Once
+            );
+            await Assert
+                .That(client.Handler.Requests[0].Body)
+                .IsValidJsonObject()
+                .And.IsJsonEquals(
+                    """
             {
               "id": 1,
               "url": "https://example.com/",
               "events": ["member_created", "member_updated", "member_deleted"],
               "secret_token": "token"
             }
-            """u8);
+            """u8
+                );
         }
 
         /// <summary>
@@ -148,8 +193,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.DeleteAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Delete))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
-        public async Task When_Id_IsNegative_Webhook_DeleteAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。"
+        )]
+        public async Task When_Id_IsNegative_Webhook_DeleteAsync_Throws_ArgumentOutOfRangeException(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -157,8 +206,10 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client);
-            await Assert.That(async () => await sut.Webhook.DeleteAsync(-1, cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert
+                .That(async () => await sut.Webhook.DeleteAsync(-1, cancellationToken))
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName("id");
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -167,8 +218,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IWebhook.DeleteAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Delete))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)}(1) > DELETE /webhook/1 をコールする。")]
-        public async Task Webhook_DeleteAsync_Calls_DeleteApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Webhook)}.{nameof(KaonaviClient.Webhook.DeleteAsync)}(1) > DELETE /webhook/1 をコールする。"
+        )]
+        public async Task Webhook_DeleteAsync_Calls_DeleteApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             const int webhookId = 1;
@@ -181,7 +236,10 @@ public sealed partial class KaonaviClientTest
             await sut.Webhook.DeleteAsync(webhookId, cancellationToken);
 
             // Assert
-            client.Handler.Verify(r => r.Method(HttpMethod.Delete).Path($"/webhook/{webhookId}"), Times.Once);
+            client.Handler.Verify(
+                r => r.Method(HttpMethod.Delete).Path($"/webhook/{webhookId}"),
+                Times.Once
+            );
         }
     }
 }

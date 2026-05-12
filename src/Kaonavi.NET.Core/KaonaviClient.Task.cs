@@ -17,7 +17,10 @@ public partial class KaonaviClient : KaonaviClient.ITask
         /// </summary>
         /// <param name="id"><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<TaskProgress> ReadAsync(int id, CancellationToken cancellationToken = default);
+        public ValueTask<TaskProgress> ReadAsync(
+            int id,
+            CancellationToken cancellationToken = default
+        );
     }
 
     /// <inheritdoc/>
@@ -28,6 +31,10 @@ public partial class KaonaviClient : KaonaviClient.ITask
     ValueTask<TaskProgress> ITask.ReadAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
-        return CallApiAsync(new(HttpMethod.Get, $"tasks/{id:D}"), Context.Default.TaskProgress, cancellationToken);
+        return CallApiAsync(
+            new(HttpMethod.Get, $"tasks/{id:D}"),
+            Context.Default.TaskProgress,
+            cancellationToken
+        );
     }
 }

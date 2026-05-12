@@ -27,8 +27,9 @@ public static class ISheetDataExtensions
     /// <typeparam name="T"><see cref="ISheetData"/>を列挙可能なインターフェース</typeparam>
     /// <param name="sheets"></param>
     /// <returns></returns>
-    public static IReadOnlyList<SheetData> ToSingleSheetData<T>(this T sheets) where T : IEnumerable<ISheetData>
-        => sheets.Select(d => new SheetData(d.Code, d.ToCustomFields())).ToArray();
+    public static IReadOnlyList<SheetData> ToSingleSheetData<T>(this T sheets)
+        where T : IEnumerable<ISheetData> =>
+        sheets.Select(d => new SheetData(d.Code, d.ToCustomFields())).ToArray();
 
     /// <summary>
     /// <see cref="ISheetData"/>の一覧を、等価な<inheritdoc cref="RecordType.Multiple"/>の<see cref="SheetData"/>に変換します。
@@ -36,7 +37,8 @@ public static class ISheetDataExtensions
     /// <typeparam name="T"><see cref="ISheetData"/>を列挙可能なインターフェース</typeparam>
     /// <param name="sheets"></param>
     /// <returns></returns>
-    public static IReadOnlyList<SheetData> ToMultipleSheetData<T>(this T sheets) where T : IEnumerable<ISheetData>
+    public static IReadOnlyList<SheetData> ToMultipleSheetData<T>(this T sheets)
+        where T : IEnumerable<ISheetData>
     {
         var dic = new Dictionary<string, List<IReadOnlyList<CustomFieldValue>>>();
         foreach (var item in sheets)

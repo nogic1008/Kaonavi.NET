@@ -14,21 +14,25 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IDepartment.ListAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ListAsync)}() > GET /departments をコールする。")]
-        public async Task Department_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ListAsync)}() > GET /departments をコールする。"
+        )]
+        public async Task Department_ListAsync_Calls_GetApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "department_data": [
-                { "code": "1000", "name": "取締役会", "parent_code": null, "leader_member_code": "A0002", "order": 1, "memo": "" },
-                { "code": "1200", "name": "営業本部", "parent_code": null, "leader_member_code": null, "order": 2, "memo": "" },
-                { "code": "1500", "name": "第一営業部", "parent_code": "1200", "leader_member_code": null, "order": 1, "memo": "" },
-                { "code": "2000", "name": "ITグループ", "parent_code": "1500", "leader_member_code": "A0001", "order": 1, "memo": "example" }
-              ]
-            }
-            """;
+                {
+                  "department_data": [
+                    { "code": "1000", "name": "取締役会", "parent_code": null, "leader_member_code": "A0002", "order": 1, "memo": "" },
+                    { "code": "1200", "name": "営業本部", "parent_code": null, "leader_member_code": null, "order": 2, "memo": "" },
+                    { "code": "1500", "name": "第一営業部", "parent_code": "1200", "leader_member_code": null, "order": 1, "memo": "" },
+                    { "code": "2000", "name": "ITグループ", "parent_code": "1500", "leader_member_code": "A0001", "order": 1, "memo": "example" }
+                  ]
+                }
+                """;
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet("/departments").RespondWithJson(responseJson);
 
@@ -46,8 +50,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IDepartment.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Put))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ReplaceAsync)}(payload) > PUT /departments をコールする。")]
-        public async Task Department_ReplaceAsync_Calls_PutApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Department)}.{nameof(KaonaviClient.Department.ReplaceAsync)}(payload) > PUT /departments をコールする。"
+        )]
+        public async Task Department_ReplaceAsync_Calls_PutApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             var payload = new DepartmentTree[]
@@ -67,7 +75,10 @@ public sealed partial class KaonaviClientTest
             // Assert
             await Assert.That(taskId).IsEqualTo(TaskId);
             client.Handler.Verify(r => r.Method(HttpMethod.Put).Path("/departments"), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals("""
+            await Assert
+                .That(client.Handler.Requests[0].Body)
+                .IsJsonEquals(
+                    """
             {
               "department_data": [
                 { "code": "1000", "name": "取締役会", "leader_member_code": "A0002", "order": 1, "memo": "" },
@@ -76,7 +87,8 @@ public sealed partial class KaonaviClientTest
                 { "code": "2000", "name": "ITグループ", "parent_code": "1500", "leader_member_code": "A0001", "order": 1, "memo": "example" }
               ]
             }
-            """u8);
+            """u8
+                );
         }
     }
 }

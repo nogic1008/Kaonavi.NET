@@ -18,7 +18,10 @@ public partial class KaonaviClient : KaonaviClient.IAdvancedPermission
         /// </summary>
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<IReadOnlyList<AdvancedPermission>> ListAsync(AdvancedType type, CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<AdvancedPermission>> ListAsync(
+            AdvancedType type,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// 現在登録されている<inheritdoc cref="AdvancedPermission" path="/summary"/>を全て、リクエストしたデータで入れ替えます。
@@ -41,7 +44,11 @@ public partial class KaonaviClient : KaonaviClient.IAdvancedPermission
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="payload">入れ替え対象となるデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<int> ReplaceAsync(AdvancedType type, IReadOnlyList<AdvancedPermission> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> ReplaceAsync(
+            AdvancedType type,
+            IReadOnlyList<AdvancedPermission> payload,
+            CancellationToken cancellationToken = default
+        );
     }
 
     /// <inheritdoc/>
@@ -49,13 +56,32 @@ public partial class KaonaviClient : KaonaviClient.IAdvancedPermission
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
-    ValueTask<IReadOnlyList<AdvancedPermission>> IAdvancedPermission.ListAsync(AdvancedType type, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, $"advanced_permissions/{AdvancedTypeToString(type)}"), "advanced_permission_data", Context.Default.IReadOnlyListAdvancedPermission, cancellationToken);
+    ValueTask<IReadOnlyList<AdvancedPermission>> IAdvancedPermission.ListAsync(
+        AdvancedType type,
+        CancellationToken cancellationToken
+    ) =>
+        CallApiAsync(
+            new(HttpMethod.Get, $"advanced_permissions/{AdvancedTypeToString(type)}"),
+            "advanced_permission_data",
+            Context.Default.IReadOnlyListAdvancedPermission,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
-    ValueTask<int> IAdvancedPermission.ReplaceAsync(AdvancedType type, IReadOnlyList<AdvancedPermission> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, $"advanced_permissions/{AdvancedTypeToString(type)}", payload, "advanced_permission_data"u8, Context.Default.IReadOnlyListAdvancedPermission, cancellationToken);
+    ValueTask<int> IAdvancedPermission.ReplaceAsync(
+        AdvancedType type,
+        IReadOnlyList<AdvancedPermission> payload,
+        CancellationToken cancellationToken
+    ) =>
+        CallTaskApiAsync(
+            HttpMethod.Put,
+            $"advanced_permissions/{AdvancedTypeToString(type)}",
+            payload,
+            "advanced_permission_data"u8,
+            Context.Default.IReadOnlyListAdvancedPermission,
+            cancellationToken
+        );
 
     /// <summary>
     /// <see cref="AdvancedType"/> -&gt; <see langword="string"/>変換
@@ -63,10 +89,14 @@ public partial class KaonaviClient : KaonaviClient.IAdvancedPermission
     /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
     /// <param name="argument">引数</param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="type"/>が未定義の<see cref="AdvancedType"/>である場合にスローされます。</exception>
-    private static string AdvancedTypeToString(AdvancedType type, [CallerArgumentExpression(nameof(type))] string? argument = null) => type switch
-    {
-        AdvancedType.Member => "member",
-        AdvancedType.Department => "department",
-        _ => throw new ArgumentOutOfRangeException(argument),
-    };
+    private static string AdvancedTypeToString(
+        AdvancedType type,
+        [CallerArgumentExpression(nameof(type))] string? argument = null
+    ) =>
+        type switch
+        {
+            AdvancedType.Member => "member",
+            AdvancedType.Department => "department",
+            _ => throw new ArgumentOutOfRangeException(argument),
+        };
 }

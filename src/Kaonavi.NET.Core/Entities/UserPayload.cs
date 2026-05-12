@@ -27,6 +27,22 @@ public record UserPayload(
     /// <param name="isActive"><inheritdoc cref="User" path="/param[@name='IsActive']"/></param>
     /// <param name="passwordLocked"><inheritdoc cref="User" path="/param[@name='PasswordLocked']"/></param>
     /// <param name="useSmartphone"><inheritdoc cref="User" path="/param[@name='UseSmartphone']"/></param>
-    public UserPayload(string email, string? memberCode, string password, int roleId, bool isActive = true, bool passwordLocked = false, bool useSmartphone = false)
-        : this(email, memberCode, password, new Role(roleId, null!, null!), isActive, passwordLocked, useSmartphone) { }
+    public UserPayload(
+        string email,
+        string? memberCode,
+        string password,
+        int roleId,
+        bool isActive = true,
+        bool passwordLocked = false,
+        bool useSmartphone = false
+    )
+        : this(
+            email,
+            memberCode,
+            password,
+            new Role(roleId, null!, null!),
+            isActive,
+            passwordLocked,
+            useSmartphone
+        ) { }
 }

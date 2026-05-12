@@ -14,36 +14,51 @@ public sealed class DepartmentTreeTest
     {
         get
         {
-            yield return new((/*lang=json,strict*/ """
-            {
-              "code": "1000",
-              "name": "取締役会",
-              "parent_code": null,
-              "leader_member_code": "A0002",
-              "order": 1,
-              "memo": ""
-            }
-            """, new("1000", "取締役会", null, "A0002", 1, "")));
-            yield return new((/*lang=json,strict*/ """
-            {
-              "code": "1200",
-              "name": "営業本部",
-              "parent_code": null,
-              "leader_member_code": null,
-              "order": 2,
-              "memo": null
-            }
-            """, new("1200", "営業本部", null, null, 2, null)));
-            yield return new((/*lang=json,strict*/ """
-            {
-              "code": "2000",
-              "name": "ITグループ",
-              "parent_code": "1500",
-              "leader_member_code": "A0001",
-              "order": 1,
-              "memo": "example"
-            }
-            """, new("2000", "ITグループ", "1500", "A0001", 1, "example")));
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "code": "1000",
+                      "name": "取締役会",
+                      "parent_code": null,
+                      "leader_member_code": "A0002",
+                      "order": 1,
+                      "memo": ""
+                    }
+                    """,
+                    new("1000", "取締役会", null, "A0002", 1, "")
+                )
+            );
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "code": "1200",
+                      "name": "営業本部",
+                      "parent_code": null,
+                      "leader_member_code": null,
+                      "order": 2,
+                      "memo": null
+                    }
+                    """,
+                    new("1200", "営業本部", null, null, 2, null)
+                )
+            );
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "code": "2000",
+                      "name": "ITグループ",
+                      "parent_code": "1500",
+                      "leader_member_code": "A0001",
+                      "order": 1,
+                      "memo": "example"
+                    }
+                    """,
+                    new("2000", "ITグループ", "1500", "A0001", 1, "example")
+                )
+            );
         }
     }
 
@@ -53,7 +68,10 @@ public sealed class DepartmentTreeTest
     [Test, Category("JSON Deserialize")]
     [DisplayName($"{nameof(DepartmentTree)} > $json から $expected にデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
-    public async Task CanDeserializeJSON([StringSyntax(StringSyntaxAttribute.Json)] string json, DepartmentTree expected)
+    public async Task CanDeserializeJSON(
+        [StringSyntax(StringSyntaxAttribute.Json)] string json,
+        DepartmentTree expected
+    )
     {
         var result = JsonSerializer.Deserialize(json, JsonContext.Default.DepartmentTree);
         await Assert.That(result).IsEqualTo(expected);

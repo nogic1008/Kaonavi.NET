@@ -10,20 +10,21 @@ public sealed class AdvancedPermissionTest
 {
     // lang=json,strict
     private const string AdvancedPermissionJson = """
-    {
-      "user_id": 1,
-      "add_codes": ["0001", "0002", "0003"],
-      "exclusion_codes": ["0001", "0002", "0003"]
-    }
-    """;
+        {
+          "user_id": 1,
+          "add_codes": ["0001", "0002", "0003"],
+          "exclusion_codes": ["0001", "0002", "0003"]
+        }
+        """;
+
     // lang=json,strict
     private const string AdvancedPermissionEmptyJson = """
-    {
-      "user_id": 2,
-      "add_codes": [],
-      "exclusion_codes": []
-    }
-    """;
+        {
+          "user_id": 2,
+          "add_codes": [],
+          "exclusion_codes": []
+        }
+        """;
 
     /// <summary>JSONからデシリアライズできる。</summary>
     /// <param name="json">JSON文字列</param>
@@ -32,15 +33,30 @@ public sealed class AdvancedPermissionTest
     /// <param name="exclusionCodes"><inheritdoc cref="AdvancedPermission.ExclusionCodes" path="/summary"/></param>
     [Test, Category("JSON Deserialize")]
     [DisplayName($"{nameof(AdvancedPermission)} > $json からデシリアライズできる。")]
-    [Arguments(AdvancedPermissionJson, 1, (string[])["0001", "0002", "0003"], (string[])["0001", "0002", "0003"])]
+    [Arguments(
+        AdvancedPermissionJson,
+        1,
+        (string[])["0001", "0002", "0003"],
+        (string[])["0001", "0002", "0003"]
+    )]
     [Arguments(AdvancedPermissionEmptyJson, 2, (string[])[], (string[])[])]
-    public async Task CanDeserializeJSON(string json, int userId, string[] addCodes, string[] exclusionCodes)
+    public async Task CanDeserializeJSON(
+        string json,
+        int userId,
+        string[] addCodes,
+        string[] exclusionCodes
+    )
     {
         // Arrange - Act
-        var advancedPermission = JsonSerializer.Deserialize(json, JsonContext.Default.AdvancedPermission);
+        var advancedPermission = JsonSerializer.Deserialize(
+            json,
+            JsonContext.Default.AdvancedPermission
+        );
 
         // Assert
-        await Assert.That(advancedPermission).IsNotNull()
+        await Assert
+            .That(advancedPermission)
+            .IsNotNull()
             .And.Member(static o => o.UserId, o => o.IsEqualTo(userId))
             .And.Member(static o => o.AddCodes, o => o.IsSequenceEqualTo(addCodes))
             .And.Member(static o => o.ExclusionCodes, o => o.IsSequenceEqualTo(exclusionCodes));

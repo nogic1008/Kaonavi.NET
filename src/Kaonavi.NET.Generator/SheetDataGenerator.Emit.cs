@@ -16,31 +16,72 @@ public partial class SheetDataGenerator
     /// <param name="compilation">現在のコンパイル結果</param>
     /// <param name="version">C#のバージョン</param>
     /// <param name="context">ソース生成コンテキスト</param>
-    private static void Emit(TypeDeclarationSyntax syntax, Compilation compilation, LanguageVersion version, SourceProductionContext context)
+    private static void Emit(
+        TypeDeclarationSyntax syntax,
+        Compilation compilation,
+        LanguageVersion version,
+        SourceProductionContext context
+    )
     {
-        var typeSymbol = compilation.GetSemanticModel(syntax.SyntaxTree).GetDeclaredSymbol(syntax, context.CancellationToken);
+        var typeSymbol = compilation
+            .GetSemanticModel(syntax.SyntaxTree)
+            .GetDeclaredSymbol(syntax, context.CancellationToken);
         if (typeSymbol is null)
             return;
 
         // Validate class definition
         if (!syntax.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)))
         {
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustBePartial, syntax.Identifier.GetLocation(), typeSymbol.Name));
+            context.ReportDiagnostic(
+                Diagnostic.Create(
+                    DiagnosticDescriptors.MustBePartial,
+                    syntax.Identifier.GetLocation(),
+                    typeSymbol.Name
+                )
+            );
             return;
         }
         if (typeSymbol.ContainingType is not null)
         {
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustBeOuterClass, syntax.Identifier.GetLocation(), typeSymbol.Name));
+            context.ReportDiagnostic(
+                Diagnostic.Create(
+                    DiagnosticDescriptors.MustBeOuterClass,
+                    syntax.Identifier.GetLocation(),
+                    typeSymbol.Name
+                )
+            );
             return;
         }
-        if (!typeSymbol.AllInterfaces.Contains(compilation.GetTypeByMetadataName(Consts.ISheetData)!))
+        if (
+            !typeSymbol.AllInterfaces.Contains(
+                compilation.GetTypeByMetadataName(Consts.ISheetData)!
+            )
+        )
         {
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustImplSheetData, syntax.Identifier.GetLocation(), typeSymbol.Name));
+            context.ReportDiagnostic(
+                Diagnostic.Create(
+                    DiagnosticDescriptors.MustImplSheetData,
+                    syntax.Identifier.GetLocation(),
+                    typeSymbol.Name
+                )
+            );
             return;
         }
-        if (typeSymbol.GetMembers(Consts.ToCustomFields).OfType<IMethodSymbol>().FirstOrDefault(m => m.Parameters.Length == 0) is IMethodSymbol symbol)
+        if (
+            typeSymbol
+                .GetMembers(Consts.ToCustomFields)
+                .OfType<IMethodSymbol>()
+                .FirstOrDefault(m => m.Parameters.Length == 0)
+            is IMethodSymbol symbol
+        )
         {
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.AlreadyImplemented, symbol.Locations[0], typeSymbol.Name));
+            context.ReportDiagnostic(
+                Diagnostic.Create(
+                    DiagnosticDescriptors.AlreadyImplemented,
+                    symbol.Locations[0],
+                    typeSymbol.Name
+                )
+            );
             return;
         }
 
@@ -50,11 +91,15 @@ public partial class SheetDataGenerator
             return;
 
         // Generate source code
-        string fullType = typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
+        string fullType = typeSymbol
+            .ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)
             .Replace("global::", "")
             .Replace("<", "_")
             .Replace(">", "_");
-        context.AddSource($"{fullType}.g.cs", GenerateImplementedCode(typeSymbol, customFieldDict, version));
+        context.AddSource(
+            $"{fullType}.g.cs",
+            GenerateImplementedCode(typeSymbol, customFieldDict, version)
+        );
     }
 
     /// <summary>
@@ -65,21 +110,43 @@ public partial class SheetDataGenerator
     /// <param name="compilation">現在のコンパイル結果</param>
     /// <param name="context">ソース生成コンテキスト</param>
     /// <returns>[CustomField]属性の設定に不備がある場合は<see langword="null"/>, 適切に設定されている場合はIDをKey, プロパティ情報をValueとしたDictionary</returns>
-    private static IDictionary<int, IPropertySymbol>? GetCustomFields(TypeDeclarationSyntax syntax, INamedTypeSymbol typeSymbol, Compilation compilation, SourceProductionContext context)
+    private static IDictionary<int, IPropertySymbol>? GetCustomFields(
+        TypeDeclarationSyntax syntax,
+        INamedTypeSymbol typeSymbol,
+        Compilation compilation,
+        SourceProductionContext context
+    )
     {
         var customFieldAttr = compilation.GetTypeByMetadataName(Consts.CustomField);
-        var customFieldProperties = typeSymbol.GetMembers().OfType<IPropertySymbol>()
-            .Select(p => (
-                prop: p,
-                id: p.GetAttributes()
-                    .FirstOrDefault(a => a.AttributeClass?.Equals(customFieldAttr, SymbolEqualityComparer.Default) ?? false)
-                    ?.ConstructorArguments[0].Value as int?
-            ))
-            .Where(p => p.id is not null).ToArray();
+        var customFieldProperties = typeSymbol
+            .GetMembers()
+            .OfType<IPropertySymbol>()
+            .Select(p =>
+                (
+                    prop: p,
+                    id: p.GetAttributes()
+                        .FirstOrDefault(a =>
+                            a.AttributeClass?.Equals(
+                                customFieldAttr,
+                                SymbolEqualityComparer.Default
+                            ) ?? false
+                        )
+                        ?.ConstructorArguments[0]
+                        .Value as int?
+                )
+            )
+            .Where(p => p.id is not null)
+            .ToArray();
 
         if (customFieldProperties.Length == 0)
         {
-            context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustHaveCustomField, syntax.Identifier.GetLocation(), typeSymbol.Name));
+            context.ReportDiagnostic(
+                Diagnostic.Create(
+                    DiagnosticDescriptors.MustHaveCustomField,
+                    syntax.Identifier.GetLocation(),
+                    typeSymbol.Name
+                )
+            );
             return null;
         }
 
@@ -89,14 +156,36 @@ public partial class SheetDataGenerator
         {
             if (customFieldDict.TryGetValue(id.GetValueOrDefault(), out var prev))
             {
-                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.DuplicateCustomFieldId, prev.Locations[0], prev.Name, id, prop.Name));
-                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.DuplicateCustomFieldId, prop.Locations[0], prop.Name, id, prev.Name));
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        DiagnosticDescriptors.DuplicateCustomFieldId,
+                        prev.Locations[0],
+                        prev.Name,
+                        id,
+                        prop.Name
+                    )
+                );
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        DiagnosticDescriptors.DuplicateCustomFieldId,
+                        prop.Locations[0],
+                        prop.Name,
+                        id,
+                        prev.Name
+                    )
+                );
                 hasError = true;
                 continue;
             }
             if (prop.GetMethod is null)
             {
-                context.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.MustHaveGetter, prop.Locations[0], prop.Name));
+                context.ReportDiagnostic(
+                    Diagnostic.Create(
+                        DiagnosticDescriptors.MustHaveGetter,
+                        prop.Locations[0],
+                        prop.Name
+                    )
+                );
                 hasError = true;
                 continue;
             }
@@ -111,7 +200,11 @@ public partial class SheetDataGenerator
     /// <param name="typeSymbol">生成対象となるクラスのSymbol</param>
     /// <param name="customFields">[CustomField]属性のついたプロパティ</param>
     /// <param name="version">C#のバージョン</param>
-    private static string GenerateImplementedCode(INamedTypeSymbol typeSymbol, IDictionary<int, IPropertySymbol> customFields, LanguageVersion version)
+    private static string GenerateImplementedCode(
+        INamedTypeSymbol typeSymbol,
+        IDictionary<int, IPropertySymbol> customFields,
+        LanguageVersion version
+    )
     {
         int lv = 0;
         var sb = new StringBuilder();
@@ -124,22 +217,38 @@ public partial class SheetDataGenerator
             if (version >= LanguageVersion.CSharp10)
             {
                 // Use file-scoped namespace (C# 10)
-                AppendLineWithIndent(sb, lv, $"namespace {typeSymbol.ContainingNamespace.ToDisplayString()};")
+                AppendLineWithIndent(
+                        sb,
+                        lv,
+                        $"namespace {typeSymbol.ContainingNamespace.ToDisplayString()};"
+                    )
                     .AppendLine();
             }
             else
             {
                 // Use nested namespace
-                AppendLineWithIndent(sb, lv, $"namespace {typeSymbol.ContainingNamespace.ToDisplayString()}");
+                AppendLineWithIndent(
+                    sb,
+                    lv,
+                    $"namespace {typeSymbol.ContainingNamespace.ToDisplayString()}"
+                );
                 AppendLineWithIndent(sb, lv++, "{"); // start of namespace
             }
         }
 
-        AppendLineWithIndent(sb, lv, $"partial {(typeSymbol.IsRecord ? "record" : "class")} {typeSymbol.Name}");
+        AppendLineWithIndent(
+            sb,
+            lv,
+            $"partial {(typeSymbol.IsRecord ? "record" : "class")} {typeSymbol.Name}"
+        );
         AppendLineWithIndent(sb, lv++, "{"); // start of class
 
         AppendLineWithIndent(sb, lv, "/// <inheritdoc/>");
-        AppendLineWithIndent(sb, lv++, $"public {Consts.ToCustomFieldsReturnType} ToCustomFields()");
+        AppendLineWithIndent(
+            sb,
+            lv++,
+            $"public {Consts.ToCustomFieldsReturnType} ToCustomFields()"
+        );
 
         if (version >= (LanguageVersion)1200)
         {
@@ -157,10 +266,13 @@ public partial class SheetDataGenerator
         {
             string typeFullName = $"{kv.Value.Type.ContainingNamespace.Name}.{kv.Value.Type.Name}";
             bool isNullableValueType = typeFullName.StartsWith("System.Nullable");
-            typeFullName = isNullableValueType ? ((INamedTypeSymbol)kv.Value.Type).TypeArguments[0].ToDisplayString() : typeFullName;
+            typeFullName = isNullableValueType
+                ? ((INamedTypeSymbol)kv.Value.Type).TypeArguments[0].ToDisplayString()
+                : typeFullName;
             bool isDate = Consts.DateObjects.Contains(typeFullName);
             // Use ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) for Date objects, otherwise use ToString()
-            string value = $"{kv.Value.Name}{(isNullableValueType ? $".{nameof(Nullable<DateTime>.GetValueOrDefault)}()" : "")}.ToString({(isDate ? $"\"{Consts.DateFormat}\", {Consts.InvariantCulture}" : "")})";
+            string value =
+                $"{kv.Value.Name}{(isNullableValueType ? $".{nameof(Nullable<DateTime>.GetValueOrDefault)}()" : "")}.ToString({(isDate ? $"\"{Consts.DateFormat}\", {Consts.InvariantCulture}" : "")})";
             AppendLineWithIndent(sb, lv, $"new {Consts.CustomFieldValue}({kv.Key}, {value}),");
         }
 
@@ -183,11 +295,9 @@ public partial class SheetDataGenerator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static StringBuilder AppendHeader(StringBuilder sb)
     {
-        sb.AppendLine("/// <auto-generated/>")
-            .AppendLine();
+        sb.AppendLine("/// <auto-generated/>").AppendLine();
         sb.AppendLine("#nullable enable annotations");
-        sb.AppendLine("#nullable disable warnings")
-            .AppendLine();
+        sb.AppendLine("#nullable disable warnings").AppendLine();
         foreach (string warning in Consts.DisableWarnings)
             sb.AppendLine($"#pragma warning disable {warning}");
         return sb.AppendLine();
@@ -198,5 +308,9 @@ public partial class SheetDataGenerator
     /// <param name="level">インデントレベル</param>
     /// <param name="value"><inheritdoc cref="StringBuilder.AppendLine(string)" path="/param[@name='value']"/></param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static StringBuilder AppendLineWithIndent(StringBuilder sb, in int level, string value) => sb.Append(' ', level * Width).AppendLine(value);
+    private static StringBuilder AppendLineWithIndent(
+        StringBuilder sb,
+        in int level,
+        string value
+    ) => sb.Append(' ', level * Width).AppendLine(value);
 }

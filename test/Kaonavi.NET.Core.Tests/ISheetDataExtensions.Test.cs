@@ -10,6 +10,7 @@ public sealed class ISheetDataExtensionsTest
     {
         public required string Code { get; init; }
         public required string Name { get; init; }
+
         public IReadOnlyList<CustomFieldValue> ToCustomFields() => [new(101, Name)];
     }
 
@@ -17,19 +18,25 @@ public sealed class ISheetDataExtensionsTest
     /// <see cref="ISheetDataExtensions.ToSingleSheetData{T}(T)"/>は、単一レコードである<see cref="SheetData"/>の一覧を返す。
     /// </summary>
     [Test]
-    [DisplayName($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードである {nameof(SheetData)} の一覧を返す。")]
+    [DisplayName(
+        $"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToSingleSheetData)}() > 単一レコードである {nameof(SheetData)} の一覧を返す。"
+    )]
     public async Task ToSingleSheetData_Returns_Single_SheetData()
     {
         // Arrange
         const int length = 10;
-        var values = Enumerable.Range(0, length)
+        var values = Enumerable
+            .Range(0, length)
             .Select(static i => new TestSheetData { Code = i.ToString(), Name = i.ToString() });
 
         // Act
         var actual = values.ToSingleSheetData();
 
         // Assert
-        await Assert.That(actual).Count().IsEqualTo(length)
+        await Assert
+            .That(actual)
+            .Count()
+            .IsEqualTo(length)
             .And.All(static o => o.Records.Count == 1);
     }
 
@@ -37,22 +44,32 @@ public sealed class ISheetDataExtensionsTest
     /// <see cref="ISheetDataExtensions.ToMultipleSheetData{T}(IEnumerable{T})"/>は、複数レコードである<see cref="SheetData"/>の一覧を返す。
     /// </summary>
     [Test]
-    [DisplayName($"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードである {nameof(SheetData)} の一覧を返す。")]
+    [DisplayName(
+        $"{nameof(ISheetDataExtensions)}.{nameof(ISheetDataExtensions.ToMultipleSheetData)}() > 複数レコードである {nameof(SheetData)} の一覧を返す。"
+    )]
     public async Task ToMultipleSheetData_Returns_Multiple_SheetData()
     {
         // Arrange
         const int codeLength = 10;
         const int nameLength = 3;
         // 同一Codeを持つレコードがそれぞれ3件ずつ存在するデータ(3*10=30件)を生成
-        var values = Enumerable.Range(0, codeLength * nameLength)
-            .Select(static i => new TestSheetData { Code = (i / nameLength).ToString(), Name = (i % nameLength).ToString() });
+        var values = Enumerable
+            .Range(0, codeLength * nameLength)
+            .Select(static i => new TestSheetData
+            {
+                Code = (i / nameLength).ToString(),
+                Name = (i % nameLength).ToString(),
+            });
 
         // Act
         var actual = values.ToMultipleSheetData();
 
         // Assert
-        await Assert.That(actual).IsNotNull()
-            .And.Count().IsEqualTo(codeLength)
+        await Assert
+            .That(actual)
+            .IsNotNull()
+            .And.Count()
+            .IsEqualTo(codeLength)
             .And.All(static o => o.Records.Count == nameLength);
     }
 }

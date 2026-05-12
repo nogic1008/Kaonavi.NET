@@ -15,17 +15,36 @@ public sealed class BlankNullableDateConverterTest
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateOnly(int, int, int)" path="/param"/>
     [Test]
-    [DisplayName($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Read)}($json) returns {nameof(DateOnly)}($year, $month, $day)")]
-    [Arguments(/*lang=json,strict*/ "\"2021-01-01\"", 2021, 1, 1)]
-    [Arguments(/*lang=json,strict*/ "\"\"", null, 0, 0)]
-    [Arguments(/*lang=json,strict*/ "null", null, 0, 0)]
+    [DisplayName(
+        $"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Read)}($json) returns {nameof(DateOnly)}($year, $month, $day)"
+    )]
+    [Arguments( /*lang=json,strict*/
+        "\"2021-01-01\"",
+        2021,
+        1,
+        1
+    )]
+    [Arguments( /*lang=json,strict*/
+        "\"\"",
+        null,
+        0,
+        0
+    )]
+    [Arguments( /*lang=json,strict*/
+        "null",
+        null,
+        0,
+        0
+    )]
     public async Task Read_Returns_NullableOfDateOnly(string json, int? year, int month, int day)
     {
         // Arrange
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
         while (reader.TokenType == JsonTokenType.None)
             reader.Read();
-        DateOnly? expected = year is null ? null : new DateOnly(year.GetValueOrDefault(), month, day);
+        DateOnly? expected = year is null
+            ? null
+            : new DateOnly(year.GetValueOrDefault(), month, day);
         var sut = new BlankNullableDateConverter();
 
         // Act
@@ -41,9 +60,21 @@ public sealed class BlankNullableDateConverterTest
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateOnly(int, int, int)" path="/param"/>
     [Test]
-    [DisplayName($"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Write)}({nameof(DateOnly)}($year, $month, $day)) returns $json")]
-    [Arguments(2021, 1, 1, /*lang=json,strict*/ "\"2021-01-01\"")]
-    [Arguments(null, 0, 0, /*lang=json,strict*/ "\"\"")]
+    [DisplayName(
+        $"{nameof(BlankNullableDateConverter)} > {nameof(BlankNullableDateConverter.Write)}({nameof(DateOnly)}($year, $month, $day)) returns $json"
+    )]
+    [Arguments(
+        2021,
+        1,
+        1, /*lang=json,strict*/
+        "\"2021-01-01\""
+    )]
+    [Arguments(
+        null,
+        0,
+        0, /*lang=json,strict*/
+        "\"\""
+    )]
     public async Task Write_Flushes_JSON(int? year, int month, int day, string json)
     {
         // Arrange
@@ -57,6 +88,8 @@ public sealed class BlankNullableDateConverterTest
         writer.Flush();
 
         // Assert
-        await Assert.That(buffer.WrittenSpan.ToArray()).IsSequenceEqualTo(Encoding.UTF8.GetBytes(json));
+        await Assert
+            .That(buffer.WrittenSpan.ToArray())
+            .IsSequenceEqualTo(Encoding.UTF8.GetBytes(json));
     }
 }

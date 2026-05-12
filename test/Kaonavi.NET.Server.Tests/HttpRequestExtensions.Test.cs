@@ -14,28 +14,38 @@ public sealed class HttpRequestExtensionsTest
     /// </summary>
     /// <param name="contentType">Content-Type</param>
     [Test]
-    [DisplayName($"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > Content-Typeが $contentType の場合、falseを返す。")]
+    [DisplayName(
+        $"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > Content-Typeが $contentType の場合、falseを返す。"
+    )]
     [Arguments("text/plain")]
     [Arguments("applicaton/xml")]
     [Arguments("application/x-www-form-urlencoded")]
-    public async Task When_ContentType_Is_Not_ApplicationJson_IsKaonaviWebhookRequest_Returns_False(string contentType)
+    public async Task When_ContentType_Is_Not_ApplicationJson_IsKaonaviWebhookRequest_Returns_False(
+        string contentType
+    )
     {
         // Arrange
         var request = HttpRequest.Mock();
         request.ContentType.Returns(contentType);
 
         // Act - Assert
-        await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token")).IsFalse();
+        await Assert
+            .That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token"))
+            .IsFalse();
     }
 
     /// <summary>
     /// User-Agentが"Kaonavi-Webhook"を含まない場合、<see cref="HttpRequestExtensions.IsKaonaviWebhookRequest"/>は<see langword="false"/>を返す。
     /// </summary>
     [Test]
-    [DisplayName($"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > User-Agent が $userAgent の場合、falseを返す。")]
+    [DisplayName(
+        $"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > User-Agent が $userAgent の場合、falseを返す。"
+    )]
     [Arguments(null)]
     [Arguments("Mozilla")]
-    public async Task When_UserAgent_Is_Not_KaonaviWebhook_IsKaonaviWebhookRequest_Returns_False(string? userAgent)
+    public async Task When_UserAgent_Is_Not_KaonaviWebhook_IsKaonaviWebhookRequest_Returns_False(
+        string? userAgent
+    )
     {
         // Arrange
         var request = HttpRequest.Mock();
@@ -45,14 +55,18 @@ public sealed class HttpRequestExtensionsTest
         request.Headers.Returns(headers.Object);
 
         // Act - Assert
-        await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token")).IsFalse();
+        await Assert
+            .That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token"))
+            .IsFalse();
     }
 
     /// <summary>
     /// Headerに"Kaonavi-Token"が含まれない場合、<see cref="HttpRequestExtensions.IsKaonaviWebhookRequest"/>は<see langword="false"/>を返す。
     /// </summary>
     [Test]
-    [DisplayName($"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > Header に Kaonavi-Token が含まれない場合、falseを返す。")]
+    [DisplayName(
+        $"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > Header に Kaonavi-Token が含まれない場合、falseを返す。"
+    )]
     public async Task When_Header_Does_Not_Contain_KaonaviToken_IsKaonaviWebhookRequest_Returns_False()
     {
         // Arrange
@@ -64,14 +78,18 @@ public sealed class HttpRequestExtensionsTest
         request.Headers.Returns(headers.Object);
 
         // Act - Assert
-        await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token")).IsFalse();
+        await Assert
+            .That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token"))
+            .IsFalse();
     }
 
     /// <summary>
     /// Headerの"Kaonavi-Token"に指定したトークンが含まれない場合、<see cref="HttpRequestExtensions.IsKaonaviWebhookRequest"/>は<see langword="false"/>を返す。
     /// </summary>
     [Test]
-    [DisplayName($"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > Header の Kaonavi-Token に指定したトークンが含まれない場合、falseを返す。")]
+    [DisplayName(
+        $"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > Header の Kaonavi-Token に指定したトークンが含まれない場合、falseを返す。"
+    )]
     public async Task When_Header_Does_Not_Contain_Specified_Token_IsKaonaviWebhookRequest_Returns_False()
     {
         // Arrange
@@ -83,14 +101,18 @@ public sealed class HttpRequestExtensionsTest
         request.Headers.Returns(headers.Object);
 
         // Act - Assert
-        await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token")).IsFalse();
+        await Assert
+            .That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, "token"))
+            .IsFalse();
     }
 
     /// <summary>
     /// Headerの"Kaonavi-Token"に指定したトークンが含まれる場合、<see cref="HttpRequestExtensions.IsKaonaviWebhookRequest"/>は<see langword="true"/>を返す。
     /// </summary>
     [Test]
-    [DisplayName($"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > Header の Kaonavi-Token に指定したトークンが含まれる場合、trueを返す。")]
+    [DisplayName(
+        $"{nameof(HttpRequestExtensions.IsKaonaviWebhookRequest)}(request) > Header の Kaonavi-Token に指定したトークンが含まれる場合、trueを返す。"
+    )]
     public async Task When_Header_Contains_Specified_Token_IsKaonaviWebhookRequest_Returns_True()
     {
         // Arrange
@@ -103,6 +125,8 @@ public sealed class HttpRequestExtensionsTest
         request.Headers.Returns(headers.Object);
 
         // Act - Assert
-        await Assert.That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, token)).IsTrue();
+        await Assert
+            .That(HttpRequestExtensions.IsKaonaviWebhookRequest(request.Object, token))
+            .IsTrue();
     }
 }

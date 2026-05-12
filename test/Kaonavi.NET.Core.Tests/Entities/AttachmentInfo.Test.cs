@@ -15,7 +15,8 @@ public sealed class AttachmentInfoTest
     {
         // Arrange
         // lang=json,strict
-        var json = """
+        var json =
+            """
         {
           "code": "A0001",
           "records": [
@@ -37,19 +38,32 @@ public sealed class AttachmentInfoTest
         var attachment = JsonSerializer.Deserialize(json, JsonContext.Default.AttachmentInfo);
 
         // Assert
-        await Assert.That(attachment).IsNotNull()
+        await Assert
+            .That(attachment)
+            .IsNotNull()
             .And.Member(static o => o.Code, static o => o.IsEqualTo<string>("A0001"))
-            .And.Member(static o => o.Records, static o => o.IsSequenceEqualTo((AttachmentInfoRecord[])[
-                new(
-                    "A0001.jpg",
-                    new("https://example.com/image/xxxx.jpg?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID"),
-                    DateTime.Parse("2020-10-01 01:23:45")
-                ),
-                new(
-                    "A0001.txt",
-                    new("https://example.com/image/xxxx.txt?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID"),
-                    DateTime.Parse("2020-10-01 01:23:45")
-                )
-            ]));
+            .And.Member(
+                static o => o.Records,
+                static o =>
+                    o.IsSequenceEqualTo(
+                        (AttachmentInfoRecord[])
+                            [
+                                new(
+                                    "A0001.jpg",
+                                    new(
+                                        "https://example.com/image/xxxx.jpg?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID"
+                                    ),
+                                    DateTime.Parse("2020-10-01 01:23:45")
+                                ),
+                                new(
+                                    "A0001.txt",
+                                    new(
+                                        "https://example.com/image/xxxx.txt?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID"
+                                    ),
+                                    DateTime.Parse("2020-10-01 01:23:45")
+                                ),
+                            ]
+                    )
+            );
     }
 }

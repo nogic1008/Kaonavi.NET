@@ -11,7 +11,8 @@ namespace Kaonavi.Net.Entities;
 [method: JsonConstructor]
 public record SheetData(
     string Code,
-    [property: JsonConverter(typeof(SheetData.SheetRecordConverter))] params IReadOnlyList<IReadOnlyList<CustomFieldValue>> Records
+    [property: JsonConverter(typeof(SheetData.SheetRecordConverter))]
+        params IReadOnlyList<IReadOnlyList<CustomFieldValue>> Records
 )
 {
     /// <summary>
@@ -22,23 +23,42 @@ public record SheetData(
     public SheetData(string code, IReadOnlyList<CustomFieldValue> customFields)
         : this(code, [customFields]) { }
 
-    internal class SheetRecordConverter : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>
+    internal class SheetRecordConverter
+        : JsonConverter<IReadOnlyList<IReadOnlyList<CustomFieldValue>>>
     {
         private static ReadOnlySpan<byte> PropertyName => "custom_fields"u8;
 
-        public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-            => JsonSerializer.Deserialize(ref reader, Context.Default.IReadOnlyListJsonElement)!
-                .Select(d => JsonSerializer.Deserialize(d.GetProperty(PropertyName), Context.Default.IReadOnlyListCustomFieldValue)!)
+        public override IReadOnlyList<IReadOnlyList<CustomFieldValue>> Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
+        ) =>
+            JsonSerializer
+                .Deserialize(ref reader, Context.Default.IReadOnlyListJsonElement)!
+                .Select(d =>
+                    JsonSerializer.Deserialize(
+                        d.GetProperty(PropertyName),
+                        Context.Default.IReadOnlyListCustomFieldValue
+                    )!
+                )
                 .ToArray();
 
-        public override void Write(Utf8JsonWriter writer, IReadOnlyList<IReadOnlyList<CustomFieldValue>> value, JsonSerializerOptions options)
+        public override void Write(
+            Utf8JsonWriter writer,
+            IReadOnlyList<IReadOnlyList<CustomFieldValue>> value,
+            JsonSerializerOptions options
+        )
         {
             writer.WriteStartArray();
             foreach (var record in value)
             {
                 writer.WriteStartObject();
                 writer.WritePropertyName(PropertyName);
-                JsonSerializer.Serialize(writer, record, Context.Default.IReadOnlyListCustomFieldValue);
+                JsonSerializer.Serialize(
+                    writer,
+                    record,
+                    Context.Default.IReadOnlyListCustomFieldValue
+                );
                 writer.WriteEndObject();
             }
             writer.WriteEndArray();

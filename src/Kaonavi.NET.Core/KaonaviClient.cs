@@ -36,10 +36,14 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
 
     #region Properties
     private const string TokenHeader = "Kaonavi-Token";
+
     /// <inheritdoc/>
     public string? AccessToken
     {
-        get => _client.DefaultRequestHeaders.TryGetValues(TokenHeader, out var values) ? values.First() : null;
+        get =>
+            _client.DefaultRequestHeaders.TryGetValues(TokenHeader, out var values)
+                ? values.First()
+                : null;
         set
         {
             _ = _client.DefaultRequestHeaders.Remove(TokenHeader);
@@ -49,6 +53,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     }
 
     private const string DryRunHeader = "Dry-Run";
+
     /// <summary>
     /// dryrunモードの動作有無を取得または設定します。
     /// <c>true</c>に設定することで、データベースの操作を行わず、リクエストの内容が適切であるかを検証することが出来ます。
@@ -56,7 +61,9 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// </summary>
     public bool UseDryRun
     {
-        get => _client.DefaultRequestHeaders.TryGetValues(DryRunHeader, out var values) && values.First() == "1";
+        get =>
+            _client.DefaultRequestHeaders.TryGetValues(DryRunHeader, out var values)
+            && values.First() == "1";
         set
         {
             _ = _client.DefaultRequestHeaders.Remove(DryRunHeader);
@@ -70,6 +77,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// .NETにはConcurrentなSetが存在しないため、値を使用しない<see cref="ConcurrentDictionary{TKey, TValue}"/>で代替しています。
     /// </summary>
     private readonly ConcurrentDictionary<ITimer, byte> _requestTimers = new();
+
     /// <summary>更新リクエストの呼び出し制限管理</summary>
     private readonly SemaphoreSlim _semaphore = new(UpdateRequestLimit, UpdateRequestLimit);
 
@@ -89,7 +97,8 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <exception cref="ArgumentNullException">
     /// <paramref name="client"/>, <paramref name="consumerKey"/>または<paramref name="consumerSecret"/>が<see langword="null"/>の場合にスローされます。
     /// </exception>
-    public KaonaviClient(HttpClient client, string consumerKey, string consumerSecret) : this(client, consumerKey, consumerSecret, TimeProvider.System) { }
+    public KaonaviClient(HttpClient client, string consumerKey, string consumerSecret)
+        : this(client, consumerKey, consumerSecret, TimeProvider.System) { }
 
     /// <inheritdoc cref="KaonaviClient(HttpClient, string, string)"/>
     /// <param name="client"><inheritdoc cref="KaonaviClient(HttpClient, string, string)" path="/param[@name='client']"/></param>
@@ -100,7 +109,12 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <paramref name="client"/>, <paramref name="consumerKey"/>, <paramref name="consumerSecret"/>または<paramref name="timeProvider"/>が<see langword="null"/>の場合にスローされます。
     /// </exception>
     /// <remarks>このコンストラクターはテストプロジェクト向けに提供されています。</remarks>
-    internal KaonaviClient(HttpClient client, string consumerKey, string consumerSecret, TimeProvider timeProvider)
+    internal KaonaviClient(
+        HttpClient client,
+        string consumerKey,
+        string consumerSecret,
+        TimeProvider timeProvider
+    )
     {
         ArgumentNullException.ThrowIfNull(client);
         ArgumentNullException.ThrowIfNull(consumerKey);
@@ -151,13 +165,18 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
 
         var content = new FormUrlEncodedContent([new("grant_type", "client_credentials")]);
-        _client.DefaultRequestHeaders.Authorization = new("Basic", Convert.ToBase64String(_basicCredentials));
+        _client.DefaultRequestHeaders.Authorization = new(
+            "Basic",
+            Convert.ToBase64String(_basicCredentials)
+        );
 
-        var response = await _client.PostAsync("token", content, cancellationToken).ConfigureAwait(false);
+        var response = await _client
+            .PostAsync("token", content, cancellationToken)
+            .ConfigureAwait(false);
         await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
 
-        var token = await response.Content
-            .ReadFromJsonAsync(Context.Default.Token, cancellationToken)
+        var token = await response
+            .Content.ReadFromJsonAsync(Context.Default.Token, cancellationToken)
             .ConfigureAwait(false);
         _client.DefaultRequestHeaders.Authorization = null;
         return token!;
@@ -165,8 +184,10 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
 
     /// <summary>APIコール前に必要な認証を行います。</summary>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-    private async ValueTask FetchTokenAsync(CancellationToken cancellationToken)
-        => AccessToken ??= (await AuthenticateAsync(cancellationToken).ConfigureAwait(false)).AccessToken;
+    private async ValueTask FetchTokenAsync(CancellationToken cancellationToken) =>
+        AccessToken ??= (
+            await AuthenticateAsync(cancellationToken).ConfigureAwait(false)
+        ).AccessToken;
 
     /// <summary>
     /// APIを呼び出します。
@@ -175,12 +196,17 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
     /// <inheritdoc cref="ValidateApiResponseAsync" path="/exception"/>
-    private async ValueTask<HttpResponseMessage> CallApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    private async ValueTask<HttpResponseMessage> CallApiAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken
+    )
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
 
         await FetchTokenAsync(cancellationToken).ConfigureAwait(false);
-        var response = await _client.SendAsync(request, cancellationToken: cancellationToken).ConfigureAwait(false);
+        var response = await _client
+            .SendAsync(request, cancellationToken: cancellationToken)
+            .ConfigureAwait(false);
         await ValidateApiResponseAsync(response, cancellationToken).ConfigureAwait(false);
         return response;
     }
@@ -193,10 +219,18 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <param name="typeInfo">レスポンスをJSONに変換するためのメタ情報</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
-    private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
+    private async ValueTask<T> CallApiAsync<T>(
+        HttpRequestMessage request,
+        JsonTypeInfo<T> typeInfo,
+        CancellationToken cancellationToken
+    )
     {
         var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
-        return (await response.Content.ReadFromJsonAsync(typeInfo, cancellationToken).ConfigureAwait(false))!;
+        return (
+            await response
+                .Content.ReadFromJsonAsync(typeInfo, cancellationToken)
+                .ConfigureAwait(false)
+        )!;
     }
 
     /// <summary>
@@ -208,10 +242,17 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <param name="typeInfo">レスポンスをJSONに変換するためのメタ情報</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
-    private async ValueTask<T> CallApiAsync<T>(HttpRequestMessage request, string propertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
+    private async ValueTask<T> CallApiAsync<T>(
+        HttpRequestMessage request,
+        string propertyName,
+        JsonTypeInfo<T> typeInfo,
+        CancellationToken cancellationToken
+    )
     {
         var response = await CallApiAsync(request, cancellationToken).ConfigureAwait(false);
-        var json = await response.Content.ReadFromJsonAsync(Context.Default.JsonElement, cancellationToken).ConfigureAwait(false);
+        var json = await response
+            .Content.ReadFromJsonAsync(Context.Default.JsonElement, cancellationToken)
+            .ConfigureAwait(false);
         return JsonSerializer.Deserialize(json.GetProperty(propertyName), typeInfo)!;
     }
 
@@ -228,7 +269,14 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
     /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
-    private ValueTask<int> CallTaskApiAsync<T>(HttpMethod method, string uri, T payload, ReadOnlySpan<byte> utf8PropertyName, JsonTypeInfo<T> typeInfo, CancellationToken cancellationToken)
+    private ValueTask<int> CallTaskApiAsync<T>(
+        HttpMethod method,
+        string uri,
+        T payload,
+        ReadOnlySpan<byte> utf8PropertyName,
+        JsonTypeInfo<T> typeInfo,
+        CancellationToken cancellationToken
+    )
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
 
@@ -240,13 +288,16 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         writer.WriteEndObject();
         writer.Flush();
 
-        return CallRequestLimitApiAsync(new(method, uri)
-        {
-            Content = new ReadOnlyMemoryContent(buffer.WrittenMemory)
+        return CallRequestLimitApiAsync(
+            new(method, uri)
             {
-                Headers = { ContentType = new("application/json") }
-            }
-        }, cancellationToken);
+                Content = new ReadOnlyMemoryContent(buffer.WrittenMemory)
+                {
+                    Headers = { ContentType = new("application/json") },
+                },
+            },
+            cancellationToken
+        );
     }
 
     /// <summary>
@@ -257,16 +308,29 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <param name="request">APIに対するリクエスト</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-    private async ValueTask<int> CallRequestLimitApiAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    private async ValueTask<int> CallRequestLimitApiAsync(
+        HttpRequestMessage request,
+        CancellationToken cancellationToken
+    )
     {
         await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
         ITimer? timer = null;
         try
         {
-            int taskId = (await CallApiAsync(request, Context.Default.JsonElement, cancellationToken).ConfigureAwait(false)).GetProperty("task_id"u8).GetInt32();
+            int taskId = (
+                await CallApiAsync(request, Context.Default.JsonElement, cancellationToken)
+                    .ConfigureAwait(false)
+            )
+                .GetProperty("task_id"u8)
+                .GetInt32();
 
-            timer = _timeProvider.CreateTimer(OnFinished, null, TimeSpan.FromSeconds(WaitSeconds), Timeout.InfiniteTimeSpan);
+            timer = _timeProvider.CreateTimer(
+                OnFinished,
+                null,
+                TimeSpan.FromSeconds(WaitSeconds),
+                Timeout.InfiniteTimeSpan
+            );
             _ = _requestTimers.TryAdd(timer, 0);
             return taskId;
         }
@@ -296,7 +360,10 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <exception cref="ApplicationException">
     /// APIからのHTTPステータスコードが200-299番でない場合にスローされます。
     /// </exception>
-    private static async ValueTask ValidateApiResponseAsync(HttpResponseMessage response, CancellationToken cancellationToken)
+    private static async ValueTask ValidateApiResponseAsync(
+        HttpResponseMessage response,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
@@ -304,10 +371,24 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
         }
         catch (HttpRequestException ex)
         {
-            string errorMessage = response.Content.Headers.ContentType?.MediaType == "application/json"
-                // { "errors": ["エラーメッセージ1", "エラーメッセージ2",...] }
-                ? string.Join("\n", (await response.Content.ReadFromJsonAsync(Context.Default.JsonElement, cancellationToken)).GetProperty("errors"u8).EnumerateArray().Select(e => e.GetString()))
-                : await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            string errorMessage =
+                response.Content.Headers.ContentType?.MediaType == "application/json"
+                    // { "errors": ["エラーメッセージ1", "エラーメッセージ2",...] }
+                    ? string.Join(
+                        "\n",
+                        (
+                            await response.Content.ReadFromJsonAsync(
+                                Context.Default.JsonElement,
+                                cancellationToken
+                            )
+                        )
+                            .GetProperty("errors"u8)
+                            .EnumerateArray()
+                            .Select(e => e.GetString())
+                    )
+                    : await response
+                        .Content.ReadAsStringAsync(cancellationToken)
+                        .ConfigureAwait(false);
             throw new ApplicationException(errorMessage, ex);
         }
     }

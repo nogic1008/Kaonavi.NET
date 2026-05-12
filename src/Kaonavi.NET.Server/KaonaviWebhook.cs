@@ -11,7 +11,8 @@ namespace Kaonavi.Net.Server;
 /// <param name="MemberData">変更のあったメンバー</param>
 public record KaonaviWebhook(
     [property: JsonPropertyName("event")] WebhookEvent Event,
-    [property: JsonConverter(typeof(DateTimeConverter)), JsonPropertyName("event_time")] DateTime EventTime,
+    [property: JsonConverter(typeof(DateTimeConverter)), JsonPropertyName("event_time")]
+        DateTime EventTime,
     [property: JsonPropertyName("member_data")] IReadOnlyList<Member> MemberData
 );
 

@@ -17,7 +17,9 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/Webhook/paths/~1webhook/get"/>
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<IReadOnlyList<WebhookConfig>> ListAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<WebhookConfig>> ListAsync(
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// <inheritdoc cref="WebhookConfig" path="/summary"/>を登録します。
@@ -25,7 +27,10 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
         /// </summary>
         /// <param name="payload">リクエスト</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<WebhookConfig> CreateAsync(WebhookConfigPayload payload, CancellationToken cancellationToken = default);
+        public ValueTask<WebhookConfig> CreateAsync(
+            WebhookConfigPayload payload,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// <see cref="WebhookConfig.Id"/>と一致する<inheritdoc cref="WebhookConfig" path="/summary"/>情報を更新します。
@@ -33,7 +38,10 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
         /// </summary>
         /// <param name="payload">リクエスト</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<WebhookConfig> UpdateAsync(WebhookConfig payload, CancellationToken cancellationToken = default);
+        public ValueTask<WebhookConfig> UpdateAsync(
+            WebhookConfig payload,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="WebhookConfig" path="/summary"/>を削除します。
@@ -48,28 +56,50 @@ public partial class KaonaviClient : KaonaviClient.IWebhook
     public IWebhook Webhook => this;
 
     /// <inheritdoc/>
-    ValueTask<IReadOnlyList<WebhookConfig>> IWebhook.ListAsync(CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, "webhook"), "webhook_data", Context.Default.IReadOnlyListWebhookConfig, cancellationToken);
+    ValueTask<IReadOnlyList<WebhookConfig>> IWebhook.ListAsync(
+        CancellationToken cancellationToken
+    ) =>
+        CallApiAsync(
+            new(HttpMethod.Get, "webhook"),
+            "webhook_data",
+            Context.Default.IReadOnlyListWebhookConfig,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
-    ValueTask<WebhookConfig> IWebhook.CreateAsync(WebhookConfigPayload payload, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Post, "webhook")
-        {
-            Content = JsonContent.Create(payload, Context.Default.WebhookConfigPayload)
-        }, Context.Default.WebhookConfig, cancellationToken);
+    ValueTask<WebhookConfig> IWebhook.CreateAsync(
+        WebhookConfigPayload payload,
+        CancellationToken cancellationToken
+    ) =>
+        CallApiAsync(
+            new(HttpMethod.Post, "webhook")
+            {
+                Content = JsonContent.Create(payload, Context.Default.WebhookConfigPayload),
+            },
+            Context.Default.WebhookConfig,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
-    ValueTask<WebhookConfig> IWebhook.UpdateAsync(WebhookConfig payload, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Patch, $"webhook/{payload.Id}")
-        {
-            Content = JsonContent.Create(payload, Context.Default.WebhookConfig)
-        }, Context.Default.WebhookConfig, cancellationToken);
+    ValueTask<WebhookConfig> IWebhook.UpdateAsync(
+        WebhookConfig payload,
+        CancellationToken cancellationToken
+    ) =>
+        CallApiAsync(
+            new(HttpMethod.Patch, $"webhook/{payload.Id}")
+            {
+                Content = JsonContent.Create(payload, Context.Default.WebhookConfig),
+            },
+            Context.Default.WebhookConfig,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     async ValueTask IWebhook.DeleteAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
-        await CallApiAsync(new(HttpMethod.Delete, $"webhook/{id:D}"), cancellationToken).ConfigureAwait(false);
+        await CallApiAsync(new(HttpMethod.Delete, $"webhook/{id:D}"), cancellationToken)
+            .ConfigureAwait(false);
     }
 }

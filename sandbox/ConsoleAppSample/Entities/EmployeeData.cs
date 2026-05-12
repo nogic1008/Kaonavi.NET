@@ -32,25 +32,25 @@ public record EmployeeData(
     /// カオナビのメンバー情報より、EmployeeDataのインスタンスを生成します。
     /// </summary>
     /// <param name="memberData">メンバー情報</param>
-    public EmployeeData(MemberData memberData) : this(
-        memberData.Code,
-        memberData.Name ?? "",
-        memberData.NameKana ?? "",
-        memberData.Department?.Code ?? "",
-        memberData.Mail ?? "",
-        memberData.Gender ?? "",
-        memberData.Birthday.GetValueOrDefault(),
-        memberData.CustomFields?.FirstOrDefault(c => c.Id == 101)?.Value ?? "",
-        memberData.EnteredDate.GetValueOrDefault(),
-        memberData.RetiredDate
-    )
-    { }
+    public EmployeeData(MemberData memberData)
+        : this(
+            memberData.Code,
+            memberData.Name ?? "",
+            memberData.NameKana ?? "",
+            memberData.Department?.Code ?? "",
+            memberData.Mail ?? "",
+            memberData.Gender ?? "",
+            memberData.Birthday.GetValueOrDefault(),
+            memberData.CustomFields?.FirstOrDefault(c => c.Id == 101)?.Value ?? "",
+            memberData.EnteredDate.GetValueOrDefault(),
+            memberData.RetiredDate
+        ) { }
 
     /// <summary>
     /// このインスタンスと等価な<see cref="MemberData"/>を生成します。
     /// </summary>
-    public MemberData ToMemberData()
-        => new(
+    public MemberData ToMemberData() =>
+        new(
             Id,
             Name,
             NameKana,

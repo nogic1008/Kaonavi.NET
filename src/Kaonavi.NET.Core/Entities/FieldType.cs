@@ -7,17 +7,30 @@ namespace Kaonavi.Net.Entities;
 public enum FieldType
 {
     /// <summary>文字列</summary>
-    [JsonStringEnumMemberName("string")] String,
+    [JsonStringEnumMemberName("string")]
+    String,
+
     /// <summary>数値</summary>
-    [JsonStringEnumMemberName("number")] Number,
+    [JsonStringEnumMemberName("number")]
+    Number,
+
     /// <summary>日付・年月</summary>
-    [JsonStringEnumMemberName("date")] Date,
+    [JsonStringEnumMemberName("date")]
+    Date,
+
     /// <summary>リスト項目</summary>
-    [JsonStringEnumMemberName("enum")] Enum,
+    [JsonStringEnumMemberName("enum")]
+    Enum,
+
     /// <summary>計算式パーツ</summary>
-    [JsonStringEnumMemberName("calc")] Calc,
+    [JsonStringEnumMemberName("calc")]
+    Calc,
+
     /// <summary><see cref="MemberDepartment"/></summary>
-    [EditorBrowsable(EditorBrowsableState.Never), JsonStringEnumMemberName("department")] Department,
+    [EditorBrowsable(EditorBrowsableState.Never), JsonStringEnumMemberName("department")]
+    Department,
+
     /// <summary><see cref="MemberDepartment"/>の配列</summary>
-    [EditorBrowsable(EditorBrowsableState.Never), JsonStringEnumMemberName("department[]")] DepartmentArray,
+    [EditorBrowsable(EditorBrowsableState.Never), JsonStringEnumMemberName("department[]")]
+    DepartmentArray,
 }

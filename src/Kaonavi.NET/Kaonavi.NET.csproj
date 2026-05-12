@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
     <!-- This project is meta package -->
@@ -19,5 +18,4 @@
     <ProjectReference Include="../Kaonavi.NET.Core/Kaonavi.NET.Core.csproj" />
     <ProjectReference Include="../Kaonavi.NET.Generator/Kaonavi.NET.Generator.csproj" />
   </ItemGroup>
-
 </Project>

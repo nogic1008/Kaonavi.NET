@@ -25,25 +25,30 @@ public partial class SheetDataGenerator : IIncrementalGenerator
                 return (TypeDeclarationSyntax)context.TargetNode;
             }
         );
-        var parseOptions = context.ParseOptionsProvider.Select(static (parseOptions, token) =>
-        {
-            token.ThrowIfCancellationRequested();
-            return ((CSharpParseOptions)parseOptions).LanguageVersion;
-        });
+        var parseOptions = context.ParseOptionsProvider.Select(
+            static (parseOptions, token) =>
+            {
+                token.ThrowIfCancellationRequested();
+                return ((CSharpParseOptions)parseOptions).LanguageVersion;
+            }
+        );
 
         var source = typeDeclarations
             .Combine(context.CompilationProvider)
             .WithComparer(Comparer.Instance)
             .Combine(parseOptions);
 
-        context.RegisterSourceOutput(source, static (context, source) =>
-        {
-            var token = context.CancellationToken;
-            token.ThrowIfCancellationRequested();
+        context.RegisterSourceOutput(
+            source,
+            static (context, source) =>
+            {
+                var token = context.CancellationToken;
+                token.ThrowIfCancellationRequested();
 
-            var ((syntax, compilation), languageVersion) = source;
-            Emit(syntax, compilation, languageVersion, context);
-        });
+                var ((syntax, compilation), languageVersion) = source;
+                Emit(syntax, compilation, languageVersion, context);
+            }
+        );
     }
 
     /// <inheritdoc/>
@@ -51,8 +56,13 @@ public partial class SheetDataGenerator : IIncrementalGenerator
     private class Comparer : IEqualityComparer<(TypeDeclarationSyntax, Compilation)>
     {
         public static readonly Comparer Instance = new();
+
         /// <inheritdoc/>
-        public bool Equals((TypeDeclarationSyntax, Compilation) x, (TypeDeclarationSyntax, Compilation) y) => x.Item1.Equals(y.Item1);
+        public bool Equals(
+            (TypeDeclarationSyntax, Compilation) x,
+            (TypeDeclarationSyntax, Compilation) y
+        ) => x.Item1.Equals(y.Item1);
+
         /// <inheritdoc/>
         public int GetHashCode((TypeDeclarationSyntax, Compilation) obj) => obj.Item1.GetHashCode();
     }

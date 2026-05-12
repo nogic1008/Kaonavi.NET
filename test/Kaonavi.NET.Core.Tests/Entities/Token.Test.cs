@@ -17,7 +17,8 @@ public sealed class TokenTest
     {
         // Arrange
         /*lang=json,strict*/
-        var json = """
+        var json =
+            """
         {
           "access_token": "25396f58-10f8-c228-7f0f-818b1d666b2e",
           "token_type": "Bearer",
@@ -29,8 +30,13 @@ public sealed class TokenTest
         var token = JsonSerializer.Deserialize(json, JsonContext.Default.Token);
 
         // Assert
-        await Assert.That(token).IsNotNull()
-            .And.Member(static o => o.AccessToken, static o => o.IsEqualTo<string>("25396f58-10f8-c228-7f0f-818b1d666b2e"))
+        await Assert
+            .That(token)
+            .IsNotNull()
+            .And.Member(
+                static o => o.AccessToken,
+                static o => o.IsEqualTo<string>("25396f58-10f8-c228-7f0f-818b1d666b2e")
+            )
             .And.Member(static o => o.TokenType, static o => o.IsEqualTo<string>("Bearer"))
             .And.Member(static o => o.ExpiresIn, static o => o.IsEqualTo(3600));
     }

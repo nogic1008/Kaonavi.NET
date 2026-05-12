@@ -15,10 +15,15 @@ public sealed partial class KaonaviClientTest
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IAdvancedPermission.ListAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}($type) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}($type) > {nameof(ArgumentOutOfRangeException)} をスローする。"
+        )]
         [Arguments((AdvancedType)10)]
         [Arguments((AdvancedType)(-1))]
-        public async Task When_Type_IsInvalid_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(AdvancedType type, CancellationToken cancellationToken = default)
+        public async Task When_Type_IsInvalid_AdvancedPermission_ListAsync_Throws_ArgumentOutOfRangeException(
+            AdvancedType type,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -26,8 +31,10 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client);
-            await Assert.That(async () => await sut.AdvancedPermission.ListAsync(type, cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName(nameof(type));
+            await Assert
+                .That(async () => await sut.AdvancedPermission.ListAsync(type, cancellationToken))
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName(nameof(type));
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -38,45 +45,51 @@ public sealed partial class KaonaviClientTest
         /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IAdvancedPermission.ListAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.$type) > GET $endpoint をコールする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ListAsync)}({nameof(AdvancedType)}.$type) > GET $endpoint をコールする。"
+        )]
         [Arguments(AdvancedType.Member, "/advanced_permissions/member")]
         [Arguments(AdvancedType.Department, "/advanced_permissions/department")]
-        public async Task AdvancedPermission_ListAsync_Calls_GetApi(AdvancedType type, string endpoint, CancellationToken cancellationToken = default)
+        public async Task AdvancedPermission_ListAsync_Calls_GetApi(
+            AdvancedType type,
+            string endpoint,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "advanced_permission_data": [
                 {
-                  "user_id": 1,
-                  "add_codes": [
-                    "0001",
-                    "0002",
-                    "0003"
-                  ],
-                  "exclusion_codes": [
-                    "0001",
-                    "0002",
-                    "0003"
-                  ]
-                },
-                {
-                  "user_id": 2,
-                  "add_codes": [
-                    "0001",
-                    "0002",
-                    "0003"
-                  ],
-                  "exclusion_codes": [
-                    "0001",
-                    "0002",
-                    "0003"
+                  "advanced_permission_data": [
+                    {
+                      "user_id": 1,
+                      "add_codes": [
+                        "0001",
+                        "0002",
+                        "0003"
+                      ],
+                      "exclusion_codes": [
+                        "0001",
+                        "0002",
+                        "0003"
+                      ]
+                    },
+                    {
+                      "user_id": 2,
+                      "add_codes": [
+                        "0001",
+                        "0002",
+                        "0003"
+                      ],
+                      "exclusion_codes": [
+                        "0001",
+                        "0002",
+                        "0003"
+                      ]
+                    }
                   ]
                 }
-              ]
-            }
-            """;
+                """;
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet(endpoint).RespondWithJson(responseJson);
 
@@ -95,10 +108,15 @@ public sealed partial class KaonaviClientTest
         /// <param name="type"><inheritdoc cref="AdvancedType" path="/summary"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IAdvancedPermission.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Put))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}($type, payload) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}($type, payload) > {nameof(ArgumentOutOfRangeException)} をスローする。"
+        )]
         [Arguments((AdvancedType)10)]
         [Arguments((AdvancedType)(-1))]
-        public async Task When_Type_IsInvalid_AdvancedPermission_ReplaceAsync_Throws_ArgumentOutOfRangeException(AdvancedType type, CancellationToken cancellationToken = default)
+        public async Task When_Type_IsInvalid_AdvancedPermission_ReplaceAsync_Throws_ArgumentOutOfRangeException(
+            AdvancedType type,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -106,8 +124,12 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client);
-            await Assert.That(async () => await sut.AdvancedPermission.ReplaceAsync(type, [], cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName(nameof(type));
+            await Assert
+                .That(async () =>
+                    await sut.AdvancedPermission.ReplaceAsync(type, [], cancellationToken)
+                )
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName(nameof(type));
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -118,10 +140,16 @@ public sealed partial class KaonaviClientTest
         /// <param name="endpoint">呼ばれるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.IAdvancedPermission.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Put))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.$type, payload) > PUT $endpoint をコールする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.AdvancedPermission)}.{nameof(KaonaviClient.AdvancedPermission.ReplaceAsync)}({nameof(AdvancedType)}.$type, payload) > PUT $endpoint をコールする。"
+        )]
         [Arguments(AdvancedType.Member, "/advanced_permissions/member")]
         [Arguments(AdvancedType.Department, "/advanced_permissions/department")]
-        public async Task AdvancedPermission_ReplaceAsync_Calls_PutApi(AdvancedType type, string endpoint, CancellationToken cancellationToken = default)
+        public async Task AdvancedPermission_ReplaceAsync_Calls_PutApi(
+            AdvancedType type,
+            string endpoint,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -129,23 +157,27 @@ public sealed partial class KaonaviClientTest
 
             // Act
             var sut = CreateSut(client, "token");
-            int taskId = await sut.AdvancedPermission.ReplaceAsync(type,
-            [
-                new(1, ["1"], []),
-                new(2, ["2"], ["1", "3"]),
-            ], cancellationToken);
+            int taskId = await sut.AdvancedPermission.ReplaceAsync(
+                type,
+                [new(1, ["1"], []), new(2, ["2"], ["1", "3"])],
+                cancellationToken
+            );
 
             // Assert
             await Assert.That(taskId).IsEqualTo(TaskId);
             client.Handler.Verify(r => r.Method(HttpMethod.Put).Path(endpoint), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsJsonEquals("""
+            await Assert
+                .That(client.Handler.Requests[0].Body)
+                .IsJsonEquals(
+                    """
             {
               "advanced_permission_data": [
                 { "user_id": 1, "add_codes": ["1"], "exclusion_codes": [] },
                 { "user_id": 2, "add_codes": ["2"], "exclusion_codes": ["1", "3"] }
               ]
             }
-            """u8);
+            """u8
+                );
         }
     }
 }

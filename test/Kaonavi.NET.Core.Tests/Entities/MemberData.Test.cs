@@ -9,50 +9,89 @@ namespace Kaonavi.Net.Tests.Entities;
 public sealed class MemberDataTest
 {
     /// <summary><see cref="CanDeserializeJSON"/>のテストデータ</summary>
-    public static IEnumerable<TestDataRow<(string json, string code, string? name, string? nameKana, string? mail, string? enteredDate, string? retiredDate, string? gender, string? birthday, string departmentCode)>> TestData
+    public static IEnumerable<
+        TestDataRow<(
+            string json,
+            string code,
+            string? name,
+            string? nameKana,
+            string? mail,
+            string? enteredDate,
+            string? retiredDate,
+            string? gender,
+            string? birthday,
+            string departmentCode
+        )>
+    > TestData
     {
         get
         {
-            yield return new((/*lang=json,strict*/ """
-            {
-              "code": "A0002",
-              "name": "カオナビ 太郎",
-              "name_kana": "カオナビ タロウ",
-              "mail": "taro@example.com",
-              "entered_date": "2005-09-20",
-              "retired_date": "",
-              "gender": "男性",
-              "birthday": null,
-              "age": 36,
-              "years_of_service": "15年5ヵ月",
-              "department": { "code": "1000", "name": "取締役会", "names": [] },
-              "sub_departments": [],
-              "custom_fields": [
-                { "id":100, "name":"血液型", "values":["A"] }
-              ]
-            }
-            """, "A0002", "カオナビ 太郎", "カオナビ タロウ", "taro@example.com", "2005/09/20", null, "男性", null, "1000"));
-            yield return new((/*lang=json,strict*/ """
-            {
-              "code": "A0001",
-              "name": "カオナビ 花子",
-              "name_kana": "カオナビ ハナコ",
-              "mail": "hanako@example.com",
-              "entered_date": "2013-05-07",
-              "retired_date": "2020-03-31",
-              "gender": "女性",
-              "birthday": "1986-05-16",
-              "department": { "code": "2000", "name": "営業本部 第一営業部 ITグループ", "names": ["営業本部", "第一営業部", "ITグループ"] },
-              "sub_departments": [
-                { "code": "3000", "name": "企画部", "names": ["企画部"] },
-                { "code": "4000", "name": "管理部", "names": ["管理部"] }
-              ],
-              "custom_fields": [
-                { "id": 100, "name": "血液型", "values": ["O"] },
-                { "id": 200, "name": "役職", "values": ["部長", "マネージャー"] }
-              ]
-            }
-            """, "A0001", "カオナビ 花子", "カオナビ ハナコ", "hanako@example.com", "2013/05/07", "2020/03/31", "女性", "1986/05/16", "2000"));
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "code": "A0002",
+                      "name": "カオナビ 太郎",
+                      "name_kana": "カオナビ タロウ",
+                      "mail": "taro@example.com",
+                      "entered_date": "2005-09-20",
+                      "retired_date": "",
+                      "gender": "男性",
+                      "birthday": null,
+                      "age": 36,
+                      "years_of_service": "15年5ヵ月",
+                      "department": { "code": "1000", "name": "取締役会", "names": [] },
+                      "sub_departments": [],
+                      "custom_fields": [
+                        { "id":100, "name":"血液型", "values":["A"] }
+                      ]
+                    }
+                    """,
+                    "A0002",
+                    "カオナビ 太郎",
+                    "カオナビ タロウ",
+                    "taro@example.com",
+                    "2005/09/20",
+                    null,
+                    "男性",
+                    null,
+                    "1000"
+                )
+            );
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "code": "A0001",
+                      "name": "カオナビ 花子",
+                      "name_kana": "カオナビ ハナコ",
+                      "mail": "hanako@example.com",
+                      "entered_date": "2013-05-07",
+                      "retired_date": "2020-03-31",
+                      "gender": "女性",
+                      "birthday": "1986-05-16",
+                      "department": { "code": "2000", "name": "営業本部 第一営業部 ITグループ", "names": ["営業本部", "第一営業部", "ITグループ"] },
+                      "sub_departments": [
+                        { "code": "3000", "name": "企画部", "names": ["企画部"] },
+                        { "code": "4000", "name": "管理部", "names": ["管理部"] }
+                      ],
+                      "custom_fields": [
+                        { "id": 100, "name": "血液型", "values": ["O"] },
+                        { "id": 200, "name": "役職", "values": ["部長", "マネージャー"] }
+                      ]
+                    }
+                    """,
+                    "A0001",
+                    "カオナビ 花子",
+                    "カオナビ ハナコ",
+                    "hanako@example.com",
+                    "2013/05/07",
+                    "2020/03/31",
+                    "女性",
+                    "1986/05/16",
+                    "2000"
+                )
+            );
         }
     }
 
@@ -72,13 +111,26 @@ public sealed class MemberDataTest
     [Test, Category("JSON Deserialize")]
     [DisplayName($"{nameof(MemberData)} > $json からデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
-    public async Task CanDeserializeJSON(string json, string code, string? name, string? nameKana, string? mail, string? enteredDate, string? retiredDate, string? gender, string? birthday, string departmentCode)
+    public async Task CanDeserializeJSON(
+        string json,
+        string code,
+        string? name,
+        string? nameKana,
+        string? mail,
+        string? enteredDate,
+        string? retiredDate,
+        string? gender,
+        string? birthday,
+        string departmentCode
+    )
     {
         // Arrange - Act
         var memberData = JsonSerializer.Deserialize(json, JsonContext.Default.MemberData);
 
         // Assert
-        await Assert.That(memberData).IsNotNull()
+        await Assert
+            .That(memberData)
+            .IsNotNull()
             .And.Member(sut => sut.Code, o => o.IsEqualTo<string>(code))
             .And.Member(sut => sut.Name!, o => o.IsEqualTo<string>(name))
             .And.Member(sut => sut.NameKana!, o => o.IsEqualTo<string>(nameKana))
@@ -92,6 +144,7 @@ public sealed class MemberDataTest
             .And.Member(sut => sut.Department!, o => o.IsNotNull())
             .And.Member(sut => sut.Department!.Code, o => o.IsEqualTo<string>(departmentCode));
 
-        static DateOnly? ParseDateOrNull(string? value) => DateOnly.TryParseExact(value, "yyyy/MM/dd", out var date) ? date : null;
+        static DateOnly? ParseDateOrNull(string? value) =>
+            DateOnly.TryParseExact(value, "yyyy/MM/dd", out var date) ? date : null;
     }
 }

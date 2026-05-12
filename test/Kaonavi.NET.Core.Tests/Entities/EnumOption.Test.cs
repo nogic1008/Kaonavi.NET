@@ -15,7 +15,8 @@ public sealed class EnumOptionTest
     {
         // Arrange
         /*lang=json,strict*/
-        var json = """
+        var json =
+            """
         {
           "sheet_name": "役職情報",
           "id": 10,
@@ -32,10 +33,18 @@ public sealed class EnumOptionTest
         var enumOption = JsonSerializer.Deserialize(json, JsonContext.Default.EnumOption);
 
         // Assert
-        await Assert.That(enumOption).IsNotNull()
+        await Assert
+            .That(enumOption)
+            .IsNotNull()
             .And.Member(static o => o.SheetName, static o => o.IsEqualTo<string>("役職情報"))
             .And.Member(static o => o.Id, static o => o.IsEqualTo(10))
             .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("役職"))
-            .And.Member(static o => o.EnumOptionData, static o => o.IsSequenceEqualTo((EnumOptionData[])[new(1, "社長"), new(2, "部長"), new(3, "課長")]));
+            .And.Member(
+                static o => o.EnumOptionData,
+                static o =>
+                    o.IsSequenceEqualTo(
+                        (EnumOptionData[])[new(1, "社長"), new(2, "部長"), new(3, "課長")]
+                    )
+            );
     }
 }

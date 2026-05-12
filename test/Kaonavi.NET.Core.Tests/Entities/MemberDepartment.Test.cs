@@ -13,25 +13,48 @@ namespace Kaonavi.Net.Tests.Entities;
 public sealed class MemberDepartmentTest
 {
     /// <summary><see cref="CanDeserializeJSON"/>のテストデータ</summary>
-    public static IEnumerable<TestDataRow<(string json, string code, string? name, string[]? names)>> TestData
+    public static IEnumerable<
+        TestDataRow<(string json, string code, string? name, string[]? names)>
+    > TestData
     {
         get
         {
-            yield return new((/*lang=json,strict*/ """{ "code": "1000" }""", "1000", null, null));
-            yield return new((/*lang=json,strict*/ """
-            {
-              "code": "1000",
-              "name":"取締役会",
-              "names": ["取締役会"]
-            }
-            """, "1000", "取締役会", ["取締役会"]));
-            yield return new((/*lang=json,strict*/ """
-            {
-              "code": "2000",
-              "name": "営業本部 第一営業部 ITグループ",
-              "names": ["営業本部", "第一営業部", "ITグループ"]
-            }
-            """, "2000", "営業本部 第一営業部 ITグループ", ["営業本部", "第一営業部", "ITグループ"]));
+            yield return new(
+                ( /*lang=json,strict*/
+                    """{ "code": "1000" }""",
+                    "1000",
+                    null,
+                    null
+                )
+            );
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "code": "1000",
+                      "name":"取締役会",
+                      "names": ["取締役会"]
+                    }
+                    """,
+                    "1000",
+                    "取締役会",
+                    ["取締役会"]
+                )
+            );
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "code": "2000",
+                      "name": "営業本部 第一営業部 ITグループ",
+                      "names": ["営業本部", "第一営業部", "ITグループ"]
+                    }
+                    """,
+                    "2000",
+                    "営業本部 第一営業部 ITグループ",
+                    ["営業本部", "第一営業部", "ITグループ"]
+                )
+            );
         }
     }
 
@@ -45,15 +68,28 @@ public sealed class MemberDepartmentTest
     [Test, Category("JSON Deserialize")]
     [DisplayName($"{nameof(MemberDepartment)} > $json からデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
-    public async Task CanDeserializeJSON([StringSyntax(StringSyntaxAttribute.Json)] string json, string code, string? name, string[]? names)
+    public async Task CanDeserializeJSON(
+        [StringSyntax(StringSyntaxAttribute.Json)] string json,
+        string code,
+        string? name,
+        string[]? names
+    )
     {
         // Arrange - Act
-        var memberDepartment = JsonSerializer.Deserialize(json, JsonContext.Default.MemberDepartment);
+        var memberDepartment = JsonSerializer.Deserialize(
+            json,
+            JsonContext.Default.MemberDepartment
+        );
 
         // Assert
-        await Assert.That(memberDepartment).IsNotNull()
+        await Assert
+            .That(memberDepartment)
+            .IsNotNull()
             .And.Member(sut => sut.Code, o => o.IsEqualTo<string>(code))
             .And.Member(sut => sut.Name, o => name is null ? o.IsNull() : o.IsEqualTo<string>(name))
-            .And.Member(sut => sut.Names!, o => names is null ? o.IsNull() : o.IsSequenceEqualTo(names));
+            .And.Member(
+                sut => sut.Names!,
+                o => names is null ? o.IsNull() : o.IsSequenceEqualTo(names)
+            );
     }
 }
