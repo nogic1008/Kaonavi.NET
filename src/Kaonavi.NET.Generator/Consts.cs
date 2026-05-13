@@ -7,6 +7,7 @@ internal static class Consts
 
     /// <summary>Full Name of SheetSerializable attribute.</summary>
     internal const string SheetSerializable = $"{Namespace}.{nameof(SheetSerializable)}Attribute";
+
     /// <summary>Full Name of CustomField attribute.</summary>
     internal const string CustomField = $"{Namespace}.{nameof(CustomField)}Attribute";
 
@@ -15,7 +16,8 @@ internal static class Consts
 
     internal const string ToCustomFields = "ToCustomFields";
 
-    internal static readonly string[] DisableWarnings = [
+    internal static readonly string[] DisableWarnings =
+    [
         "CS0612",
         "CS0618", // Obsolete member usage
         "CS0108", // hides inherited member
@@ -29,10 +31,17 @@ internal static class Consts
         "CA1050", // Declare types in namespaces.
     ];
 
-    internal static readonly string[] DateObjects = ["System.DateTime", "System.DateTimeOffset", "System.DateOnly"];
+    internal static readonly string[] DateObjects =
+    [
+        "System.DateTime",
+        "System.DateTimeOffset",
+        "System.DateOnly",
+    ];
     internal static readonly string DateFormat = "yyyy-MM-dd";
 
     internal const string CustomFieldValue = $"global::{Namespace}.Entities.CustomFieldValue";
-    internal const string ToCustomFieldsReturnType = $"global::System.Collections.Generic.IReadOnlyList<{CustomFieldValue}>";
-    internal const string InvariantCulture = "global::System.Globalization.CultureInfo.InvariantCulture";
+    internal const string ToCustomFieldsReturnType =
+        $"global::System.Collections.Generic.IReadOnlyList<{CustomFieldValue}>";
+    internal const string InvariantCulture =
+        "global::System.Globalization.CultureInfo.InvariantCulture";
 }

@@ -17,6 +17,7 @@ public enum RecordType
 {
     /// <summary>単一レコードシート</summary>
     Single = 0,
+
     /// <summary>複数レコードシート</summary>
     Multiple = 1,
 }

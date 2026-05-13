@@ -14,57 +14,63 @@ public sealed partial class KaonaviClientTest
         /// <summary>シート情報APIのリクエストPayload</summary>
         /*lang=json,strict*/
         private const string SheetDataJson = """
-        [
-          {
-            "code": "A0002",
-            "records": [
+            [
               {
-                "custom_fields": [
-                  { "id": 1000, "values": ["東京都港区x-x-x"] }
-                ]
-              }
-            ]
-          },
-          {
-            "code": "A0001",
-            "records": [
-              {
-                "custom_fields": [
-                  { "id": 1000, "values": ["大阪府大阪市y番y号"] },
-                  { "id": 1001, "values": ["06-yyyy-yyyy"] }
+                "code": "A0002",
+                "records": [
+                  {
+                    "custom_fields": [
+                      { "id": 1000, "values": ["東京都港区x-x-x"] }
+                    ]
+                  }
                 ]
               },
               {
-                "custom_fields": [
-                  { "id": 1000, "values": ["愛知県名古屋市z丁目z番z号"] },
-                  { "id": 1001, "values": ["052-zzzz-zzzz"] }
+                "code": "A0001",
+                "records": [
+                  {
+                    "custom_fields": [
+                      { "id": 1000, "values": ["大阪府大阪市y番y号"] },
+                      { "id": 1001, "values": ["06-yyyy-yyyy"] }
+                    ]
+                  },
+                  {
+                    "custom_fields": [
+                      { "id": 1000, "values": ["愛知県名古屋市z丁目z番z号"] },
+                      { "id": 1001, "values": ["052-zzzz-zzzz"] }
+                    ]
+                  }
                 ]
               }
             ]
-          }
-        ]
-        """;
+            """;
+
         /// <summary>シート情報APIのリクエストPayload</summary>
-        private static readonly IReadOnlyList<SheetData> _sheetDataPayload = JsonSerializer.Deserialize(SheetDataJson, JsonContext.Default.IReadOnlyListSheetData)!;
+        private static readonly IReadOnlyList<SheetData> _sheetDataPayload =
+            JsonSerializer.Deserialize(SheetDataJson, JsonContext.Default.IReadOnlyListSheetData)!;
 
         /// <summary>シート情報 添付ファイルAPIのリクエストPayload</summary>
         /*lang=json,strict*/
         private const string AttachmentPayloadJson = """
-        [
-          {
-            "code": "A0001",
-            "records": [
+            [
               {
-                "file_name": "sample.txt",
-                "base64_content": "44GT44KM44Gv44K144Oz44OX44Or44OG44Kt44K544OI44Gn44GZ44CC"
+                "code": "A0001",
+                "records": [
+                  {
+                    "file_name": "sample.txt",
+                    "base64_content": "44GT44KM44Gv44K144Oz44OX44Or44OG44Kt44K544OI44Gn44GZ44CC"
+                  }
+                ]
               }
             ]
-          }
-        ]
-        """;
+            """;
+
         /// <summary>シート情報 添付ファイルAPIのリクエストPayload</summary>
-        private static readonly IReadOnlyList<AttachmentPayload> _attachmentPayload
-            = JsonSerializer.Deserialize(AttachmentPayloadJson, JsonContext.Default.IReadOnlyListAttachmentPayload)!;
+        private static readonly IReadOnlyList<AttachmentPayload> _attachmentPayload =
+            JsonSerializer.Deserialize(
+                AttachmentPayloadJson,
+                JsonContext.Default.IReadOnlyListAttachmentPayload
+            )!;
 
         /// <summary>
         /// <inheritdoc cref="KaonaviClient.ISheet.ListAsync" path="/param[@name='id']"/>が<c>0</c>未満のとき、
@@ -72,8 +78,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.ListAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
-        public async Task When_Id_IsNegative_Sheet_ListAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。"
+        )]
+        public async Task When_Id_IsNegative_Sheet_ListAsync_Throws_ArgumentOutOfRangeException(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -81,8 +91,10 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client);
-            await Assert.That(async () => _ = await sut.Sheet.ListAsync(-1, cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert
+                .That(async () => _ = await sut.Sheet.ListAsync(-1, cancellationToken))
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName("id");
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -91,69 +103,73 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.ListAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListAsync)}(1) > GET /sheets/1 をコールする。")]
-        public async Task Sheet_ListAsync_Calls_GetApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListAsync)}(1) > GET /sheets/1 をコールする。"
+        )]
+        public async Task Sheet_ListAsync_Calls_GetApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             const int sheetId = 1;
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "id": 12,
-              "name": "住所・連絡先",
-              "record_type": 1,
-              "updated_at": "2020-10-01 01:23:45",
-              "member_data": [
                 {
-                  "code": "A0002",
-                  "records": [
+                  "id": 12,
+                  "name": "住所・連絡先",
+                  "record_type": 1,
+                  "updated_at": "2020-10-01 01:23:45",
+                  "member_data": [
                     {
-                      "custom_fields": [
+                      "code": "A0002",
+                      "records": [
                         {
-                          "id": 1000,
-                          "name": "住所",
-                          "values": ["東京都港区x-x-x"]
-                        }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "code": "A0001",
-                  "records": [
-                    {
-                      "custom_fields": [
-                        {
-                          "id": 1000,
-                          "name": "住所",
-                          "values": ["大阪府大阪市y番y号"]
-                        },
-                        {
-                          "id": 1001,
-                          "name": "電話番号",
-                          "values": ["06-yyyy-yyyy"]
+                          "custom_fields": [
+                            {
+                              "id": 1000,
+                              "name": "住所",
+                              "values": ["東京都港区x-x-x"]
+                            }
+                          ]
                         }
                       ]
                     },
                     {
-                      "custom_fields": [
+                      "code": "A0001",
+                      "records": [
                         {
-                          "id": 1000,
-                          "name": "住所",
-                          "values": ["愛知県名古屋市z丁目z番z号"]
+                          "custom_fields": [
+                            {
+                              "id": 1000,
+                              "name": "住所",
+                              "values": ["大阪府大阪市y番y号"]
+                            },
+                            {
+                              "id": 1001,
+                              "name": "電話番号",
+                              "values": ["06-yyyy-yyyy"]
+                            }
+                          ]
                         },
                         {
-                          "id": 1001,
-                          "name": "電話番号",
-                          "values": ["052-zzzz-zzzz"]
+                          "custom_fields": [
+                            {
+                              "id": 1000,
+                              "name": "住所",
+                              "values": ["愛知県名古屋市z丁目z番z号"]
+                            },
+                            {
+                              "id": 1001,
+                              "name": "電話番号",
+                              "values": ["052-zzzz-zzzz"]
+                            }
+                          ]
                         }
                       ]
                     }
                   ]
                 }
-              ]
-            }
-            """;
+                """;
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet($"/sheets/{sheetId}").RespondWithJson(responseJson);
 
@@ -163,7 +179,10 @@ public sealed partial class KaonaviClientTest
 
             // Assert
             await Assert.That(members).IsNotEmpty();
-            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path($"/sheets/{sheetId}"), Times.Once);
+            client.Handler.Verify(
+                r => r.Method(HttpMethod.Get).Path($"/sheets/{sheetId}"),
+                Times.Once
+            );
         }
 
         /// <summary>
@@ -172,8 +191,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Put))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ReplaceAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
-        public async Task When_Id_IsNegative_Sheet_ReplaceAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ReplaceAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。"
+        )]
+        public async Task When_Id_IsNegative_Sheet_ReplaceAsync_Throws_ArgumentOutOfRangeException(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -181,8 +204,12 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client, "token");
-            await Assert.That(async () => _ = await sut.Sheet.ReplaceAsync(-1, _sheetDataPayload, cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert
+                .That(async () =>
+                    _ = await sut.Sheet.ReplaceAsync(-1, _sheetDataPayload, cancellationToken)
+                )
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName("id");
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -191,8 +218,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.ReplaceAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Put))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ReplaceAsync)}(1) > PUT /sheets/1 をコールする。")]
-        public async Task Sheet_ReplaceAsync_Calls_PutApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ReplaceAsync)}(1) > PUT /sheets/1 をコールする。"
+        )]
+        public async Task Sheet_ReplaceAsync_Calls_PutApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             const int sheetId = 1;
@@ -201,14 +232,26 @@ public sealed partial class KaonaviClientTest
 
             // Act
             var sut = CreateSut(client, "token");
-            int taskId = await sut.Sheet.ReplaceAsync(sheetId, _sheetDataPayload, cancellationToken);
+            int taskId = await sut.Sheet.ReplaceAsync(
+                sheetId,
+                _sheetDataPayload,
+                cancellationToken
+            );
 
             // Assert
             await Assert.That(taskId).IsEqualTo(TaskId);
-            client.Handler.Verify(r => r.Method(HttpMethod.Put).Path($"/sheets/{sheetId}"), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsValidJsonObject().And.IsJsonEquals($$"""
-            {"member_data": {{SheetDataJson}}}
-            """);
+            client.Handler.Verify(
+                r => r.Method(HttpMethod.Put).Path($"/sheets/{sheetId}"),
+                Times.Once
+            );
+            await Assert
+                .That(client.Handler.Requests[0].Body)
+                .IsValidJsonObject()
+                .And.IsJsonEquals(
+                    $$"""
+                    {"member_data": {{SheetDataJson}}}
+                    """
+                );
         }
 
         /// <summary>
@@ -217,8 +260,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Patch))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
-        public async Task When_Id_IsNegative_Sheet_UpdateAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。"
+        )]
+        public async Task When_Id_IsNegative_Sheet_UpdateAsync_Throws_ArgumentOutOfRangeException(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -226,8 +273,12 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client, "token");
-            await Assert.That(async () => _ = await sut.Sheet.UpdateAsync(-1, _sheetDataPayload, cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert
+                .That(async () =>
+                    _ = await sut.Sheet.UpdateAsync(-1, _sheetDataPayload, cancellationToken)
+                )
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName("id");
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -236,13 +287,19 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.UpdateAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Patch))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateAsync)}(1) > PATCH /sheets/1 をコールする。")]
-        public async Task Sheet_UpdateAsync_Calls_PatchApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateAsync)}(1) > PATCH /sheets/1 をコールする。"
+        )]
+        public async Task Sheet_UpdateAsync_Calls_PatchApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             const int sheetId = 1;
             using var client = Mock.HttpClient(BaseUriString);
-            client.Handler.OnRequest(req => req.Method(HttpMethod.Patch).Path($"/sheets/{sheetId}")).RespondWithJson(TaskJson);
+            client
+                .Handler.OnRequest(req => req.Method(HttpMethod.Patch).Path($"/sheets/{sheetId}"))
+                .RespondWithJson(TaskJson);
 
             // Act
             var sut = CreateSut(client, "token");
@@ -250,10 +307,18 @@ public sealed partial class KaonaviClientTest
 
             // Assert
             await Assert.That(taskId).IsEqualTo(TaskId);
-            client.Handler.Verify(r => r.Method(HttpMethod.Patch).Path($"/sheets/{sheetId}"), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsValidJsonObject().And.IsJsonEquals($$"""
-            {"member_data": {{SheetDataJson}}}
-            """);
+            client.Handler.Verify(
+                r => r.Method(HttpMethod.Patch).Path($"/sheets/{sheetId}"),
+                Times.Once
+            );
+            await Assert
+                .That(client.Handler.Requests[0].Body)
+                .IsValidJsonObject()
+                .And.IsJsonEquals(
+                    $$"""
+                    {"member_data": {{SheetDataJson}}}
+                    """
+                );
         }
 
         /// <summary>
@@ -262,8 +327,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.CreateAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Post))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.CreateAsync)}(-1, payload) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
-        public async Task When_Id_IsNegative_Sheet_CreateAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.CreateAsync)}(-1, payload) > {nameof(ArgumentOutOfRangeException)} をスローする。"
+        )]
+        public async Task When_Id_IsNegative_Sheet_CreateAsync_Throws_ArgumentOutOfRangeException(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -271,8 +340,12 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client, "token");
-            await Assert.That(async () => _ = await sut.Sheet.CreateAsync(-1, _sheetDataPayload, cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert
+                .That(async () =>
+                    _ = await sut.Sheet.CreateAsync(-1, _sheetDataPayload, cancellationToken)
+                )
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName("id");
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -281,8 +354,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.CreateAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Post))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.CreateAsync)}(1, payload) > POST /sheets/1/add をコールする。")]
-        public async Task Sheet_CreateAsync_Calls_PostApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.CreateAsync)}(1, payload) > POST /sheets/1/add をコールする。"
+        )]
+        public async Task Sheet_CreateAsync_Calls_PostApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             const int sheetId = 1;
@@ -295,10 +372,18 @@ public sealed partial class KaonaviClientTest
 
             // Assert
             await Assert.That(taskId).IsEqualTo(TaskId);
-            client.Handler.Verify(r => r.Method(HttpMethod.Post).Path($"/sheets/{sheetId}/add"), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsValidJsonObject().And.IsJsonEquals($$"""
-            {"member_data": {{SheetDataJson}}}
-            """);
+            client.Handler.Verify(
+                r => r.Method(HttpMethod.Post).Path($"/sheets/{sheetId}/add"),
+                Times.Once
+            );
+            await Assert
+                .That(client.Handler.Requests[0].Body)
+                .IsValidJsonObject()
+                .And.IsJsonEquals(
+                    $$"""
+                    {"member_data": {{SheetDataJson}}}
+                    """
+                );
         }
 
         /// <summary>
@@ -310,10 +395,17 @@ public sealed partial class KaonaviClientTest
         /// <param name="paramName">例外発生の原因となるパラメータ名</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.ListFileAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)}($id, $customFieldId) > {nameof(ArgumentOutOfRangeException)}(\"$paramName\") をスローする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)}($id, $customFieldId) > {nameof(ArgumentOutOfRangeException)}(\"$paramName\") をスローする。"
+        )]
         [Arguments(-1, 1, nameof(id))]
         [Arguments(1, -1, nameof(customFieldId))]
-        public async Task When_Id_IsNegative_Sheet_ListFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName, CancellationToken cancellationToken = default)
+        public async Task When_Id_IsNegative_Sheet_ListFileAsync_Throws_ArgumentOutOfRangeException(
+            int id,
+            int customFieldId,
+            string paramName,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -321,8 +413,16 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client);
-            await Assert.That(async () => _ = await sut.Sheet.ListFileAsync(id, customFieldId, cancellationToken: cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName(paramName);
+            await Assert
+                .That(async () =>
+                    _ = await sut.Sheet.ListFileAsync(
+                        id,
+                        customFieldId,
+                        cancellationToken: cancellationToken
+                    )
+                )
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName(paramName);
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -333,42 +433,53 @@ public sealed partial class KaonaviClientTest
         /// <param name="expectedUri">GETリクエスト先のURI</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.ListFileAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)}(1, 1, $date) > GET $expectedUri をコールする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.ListFileAsync)}(1, 1, $date) > GET $expectedUri をコールする。"
+        )]
         [Arguments(null, "/sheets/1/custom_fields/1/file")]
         [Arguments("2020-10-25", "/sheets/1/custom_fields/1/file?updated_since=2020-10-25")]
-        public async Task Sheet_ListFileAsync_Calls_GetApi(string? date, string expectedUri, CancellationToken cancellationToken = default)
+        public async Task Sheet_ListFileAsync_Calls_GetApi(
+            string? date,
+            string expectedUri,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             const int sheetId = 1;
             const int customFieldId = 1;
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "member_data": [
                 {
-                  "code": "A0001",
-                  "records": [
+                  "member_data": [
                     {
-                      "file_name": "A0001.jpg",
-                      "download_url": "https://example.com/image/xxxx.jpg?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID",
-                      "updated_at": "2020-10-01 01:23:45"
-                    },
-                    {
-                      "file_name": "A0001.txt",
-                      "download_url": "https://example.com/image/xxxx.txt?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID",
-                      "updated_at": "2020-10-01 01:23:45"
+                      "code": "A0001",
+                      "records": [
+                        {
+                          "file_name": "A0001.jpg",
+                          "download_url": "https://example.com/image/xxxx.jpg?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID",
+                          "updated_at": "2020-10-01 01:23:45"
+                        },
+                        {
+                          "file_name": "A0001.txt",
+                          "download_url": "https://example.com/image/xxxx.txt?Expires=1755255000&Signature=xxxx&Key-Pair-Id=EXAMPLEKEYPAIRID",
+                          "updated_at": "2020-10-01 01:23:45"
+                        }
+                      ]
                     }
                   ]
                 }
-              ]
-            }
-            """;
+                """;
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet(expectedUri).RespondWithJson(responseJson);
 
             // Act
             var sut = CreateSut(client, "token");
-            var members = await sut.Sheet.ListFileAsync(sheetId, customFieldId, date is not null ? DateOnly.Parse(date) : default, cancellationToken);
+            var members = await sut.Sheet.ListFileAsync(
+                sheetId,
+                customFieldId,
+                date is not null ? DateOnly.Parse(date) : default,
+                cancellationToken
+            );
 
             // Assert
             await Assert.That(members).IsNotEmpty();
@@ -384,10 +495,17 @@ public sealed partial class KaonaviClientTest
         /// <param name="paramName">例外発生の原因となるパラメータ名</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.AddFileAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Post))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.AddFileAsync)}($id, $customFieldId, payload) > {nameof(ArgumentOutOfRangeException)}(\"$paramName\") をスローする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.AddFileAsync)}($id, $customFieldId, payload) > {nameof(ArgumentOutOfRangeException)}(\"$paramName\") をスローする。"
+        )]
         [Arguments(-1, 1, nameof(id))]
         [Arguments(1, -1, nameof(customFieldId))]
-        public async Task When_Id_IsNegative_Sheet_AddFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName, CancellationToken cancellationToken = default)
+        public async Task When_Id_IsNegative_Sheet_AddFileAsync_Throws_ArgumentOutOfRangeException(
+            int id,
+            int customFieldId,
+            string paramName,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -395,8 +513,17 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client);
-            await Assert.That(async () => _ = await sut.Sheet.AddFileAsync(id, customFieldId, _attachmentPayload, cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName(paramName);
+            await Assert
+                .That(async () =>
+                    _ = await sut.Sheet.AddFileAsync(
+                        id,
+                        customFieldId,
+                        _attachmentPayload,
+                        cancellationToken
+                    )
+                )
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName(paramName);
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -405,25 +532,46 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.AddFileAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Post))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.AddFileAsync)}(1, 1, payload) > POST /sheets/1/custom_fields/1/file をコールする。")]
-        public async Task Sheet_AddFileAsync_Calls_PostApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.AddFileAsync)}(1, 1, payload) > POST /sheets/1/custom_fields/1/file をコールする。"
+        )]
+        public async Task Sheet_AddFileAsync_Calls_PostApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             const int sheetId = 1;
             const int customFieldId = 1;
             using var client = Mock.HttpClient(BaseUriString);
-            client.Handler.OnPost($"/sheets/{sheetId}/custom_fields/{customFieldId}/file").RespondWithJson(TaskJson);
+            client
+                .Handler.OnPost($"/sheets/{sheetId}/custom_fields/{customFieldId}/file")
+                .RespondWithJson(TaskJson);
 
             // Act
             var sut = CreateSut(client, "token");
-            int taskId = await sut.Sheet.AddFileAsync(sheetId, customFieldId, _attachmentPayload, cancellationToken);
+            int taskId = await sut.Sheet.AddFileAsync(
+                sheetId,
+                customFieldId,
+                _attachmentPayload,
+                cancellationToken
+            );
 
             // Assert
             await Assert.That(taskId).IsEqualTo(TaskId);
-            client.Handler.Verify(r => r.Method(HttpMethod.Post).Path($"/sheets/{sheetId}/custom_fields/{customFieldId}/file"), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsValidJsonObject().And.IsJsonEquals($$"""
-            {"member_data": {{AttachmentPayloadJson}}}
-            """);
+            client.Handler.Verify(
+                r =>
+                    r.Method(HttpMethod.Post)
+                        .Path($"/sheets/{sheetId}/custom_fields/{customFieldId}/file"),
+                Times.Once
+            );
+            await Assert
+                .That(client.Handler.Requests[0].Body)
+                .IsValidJsonObject()
+                .And.IsJsonEquals(
+                    $$"""
+                    {"member_data": {{AttachmentPayloadJson}}}
+                    """
+                );
         }
 
         /// <summary>
@@ -435,10 +583,17 @@ public sealed partial class KaonaviClientTest
         /// <param name="paramName">例外発生の原因となるパラメータ名</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.UpdateFileAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Patch))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateFileAsync)}($id, $customFieldId, payload) > {nameof(ArgumentOutOfRangeException)}(\"$paramName\") をスローする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateFileAsync)}($id, $customFieldId, payload) > {nameof(ArgumentOutOfRangeException)}(\"$paramName\") をスローする。"
+        )]
         [Arguments(-1, 1, nameof(id))]
         [Arguments(1, -1, nameof(customFieldId))]
-        public async Task When_Id_IsNegative_Sheet_UpdateFileAsync_Throws_ArgumentOutOfRangeException(int id, int customFieldId, string paramName, CancellationToken cancellationToken = default)
+        public async Task When_Id_IsNegative_Sheet_UpdateFileAsync_Throws_ArgumentOutOfRangeException(
+            int id,
+            int customFieldId,
+            string paramName,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -446,8 +601,12 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client);
-            await Assert.That(async () => _ = await sut.Sheet.UpdateFileAsync(id, customFieldId, [], cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName(paramName);
+            await Assert
+                .That(async () =>
+                    _ = await sut.Sheet.UpdateFileAsync(id, customFieldId, [], cancellationToken)
+                )
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName(paramName);
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -456,26 +615,42 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ISheet.UpdateFileAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Patch))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateFileAsync)}(1, 1, payload) > PATCH /sheets/1/custom_fields/1/file をコールする。")]
-        public async Task Sheet_UpdateFileAsync_Calls_PostApi(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Sheet)}.{nameof(KaonaviClient.Sheet.UpdateFileAsync)}(1, 1, payload) > PATCH /sheets/1/custom_fields/1/file をコールする。"
+        )]
+        public async Task Sheet_UpdateFileAsync_Calls_PostApi(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             const int sheetId = 1;
             const int customFieldId = 1;
             string path = $"/sheets/{sheetId}/custom_fields/{customFieldId}/file";
             using var client = Mock.HttpClient(BaseUriString);
-            client.Handler.OnRequest(req => req.Method(HttpMethod.Patch).Path(path)).RespondWithJson(TaskJson);
+            client
+                .Handler.OnRequest(req => req.Method(HttpMethod.Patch).Path(path))
+                .RespondWithJson(TaskJson);
 
             // Act
             var sut = CreateSut(client, "token");
-            int taskId = await sut.Sheet.UpdateFileAsync(sheetId, customFieldId, _attachmentPayload, cancellationToken);
+            int taskId = await sut.Sheet.UpdateFileAsync(
+                sheetId,
+                customFieldId,
+                _attachmentPayload,
+                cancellationToken
+            );
 
             // Assert
             await Assert.That(taskId).IsEqualTo(TaskId);
             client.Handler.Verify(r => r.Method(HttpMethod.Patch).Path(path), Times.Once);
-            await Assert.That(client.Handler.Requests[0].Body).IsValidJsonObject().And.IsJsonEquals($$"""
-            {"member_data": {{AttachmentPayloadJson}}}
-            """);
+            await Assert
+                .That(client.Handler.Requests[0].Body)
+                .IsValidJsonObject()
+                .And.IsJsonEquals(
+                    $$"""
+                    {"member_data": {{AttachmentPayloadJson}}}
+                    """
+                );
         }
     }
 }

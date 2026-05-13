@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Kaonavi.Net.Generator</RootNamespace>
@@ -20,7 +19,11 @@
 
   <ItemGroup>
     <!-- Pin version to use old C# compiler -->
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="4.3.0" PrivateAssets="all" />
+    <PackageReference
+      Include="Microsoft.CodeAnalysis.CSharp"
+      VersionOverride="4.3.0"
+      PrivateAssets="all"
+    />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" VersionOverride="3.3.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -56,11 +59,16 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <Target Name="PackBuildOutputs" DependsOnTargets="SatelliteDllsProjectOutputGroup;DebugSymbolsProjectOutputGroup">
+  <Target
+    Name="PackBuildOutputs"
+    DependsOnTargets="SatelliteDllsProjectOutputGroup;DebugSymbolsProjectOutputGroup"
+  >
     <ItemGroup>
       <TfmSpecificPackageFile Include="$(TargetDir)/*.dll" PackagePath="analyzers/dotnet/cs" />
-      <TfmSpecificPackageFile Include="@(SatelliteDllsProjectOutputGroupOutput->'%(FinalOutputPath)')" PackagePath="analyzers/dotnet/cs/%(SatelliteDllsProjectOutputGroupOutput.Culture)/" />
+      <TfmSpecificPackageFile
+        Include="@(SatelliteDllsProjectOutputGroupOutput->'%(FinalOutputPath)')"
+        PackagePath="analyzers/dotnet/cs/%(SatelliteDllsProjectOutputGroupOutput.Culture)/"
+      />
     </ItemGroup>
   </Target>
-
 </Project>

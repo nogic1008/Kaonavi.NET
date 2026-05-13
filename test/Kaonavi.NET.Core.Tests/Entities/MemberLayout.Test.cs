@@ -17,7 +17,8 @@ public sealed class MemberLayoutTest
     {
         // Arrange
         /*lang=json,strict*/
-        var json = """
+        var json =
+            """
         {
           "code": {
             "name": "社員番号",
@@ -114,17 +115,36 @@ public sealed class MemberLayoutTest
         var memberLayout = JsonSerializer.Deserialize(json, JsonContext.Default.MemberLayout);
 
         // Assert
-        await Assert.That(memberLayout).IsNotNull()
+        await Assert
+            .That(memberLayout)
+            .IsNotNull()
             .And.Member(static o => o.Code.Name, static o => o.IsEqualTo<string>("社員番号"))
             .And.Member(static o => o.Name.Required, static o => o.IsFalse())
             .And.Member(static o => o.NameKana.Type, static o => o.IsEqualTo(FieldType.String))
             .And.Member(static o => o.Mail.MaxLength, static o => o.IsEqualTo(100))
             .And.Member(static o => o.EnteredDate.Type, static o => o.IsEqualTo(FieldType.Date))
             .And.Member(static o => o.RetiredDate.Enum, static o => o.IsEmpty())
-            .And.Member(static o => o.Gender.Enum, static o => o.IsSequenceEqualTo((string?[])["男性", "女性"]))
+            .And.Member(
+                static o => o.Gender.Enum,
+                static o => o.IsSequenceEqualTo((string?[])["男性", "女性"])
+            )
             .And.Member(static o => o.Birthday.MaxLength, static o => o.IsNull())
-            .And.Member(static o => o.Department.Type, static o => o.IsEqualTo(FieldType.Department))
-            .And.Member(static o => o.SubDepartments.Type, static o => o.IsEqualTo(FieldType.DepartmentArray))
-            .And.Member(static o => o.CustomFields, static o => o.Count().IsEqualTo(2).And.Contains(l => l.Enum.SequenceEqual(["部長", "課長", "マネージャー", null])));
+            .And.Member(
+                static o => o.Department.Type,
+                static o => o.IsEqualTo(FieldType.Department)
+            )
+            .And.Member(
+                static o => o.SubDepartments.Type,
+                static o => o.IsEqualTo(FieldType.DepartmentArray)
+            )
+            .And.Member(
+                static o => o.CustomFields,
+                static o =>
+                    o.Count()
+                        .IsEqualTo(2)
+                        .And.Contains(l =>
+                            l.Enum.SequenceEqual(["部長", "課長", "マネージャー", null])
+                        )
+            );
     }
 }

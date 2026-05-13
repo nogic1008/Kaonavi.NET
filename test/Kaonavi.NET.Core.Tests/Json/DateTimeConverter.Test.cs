@@ -13,7 +13,17 @@ public sealed class DateTimeConverterTest
     {
         get
         {
-            yield return new((2021, 1, 1, 12, 34, 56, /*lang=json,strict*/ "\"2021-01-01 12:34:56\""));
+            yield return new(
+                (
+                    2021,
+                    1,
+                    1,
+                    12,
+                    34,
+                    56, /*lang=json,strict*/
+                    "\"2021-01-01 12:34:56\""
+                )
+            );
         }
     }
 
@@ -23,9 +33,19 @@ public sealed class DateTimeConverterTest
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateTime(int, int, int, int, int, int)" path="/param"/>
     [Test]
-    [DisplayName($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Read)}($json) returns {nameof(DateTime)}($year, $month, $day, $hour, $minute, $second)")]
+    [DisplayName(
+        $"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Read)}($json) returns {nameof(DateTime)}($year, $month, $day, $hour, $minute, $second)"
+    )]
     [MethodDataSource(nameof(TestData))]
-    public async Task Read_Returns_DateTime(int year, int month, int day, int hour, int minute, int second, string json)
+    public async Task Read_Returns_DateTime(
+        int year,
+        int month,
+        int day,
+        int hour,
+        int minute,
+        int second,
+        string json
+    )
     {
         // Arrange
         var reader = new Utf8JsonReader(Encoding.UTF8.GetBytes(json));
@@ -44,9 +64,19 @@ public sealed class DateTimeConverterTest
     /// <param name="json">JSON文字列</param>
     /// <inheritdoc cref="DateTime(int, int, int, int, int, int)" path="/param"/>
     [Test]
-    [DisplayName($"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Write)}({nameof(DateTime)}($year, $month, $day, $hour, $minute, $second)) returns $json")]
+    [DisplayName(
+        $"{nameof(DateTimeConverter)} > {nameof(DateTimeConverter.Write)}({nameof(DateTime)}($year, $month, $day, $hour, $minute, $second)) returns $json"
+    )]
     [MethodDataSource(nameof(TestData))]
-    public async Task Write_Flushes_JSON(int year, int month, int day, int hour, int minute, int second, string json)
+    public async Task Write_Flushes_JSON(
+        int year,
+        int month,
+        int day,
+        int hour,
+        int minute,
+        int second,
+        string json
+    )
     {
         // Arrange
         var buffer = new ArrayBufferWriter<byte>();
@@ -54,10 +84,16 @@ public sealed class DateTimeConverterTest
         var sut = new DateTimeConverter();
 
         // Act
-        sut.Write(writer, new(year, month, day, hour, minute, second), new(JsonSerializerDefaults.Web));
+        sut.Write(
+            writer,
+            new(year, month, day, hour, minute, second),
+            new(JsonSerializerDefaults.Web)
+        );
         writer.Flush();
 
         // Assert
-        await Assert.That(buffer.WrittenSpan.ToArray()).IsSequenceEqualTo(Encoding.UTF8.GetBytes(json));
+        await Assert
+            .That(buffer.WrittenSpan.ToArray())
+            .IsSequenceEqualTo(Encoding.UTF8.GetBytes(json));
     }
 }

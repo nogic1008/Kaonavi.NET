@@ -15,7 +15,8 @@ public sealed class AttachmentPayloadTest
     {
         // Arrange
         // lang=json,strict
-        var json = """
+        var json =
+            """
         {
           "code": "A0001",
           "records": [
@@ -31,10 +32,23 @@ public sealed class AttachmentPayloadTest
         var attachment = JsonSerializer.Deserialize(json, JsonContext.Default.AttachmentPayload);
 
         // Assert
-        await Assert.That(attachment).IsNotNull()
+        await Assert
+            .That(attachment)
+            .IsNotNull()
             .And.Member(static o => o.Code, static o => o.IsEqualTo<string>("A0001"))
             .And.Member(static o => o.Records.Count, static o => o.IsEqualTo(1))
-            .And.Member(static o => o.Records[0].FileName, static o => o.IsEqualTo<string>("sample.txt"))
-            .And.Member(static o => o.Records[0].Content, static o => o.IsSequenceEqualTo(Convert.FromBase64String("44GT44KM44Gv44K144Oz44OX44Or44OG44Kt44K544OI44Gn44GZ44CC")));
+            .And.Member(
+                static o => o.Records[0].FileName,
+                static o => o.IsEqualTo<string>("sample.txt")
+            )
+            .And.Member(
+                static o => o.Records[0].Content,
+                static o =>
+                    o.IsSequenceEqualTo(
+                        Convert.FromBase64String(
+                            "44GT44KM44Gv44K144Oz44OX44Or44OG44Kt44K544OI44Gn44GZ44CC"
+                        )
+                    )
+            );
     }
 }

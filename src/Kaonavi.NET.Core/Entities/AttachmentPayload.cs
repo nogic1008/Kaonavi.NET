@@ -21,4 +21,7 @@ public record AttachmentPayload(string Code, params IReadOnlyList<AttachmentPayl
 /// <summary>添付ファイル情報</summary>
 /// <param name="FileName">ファイル名</param>
 /// <param name="Content">ファイルデータ</param>
-public record AttachmentPayloadRecord(string FileName, [property: JsonPropertyName("base64_content")] byte[] Content);
+public record AttachmentPayloadRecord(
+    string FileName,
+    [property: JsonPropertyName("base64_content")] byte[] Content
+);

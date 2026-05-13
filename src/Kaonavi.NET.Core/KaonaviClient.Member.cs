@@ -17,7 +17,9 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <see href="https://developer.kaonavi.jp/api/v2.0/index.html#tag/%E3%83%A1%E3%83%B3%E3%83%90%E3%83%BC%E6%83%85%E5%A0%B1/paths/~1members/get"/>
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<IReadOnlyList<MemberData>> ListAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<MemberData>> ListAsync(
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// メンバー登録と、合わせて基本情報・所属(主務)・兼務情報を登録します。
@@ -26,7 +28,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <remarks>更新リクエスト制限の対象APIです。</remarks>
         /// <param name="payload">追加するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<int> CreateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> CreateAsync(
+            IReadOnlyList<MemberData> payload,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// 全てのメンバーの基本情報・所属(主務)・兼務情報を一括更新します。
@@ -42,7 +47,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <param name="payload">一括更新するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        public ValueTask<int> ReplaceAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> ReplaceAsync(
+            IReadOnlyList<MemberData> payload,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// 送信されたメンバーの基本情報・所属(主務)・兼務情報のみを更新します。
@@ -54,7 +62,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <param name="payload">更新するデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        public ValueTask<int> UpdateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> UpdateAsync(
+            IReadOnlyList<MemberData> payload,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// 現在登録されているメンバーとそれに紐づく基本情報・所属(主務)・兼務情報を全て、<paramref name="payload"/>で入れ替えます。
@@ -74,7 +85,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <param name="payload">入れ替え対象となるデータ</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        public ValueTask<int> OverWriteAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> OverWriteAsync(
+            IReadOnlyList<MemberData> payload,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// 送信されたメンバーを削除します。
@@ -89,7 +103,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <param name="codes">削除する<inheritdoc cref="MemberData" path="/param[@name='Code']"/>のリスト</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        public ValueTask<int> DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken = default);
+        public ValueTask<int> DeleteAsync(
+            IReadOnlyList<string> codes,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// メンバーの顔写真をダウンロードするためのURL一覧を取得します。
@@ -102,7 +119,10 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// </summary>
         /// <param name="updatedSince">指定した日以降に顔写真が更新されたメンバーに絞り込みます。</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<IReadOnlyList<FaceImageInfo>> GetFaceImageListAsync(DateOnly updatedSince = default, CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<FaceImageInfo>> GetFaceImageListAsync(
+            DateOnly updatedSince = default,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// 指定したメンバーの顔写真をアップロードします。
@@ -135,7 +155,11 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// </param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        public ValueTask<int> AddFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming = true, CancellationToken cancellationToken = default);
+        public ValueTask<int> AddFaceImageAsync(
+            IReadOnlyList<FaceImagePayload> payload,
+            bool enableTrimming = true,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// 指定したメンバーの顔写真を置き換えます。
@@ -162,47 +186,123 @@ public partial class KaonaviClient : KaonaviClient.IMember
         /// <param name="enableTrimming"><inheritdoc cref="IMember.AddFaceImageAsync" path="/param[@name='enableTrimming']"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
-        public ValueTask<int> UpdateFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming = true, CancellationToken cancellationToken = default);
+        public ValueTask<int> UpdateFaceImageAsync(
+            IReadOnlyList<FaceImagePayload> payload,
+            bool enableTrimming = true,
+            CancellationToken cancellationToken = default
+        );
     }
 
     /// <inheritdoc/>
     public IMember Member => this;
 
     /// <inheritdoc/>
-    ValueTask<IReadOnlyList<MemberData>> IMember.ListAsync(CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, "members"), "member_data", Context.Default.IReadOnlyListMemberData, cancellationToken);
+    ValueTask<IReadOnlyList<MemberData>> IMember.ListAsync(CancellationToken cancellationToken) =>
+        CallApiAsync(
+            new(HttpMethod.Get, "members"),
+            "member_data",
+            Context.Default.IReadOnlyListMemberData,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
-    ValueTask<int> IMember.CreateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Post, "members", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
+    ValueTask<int> IMember.CreateAsync(
+        IReadOnlyList<MemberData> payload,
+        CancellationToken cancellationToken
+    ) =>
+        CallTaskApiAsync(
+            HttpMethod.Post,
+            "members",
+            payload,
+            "member_data"u8,
+            Context.Default.IReadOnlyListMemberData,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
-    ValueTask<int> IMember.ReplaceAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, "members", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
+    ValueTask<int> IMember.ReplaceAsync(
+        IReadOnlyList<MemberData> payload,
+        CancellationToken cancellationToken
+    ) =>
+        CallTaskApiAsync(
+            HttpMethod.Put,
+            "members",
+            payload,
+            "member_data"u8,
+            Context.Default.IReadOnlyListMemberData,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
-    ValueTask<int> IMember.UpdateAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Patch, "members", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
+    ValueTask<int> IMember.UpdateAsync(
+        IReadOnlyList<MemberData> payload,
+        CancellationToken cancellationToken
+    ) =>
+        CallTaskApiAsync(
+            HttpMethod.Patch,
+            "members",
+            payload,
+            "member_data"u8,
+            Context.Default.IReadOnlyListMemberData,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
-    ValueTask<int> IMember.OverWriteAsync(IReadOnlyList<MemberData> payload, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Put, "members/overwrite", payload, "member_data"u8, Context.Default.IReadOnlyListMemberData, cancellationToken);
+    ValueTask<int> IMember.OverWriteAsync(
+        IReadOnlyList<MemberData> payload,
+        CancellationToken cancellationToken
+    ) =>
+        CallTaskApiAsync(
+            HttpMethod.Put,
+            "members/overwrite",
+            payload,
+            "member_data"u8,
+            Context.Default.IReadOnlyListMemberData,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
-    ValueTask<int> IMember.DeleteAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken)
-        => CallTaskApiAsync(HttpMethod.Post, "members/delete", codes, "codes"u8, Context.Default.IReadOnlyListString, cancellationToken);
+    ValueTask<int> IMember.DeleteAsync(
+        IReadOnlyList<string> codes,
+        CancellationToken cancellationToken
+    ) =>
+        CallTaskApiAsync(
+            HttpMethod.Post,
+            "members/delete",
+            codes,
+            "codes"u8,
+            Context.Default.IReadOnlyListString,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
-    ValueTask<IReadOnlyList<FaceImageInfo>> IMember.GetFaceImageListAsync(DateOnly updatedSince, CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, $"members/face_image{(updatedSince != default ? $"?updated_since={updatedSince:o}" : "")}"), "member_data", Context.Default.IReadOnlyListFaceImageInfo, cancellationToken);
+    ValueTask<IReadOnlyList<FaceImageInfo>> IMember.GetFaceImageListAsync(
+        DateOnly updatedSince,
+        CancellationToken cancellationToken
+    ) =>
+        CallApiAsync(
+            new(
+                HttpMethod.Get,
+                $"members/face_image{(updatedSince != default ? $"?updated_since={updatedSince:o}" : "")}"
+            ),
+            "member_data",
+            Context.Default.IReadOnlyListFaceImageInfo,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
-    ValueTask<int> IMember.AddFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming, CancellationToken cancellationToken)
-        => CallFaceImageApiAsync(HttpMethod.Post, payload, enableTrimming, cancellationToken);
+    ValueTask<int> IMember.AddFaceImageAsync(
+        IReadOnlyList<FaceImagePayload> payload,
+        bool enableTrimming,
+        CancellationToken cancellationToken
+    ) => CallFaceImageApiAsync(HttpMethod.Post, payload, enableTrimming, cancellationToken);
 
     /// <inheritdoc/>
-    ValueTask<int> IMember.UpdateFaceImageAsync(IReadOnlyList<FaceImagePayload> payload, bool enableTrimming, CancellationToken cancellationToken)
-        => CallFaceImageApiAsync(HttpMethod.Patch, payload, enableTrimming, cancellationToken);
+    ValueTask<int> IMember.UpdateFaceImageAsync(
+        IReadOnlyList<FaceImagePayload> payload,
+        bool enableTrimming,
+        CancellationToken cancellationToken
+    ) => CallFaceImageApiAsync(HttpMethod.Patch, payload, enableTrimming, cancellationToken);
 
     /// <summary>
     /// リクエストのJSON Bodyを生成し、メンバー情報 顔写真APIを呼び出します。
@@ -213,7 +313,12 @@ public partial class KaonaviClient : KaonaviClient.IMember
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
-    private ValueTask<int> CallFaceImageApiAsync(HttpMethod method, IReadOnlyList<FaceImagePayload> payload, bool enableTrimming, CancellationToken cancellationToken)
+    private ValueTask<int> CallFaceImageApiAsync(
+        HttpMethod method,
+        IReadOnlyList<FaceImagePayload> payload,
+        bool enableTrimming,
+        CancellationToken cancellationToken
+    )
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
 
@@ -226,12 +331,15 @@ public partial class KaonaviClient : KaonaviClient.IMember
         writer.WriteEndObject();
         writer.Flush();
 
-        return CallRequestLimitApiAsync(new(method, "members/face_image")
-        {
-            Content = new ReadOnlyMemoryContent(buffer.WrittenMemory)
+        return CallRequestLimitApiAsync(
+            new(method, "members/face_image")
             {
-                Headers = { ContentType = new("application/json") }
-            }
-        }, cancellationToken);
+                Content = new ReadOnlyMemoryContent(buffer.WrittenMemory)
+                {
+                    Headers = { ContentType = new("application/json") },
+                },
+            },
+            cancellationToken
+        );
     }
 }

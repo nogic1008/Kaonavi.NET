@@ -19,7 +19,11 @@ public record User(
     string Email,
     string? MemberCode,
     Role Role,
-    [property: JsonConverter(typeof(DateTimeConverter)), JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] DateTime? LastLoginAt = null,
+    [property:
+        JsonConverter(typeof(DateTimeConverter)),
+        JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)
+    ]
+        DateTime? LastLoginAt = null,
     bool IsActive = true,
     bool PasswordLocked = false,
     bool UseSmartphone = false

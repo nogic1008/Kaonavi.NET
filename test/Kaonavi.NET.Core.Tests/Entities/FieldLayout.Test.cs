@@ -12,7 +12,9 @@ public sealed class FieldLayoutTest
     /// JSONから<see cref="FieldType"/>にデシリアライズできる。
     /// </summary>
     [Test, Category("JSON Deserialize")]
-    [DisplayName($"{nameof(FieldType)} > $json から {nameof(FieldType)}.$expected にデシリアライズできる。")]
+    [DisplayName(
+        $"{nameof(FieldType)} > $json から {nameof(FieldType)}.$expected にデシリアライズできる。"
+    )]
     [Arguments("\"string\"", FieldType.String)]
     [Arguments("\"number\"", FieldType.Number)]
     [Arguments("\"date\"", FieldType.Date)]
@@ -20,51 +22,103 @@ public sealed class FieldLayoutTest
     [Arguments("\"calc\"", FieldType.Calc)]
     [Arguments("\"department\"", FieldType.Department)]
     [Arguments("\"department[]\"", FieldType.DepartmentArray)]
-    public async Task FieldType_Can_Deserialize_FromJSON(string json, FieldType expected)
-        => await Assert.That(JsonSerializer.Deserialize(json, JsonContext.Default.FieldType)).IsEqualTo(expected);
+    public async Task FieldType_Can_Deserialize_FromJSON(string json, FieldType expected) =>
+        await Assert
+            .That(JsonSerializer.Deserialize(json, JsonContext.Default.FieldType))
+            .IsEqualTo(expected);
 
     /// <summary><see cref="FieldLayout_Can_Deserialize_FromJSON"/>のテストデータ</summary>
-    public static IEnumerable<TestDataRow<(string json, string name, bool required, FieldType type, int? maxLength, string?[] enums, bool readOnly)>> TestData
+    public static IEnumerable<
+        TestDataRow<(
+            string json,
+            string name,
+            bool required,
+            FieldType type,
+            int? maxLength,
+            string?[] enums,
+            bool readOnly
+        )>
+    > TestData
     {
         get
         {
-            yield return new((/*lang=json,strict*/ """
-            {
-              "name": "社員番号",
-              "required": true,
-              "type": "string",
-              "max_length": 50,
-              "enum": []
-            }
-            """, "社員番号", true, FieldType.String, 50, [], false));
-            yield return new((/*lang=json,strict*/ """
-            {
-              "name": "入社日",
-              "required": false,
-              "type": "date",
-              "max_length": null,
-              "enum": []
-            }
-            """, "入社日", false, FieldType.Date, null, [], false));
-            yield return new((/*lang=json,strict*/ """
-            {
-              "name": "性別",
-              "required": false,
-              "type": "enum",
-              "max_length": null,
-              "enum": ["男性", "女性"]
-            }
-            """, "性別", false, FieldType.Enum, null, ["男性", "女性"], false));
-            yield return new((/*lang=json,strict*/ """
-            {
-              "name": "勤続年数",
-              "required": false,
-              "type": "calc",
-              "max_length": null,
-              "enum": [],
-              "read_only": true
-            }
-            """, "勤続年数", false, FieldType.Calc, null, [], true));
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "name": "社員番号",
+                      "required": true,
+                      "type": "string",
+                      "max_length": 50,
+                      "enum": []
+                    }
+                    """,
+                    "社員番号",
+                    true,
+                    FieldType.String,
+                    50,
+                    [],
+                    false
+                )
+            );
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "name": "入社日",
+                      "required": false,
+                      "type": "date",
+                      "max_length": null,
+                      "enum": []
+                    }
+                    """,
+                    "入社日",
+                    false,
+                    FieldType.Date,
+                    null,
+                    [],
+                    false
+                )
+            );
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "name": "性別",
+                      "required": false,
+                      "type": "enum",
+                      "max_length": null,
+                      "enum": ["男性", "女性"]
+                    }
+                    """,
+                    "性別",
+                    false,
+                    FieldType.Enum,
+                    null,
+                    ["男性", "女性"],
+                    false
+                )
+            );
+            yield return new(
+                ( /*lang=json,strict*/
+                    """
+                    {
+                      "name": "勤続年数",
+                      "required": false,
+                      "type": "calc",
+                      "max_length": null,
+                      "enum": [],
+                      "read_only": true
+                    }
+                    """,
+                    "勤続年数",
+                    false,
+                    FieldType.Calc,
+                    null,
+                    [],
+                    true
+                )
+            );
         }
     }
 
@@ -81,13 +135,23 @@ public sealed class FieldLayoutTest
     [Test, Category("JSON Deserialize")]
     [DisplayName($"{nameof(FieldLayout)} > $json からデシリアライズできる。")]
     [MethodDataSource(nameof(TestData))]
-    public async Task FieldLayout_Can_Deserialize_FromJSON(string json, string name, bool required, FieldType type, int? maxLength, string?[] enums, bool readOnly)
+    public async Task FieldLayout_Can_Deserialize_FromJSON(
+        string json,
+        string name,
+        bool required,
+        FieldType type,
+        int? maxLength,
+        string?[] enums,
+        bool readOnly
+    )
     {
         // Arrange - Act
         var fieldLayout = JsonSerializer.Deserialize(json, JsonContext.Default.FieldLayout);
 
         // Assert
-        await Assert.That(fieldLayout).IsNotNull()
+        await Assert
+            .That(fieldLayout)
+            .IsNotNull()
             .And.Member(sut => sut.Name, o => o.IsEqualTo<string>(name))
             .And.Member(sut => sut.Required, o => o.IsEqualTo(required))
             .And.Member(sut => sut.Type, o => o.IsEqualTo(type))
@@ -100,7 +164,9 @@ public sealed class FieldLayoutTest
     /// JSONから<see cref="FieldInput"/>にデシリアライズできる。
     /// </summary>
     [Test, Category("JSON Deserialize")]
-    [DisplayName($"{nameof(FieldInput)} > $json から {nameof(FieldInput)}.$expected にデシリアライズできる。")]
+    [DisplayName(
+        $"{nameof(FieldInput)} > $json から {nameof(FieldInput)}.$expected にデシリアライズできる。"
+    )]
     [Arguments("\"text_box\"", FieldInput.TextBox)]
     [Arguments("\"text_area\"", FieldInput.TextArea)]
     [Arguments("\"number_box\"", FieldInput.NumberBox)]
@@ -128,7 +194,8 @@ public sealed class FieldLayoutTest
     {
         // Arrange
         /*lang=json,strict*/
-        var json = """
+        var json =
+            """
         {
           "id": 100,
           "name": "血液型",
@@ -141,16 +208,24 @@ public sealed class FieldLayoutTest
         """u8;
 
         // Act
-        var customFieldLayout = JsonSerializer.Deserialize(json, JsonContext.Default.CustomFieldLayout);
+        var customFieldLayout = JsonSerializer.Deserialize(
+            json,
+            JsonContext.Default.CustomFieldLayout
+        );
 
         // Assert
-        await Assert.That(customFieldLayout).IsNotNull()
+        await Assert
+            .That(customFieldLayout)
+            .IsNotNull()
             .And.Member(static o => o.Id, static o => o.IsEqualTo(100))
             .And.Member(static o => o.Name, static o => o.IsEqualTo<string>("血液型"))
             .And.Member(static o => o.Required, static o => o.IsFalse())
             .And.Member(static o => o.Type, static o => o.IsEqualTo(FieldType.Enum))
             .And.Member(static o => o.MaxLength, static o => o.IsNull())
-            .And.Member(static o => o.Enum, static o => o.IsSequenceEqualTo((string?[])["A", "B", "O", "AB"]))
+            .And.Member(
+                static o => o.Enum,
+                static o => o.IsSequenceEqualTo((string?[])["A", "B", "O", "AB"])
+            )
             .And.Member(static o => o.ReadOnly, static o => o.IsFalse())
             .And.Member(static o => o.TypeDetail, static o => o.IsEqualTo(FieldInput.TextBox));
     }

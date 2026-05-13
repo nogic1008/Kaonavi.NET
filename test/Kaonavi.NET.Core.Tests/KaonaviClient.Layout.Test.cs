@@ -13,114 +13,120 @@ public sealed partial class KaonaviClientTest
         /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ILayout.ReadMemberLayoutAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadMemberLayoutAsync)}($getCalcType) > GET $expectedEndpoint をコールする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadMemberLayoutAsync)}($getCalcType) > GET $expectedEndpoint をコールする。"
+        )]
         [Arguments(false, "/member_layouts")]
         [Arguments(true, "/member_layouts?get_calc_type=true")]
-        public async Task Layout_ReadMemberLayoutAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint, CancellationToken cancellationToken = default)
+        public async Task Layout_ReadMemberLayoutAsync_Calls_GetApi(
+            bool getCalcType,
+            string expectedEndpoint,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "code": {
-                "name": "社員番号",
-                "required": true,
-                "type": "string",
-                "max_length": 50,
-                "enum": []
-              },
-              "name": {
-                "name": "氏名",
-                "required": false,
-                "type": "string",
-                "max_length": 100,
-                "enum": []
-              },
-              "name_kana": {
-                "name": "フリガナ",
-                "required": false,
-                "type": "string",
-                "max_length": 100,
-                "enum": []
-              },
-              "mail": {
-                "name": "メールアドレス",
-                "required": false,
-                "type": "string",
-                "max_length": 100,
-                "enum": []
-              },
-              "entered_date": {
-                "name": "入社日",
-                "required": false,
-                "type": "date",
-                "max_length": null,
-                "enum": []
-              },
-              "retired_date": {
-                "name": "退職日",
-                "required": false,
-                "type": "date",
-                "max_length": null,
-                "enum": []
-              },
-              "gender": {
-                "name": "性別",
-                "required": false,
-                "type": "enum",
-                "max_length": null,
-                "enum": ["男性", "女性"]
-              },
-              "birthday": {
-                "name": "生年月日",
-                "required": false,
-                "type": "date",
-                "max_length": null,
-                "enum": []
-              },
-              "department": {
-                "name": "所属",
-                "required": false,
-                "type": "department",
-                "max_length": null,
-                "enum": []
-              },
-              "sub_departments": {
-                "name": "兼務情報",
-                "required": false,
-                "type": "department[]",
-                "max_length": null,
-                "enum": []
-              },
-              "custom_fields": [
                 {
-                  "id": 100,
-                  "name": "血液型",
-                  "required": false,
-                  "type": "enum",
-                  "max_length": null,
-                  "enum": ["A", "B", "O", "AB"]
-                },
-                {
-                  "id": 200,
-                  "name": "役職",
-                  "required": false,
-                  "type": "enum",
-                  "max_length": null,
-                  "enum": ["部長", "課長", "マネージャー"]
-                },
-                {
-                  "id": 300,
-                  "name": "計算式",
-                  "required": false,
-                  "type": "calc",
-                  "max_length": null,
-                  "enum": null,
-                  "read_only": true
+                  "code": {
+                    "name": "社員番号",
+                    "required": true,
+                    "type": "string",
+                    "max_length": 50,
+                    "enum": []
+                  },
+                  "name": {
+                    "name": "氏名",
+                    "required": false,
+                    "type": "string",
+                    "max_length": 100,
+                    "enum": []
+                  },
+                  "name_kana": {
+                    "name": "フリガナ",
+                    "required": false,
+                    "type": "string",
+                    "max_length": 100,
+                    "enum": []
+                  },
+                  "mail": {
+                    "name": "メールアドレス",
+                    "required": false,
+                    "type": "string",
+                    "max_length": 100,
+                    "enum": []
+                  },
+                  "entered_date": {
+                    "name": "入社日",
+                    "required": false,
+                    "type": "date",
+                    "max_length": null,
+                    "enum": []
+                  },
+                  "retired_date": {
+                    "name": "退職日",
+                    "required": false,
+                    "type": "date",
+                    "max_length": null,
+                    "enum": []
+                  },
+                  "gender": {
+                    "name": "性別",
+                    "required": false,
+                    "type": "enum",
+                    "max_length": null,
+                    "enum": ["男性", "女性"]
+                  },
+                  "birthday": {
+                    "name": "生年月日",
+                    "required": false,
+                    "type": "date",
+                    "max_length": null,
+                    "enum": []
+                  },
+                  "department": {
+                    "name": "所属",
+                    "required": false,
+                    "type": "department",
+                    "max_length": null,
+                    "enum": []
+                  },
+                  "sub_departments": {
+                    "name": "兼務情報",
+                    "required": false,
+                    "type": "department[]",
+                    "max_length": null,
+                    "enum": []
+                  },
+                  "custom_fields": [
+                    {
+                      "id": 100,
+                      "name": "血液型",
+                      "required": false,
+                      "type": "enum",
+                      "max_length": null,
+                      "enum": ["A", "B", "O", "AB"]
+                    },
+                    {
+                      "id": 200,
+                      "name": "役職",
+                      "required": false,
+                      "type": "enum",
+                      "max_length": null,
+                      "enum": ["部長", "課長", "マネージャー"]
+                    },
+                    {
+                      "id": 300,
+                      "name": "計算式",
+                      "required": false,
+                      "type": "calc",
+                      "max_length": null,
+                      "enum": null,
+                      "read_only": true
+                    }
+                  ]
                 }
-              ]
-            }
-            """;
+                """;
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet(expectedEndpoint).RespondWithJson(responseJson);
 
@@ -140,42 +146,48 @@ public sealed partial class KaonaviClientTest
         /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ILayout.ListAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}($getCalcType) > GET $expectedEndpoint をコールする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ListAsync)}($getCalcType) > GET $expectedEndpoint をコールする。"
+        )]
         [Arguments(false, "/sheet_layouts")]
         [Arguments(true, "/sheet_layouts?get_calc_type=true")]
-        public async Task Layout_ListAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint, CancellationToken cancellationToken = default)
+        public async Task Layout_ListAsync_Calls_GetApi(
+            bool getCalcType,
+            string expectedEndpoint,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "sheets": [
                 {
-                  "id": 12,
-                  "name": "住所・連絡先",
-                  "record_type": 1,
-                  "custom_fields": [
+                  "sheets": [
                     {
-                      "id": 1000,
-                      "name": "住所",
-                      "required": false,
-                      "type": "string",
-                      "max_length": 250,
-                      "enum": []
-                    },
-                    {
-                      "id": 1001,
-                      "name": "電話番号",
-                      "required": false,
-                      "type": "string",
-                      "max_length": 50,
-                      "enum": []
+                      "id": 12,
+                      "name": "住所・連絡先",
+                      "record_type": 1,
+                      "custom_fields": [
+                        {
+                          "id": 1000,
+                          "name": "住所",
+                          "required": false,
+                          "type": "string",
+                          "max_length": 250,
+                          "enum": []
+                        },
+                        {
+                          "id": 1001,
+                          "name": "電話番号",
+                          "required": false,
+                          "type": "string",
+                          "max_length": 50,
+                          "enum": []
+                        }
+                      ]
                     }
                   ]
                 }
-              ]
-            }
-            """;
+                """;
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet(expectedEndpoint).RespondWithJson(responseJson);
 
@@ -194,8 +206,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ILayout.ReadAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
-        public async Task When_Id_IsNegative_Layout_ReadAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。"
+        )]
+        public async Task When_Id_IsNegative_Layout_ReadAsync_Throws_ArgumentOutOfRangeException(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -203,8 +219,12 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client, "token");
-            await Assert.That(async () => _ = await sut.Layout.ReadAsync(-1, cancellationToken: cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert
+                .That(async () =>
+                    _ = await sut.Layout.ReadAsync(-1, cancellationToken: cancellationToken)
+                )
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName("id");
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -215,50 +235,56 @@ public sealed partial class KaonaviClientTest
         /// <param name="expectedEndpoint">呼び出されるAPIエンドポイント</param>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ILayout.ReadAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}($getCalcType) > GET $expectedEndpoint をコールする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Layout)}.{nameof(KaonaviClient.Layout.ReadAsync)}($getCalcType) > GET $expectedEndpoint をコールする。"
+        )]
         [Arguments(false, "/sheet_layouts/12")]
         [Arguments(true, "/sheet_layouts/12?get_calc_type=true")]
-        public async Task Layout_ReadAsync_Calls_GetApi(bool getCalcType, string expectedEndpoint, CancellationToken cancellationToken = default)
+        public async Task Layout_ReadAsync_Calls_GetApi(
+            bool getCalcType,
+            string expectedEndpoint,
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "id": 12,
-              "name": "住所・連絡先",
-              "record_type": 1,
-              "custom_fields": [
                 {
-                  "id": 1000,
-                  "name": "住所",
-                  "required": false,
-                  "type": "string",
-                  "max_length": 100,
-                  "enum": [],
-                  "type_detail": "text_box"
-                },
-                {
-                  "id": 1001,
-                  "name": "電話番号",
-                  "required": false,
-                  "type": "string",
-                  "max_length": 100,
-                  "enum": [],
-                  "type_detail": "text_box"
-                },
-                {
-                  "id": 1002,
-                  "name": "計算式",
-                  "required": false,
-                  "type": "calc",
-                  "max_length": null,
-                  "enum": [],
-                  "read_only": true,
-                  "type_detail": "text_box"
+                  "id": 12,
+                  "name": "住所・連絡先",
+                  "record_type": 1,
+                  "custom_fields": [
+                    {
+                      "id": 1000,
+                      "name": "住所",
+                      "required": false,
+                      "type": "string",
+                      "max_length": 100,
+                      "enum": [],
+                      "type_detail": "text_box"
+                    },
+                    {
+                      "id": 1001,
+                      "name": "電話番号",
+                      "required": false,
+                      "type": "string",
+                      "max_length": 100,
+                      "enum": [],
+                      "type_detail": "text_box"
+                    },
+                    {
+                      "id": 1002,
+                      "name": "計算式",
+                      "required": false,
+                      "type": "calc",
+                      "max_length": null,
+                      "enum": [],
+                      "read_only": true,
+                      "type_detail": "text_box"
+                    }
+                  ]
                 }
-              ]
-            }
-            """;
+                """;
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet(expectedEndpoint).RespondWithJson(responseJson);
 

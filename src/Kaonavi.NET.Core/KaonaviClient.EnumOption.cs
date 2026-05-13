@@ -25,7 +25,9 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
         /// </list>
         /// </remarks>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<IReadOnlyList<EnumOption>> ListAsync(CancellationToken cancellationToken = default);
+        public ValueTask<IReadOnlyList<EnumOption>> ListAsync(
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="Entities.EnumOption" path="/summary"/>を取得します。
@@ -35,7 +37,10 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
         /// <inheritdoc cref="ListAsync" path="/remarks"/>
         /// <param name="id"><inheritdoc cref="EnumOption.Id" path="/summary"/></param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-        public ValueTask<EnumOption> ReadAsync(int id, CancellationToken cancellationToken = default);
+        public ValueTask<EnumOption> ReadAsync(
+            int id,
+            CancellationToken cancellationToken = default
+        );
 
         /// <summary>
         /// <paramref name="id"/>と一致する<inheritdoc cref="Entities.EnumOption" path="/summary"/>を一括更新します。
@@ -64,29 +69,55 @@ public partial class KaonaviClient : KaonaviClient.IEnumOption
         /// <param name="payload">リクエスト</param>
         /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
         /// <returns><inheritdoc cref="TaskProgress.Id" path="/summary" /></returns>
-        public ValueTask<int> UpdateAsync(int id, IReadOnlyList<EnumOptionData> payload, CancellationToken cancellationToken = default);
+        public ValueTask<int> UpdateAsync(
+            int id,
+            IReadOnlyList<EnumOptionData> payload,
+            CancellationToken cancellationToken = default
+        );
     }
 
     /// <inheritdoc/>
     public IEnumOption EnumOption => this;
 
     /// <inheritdoc/>
-    ValueTask<IReadOnlyList<EnumOption>> IEnumOption.ListAsync(CancellationToken cancellationToken)
-        => CallApiAsync(new(HttpMethod.Get, "enum_options"), "custom_field_data", Context.Default.IReadOnlyListEnumOption, cancellationToken);
+    ValueTask<IReadOnlyList<EnumOption>> IEnumOption.ListAsync(
+        CancellationToken cancellationToken
+    ) =>
+        CallApiAsync(
+            new(HttpMethod.Get, "enum_options"),
+            "custom_field_data",
+            Context.Default.IReadOnlyListEnumOption,
+            cancellationToken
+        );
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
     ValueTask<EnumOption> IEnumOption.ReadAsync(int id, CancellationToken cancellationToken)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
-        return CallApiAsync(new(HttpMethod.Get, $"enum_options/{id:D}"), Context.Default.EnumOption, cancellationToken);
+        return CallApiAsync(
+            new(HttpMethod.Get, $"enum_options/{id:D}"),
+            Context.Default.EnumOption,
+            cancellationToken
+        );
     }
 
     /// <inheritdoc/>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="id"/>が0より小さい場合にスローされます。</exception>
-    ValueTask<int> IEnumOption.UpdateAsync(int id, IReadOnlyList<EnumOptionData> payload, CancellationToken cancellationToken)
+    ValueTask<int> IEnumOption.UpdateAsync(
+        int id,
+        IReadOnlyList<EnumOptionData> payload,
+        CancellationToken cancellationToken
+    )
     {
         ArgumentOutOfRangeException.ThrowIfNegative(id);
-        return CallTaskApiAsync(HttpMethod.Put, $"enum_options/{id:D}", payload, "enum_option_data"u8, Context.Default.IReadOnlyListEnumOptionData, cancellationToken);
+        return CallTaskApiAsync(
+            HttpMethod.Put,
+            $"enum_options/{id:D}",
+            payload,
+            "enum_option_data"u8,
+            Context.Default.IReadOnlyListEnumOptionData,
+            cancellationToken
+        );
     }
 }

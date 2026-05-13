@@ -5,6 +5,7 @@ public enum AdvancedType
 {
     /// <summary>メンバー</summary>
     Member,
+
     /// <summary>所属</summary>
     Department,
 }

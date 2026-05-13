@@ -37,11 +37,16 @@
 [.NET CLI](https://docs.microsoft.com/dotnet/core/tools/)(SDKに付属)を利用して、下記のコマンドを実行できます。
 
 ```powershell
+# .NET ツールの復元 (csharpier などのコマンドラインツールを利用するために必要)
+> dotnet tool restore
+
 # 必要なパッケージの復元(test, buildコマンド内で行われるため、これらの呼び出し時には不要)
 > dotnet restore
 
 # コードフォーマットのチェックと修正
-> dotnet format
+> dotnet format style
+> dotnet format analyzers
+> dotnet csharpier format .
 
 # 単体テストの実行
 > dotnet test
@@ -90,7 +95,7 @@ Git コミットメッセージの例:
 
 - Lint ルールか、すでにあるコードのスタイルに準じます。
   - [EditorConfig](https://editorconfig.org/) を適用しているため、それに対応したエディタを使うことを推奨します。
-  - コードのフォーマットは `dotnet format` コマンドで自動修正できます。
+  - コードのフォーマットは `dotnet format style` -> `dotnet format analyzers` -> `dotnet csharpier format .` コマンドで自動修正できます。
 - ファイルのエンコーディングは UTF-8 とします。
 - 非 ASCII 文字(日本語など)を変数名,メンバー名に使用しないでください。
   - XMLドキュメンテーションコメントを含む、コードのコメント部分に非 ASCII 文字を使うのは構いません。
@@ -104,8 +109,8 @@ Git コミットメッセージの例:
 
 | Job Name | Description |
 | --- | --- |
-|[Lint](./.github/workflows/dotnet.yml#L16)|コードフォーマットのチェック|
-|[Debug Build & Test](./.github/workflows/dotnet.yml#L28)|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linux(ARM含む)と.NET 8.0/9.0/10.0の各環境で実施)|
+|[Lint](./.github/workflows/dotnet.yml#L16)|コードフォーマットのチェック(`dotnet format` と `csharpier` を使用)|
+|[Debug Build & Test](./.github/workflows/dotnet.yml#L38)|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linux(ARM含む)と.NET 8.0/9.0/10.0の各環境で実施)|
 
 ## Thanks
 

@@ -16,7 +16,8 @@ public sealed class SheetLayoutTest
     public async Task CanDeserializeJSON()
     {
         /*lang=json,strict*/
-        var json = """
+        var json =
+            """
         {
           "id": 12,
           "name": "住所・連絡先",
@@ -46,7 +47,9 @@ public sealed class SheetLayoutTest
         var sheetLayout = JsonSerializer.Deserialize(json, JsonContext.Default.SheetLayout);
 
         // Assert
-        await Assert.That(sheetLayout).IsNotNull()
+        await Assert
+            .That(sheetLayout)
+            .IsNotNull()
             .And.Member(static o => o.Id, o => o.IsEqualTo(12))
             .And.Member(static o => o.Name, o => o.IsEqualTo<string>("住所・連絡先"))
             .And.Member(static o => o.RecordType, o => o.IsEqualTo(RecordType.Multiple))

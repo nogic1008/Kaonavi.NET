@@ -11,4 +11,8 @@ public record AttachmentInfo(string Code, params IReadOnlyList<AttachmentInfoRec
 /// <param name="FileName">ファイル名</param>
 /// <param name="DownloadUrl">ダウンロードするためのURL</param>
 /// <param name="UpdatedAt">ファイルの最終更新日時</param>
-public record AttachmentInfoRecord(string FileName, Uri DownloadUrl, [property: JsonConverter(typeof(DateTimeConverter))] DateTime UpdatedAt);
+public record AttachmentInfoRecord(
+    string FileName,
+    Uri DownloadUrl,
+    [property: JsonConverter(typeof(DateTimeConverter))] DateTime UpdatedAt
+);

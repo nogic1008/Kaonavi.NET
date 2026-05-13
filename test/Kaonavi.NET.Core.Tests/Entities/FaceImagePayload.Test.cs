@@ -15,7 +15,8 @@ public sealed class FaceImagePayloadTest
     {
         // Arrange
         // lang=json,strict
-        var json = """
+        var json =
+            """
         {
           "code": "A0001",
           "base64_face_image": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII="
@@ -26,9 +27,15 @@ public sealed class FaceImagePayloadTest
         var faceImage = JsonSerializer.Deserialize(json, JsonContext.Default.FaceImagePayload);
 
         // Assert
-        const string expectedBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII=";
-        await Assert.That(faceImage).IsNotNull()
+        const string expectedBase64 =
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdj+P///38ACfsD/QVDRcoAAAAASUVORK5CYII=";
+        await Assert
+            .That(faceImage)
+            .IsNotNull()
             .And.Member(static o => o.Code, static o => o.IsEqualTo<string>("A0001"))
-            .And.Member(static o => o.Content, static o => o.IsSequenceEqualTo(Convert.FromBase64String(expectedBase64)));
+            .And.Member(
+                static o => o.Content,
+                static o => o.IsSequenceEqualTo(Convert.FromBase64String(expectedBase64))
+            );
     }
 }

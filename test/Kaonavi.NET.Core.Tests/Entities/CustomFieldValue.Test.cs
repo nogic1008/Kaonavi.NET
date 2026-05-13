@@ -19,16 +19,32 @@ public sealed class CustomFieldValueTest
     [Arguments("""{ "id": 100, "name": "血液型", "values": ["A"] }""", 100, "血液型", "A")]
     [Arguments("""{ "id": 100, "values": [""] }""", 100, null, "")]
     [Arguments("""{ "id": 1, "values": ["Aコース", "Bコース"] }""", 1, null, "Aコース", "Bコース")]
-    public async Task CanDeserializeJSON([StringSyntax(StringSyntaxAttribute.Json)] string json, int id, string? name, params string[] values)
+    public async Task CanDeserializeJSON(
+        [StringSyntax(StringSyntaxAttribute.Json)] string json,
+        int id,
+        string? name,
+        params string[] values
+    )
     {
         // Arrange - Act
-        var customFieldValue = JsonSerializer.Deserialize(json, JsonContext.Default.CustomFieldValue);
+        var customFieldValue = JsonSerializer.Deserialize(
+            json,
+            JsonContext.Default.CustomFieldValue
+        );
 
         // Assert
-        await Assert.That(customFieldValue).IsNotNull()
+        await Assert
+            .That(customFieldValue)
+            .IsNotNull()
             .And.Member(static sut => sut.Id, o => o.IsEqualTo(id))
-            .And.Member(static sut => sut.Name!, o => name is null ? o.IsNull() : o.IsEqualTo<string>(name))
-            .And.Member(static sut => sut.Value, o => values.Length == 0 ? o.IsEmpty() : o.IsEqualTo<string>(values[0]))
+            .And.Member(
+                static sut => sut.Name!,
+                o => name is null ? o.IsNull() : o.IsEqualTo<string>(name)
+            )
+            .And.Member(
+                static sut => sut.Value,
+                o => values.Length == 0 ? o.IsEmpty() : o.IsEqualTo<string>(values[0])
+            )
             .And.Member(static sut => sut.Values, o => o.IsSequenceEqualTo(values));
     }
 }

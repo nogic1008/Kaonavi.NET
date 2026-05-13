@@ -12,8 +12,12 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ITask.ReadAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。")]
-        public async Task When_Id_IsNegative_Task_ReadAsync_Throws_ArgumentOutOfRangeException(CancellationToken cancellationToken = default)
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)}(-1) > {nameof(ArgumentOutOfRangeException)} をスローする。"
+        )]
+        public async Task When_Id_IsNegative_Task_ReadAsync_Throws_ArgumentOutOfRangeException(
+            CancellationToken cancellationToken = default
+        )
         {
             // Arrange
             using var client = Mock.HttpClient(BaseUriString);
@@ -21,8 +25,10 @@ public sealed partial class KaonaviClientTest
 
             // Act - Assert
             var sut = CreateSut(client);
-            await Assert.That(async () => _ = await sut.Task.ReadAsync(-1, cancellationToken))
-                .Throws<ArgumentOutOfRangeException>().WithParameterName("id");
+            await Assert
+                .That(async () => _ = await sut.Task.ReadAsync(-1, cancellationToken))
+                .Throws<ArgumentOutOfRangeException>()
+                .WithParameterName("id");
             await Assert.That(client.Handler.Requests).IsEmpty();
         }
 
@@ -31,22 +37,24 @@ public sealed partial class KaonaviClientTest
         /// </summary>
         /// <param name="cancellationToken"><inheritdoc cref="KaonaviClient.ITask.ReadAsync" path="/param[@name='cancellationToken']"/></param>
         [Test, Category(nameof(HttpMethod.Get))]
-        [DisplayName($"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)}(1) > GET /tasks/1 をコールする。")]
+        [DisplayName(
+            $"{nameof(KaonaviClient)} > {nameof(KaonaviClient.Task)}.{nameof(KaonaviClient.Task.ReadAsync)}(1) > GET /tasks/1 をコールする。"
+        )]
         public async Task Task_ReadAsync_Calls_GetApi(CancellationToken cancellationToken = default)
         {
             // Arrange
             const int taskId = 1;
             /*lang=json,strict*/
             const string responseJson = """
-            {
-              "id": 1,
-              "status": "NG",
-              "messages": [
-                "エラーメッセージ1",
-                "エラーメッセージ2"
-              ]
-            }
-            """;
+                {
+                  "id": 1,
+                  "status": "NG",
+                  "messages": [
+                    "エラーメッセージ1",
+                    "エラーメッセージ2"
+                  ]
+                }
+                """;
 
             using var client = Mock.HttpClient(BaseUriString);
             client.Handler.OnGet($"/tasks/{taskId}").RespondWithJson(responseJson);
@@ -57,8 +65,10 @@ public sealed partial class KaonaviClientTest
 
             // Assert
             await Assert.That(task).IsNotNull();
-            client.Handler.Verify(r => r.Method(HttpMethod.Get).Path($"/tasks/{taskId}"), Times.Once);
+            client.Handler.Verify(
+                r => r.Method(HttpMethod.Get).Path($"/tasks/{taskId}"),
+                Times.Once
+            );
         }
     }
 }
-

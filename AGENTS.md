@@ -49,7 +49,7 @@ dotnet run script.cs
 
 ### 基本スタイル
 
-- `.editorconfig` の設定に従う。自動修正は `dotnet format` で行う。
+- `.editorconfig` の設定に従う。自動修正は `dotnet format style` -> `dotnet format analyzers` -> `dotnet csharpier format .` で行う。
   - ファイルエンコーディングは **UTF-8**、改行は **LF**。
   - `this.` 修飾子は不要。
   - `int` / `string` 等の組み込み型エイリアスを使う（`Int32` は使わない）。組み込み型以外の変数宣言は `var` を使う。
@@ -131,7 +131,10 @@ public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationTo
 コードを変更した後は、**必ず以下の順で実行**してください。すべてが通ることを確認してからコミットしてください。
 
 1. **エディター上のエラーがないことを確認する**（赤波線・コンパイルエラーがゼロであること）
-2. **フォーマット修正**: `dotnet format`
+2. **フォーマット修正**:
+  - `dotnet format style`（コードスタイルの修正）
+  - `dotnet format analyzers`（コード分析の修正）
+  - `dotnet csharpier format .`（コードフォーマットの修正）
 3. **テスト実行**: `dotnet test`
 
 機能追加・バグ修正・リファクタリングにかかわらず、変更内容に対応するテストを**必ず**追加または更新してください。テストのないコード変更は原則受け入れません。
