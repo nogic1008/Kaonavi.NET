@@ -11,7 +11,7 @@
 
 複雑な処理（データ変換・ファイル操作・HTTP リクエストなど）をスクリプトで実行する必要がある場合は、**Python や複雑なシェルスクリプトではなく C# を使う**。
 
-- 実行環境は .NET 10 SDK が使用可能であることを前提としている。OS は問わない（Windows / Linux / macOS）。
+- 実行環境は .NET 11 SDK が使用可能であることを前提としている。OS は問わない（Windows / Linux / macOS）。
 - トップレベルステートメントで記述した `.cs` ファイルは、プロジェクトファイルなしに以下で実行できる（.NET 10 以降）：
 
 ```sh
@@ -37,7 +37,7 @@ dotnet run script.cs
 ## 技術スタック
 
 - **言語**: C# 14（`LangVersion=14.0`）
-- **SDK**: .NET 10 以上（`global.json` で固定）
+- **SDK**: .NET 11 以上（`global.json` で固定）
 - **ターゲット**: .NET 8 以上（Generator のみ .NET Standard 2.0）
 - **HTTPクライアント**: `System.Net.Http.HttpClient`
 - **JSON**: `System.Text.Json`
