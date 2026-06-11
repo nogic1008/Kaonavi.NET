@@ -59,7 +59,9 @@ jobs:
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5.3.0
         with:
-          dotnet-version: ${{ vars.DOTNET_SDK_VERSIONS }}
+          dotnet-version: |
+            11.x
+            ${{ vars.DOTNET_SDK_VERSIONS }}
           cache: true
           cache-dependency-path: Directory.Packages.props
 
@@ -76,6 +78,7 @@ jobs:
           flags: ${{ runner.os }},${{ runner.arch }}
           disable_search: true
           files: |
+            ${{ format(vars.TEST_ASSET_FOLDERS, 'net11.0', vars.COVERAGE_REPORT_FILE) }},
             ${{ format(vars.TEST_ASSET_FOLDERS, 'net10.0', vars.COVERAGE_REPORT_FILE) }},
             ${{ format(vars.TEST_ASSET_FOLDERS, 'net9.0', vars.COVERAGE_REPORT_FILE) }},
             ${{ format(vars.TEST_ASSET_FOLDERS, 'net8.0', vars.COVERAGE_REPORT_FILE) }}
