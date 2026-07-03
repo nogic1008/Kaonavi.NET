@@ -19,15 +19,22 @@ env:
 jobs:
   copilot-setup-steps:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v7.0.0
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v5.4.0
         with:
-          dotnet-version: ${{ vars.DOTNET_SDK_VERSIONS }}
+          dotnet-version: |
+            10.x
+            9.x
+            8.x
           cache: true
           cache-dependency-path: Directory.Packages.props
 
+      - name: Restore .NET tools
+        run: dotnet tool restore
       - name: Restore NuGet packages
         run: dotnet restore
