@@ -10,7 +10,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_NOLOGO: true
   NUGET_XMLDOC_MODE: skip
-  NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+  NUGET_PACKAGES: ${{ runner.temp }}/.nuget/packages
 
 jobs:
   lint:
