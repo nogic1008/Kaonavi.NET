@@ -45,7 +45,7 @@ jobs:
 
       - parallel:
         - name: Generate Attestation for packages
-          uses: actions/attest@v4.1.1
+          uses: actions/attest@v4.2.0
           with:
             subject-path: "nupkgs/*.nupkg"
         - name: Publish to NuGet
