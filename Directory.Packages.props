@@ -22,6 +22,6 @@
     <PackageVersion Include="System.Text.Json" Version="10.0.12" />
     <PackageVersion Include="TUnit" Version="1.72.16" />
     <PackageVersion Include="TUnit.Mocks" Version="1.72.16" />
-    <PackageVersion Include="TUnit.Mocks.Http" Version="1.65.68" />
+    <PackageVersion Include="TUnit.Mocks.Http" Version="1.72.16" />
   </ItemGroup>
 </Project>
