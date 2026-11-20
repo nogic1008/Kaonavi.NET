@@ -153,7 +153,7 @@ client.Handler.Verify(r => r.Method(HttpMethod.Get).Path("/endpoint"), Times.Onc
 
 ## マルチターゲット
 
-テストプロジェクトは .NET 8, 9, 10 全フレームワークで実行される。フレームワーク固有の API に依存しないこと。
+テストプロジェクトは .NET 8, 9, 10, 11 全フレームワークで実行される。フレームワーク固有の API に依存しないこと。
 
 ---
 
