@@ -14,11 +14,8 @@ public static class HttpRequestExtensions
     /// <param name="token">検証用トークン</param>
     public static bool IsKaonaviWebhookRequest(this HttpRequest request, string token) =>
         request.ContentType == "application/json"
-#if NET8_0_OR_GREATER
-        && request.Headers.UserAgent.Any(s => s is not null && s.Contains("Kaonavi-Webhook"))
-#else
-        && request.Headers["User-Agent"].Any(s => s is not null && s.Contains("Kaonavi-Webhook"))
-#endif
+        && request.Headers.TryGetValue("User-Agent", out var userAgent)
+        && userAgent.Any(s => s is not null && s.Contains("Kaonavi-Webhook"))
         && request.Headers.TryGetValue("Kaonavi-Token", out var values)
         && values.Contains(token);
 }
