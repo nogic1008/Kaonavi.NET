@@ -17,6 +17,9 @@ namespace Kaonavi.Net.Json;
 [JsonSerializable(typeof(IReadOnlyList<User>))]
 [JsonSerializable(typeof(IReadOnlyList<WebhookConfig>))]
 [JsonSerializable(typeof(IReadOnlyList<EnumOptionData>))]
+#if NETSTANDARD2_1
+[JsonSerializable(typeof(MemberDataNetStandardJson))]
+#endif
 [JsonSerializable(typeof(MemberLayout))]
 [JsonSerializable(typeof(TaskProgress))]
 [JsonSerializable(typeof(Token))]

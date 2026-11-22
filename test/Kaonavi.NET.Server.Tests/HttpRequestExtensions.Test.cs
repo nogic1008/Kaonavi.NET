@@ -51,7 +51,7 @@ public sealed class HttpRequestExtensionsTest
         var request = HttpRequest.Mock();
         request.ContentType.Returns("application/json");
         var headers = IHeaderDictionary.Mock();
-        headers.UserAgent.Returns(new StringValues(userAgent));
+        headers.TryGetValue("User-Agent").Returns(true).SetsOutValue(userAgent);
         request.Headers.Returns(headers.Object);
 
         // Act - Assert
@@ -73,7 +73,7 @@ public sealed class HttpRequestExtensionsTest
         var request = HttpRequest.Mock();
         request.ContentType.Returns("application/json");
         var headers = IHeaderDictionary.Mock();
-        headers.UserAgent.Returns(new StringValues("Kaonavi-Webhook"));
+        headers.TryGetValue("User-Agent").Returns(true).SetsOutValue("Kaonavi-Webhook");
         headers.TryGetValue("Kaonavi-Token").Returns(false);
         request.Headers.Returns(headers.Object);
 
@@ -96,7 +96,7 @@ public sealed class HttpRequestExtensionsTest
         var request = HttpRequest.Mock();
         request.ContentType.Returns("application/json");
         var headers = IHeaderDictionary.Mock();
-        headers.UserAgent.Returns(new StringValues("Kaonavi-Webhook"));
+        headers.TryGetValue("User-Agent").Returns(true).SetsOutValue("Kaonavi-Webhook");
         headers.TryGetValue("Kaonavi-Token").Returns(true).SetsOutValue("another-token");
         request.Headers.Returns(headers.Object);
 
@@ -120,7 +120,7 @@ public sealed class HttpRequestExtensionsTest
         var request = HttpRequest.Mock();
         request.ContentType.Returns("application/json");
         var headers = IHeaderDictionary.Mock();
-        headers.UserAgent.Returns(new StringValues("Kaonavi-Webhook"));
+        headers.TryGetValue("User-Agent").Returns(true).SetsOutValue("Kaonavi-Webhook");
         headers.TryGetValue("Kaonavi-Token").Returns(true).SetsOutValue(token);
         request.Headers.Returns(headers.Object);
 

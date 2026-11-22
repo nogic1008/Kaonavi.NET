@@ -29,7 +29,6 @@ jobs:
         with:
           dotnet-version: |
             10.x
-            9.x
             8.x
           cache: true
           cache-dependency-path: Directory.Packages.props

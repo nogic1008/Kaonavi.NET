@@ -12,7 +12,7 @@
 
 ### Requirements
 
-- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) (9.0.200以降) および [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) が必要です。
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) (10.0.404以降) および [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) が必要です。
 - ソース ジェネレーター部分(`Kaonavi.NET.Generator`)のデバッグには Visual Studio 2022 (バージョン 17.3)以降が必要です。
 
 #### Recommended
@@ -21,10 +21,10 @@
 
 - Visual Studio 2022 (バージョン 17.3)以降
   - 当プロジェクトはオープンソースのため、[Visual Studio 2022 Community](https://visualstudio.microsoft.com/downloads/)が利用可能です。
-  - .NET 10.0 (10.0.203以降), 9.0 および .NET 8.0 SDK がインストール内容に含まれているか確認してください。
+  - .NET 10.0 (10.0.404以降) および .NET 8.0 SDK がインストール内容に含まれているか確認してください。
   - ソース ジェネレーター部分をデバッグするためには、.NET Compiler Platform SDK を追加でインストールしてください。
 - [Visual Studio Code](https://code.visualstudio.com/) + [EditorConfig 拡張機能](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig) + [C# Dev Kit](https://learn.microsoft.com/visualstudio/subscriptions/vs-c-sharp-dev-kit)
-  - .NET 10.0, 9.0 および .NET 8.0 SDK は個別にインストールしてください。
+  - .NET 10.0 および .NET 8.0 SDK は個別にインストールしてください。
   - Gitのインストールが必要です。(Visual Studio Codeの初回実行時、インストールを促されます)
   - C# Dev Kitがライセンス上利用できない場合は、[C# 拡張機能](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp)を代わりに使用できます。
 - Dev Container
@@ -110,7 +110,7 @@ Git コミットメッセージの例:
 | Job Name | Description |
 | --- | --- |
 |[Lint](./.github/workflows/dotnet.yml#L16)|コードフォーマットのチェック(`dotnet format` と `csharpier` を使用)|
-|[Debug Build & Test](./.github/workflows/dotnet.yml#L38)|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linux(ARM含む)と.NET 8.0/9.0/10.0の各環境で実施)|
+|[Debug Build & Test](./.github/workflows/dotnet.yml#L38)|デバッグ ビルドと単体テストの実行(Windows, MacOS, Linux(ARM含む)と.NET 8.0/10.0の各環境で実施)|
 
 ## Thanks
 
