@@ -159,7 +159,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     #endregion IDisposable
 
     /// <inheritdoc/>
-    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
+    /// <exception cref="ObjectDisposedException">このインスタンスが破棄済みの場合にスローされます。</exception>
     public async ValueTask<Token> AuthenticateAsync(CancellationToken cancellationToken = default)
     {
         ObjectDisposedException.ThrowIf(_disposedValue, GetType());
@@ -194,7 +194,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// </summary>
     /// <param name="request">APIに対するリクエスト</param>
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
-    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
+    /// <exception cref="ObjectDisposedException">このインスタンスが破棄済みの場合にスローされます。</exception>
     /// <inheritdoc cref="ValidateApiResponseAsync" path="/exception"/>
     private async ValueTask<HttpResponseMessage> CallApiAsync(
         HttpRequestMessage request,
@@ -268,7 +268,7 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
     /// <param name="cancellationToken"><inheritdoc cref="HttpClient.SendAsync(HttpRequestMessage, CancellationToken)" path="/param[@name='cancellationToken']"/></param>
     /// <returns><inheritdoc cref="TaskProgress" path="/param[@name='Id']"/></returns>
     /// <inheritdoc cref="CallApiAsync" path="/exception"/>
-    /// <inheritdoc cref="ObjectDisposedException.ThrowIf(bool, Type)" path="/exception"/>
+    /// <exception cref="ObjectDisposedException">このインスタンスが破棄済みの場合にスローされます。</exception>
     private ValueTask<int> CallTaskApiAsync<T>(
         HttpMethod method,
         string uri,
@@ -386,9 +386,13 @@ public partial class KaonaviClient : IDisposable, IKaonaviClient
                             .EnumerateArray()
                             .Select(e => e.GetString())
                     )
+#if NET8_0_OR_GREATER
                     : await response
                         .Content.ReadAsStringAsync(cancellationToken)
                         .ConfigureAwait(false);
+#else
+                    : await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+#endif
             throw new ApplicationException(errorMessage, ex);
         }
     }

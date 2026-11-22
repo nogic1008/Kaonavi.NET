@@ -14,6 +14,9 @@ namespace Kaonavi.Net.Entities;
 /// <param name="Department">主務情報</param>
 /// <param name="SubDepartments">兼務情報リスト</param>
 /// <param name="CustomFields">カスタム項目値</param>
+#if NETSTANDARD2_1
+[JsonConverter(typeof(MemberDataNetStandardConverter))]
+#endif
 public record MemberData(
     string Code,
     string? Name = null,
