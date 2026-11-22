@@ -1,12 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net10.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net11.0;net10.0;netstandard2.1</TargetFrameworks>
     <Description>Core Libraries of Kaonavi.NET</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Kaonavi.Net</RootNamespace>
-    <IsAotCompatible
-      Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))"
-      >true</IsAotCompatible>
+    <IsAotCompatible Condition="'$(TargetFramework)' != 'netstandard2.1'">true</IsAotCompatible>
     <NoWarn Condition="'$(TargetFramework)' == 'netstandard2.1'">$(NoWarn);RS0016;RS0017</NoWarn>
     <ThrowHelperExtensionsGenerateAttributes>false</ThrowHelperExtensionsGenerateAttributes>
   </PropertyGroup>
@@ -35,7 +33,7 @@
     </PackageReference>
     <PackageReference
       Include="Microsoft.Bcl.TimeProvider"
-      Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))"
+      Condition="'$(TargetFramework)' == 'netstandard2.1'"
     />
     <PackageReference Include="Nogic.ThrowHelperExtensions">
       <PrivateAssets>all</PrivateAssets>
@@ -43,19 +41,19 @@
     </PackageReference>
     <PackageReference
       Include="Portable.System.DateTimeOnly.Json"
-      Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))"
+      Condition="'$(TargetFramework)' == 'netstandard2.1'"
     />
     <PackageReference
       Include="Portable.System.DateTimeOnly"
-      Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))"
+      Condition="'$(TargetFramework)' == 'netstandard2.1'"
     />
     <PackageReference
       Include="System.Net.Http.Json"
-      Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))"
+      Condition="'$(TargetFramework)' == 'netstandard2.1'"
     />
     <PackageReference
       Include="System.Text.Json"
-      Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0'))"
+      Condition="'$(TargetFramework)' == 'netstandard2.1'"
     />
   </ItemGroup>
 </Project>
