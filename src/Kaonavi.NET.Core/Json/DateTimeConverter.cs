@@ -17,10 +17,16 @@ public class DateTimeConverter : JsonConverter<DateTime>
     /// <inheritdoc/>
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
     {
+#if NET8_0_OR_GREATER
         Span<byte> buffer = stackalloc byte[21]; // "yyyy-MM-dd HH:mm:ss".Length
         buffer[0] = (byte)'"';
         _ = value.TryFormat(buffer[1..], out int written, Format, CultureInfo.InvariantCulture);
         buffer[written + 1] = (byte)'"';
         writer.WriteRawValue(buffer[0..(written + 2)], false);
+#else
+        Span<char> buffer = stackalloc char[21]; // "yyyy-MM-dd HH:mm:ss".Length
+        _ = value.TryFormat(buffer, out int written, Format, CultureInfo.InvariantCulture);
+        writer.WriteStringValue(buffer[..written]);
+#endif
     }
 }
