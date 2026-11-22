@@ -4,7 +4,7 @@
     <Description>Core Libraries of Kaonavi.NET</Description>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Kaonavi.Net</RootNamespace>
-    <IsAotCompatible Condition="'$(TargetFramework)' == 'netstandard2.1'">true</IsAotCompatible>
+    <IsAotCompatible Condition="'$(TargetFramework)' != 'netstandard2.1'">true</IsAotCompatible>
     <NoWarn Condition="'$(TargetFramework)' == 'netstandard2.1'">$(NoWarn);RS0016;RS0017</NoWarn>
     <ThrowHelperExtensionsGenerateAttributes>false</ThrowHelperExtensionsGenerateAttributes>
   </PropertyGroup>
