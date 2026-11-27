@@ -31,6 +31,7 @@ jobs:
             11.x
             10.x
             8.x
+          skip-lts-prepass: true
           cache: true
           cache-dependency-path: Directory.Packages.props
 
