@@ -38,17 +38,14 @@ public partial class SheetDataGenerator : IIncrementalGenerator
             .WithComparer(Comparer.Instance)
             .Combine(parseOptions);
 
-        context.RegisterSourceOutput(
-            source,
-            static (context, source) =>
-            {
-                var token = context.CancellationToken;
-                token.ThrowIfCancellationRequested();
+        context.RegisterSourceOutput(source, static (context, source) =>
+        {
+            var token = context.CancellationToken;
+            token.ThrowIfCancellationRequested();
 
-                var ((syntax, compilation), languageVersion) = source;
-                Emit(syntax, compilation, languageVersion, context);
-            }
-        );
+            var ((syntax, compilation), languageVersion) = source;
+            Emit(syntax, compilation, languageVersion, context);
+        });
     }
 
     /// <inheritdoc/>
