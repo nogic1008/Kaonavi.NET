@@ -15,7 +15,7 @@ env:
 jobs:
   lint:
     name: Lint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: read
     steps:
@@ -42,14 +42,12 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest # ubuntu-24.04
-          - ubuntu-24.04-arm
+          - ubuntu-latest # ubuntu-26.04
+          - ubuntu-26.04-arm
           - windows-latest # windows-2025
           - windows-11-arm
-          - macos-26
+          - macos-latest # macos-26
           - macos-26-intel
-          - macos-latest # macos-15
-          - macos-15-intel
     permissions:
       id-token: write # to use OIDC
       contents: read
